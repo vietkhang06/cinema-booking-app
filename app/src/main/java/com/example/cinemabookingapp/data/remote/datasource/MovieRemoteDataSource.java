@@ -1,6 +1,9 @@
 package com.example.cinemabookingapp.data.remote.datasource;
 
-import com.example.cinemabookingapp.domain.model.Movie;
+import com.example.cinemabookingapp.core.constants.FirestoreCollections;
+import com.example.cinemabookingapp.data.dto.MovieDTO;
+import com.example.cinemabookingapp.data.remote.firebase.FirebaseProvider;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -8,29 +11,47 @@ import java.util.List;
 
 public class MovieRemoteDataSource {
 
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore firestore = FirebaseProvider.provideFirestore();
 
-    public void getMovies(OnResult callback) {
-        db.collection("movies")
+    public void getAllMovies(ResultCallback<List<MovieDTO>> callback) {
+        firestore.collection(FirestoreCollections.MOVIES)
                 .whereEqualTo("deleted", false)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Movie> list = new ArrayList<>();
-
-                    queryDocumentSnapshots.forEach(doc -> {
-                        Movie movie = doc.toObject(Movie.class);
-                        list.add(movie);
+                    List<MovieDTO> list = new ArrayList<>();
+                    queryDocumentSnapshots.getDocuments().forEach(doc -> {
+                        MovieDTO dto = doc.toObject(MovieDTO.class);
+                        if (dto != null) {
+                            list.add(dto);
+                        }
                     });
-
                     callback.onSuccess(list);
                 })
-                .addOnFailureListener(e -> {
-                    callback.onError(e.getMessage());
-                });
+                .addOnFailureListener(e -> callback.onError(getMessage(e)));
     }
 
-    public interface OnResult {
-        void onSuccess(List<Movie> movies);
-        void onError(String error);
+    public void getMovieById(String movieId, ResultCallback<MovieDTO> callback) {
+        firestore.collection(FirestoreCollections.MOVIES)
+                .document(movieId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        callback.onError("Movie not found");
+                        return;
+                    }
+
+                    MovieDTO dto = documentSnapshot.toObject(MovieDTO.class);
+                    if (dto == null) {
+                        callback.onError("Movie data is empty");
+                        return;
+                    }
+
+                    callback.onSuccess(dto);
+                })
+                .addOnFailureListener(e -> callback.onError(getMessage(e)));
+    }
+
+    private String getMessage(Exception e) {
+        return e != null && e.getMessage() != null ? e.getMessage() : "Unknown error";
     }
 }
