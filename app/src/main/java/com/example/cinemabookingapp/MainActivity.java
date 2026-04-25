@@ -9,8 +9,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Movie;
+import com.example.cinemabookingapp.domain.usecase.movie.GetMoviesUseCase;
 
 import java.util.List;
 
@@ -30,30 +31,35 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 👉 TEST FIRESTORE TẠI ĐÂY
         testFetchMovies();
-        Log.d("TEST", "onCreate chạy");
     }
 
     private void testFetchMovies() {
-        MovieRemoteDataSource ds = new MovieRemoteDataSource();
+        GetMoviesUseCase useCase = ((MyApp) getApplication())
+                .getAppContainer()
+                .getMoviesUseCase();
 
-        ds.getMovies(new MovieRemoteDataSource.OnResult() {
+        useCase.execute(new ResultCallback<List<Movie>>() {
             @Override
-            public void onSuccess(List<Movie> movies) {
-                if (movies == null || movies.isEmpty()) {
+            public void onSuccess(List<Movie> data) {
+                if (data == null || data.isEmpty()) {
                     Log.d(TAG, "No movies found");
                     return;
                 }
 
-                for (Movie m : movies) {
-                    Log.d(TAG, "Movie: " + m.title);
+                for (Movie movie : data) {
+                    Log.d(TAG, "Movie: " + movie.title);
                 }
             }
 
             @Override
-            public void onError(String error) {
-                Log.e(TAG, "Error: " + error);
+            public void onError(String message) {
+                Log.e(TAG, "Error: " + message);
+            }
+
+            @Override
+            public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
+
             }
         });
     }
