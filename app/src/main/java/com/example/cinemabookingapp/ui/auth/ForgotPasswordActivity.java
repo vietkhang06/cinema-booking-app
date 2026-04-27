@@ -7,9 +7,12 @@ import android.widget.TextView;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.service.AuthenticationService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends BaseActivity {
@@ -19,14 +22,16 @@ public class ForgotPasswordActivity extends BaseActivity {
     private MaterialButton btnSendReset;
     private TextView tvBack;
 
-    private FirebaseAuth auth;
+//    private FirebaseAuth auth;
+    AuthenticationService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
+        authService = ServiceProvider.getInstance().getAuthenticationService();
 
         initViews();
         bindActions();
@@ -61,7 +66,7 @@ public class ForgotPasswordActivity extends BaseActivity {
 
         btnSendReset.setEnabled(false);
 
-        auth.sendPasswordResetEmail(email)
+        authService.forgetAndResetPassword(email)
                 .addOnSuccessListener(unused -> {
                     btnSendReset.setEnabled(true);
                     showToast("Đã gửi email đặt lại mật khẩu");

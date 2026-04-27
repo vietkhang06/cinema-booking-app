@@ -41,10 +41,6 @@ public class MovieRepositoryImpl implements MovieRepository {
                 callback.onError(message);
             }
 
-            @Override
-            public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
-
-            }
         });
     }
 
@@ -70,10 +66,6 @@ public class MovieRepositoryImpl implements MovieRepository {
                 callback.onError(message);
             }
 
-            @Override
-            public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
-
-            }
         });
     }
 

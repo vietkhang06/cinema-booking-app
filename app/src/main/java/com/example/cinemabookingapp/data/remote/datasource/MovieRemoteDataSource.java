@@ -8,6 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MovieRemoteDataSource {
 
@@ -19,6 +21,10 @@ public class MovieRemoteDataSource {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<MovieDTO> list = new ArrayList<>();
+//                    list = queryDocumentSnapshots.getDocuments().stream()
+//                        .map(doc -> doc.toObject(MovieDTO.class))
+//                        .filter(Objects::nonNull)
+//                        .collect(Collectors.toList());
                     queryDocumentSnapshots.getDocuments().forEach(doc -> {
                         MovieDTO dto = doc.toObject(MovieDTO.class);
                         if (dto != null) {

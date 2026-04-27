@@ -10,13 +10,14 @@ import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
-import com.example.cinemabookingapp.data.remote.firebase.FirebaseProvider;
+import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.User;
+import com.example.cinemabookingapp.service.AuthenticationService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,16 +37,14 @@ public class RegisterActivity extends BaseActivity {
     private MaterialButton btnRegister;
     private TextView tvBack;
 
-    private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private AuthenticationService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        auth = FirebaseAuth.getInstance();
-        firestore = FirebaseProvider.provideFirestore();
+        authService = ServiceProvider.getInstance().getAuthenticationService();
 
         initViews();
         bindActions();
@@ -121,53 +120,18 @@ public class RegisterActivity extends BaseActivity {
 
         btnRegister.setEnabled(false);
 
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener(authResult -> {
-
-                    FirebaseUser user = authResult.getUser();
-                    if (user == null) {
-                        btnRegister.setEnabled(true);
-                        showToast("User null");
-                        return;
+        authService.signUpWithEmailAndPassword(email, password, phone, new ResultCallback<User>() {
+                    @Override
+                    public void onSuccess(User data) {
+                        showToast("Đăng ký thành công");
+                        AppNavigator.goToCustomerHome(RegisterActivity.this);
                     }
 
-                    saveUserToFirestore(user.getUid(), email, phone);
-                })
-                .addOnFailureListener(e -> {
-                    btnRegister.setEnabled(true);
-                    showToast("Auth lỗi: " + e.getMessage());
-                });
-    }
-
-    private void saveUserToFirestore(String uid, String email, String phone) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("uid", uid);
-        userData.put("name", "");
-        userData.put("email", email);
-        userData.put("phone", phone);
-        userData.put("avatarUrl", "");
-        userData.put("role", "customer");
-        userData.put("status", "active");
-        userData.put("memberLevel", "basic");
-        userData.put("points", 0);
-        userData.put("fcmToken", "");
-        userData.put("createdAt", System.currentTimeMillis());
-        userData.put("updatedAt", System.currentTimeMillis());
-        userData.put("deleted", false);
-
-        firestore.collection("users")
-                .document(uid)
-                .set(userData)
-                .addOnSuccessListener(unused -> {
-                    sessionManager.saveLoginState(true, "customer", uid);
-                    sessionManager.saveRememberedEmail(email);
-                    btnRegister.setEnabled(true);
-                    showToast("Đăng ký thành công");
-                    AppNavigator.goToCustomerHome(this);
-                })
-                .addOnFailureListener(e -> {
-                    btnRegister.setEnabled(true);
-                    showToast(e.getMessage() != null ? e.getMessage() : "Không lưu được hồ sơ");
+                    @Override
+                    public void onError(String message) {
+                        btnRegister.setEnabled(true);
+                        showToast(message);
+                    }
                 });
     }
 
