@@ -16,15 +16,28 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
+import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.Movie;
+import com.example.cinemabookingapp.domain.repository.MovieRepository;
+import com.example.cinemabookingapp.domain.usecase.movie.GetMoviesUseCase;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeMovieAdapter;
+import com.example.cinemabookingapp.ui.customer.model.HomeBannerItem;
 import com.example.cinemabookingapp.ui.customer.model.HomeMovieItem;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+
+import com.example.cinemabookingapp.domain.usecase.banner.GetBannersUseCase;
+import com.example.cinemabookingapp.domain.model.Banner;
+
 
 public class HomeActivity extends BaseActivity {
 
@@ -62,12 +75,7 @@ public class HomeActivity extends BaseActivity {
     private final int inactiveTint = Color.parseColor("#4A4650");
     private final int activeTint = Color.WHITE;
 
-    private final List<Integer> bannerItems = Arrays.asList(
-            R.drawable.login_icon,
-            R.drawable.sign_up_pana,
-            R.drawable.login_icon
-    );
-
+    private final List<HomeBannerItem> bannerItems = new ArrayList<>();
     private final List<HomeMovieItem> allMovies = new ArrayList<>();
     private final List<HomeMovieItem> visibleMovies = new ArrayList<>();
     private final List<View> bannerDotViews = new ArrayList<>();
@@ -75,19 +83,25 @@ public class HomeActivity extends BaseActivity {
     private final HomeBannerAdapter bannerAdapter = new HomeBannerAdapter();
     private final HomeMovieAdapter movieAdapter = new HomeMovieAdapter();
 
+    private GetMoviesUseCase getMoviesUseCase;
+    private String currentMovieFilter = FILTER_NOW_SHOWING;
+    private GetBannersUseCase getBannersUseCase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         initViews();
-        setupBanner();
-        setupMovies();
+        initMovieUseCase();
         initBottomNav();
 
         applyBottomNavState(0);
-        showMovies(FILTER_NOW_SHOWING);
-        applyFilterStyle(FILTER_NOW_SHOWING);
+        applyFilterStyle(currentMovieFilter);
+        loadMoviesFromFirestore();
+
+        initBannerUseCase();
+        loadBannersFromFirestore();
     }
 
     private void initViews() {
@@ -103,30 +117,109 @@ public class HomeActivity extends BaseActivity {
         rvMovies.setAdapter(movieAdapter);
 
         btnNowShowing.setOnClickListener(v -> {
-            showMovies(FILTER_NOW_SHOWING);
-            applyFilterStyle(FILTER_NOW_SHOWING);
+            currentMovieFilter = FILTER_NOW_SHOWING;
+            showMovies(currentMovieFilter);
+            applyFilterStyle(currentMovieFilter);
         });
 
         btnComingSoon.setOnClickListener(v -> {
-            showMovies(FILTER_COMING_SOON);
-            applyFilterStyle(FILTER_COMING_SOON);
+            currentMovieFilter = FILTER_COMING_SOON;
+            showMovies(currentMovieFilter);
+            applyFilterStyle(currentMovieFilter);
         });
 
         btnLocation.setOnClickListener(v -> showToast("Chọn khu vực sau"));
     }
 
-    private void setupBanner() {
-        bannerAdapter.setBanners(bannerItems);
-        viewPagerBanner.setAdapter(bannerAdapter);
-        viewPagerBanner.setOffscreenPageLimit(1);
+    private void initMovieUseCase() {
+        MovieRemoteDataSource remoteDataSource = new MovieRemoteDataSource();
+        MovieRepository movieRepository = new MovieRepositoryImpl(remoteDataSource);
+        getMoviesUseCase = new GetMoviesUseCase(movieRepository);
+    }
 
-        setupBannerDots(bannerItems.size());
-        updateBannerDots(0);
+    private void initBannerUseCase() {
+        getBannersUseCase = appContainer.getBannersUseCase();
+    }
 
-        viewPagerBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+    private void loadMoviesFromFirestore() {
+        if (getMoviesUseCase == null) {
+            showToast("Chưa khởi tạo movie use case");
+            return;
+        }
+
+        getMoviesUseCase.execute(new ResultCallback<List<Movie>>() {
             @Override
-            public void onPageSelected(int position) {
-                updateBannerDots(position);
+            public void onSuccess(List<Movie> movies) {
+                allMovies.clear();
+
+                if (movies != null) {
+                    for (Movie movie : movies) {
+                        HomeMovieItem item = mapMovieToHomeMovieItem(movie);
+                        if (item != null) {
+                            allMovies.add(item);
+                        }
+                    }
+                }
+
+                showMovies(currentMovieFilter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showToast(errorMessage != null ? errorMessage : "Không thể tải danh sách phim");
+            }
+        });
+    }
+
+    private HomeMovieItem mapMovieToHomeMovieItem(Movie movie) {
+        if (movie == null) {
+            return null;
+        }
+
+        String title = firstNonEmpty(readString(movie, "title"), "");
+        String imageUrl = firstNonEmpty(
+                readString(movie, "imageUrl", "posterUrl"),
+                ""
+        );
+        String rating = firstNonEmpty(
+                readString(movie, "rating", "ratingAvg"),
+                ""
+        );
+        String ageRating = firstNonEmpty(
+                readString(movie, "ageRating", "age"),
+                ""
+        );
+        String status = normalizeStatus(firstNonEmpty(
+                readString(movie, "status"),
+                FILTER_NOW_SHOWING
+        ));
+
+        return new HomeMovieItem(title, imageUrl, rating, ageRating, status);
+    }
+
+    private void loadBannersFromFirestore() {
+
+        getBannersUseCase.execute(new ResultCallback<List<Banner>>() {
+            @Override
+            public void onSuccess(List<Banner> banners) {
+                bannerItems.clear();
+
+                if (banners != null) {
+                    for (Banner banner : banners) {
+                        bannerItems.add(new HomeBannerItem(banner.imageUrl));
+                    }
+                }
+
+                bannerAdapter.setBanners(bannerItems);
+                viewPagerBanner.setAdapter(bannerAdapter);
+
+                setupBannerDots(bannerItems.size());
+                updateBannerDots(0);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showToast("Lỗi load banner");
             }
         });
     }
@@ -158,62 +251,10 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    private void setupMovies() {
-        allMovies.clear();
-
-        allMovies.add(new HomeMovieItem(
-                "Heo năm móng",
-                "https://i.imgur.com/8Km9tLL.jpg",
-                "8.2",
-                "T18",
-                HomeMovieItem.NOW_SHOWING
-        ));
-
-        allMovies.add(new HomeMovieItem(
-                "Hẹn em ngày mai",
-                "https://i.imgur.com/5tj6S7Ol.jpg",
-                "8.0",
-                "T16",
-                HomeMovieItem.NOW_SHOWING
-        ));
-
-        allMovies.add(new HomeMovieItem(
-                "Phim mới 3",
-                "https://i.imgur.com/QCNbOAo.jpg",
-                "7.9",
-                "T18",
-                HomeMovieItem.NOW_SHOWING
-        ));
-
-        allMovies.add(new HomeMovieItem(
-                "Phim sắp chiếu 1",
-                "https://i.imgur.com/kqjL17y.jpg",
-                "8.5",
-                "T16",
-                HomeMovieItem.COMING_SOON
-        ));
-
-        allMovies.add(new HomeMovieItem(
-                "Phim sắp chiếu 2",
-                "https://i.imgur.com/3ZQ3Z4Z.jpg",
-                "8.1",
-                "T13",
-                HomeMovieItem.COMING_SOON
-        ));
-
-        allMovies.add(new HomeMovieItem(
-                "Phim sắp chiếu 3",
-                "https://i.imgur.com/fHyEMsl.jpg",
-                "8.3",
-                "T18",
-                HomeMovieItem.COMING_SOON
-        ));
-    }
-
     private void showMovies(String filter) {
         visibleMovies.clear();
         for (HomeMovieItem item : allMovies) {
-            if (filter.equals(item.getStatus())) {
+            if (item != null && filter.equals(item.getStatus())) {
                 visibleMovies.add(item);
             }
         }
@@ -294,6 +335,77 @@ public class HomeActivity extends BaseActivity {
             card.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
         }
         card.setLayoutParams(params);
+    }
+
+    private String readString(Object target, String... possibleNames) {
+        Object value = readProperty(target, possibleNames);
+        return value == null ? null : String.valueOf(value);
+    }
+
+    private Object readProperty(Object target, String... possibleNames) {
+        if (target == null || possibleNames == null) {
+            return null;
+        }
+
+        Class<?> clazz = target.getClass();
+
+        for (String name : possibleNames) {
+            if (name == null || name.trim().isEmpty()) {
+                continue;
+            }
+
+            String capitalized = capitalize(name);
+
+            try {
+                Method getter = clazz.getMethod("get" + capitalized);
+                return getter.invoke(target);
+            } catch (Exception ignored) {
+            }
+
+            try {
+                Method getter = clazz.getMethod("is" + capitalized);
+                return getter.invoke(target);
+            } catch (Exception ignored) {
+            }
+
+            try {
+                Field field = clazz.getDeclaredField(name);
+                field.setAccessible(true);
+                return field.get(target);
+            } catch (Exception ignored) {
+            }
+        }
+
+        return null;
+    }
+
+    private String firstNonEmpty(String first, String second) {
+        if (first != null && !first.trim().isEmpty()) {
+            return first;
+        }
+        return second;
+    }
+
+    private String normalizeStatus(String status) {
+        if (status == null) {
+            return FILTER_NOW_SHOWING;
+        }
+
+        String normalized = status.trim().toUpperCase(Locale.getDefault());
+        if ("NOW SHOWING".equals(normalized)) {
+            return FILTER_NOW_SHOWING;
+        }
+        if ("COMING SOON".equals(normalized)) {
+            return FILTER_COMING_SOON;
+        }
+        return normalized;
+    }
+
+    private String capitalize(String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+        return value.substring(0, 1).toUpperCase(Locale.getDefault()) + value.substring(1);
     }
 
     private int dp(int value) {
