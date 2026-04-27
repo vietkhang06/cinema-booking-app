@@ -8,16 +8,20 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.customer.model.HomeBannerItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeBannerAdapter extends RecyclerView.Adapter<HomeBannerAdapter.BannerViewHolder> {
 
-    private final List<Integer> banners = new ArrayList<>();
+    // 🔥 FIX: đổi từ Integer → HomeBannerItem
+    private final List<HomeBannerItem> banners = new ArrayList<>();
 
-    public void setBanners(List<Integer> newBanners) {
+    // 🔥 FIX: nhận HomeBannerItem
+    public void setBanners(List<HomeBannerItem> newBanners) {
         banners.clear();
         if (newBanners != null) {
             banners.addAll(newBanners);
@@ -28,13 +32,20 @@ public class HomeBannerAdapter extends RecyclerView.Adapter<HomeBannerAdapter.Ba
     @NonNull
     @Override
     public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_banner, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_home_banner, parent, false);
         return new BannerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
-        holder.imgBanner.setImageResource(banners.get(position));
+        HomeBannerItem item = banners.get(position);
+
+        // 🔥 dùng Glide load URL
+        Glide.with(holder.itemView.getContext())
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.login_icon)
+                .into(holder.imgBanner);
     }
 
     @Override

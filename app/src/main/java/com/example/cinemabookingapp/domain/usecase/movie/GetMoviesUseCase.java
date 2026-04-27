@@ -17,4 +17,8 @@ public class GetMoviesUseCase {
     public void execute(ResultCallback<List<Movie>> callback) {
         movieRepository.getAllMovies(callback);
     }
+
+    public void executeByStatus(String status, ResultCallback<List<Movie>> callback) {
+        movieRepository.getMoviesByStatus(status, callback);
+    }
 }

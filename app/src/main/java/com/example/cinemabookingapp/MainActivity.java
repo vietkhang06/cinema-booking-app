@@ -56,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
             public void onError(String message) {
                 Log.e(TAG, "Error: " + message);
             }
-
-            @Override
-            public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
-
-            }
         });
     }
 }
