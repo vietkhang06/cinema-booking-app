@@ -38,6 +38,8 @@ import java.util.Locale;
 import com.example.cinemabookingapp.domain.usecase.banner.GetBannersUseCase;
 import com.example.cinemabookingapp.domain.model.Banner;
 
+import android.content.Intent;
+
 
 public class HomeActivity extends BaseActivity {
 
@@ -115,6 +117,26 @@ public class HomeActivity extends BaseActivity {
         rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
         rvMovies.setNestedScrollingEnabled(false);
         rvMovies.setAdapter(movieAdapter);
+        movieAdapter.setOnMovieClickListener(item -> openMovieDetail(item));
+        movieAdapter.setOnMovieClickListener(item -> {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, item.getMovieId());
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE, item.getTitle());
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL, item.getImageUrl());
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_RATING, item.getRating());
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_AGE_RATING, item.getAgeRating());
+
+            startActivity(intent);
+        });
+
+        viewPagerBanner.setAdapter(bannerAdapter);
+        viewPagerBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                updateBannerDots(position);
+            }
+        });
 
         btnNowShowing.setOnClickListener(v -> {
             currentMovieFilter = FILTER_NOW_SHOWING;
@@ -194,7 +216,14 @@ public class HomeActivity extends BaseActivity {
                 FILTER_NOW_SHOWING
         ));
 
-        return new HomeMovieItem(title, imageUrl, rating, ageRating, status);
+        return new HomeMovieItem(
+                movie.movieId,
+                title,
+                imageUrl,
+                rating,
+                ageRating,
+                status
+        );
     }
 
     private void loadBannersFromFirestore() {
@@ -211,10 +240,10 @@ public class HomeActivity extends BaseActivity {
                 }
 
                 bannerAdapter.setBanners(bannerItems);
-                viewPagerBanner.setAdapter(bannerAdapter);
 
                 setupBannerDots(bannerItems.size());
                 updateBannerDots(0);
+                viewPagerBanner.setCurrentItem(0, false);
             }
 
             @Override
@@ -410,5 +439,20 @@ public class HomeActivity extends BaseActivity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private void openMovieDetail(HomeMovieItem item) {
+        if (item == null) {
+            showToast("Không thể mở chi tiết phim");
+            return;
+        }
+
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, item.getMovieId());
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE, item.getTitle());
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL, item.getImageUrl());
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_RATING, item.getRating());
+        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_AGE_RATING, item.getAgeRating());
+        startActivity(intent);
     }
 }

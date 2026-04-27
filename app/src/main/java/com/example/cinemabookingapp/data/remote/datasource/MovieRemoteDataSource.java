@@ -280,6 +280,7 @@ public class MovieRemoteDataSource {
         setValue(movie, "genres", data.get("genres"));
         setValue(movie, "genre", data.get("genre"));
         setValue(movie, "language", data.get("language"));
+        setValue(movie, "trailerUrl", data.get("trailerUrl"));
         setValue(movie, "createdAt", data.get("createdAt"));
         setValue(movie, "updatedAt", data.get("updatedAt"));
         setValue(movie, "isActive", data.get("isActive"));

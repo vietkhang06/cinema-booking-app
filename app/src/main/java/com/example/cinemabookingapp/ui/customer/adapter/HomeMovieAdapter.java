@@ -18,7 +18,16 @@ import java.util.List;
 
 public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.MovieViewHolder> {
 
+    public interface OnMovieClickListener {
+        void onMovieClick(HomeMovieItem item);
+    }
+
     private final List<HomeMovieItem> items = new ArrayList<>();
+    private OnMovieClickListener onMovieClickListener;
+
+    public void setOnMovieClickListener(OnMovieClickListener listener) {
+        this.onMovieClickListener = listener;
+    }
 
     public void setItems(List<HomeMovieItem> newItems) {
         items.clear();
@@ -40,16 +49,21 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Movi
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         HomeMovieItem item = items.get(position);
 
-        // 🔥 FIX Ở ĐÂY
         Glide.with(holder.itemView.getContext())
                 .load(item.getImageUrl())
-                .placeholder(R.drawable.login_icon) // ảnh tạm
-                .error(R.drawable.login_icon)       // ảnh lỗi
+                .placeholder(R.drawable.login_icon)
+                .error(R.drawable.login_icon)
                 .into(holder.imgPoster);
 
         holder.tvTitle.setText(item.getTitle());
         holder.tvRating.setText(item.getRating());
         holder.tvAge.setText(item.getAgeRating());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onMovieClickListener != null) {
+                onMovieClickListener.onMovieClick(item);
+            }
+        });
     }
 
     @Override
