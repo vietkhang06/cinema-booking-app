@@ -13,23 +13,24 @@
         android:id="@+id/bottomNavContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="8dp">
 
-        <!-- HOME -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navHomeCard"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="#1E1A23">
+            app:cardBackgroundColor="#1E1A23"
+            app:strokeWidth="0dp"
+            app:rippleColor="#22000000">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:paddingHorizontal="14dp">
 
                 <ImageView
@@ -37,135 +38,178 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/house_user_solid_full"
-                    app:tint="#FFFFFF"/>
+                    app:tint="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/navHomeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Trang chủ"
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp"
+                    android:text="Trang Chủ"
                     android:textColor="#FFFFFF"
-                    android:layout_marginStart="6dp"/>
+                    android:textSize="14sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SHOWTIME -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navShowtimeCard"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@android:color/transparent">
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="0.8"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#D3CAD7"
+            app:strokeWidth="1dp"
+            app:rippleColor="#22000000">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:id="@+id/navShowtimeIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@drawable/glasses_solid_full"/>
+                    android:src="@drawable/glasses_solid_full"
+                    app:tint="#4A4650" />
 
                 <TextView
                     android:id="@+id/navShowtimeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lịch chiếu"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone"/>
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp"
+                    android:text="Rạp Phim"
+                    android:textColor="#1E1A23"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- CART -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navCartCard"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@android:color/transparent">
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="0.8"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#D3CAD7"
+            app:strokeWidth="1dp"
+            app:rippleColor="#22000000">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:id="@+id/navCartIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@drawable/cart_shopping_solid_full"/>
+                    android:src="@drawable/cart_shopping_solid_full"
+                    app:tint="#4A4650" />
 
                 <TextView
                     android:id="@+id/navCartLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Giỏ hàng"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone"/>
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp"
+                    android:text="Cine Shop"
+                    android:textColor="#1E1A23"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- MOVIE -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navMovieCard"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@android:color/transparent">
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="0.8"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#D3CAD7"
+            app:strokeWidth="1dp"
+            app:rippleColor="#22000000">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:id="@+id/navMovieIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@drawable/clapperboard_solid_full"/>
+                    android:src="@drawable/clapperboard_solid_full"
+                    app:tint="#4A4650" />
 
                 <TextView
                     android:id="@+id/navMovieLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phim"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone"/>
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp"
+                    android:text="Điện Ảnh"
+                    android:textColor="#1E1A23"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- PROFILE -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navProfileCard"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@android:color/transparent">
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="0.8"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#D3CAD7"
+            app:strokeWidth="1dp"
+            app:rippleColor="#22000000">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:id="@+id/navProfileIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@drawable/user_solid_full"/>
+                    android:src="@drawable/user_solid_full"
+                    app:tint="#4A4650" />
 
                 <TextView
                     android:id="@+id/navProfileLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tài khoản"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone"/>
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="8dp"
+                    android:text="Tài Khoản"
+                    android:textColor="#1E1A23"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

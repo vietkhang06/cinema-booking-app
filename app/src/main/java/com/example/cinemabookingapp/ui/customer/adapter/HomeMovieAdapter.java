@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.ui.customer.model.HomeMovieItem;
 
@@ -30,14 +31,22 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Movi
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_movie, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_home_movie, parent, false);
         return new MovieViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         HomeMovieItem item = items.get(position);
-        holder.imgPoster.setImageResource(item.getPosterResId());
+
+        // 🔥 FIX Ở ĐÂY
+        Glide.with(holder.itemView.getContext())
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.login_icon) // ảnh tạm
+                .error(R.drawable.login_icon)       // ảnh lỗi
+                .into(holder.imgPoster);
+
         holder.tvTitle.setText(item.getTitle());
         holder.tvRating.setText(item.getRating());
         holder.tvAge.setText(item.getAgeRating());

@@ -5,15 +5,19 @@ public class HomeMovieItem {
     public static final String NOW_SHOWING = "NOW_SHOWING";
     public static final String COMING_SOON = "COMING_SOON";
 
-    private final String title;
-    private final int posterResId;
-    private final String rating;
-    private final String ageRating;
-    private final String status;
+    private String title;
+    private String imageUrl;   // 🔥 đổi từ int → String
+    private String rating;
+    private String ageRating;
+    private String status;
 
-    public HomeMovieItem(String title, int posterResId, String rating, String ageRating, String status) {
+    // 🔥 bắt buộc cho Firebase
+    public HomeMovieItem() {
+    }
+
+    public HomeMovieItem(String title, String imageUrl, String rating, String ageRating, String status) {
         this.title = title;
-        this.posterResId = posterResId;
+        this.imageUrl = imageUrl;
         this.rating = rating;
         this.ageRating = ageRating;
         this.status = status;
@@ -23,8 +27,8 @@ public class HomeMovieItem {
         return title;
     }
 
-    public int getPosterResId() {
-        return posterResId;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getRating() {
