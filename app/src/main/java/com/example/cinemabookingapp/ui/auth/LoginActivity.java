@@ -11,6 +11,7 @@ import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.core.session.SessionManager;
 import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.common.AuthCallback;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.AuthenticationService;
@@ -27,11 +28,6 @@ public class LoginActivity extends BaseActivity {
     private TextInputEditText edtEmail, edtPassword;
     private MaterialButton btnLogin;
     private MaterialCheckBox cbRemember;
-
-//    private FirebaseAuth auth;
-//    private FirebaseFirestore firestore;
-//    private SessionManager sessionManager;
-
     private AuthenticationService authService;
 
     @Override
@@ -99,7 +95,7 @@ public class LoginActivity extends BaseActivity {
         btnLogin.setEnabled(false);
 
         authService.signInWithEmailAndPassword(email, password, cbRemember.isChecked(),
-                new ResultCallback<User>() {
+                new AuthCallback() {
                     @Override
                     public void onSuccess(User user) {
                         AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
@@ -110,46 +106,7 @@ public class LoginActivity extends BaseActivity {
                         btnLogin.setEnabled(true);
                         showToast(message);
                     }
-
                 });
-
-//        auth.signInWithEmailAndPassword(email, password)
-//                .addOnSuccessListener(authResult -> {
-//
-//                    String uid = authResult.getUser().getUid();
-//
-//                    firestore.collection("users")
-//                            .document(uid)
-//                            .get()
-//                            .addOnSuccessListener(doc -> {
-//
-//                                if (!doc.exists()) {
-//                                    showToast("Không tìm thấy user");
-//                                    btnLogin.setEnabled(true);
-//                                    return;
-//                                }
-//
-//                                String role = doc.getString("role");
-//                                if (role == null) role = "customer";
-//
-//                                sessionManager.saveLoginState(true, role, uid);
-//
-//                                if (cbRemember.isChecked()) {
-//                                    sessionManager.saveRememberedEmail(email);
-//                                }
-//
-//                                AppNavigator.goToHomeByRole(this, role);
-//                            })
-//                            .addOnFailureListener(e -> {
-//                                btnLogin.setEnabled(true);
-//                                showToast("Lỗi lấy dữ liệu");
-//                            });
-//
-//                })
-//                .addOnFailureListener(e -> {
-//                    btnLogin.setEnabled(true);
-//                    showToast("Sai email hoặc mật khẩu");
-//                });
     }
 
     private void clearErrors() {

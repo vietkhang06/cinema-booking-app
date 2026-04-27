@@ -16,8 +16,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public void createUser(User user, ResultCallback<User> callback) {
-        firestore.collection(FirestoreCollections.USERS)
-                .add(user)
+        firestore.collection(FirestoreCollections.USERS).document(user.uid)
+                .set(user)
                 .addOnSuccessListener(doc -> {
                     callback.onSuccess(user);
                 })

@@ -3,6 +3,8 @@ package com.example.cinemabookingapp.core.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SessionManager {
 
     private static final String PREF_NAME = "movie_booking_prefs";
@@ -26,7 +28,8 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+//        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
     public String getRole() {

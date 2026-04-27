@@ -6,8 +6,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cinemabookingapp.MyApp;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.core.session.SessionManager;
 import com.example.cinemabookingapp.di.AppContainer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

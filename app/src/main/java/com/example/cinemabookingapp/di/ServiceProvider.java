@@ -8,7 +8,6 @@ import com.example.cinemabookingapp.service.AuthenticationService;
 public class ServiceProvider {
 
     private static ServiceProvider instance;
-
     private final AuthenticationService authService;
     public ServiceProvider(Context context){
         this.authService = new AuthenticationService(context);
@@ -22,10 +21,7 @@ public class ServiceProvider {
     }
 
     public static ServiceProvider getInstance(){
-        if(instance == null){
-            instance = new ServiceProvider(null);
-        }
-        return instance;
+        return getInstance(null);
     }
 
     public AuthenticationService getAuthenticationService(){

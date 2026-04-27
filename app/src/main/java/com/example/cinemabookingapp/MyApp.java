@@ -16,12 +16,16 @@ public class MyApp extends Application {
         appContainer = new AppContainer(this);
 
         //init service provider
-        ServiceProvider.getInstance(this.getApplicationContext());
+        ServiceProvider.getInstance(this.getApplicationContext())
+                .getAuthenticationService().logOut();
 
         FirebaseApp.initializeApp(this);
+
+
     }
 
     public AppContainer getAppContainer() {
         return appContainer;
     }
+
 }

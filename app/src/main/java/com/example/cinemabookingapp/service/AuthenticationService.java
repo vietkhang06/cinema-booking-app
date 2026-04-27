@@ -1,8 +1,18 @@
 package com.example.cinemabookingapp.service;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
+import static com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL;
 
+import android.content.Context;
+
+import androidx.annotation.Nullable;
+import androidx.credentials.Credential;
+import android.credentials.GetCredentialResponse;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.credentials.CustomCredential;
+
+import com.example.cinemabookingapp.core.constants.FirestoreCollections;
 import com.example.cinemabookingapp.core.constants.UserRoles;
 import com.example.cinemabookingapp.core.session.SessionManager;
 import com.example.cinemabookingapp.data.repository.UserRepositoryImpl;
@@ -10,10 +20,16 @@ import com.example.cinemabookingapp.domain.common.AuthCallback;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.domain.repository.UserRepository;
+import com.facebook.AccessToken;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,11 +46,23 @@ public class AuthenticationService {
         userRepo = new UserRepositoryImpl();
     }
 
+    public void getCurrentAuthUser(){
+        userRepo.getUserById(auth.getUid(), new ResultCallback<User>() {
+            @Override
+            public void onSuccess(User data) {
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        });
+    }
+
     public void signInWithEmailAndPassword(
             @NonNull String email,
             @NonNull String password,
             boolean isRemember,
-            ResultCallback<User> callback
+            AuthCallback callback
     ) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
@@ -47,12 +75,6 @@ public class AuthenticationService {
                                 callback.onError("Không tìm thấy user.");
                                 return;
                             }
-                            String role = data.role != null ? data.role : UserRoles.CUSTOMER ;
-
-                            sessionManager.saveLoginState(true, role, uid);
-                            if (isRemember) {
-                                sessionManager.saveRememberedEmail(email);
-                            }
 
                             callback.onSuccess(data);
                         }
@@ -63,33 +85,6 @@ public class AuthenticationService {
                         }
 
                     });
-//                    return firestore.collection("users")
-//                            .document(uid)
-//                            .get()
-//                            .continueWith(dbTask -> {
-//                                if (!dbTask.isSuccessful()) {
-//                                    Exception e = dbTask.getException();
-//                                    throw e != null ? e : new Exception("Lỗi lấy dữ liệu người dùng");
-//                                }
-//
-//                                DocumentSnapshot doc = dbTask.getResult();
-//                                if (!doc.exists()) {
-//                                    throw new Exception("Không tìm thấy user.");
-//                                }
-//
-//                                String role = doc.getString("role");
-//                                if (role == null) role = "customer";
-//
-//                                callback.onSuccess(doc.toObject(User.class));
-//
-//                                sessionManager.saveLoginState(true, role, uid);
-//
-//                                if (isRemember) {
-//                                    sessionManager.saveRememberedEmail(email);
-//                                }
-//
-//                                return authResult;
-//                            });
                 })
                 .addOnFailureListener(e -> {
                     callback.onError(e.getMessage());
@@ -100,52 +95,115 @@ public class AuthenticationService {
             @NonNull String email,
             @NonNull String password,
             @NonNull String phone,
-            ResultCallback<User> callback
+            AuthCallback callback
     ) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    String uid = authResult.getUser().getUid();
-
-                    userRepo.createUser(newUserDoc(uid, email, phone), new ResultCallback<User>() {
+//                    boolean existedEmail;
+//                    FirebaseFirestore.getInstance().collection(FirestoreCollections.USERS)
+//                        .whereEqualTo("email", email)
+//                        .get()
+//                        .addOnCompleteListener(task -> {
+//                            if(task.isSuccessful())
+//                                existedEmail = (task.getResult().size() <= 0);
+//                        });
+                    userRepo.createUser(newUserDoc(authResult.getUser(), phone), new ResultCallback<User>() {
                         @Override
                         public void onSuccess(User data) {
                             if (data == null) {
                                 callback.onError("Lỗi khởi tạo người dùng.");
                                 return;
                             }
-
-                            sessionManager.saveLoginState(true, "customer", uid);
-                            sessionManager.saveRememberedEmail(email);
+                            callback.onSuccess(data);
                         }
 
                         @Override
                         public void onError(String message) {
-
                         }
                     });
-//                    firestore.collection(FirestoreCollections.USERS)
-//                            .add(createUser(uid, email, phone))
-//                            .continueWith(dbTask -> {
-//                                if (!dbTask.isSuccessful()) {
-//                                    Exception e = dbTask.getException();
-//                                    throw e != null ? e : new Exception("Lỗi lưu thông tin người dùng");
-//                                }
-//
-//                                sessionManager.saveLoginState(true, "customer", uid);
-//                                sessionManager.saveRememberedEmail(email);
-//
-//                                return authResult;
-//                            });
                 })
                 .addOnFailureListener(e -> {
                     callback.onError(e.getMessage());
                 });
     }
 
-    private User newUserDoc(String uid, String email, String phone) {
+    public void handleFacebookAccessToken(AccessToken token, AuthCallback callback) {
+        Log.d("FacebookAuth", "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener( task ->  {
+                if (task.isSuccessful()) {
+                    FirebaseUser authUser = auth.getCurrentUser();
+                    FirebaseFirestore.getInstance().collection(FirestoreCollections.USERS)
+                        .document(authUser.getUid())
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if(!documentSnapshot.exists()){
+                                userRepo.createUser(newUserDoc(authUser, null), new ResultCallback<User>() {
+                                    @Override
+                                    public void onSuccess(User data) {
+                                        callback.onSuccess(data);
+                                    }
+
+                                    @Override
+                                    public void onError(String message) {
+                                    }
+                                });
+                                return;
+                            }
+                            callback.onSuccess(documentSnapshot.toObject(User.class));
+                        });
+                } else {
+                    callback.onError(task.getException().getMessage());
+                }
+
+            });
+    }
+
+    public void signInWithGoogle(Credential credential, AuthCallback callback) {
+        if (credential instanceof CustomCredential
+                && credential.getType().equals(TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
+            GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.getData());
+
+            AuthCredential authCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.getIdToken(), null);
+
+
+            auth.signInWithCredential(authCredential)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser authUser = authResult.getUser();
+                    // create user doc if not exist
+                    FirebaseFirestore.getInstance().collection(FirestoreCollections.USERS)
+                        .document(authUser.getUid())
+                        .get().addOnSuccessListener(documentSnapshot -> {
+                            if(!documentSnapshot.exists()){
+                                userRepo.createUser(newUserDoc(authUser, null), new ResultCallback<User>() {
+                                    @Override
+                                    public void onSuccess(User data) {
+                                        callback.onSuccess(data);
+                                    }
+
+                                    @Override
+                                    public void onError(String message) {
+                                    }
+                                });
+                                return;
+                            }
+                            callback.onSuccess(documentSnapshot.toObject(User.class));
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        callback.onError(e != null ? e.getMessage() : "Google login failed.");
+                    });
+        }
+    }
+
+    private User newUserDoc(@Nullable FirebaseUser fUser, @Nullable String phone) {
+        if(fUser == null) return null;
+
         User user = new User();
-        user.uid = uid;
-        user.email = email;
+        user.uid = fUser.getUid();
+        user.email = fUser.getEmail();
         user.phone = phone;
         user.role = UserRoles.CUSTOMER;
         user.status = "active";
@@ -169,34 +227,6 @@ public class AuthenticationService {
 //        userData.put("deleted", false);
     }
 
-    public void signInWithFacebook(String idToken, AuthCallback callback) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(idToken);
-
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess(auth.getCurrentUser());
-                    } else {
-                        String error = task.getException() != null ?
-                                task.getException().getMessage() : "Google login failed";
-                        callback.onFailure(error);
-                    }
-                });
-    }
-
-    public void signInWithGoogle(String idToken, AuthCallback callback) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess(auth.getCurrentUser());
-                    } else {
-                        String error = task.getException() != null ?
-                                task.getException().getMessage() : "Google login failed";
-                        callback.onFailure(error);
-                    }
-                });
-    }
 
     public Task<Void> forgetAndResetPassword(
         @NonNull String email
@@ -206,6 +236,5 @@ public class AuthenticationService {
 
     public void logOut(){
         auth.signOut();
-        sessionManager.logout();
     }
 }
