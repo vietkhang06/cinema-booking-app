@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,8 +19,8 @@ import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeMovieAdapter;
 import com.example.cinemabookingapp.ui.customer.model.HomeMovieItem;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,13 +70,10 @@ public class HomeActivity extends BaseActivity {
 
     private final List<HomeMovieItem> allMovies = new ArrayList<>();
     private final List<HomeMovieItem> visibleMovies = new ArrayList<>();
-
     private final List<View> bannerDotViews = new ArrayList<>();
 
     private final HomeBannerAdapter bannerAdapter = new HomeBannerAdapter();
     private final HomeMovieAdapter movieAdapter = new HomeMovieAdapter();
-
-    private String currentFilter = FILTER_NOW_SHOWING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +84,7 @@ public class HomeActivity extends BaseActivity {
         setupBanner();
         setupMovies();
         initBottomNav();
+
         applyBottomNavState(0);
         showMovies(FILTER_NOW_SHOWING);
         applyFilterStyle(FILTER_NOW_SHOWING);
@@ -106,13 +103,11 @@ public class HomeActivity extends BaseActivity {
         rvMovies.setAdapter(movieAdapter);
 
         btnNowShowing.setOnClickListener(v -> {
-            currentFilter = FILTER_NOW_SHOWING;
             showMovies(FILTER_NOW_SHOWING);
             applyFilterStyle(FILTER_NOW_SHOWING);
         });
 
         btnComingSoon.setOnClickListener(v -> {
-            currentFilter = FILTER_COMING_SOON;
             showMovies(FILTER_COMING_SOON);
             applyFilterStyle(FILTER_COMING_SOON);
         });
@@ -166,12 +161,53 @@ public class HomeActivity extends BaseActivity {
     private void setupMovies() {
         allMovies.clear();
 
-        allMovies.add(new HomeMovieItem("Heo năm móng", R.drawable.login_icon, "8.2", "T18", FILTER_NOW_SHOWING));
-        allMovies.add(new HomeMovieItem("Hẹn em ngày mai", R.drawable.sign_up_pana, "8.0", "T16", FILTER_NOW_SHOWING));
-        allMovies.add(new HomeMovieItem("Phi phong", R.drawable.login_icon, "7.9", "T18", FILTER_NOW_SHOWING));
-        allMovies.add(new HomeMovieItem("Phim sắp chiếu 1", R.drawable.sign_up_pana, "8.5", "T16", FILTER_COMING_SOON));
-        allMovies.add(new HomeMovieItem("Phim sắp chiếu 2", R.drawable.login_icon, "8.1", "T13", FILTER_COMING_SOON));
-        allMovies.add(new HomeMovieItem("Phim sắp chiếu 3", R.drawable.sign_up_pana, "8.3", "T18", FILTER_COMING_SOON));
+        allMovies.add(new HomeMovieItem(
+                "Heo năm móng",
+                "https://i.imgur.com/8Km9tLL.jpg",
+                "8.2",
+                "T18",
+                HomeMovieItem.NOW_SHOWING
+        ));
+
+        allMovies.add(new HomeMovieItem(
+                "Hẹn em ngày mai",
+                "https://i.imgur.com/5tj6S7Ol.jpg",
+                "8.0",
+                "T16",
+                HomeMovieItem.NOW_SHOWING
+        ));
+
+        allMovies.add(new HomeMovieItem(
+                "Phim mới 3",
+                "https://i.imgur.com/QCNbOAo.jpg",
+                "7.9",
+                "T18",
+                HomeMovieItem.NOW_SHOWING
+        ));
+
+        allMovies.add(new HomeMovieItem(
+                "Phim sắp chiếu 1",
+                "https://i.imgur.com/kqjL17y.jpg",
+                "8.5",
+                "T16",
+                HomeMovieItem.COMING_SOON
+        ));
+
+        allMovies.add(new HomeMovieItem(
+                "Phim sắp chiếu 2",
+                "https://i.imgur.com/3ZQ3Z4Z.jpg",
+                "8.1",
+                "T13",
+                HomeMovieItem.COMING_SOON
+        ));
+
+        allMovies.add(new HomeMovieItem(
+                "Phim sắp chiếu 3",
+                "https://i.imgur.com/fHyEMsl.jpg",
+                "8.3",
+                "T18",
+                HomeMovieItem.COMING_SOON
+        ));
     }
 
     private void showMovies(String filter) {
@@ -226,10 +262,10 @@ public class HomeActivity extends BaseActivity {
 
     private void applyBottomNavState(int index) {
         applyBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Trang chủ");
-        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Lịch chiếu");
-        applyBottomState(navCartCard, navCartLabel, navCartIcon, index == 2, "Giỏ hàng");
-        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Phim");
-        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "Tài khoản");
+        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Rạp Phim");
+        applyBottomState(navCartCard, navCartLabel, navCartIcon, index == 2, "Cine Shop");
+        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Điện Ảnh");
+        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "Tài Khoản");
         bottomNavContainer.requestLayout();
     }
 
@@ -240,17 +276,22 @@ public class HomeActivity extends BaseActivity {
             params.setMarginStart(dp(4));
             params.setMarginEnd(dp(4));
             card.setCardBackgroundColor(activeColor);
+            card.setStrokeWidth(0);
             label.setText(text);
             label.setVisibility(View.VISIBLE);
             ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(activeTint));
             label.setTextColor(activeTint);
+            card.animate().scaleX(1.03f).scaleY(1.03f).setDuration(150).start();
         } else {
-            params = new LinearLayout.LayoutParams(0, dp(48), 1f);
+            params = new LinearLayout.LayoutParams(0, dp(48), 0.8f);
             params.setMarginStart(dp(4));
             params.setMarginEnd(dp(4));
-            card.setCardBackgroundColor(Color.TRANSPARENT);
+            card.setCardBackgroundColor(Color.WHITE);
+            card.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#D3CAD7")));
+            card.setStrokeWidth(dp(1));
             label.setVisibility(View.GONE);
             ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(inactiveTint));
+            card.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
         }
         card.setLayoutParams(params);
     }
