@@ -56,7 +56,10 @@
         <activity
             android:name=".ui.customer.MovieDetailActivity"
             android:exported="false" />
-
+        <activity android:name=".ui.customer.SeatSelectionActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+        <activity android:name=".ui.customer.BookingConfirmActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
 
     </application>
 
