@@ -1,5 +1,7 @@
 package com.example.cinemabookingapp.ui.auth;
 
+import android.app.ComponentCaller;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,34 +9,32 @@ import android.util.Patterns;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.config.auth.FacebookAuthProviderConfig;
 import com.example.cinemabookingapp.config.auth.GoogleAuthProviderConfig;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.common.AuthCallback;
-import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.AuthenticationService;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -174,6 +174,12 @@ public class RegisterActivity extends BaseActivity {
             });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
+        super.onActivityResult(requestCode, resultCode, data, caller);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void facebookRegisterCallback(){
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -182,12 +188,13 @@ public class RegisterActivity extends BaseActivity {
                 authService.handleFacebookAccessToken(loginResult.getAccessToken(), new AuthCallback() {
                     @Override
                     public void onSuccess(User data) {
-
+                        Log.i("FacebookAuth", "Facebook log in.");
+                        AppNavigator.goToCustomerHome(RegisterActivity.this);
                     }
 
                     @Override
                     public void onError(String message) {
-
+                        showToast("Failed login with Facebook.");
                     }
                 });
             }
@@ -205,8 +212,10 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void signInWithFacebook(){
+        FacebookAuthProviderConfig facebook = new FacebookAuthProviderConfig();
+
         LoginManager.getInstance().logInWithReadPermissions(
-            this, Arrays.asList("email", "public_profile")
+            RegisterActivity.this, facebook.getFacebookReadPermissions()
         );
     }
 

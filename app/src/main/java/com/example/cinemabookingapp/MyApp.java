@@ -17,11 +17,9 @@ public class MyApp extends Application {
 
         //init service provider
         ServiceProvider.getInstance(this.getApplicationContext())
-                .getAuthenticationService().logOut();
+                .getAuthenticationService().logOut(); // auto logout when run app (test)
 
         FirebaseApp.initializeApp(this);
-
-
     }
 
     public AppContainer getAppContainer() {

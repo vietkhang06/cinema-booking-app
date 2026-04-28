@@ -133,7 +133,9 @@ public class AuthenticationService {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         auth.signInWithCredential(credential)
             .addOnCompleteListener( task ->  {
+                Log.i("FacebookAuth", task.toString());
                 if (task.isSuccessful()) {
+                    Log.i("FacebookAuth", "Sign in with credential.");
                     FirebaseUser authUser = auth.getCurrentUser();
                     FirebaseFirestore.getInstance().collection(FirestoreCollections.USERS)
                         .document(authUser.getUid())
