@@ -1,25 +1,42 @@
 package com.example.cinemabookingapp.ui.auth;
 
+import android.app.ComponentCaller;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.config.auth.FacebookAuthProviderConfig;
+import com.example.cinemabookingapp.config.auth.GoogleAuthProviderConfig;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
-import com.example.cinemabookingapp.data.remote.firebase.FirebaseProvider;
+import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.common.AuthCallback;
+import com.example.cinemabookingapp.domain.model.User;
+import com.example.cinemabookingapp.service.AuthenticationService;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -36,16 +53,28 @@ public class RegisterActivity extends BaseActivity {
     private MaterialButton btnRegister;
     private TextView tvBack;
 
-    private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private MaterialCardView btnFacebook, btnGoogle, btnApple;
+
+    private AuthenticationService authService;
+
+    // Facebook
+    CallbackManager callbackManager;
+
+    // Google
+    CredentialManager credentialManager;
+    Executor executor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        auth = FirebaseAuth.getInstance();
-        firestore = FirebaseProvider.provideFirestore();
+        authService = ServiceProvider.getInstance().getAuthenticationService();
+        credentialManager = CredentialManager.create(this);
+        executor = Executors.newSingleThreadExecutor();
+
+        callbackManager = CallbackManager.Factory.create();
+        facebookRegisterCallback();
 
         initViews();
         bindActions();
@@ -64,16 +93,25 @@ public class RegisterActivity extends BaseActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
         tvBack = findViewById(R.id.tvBack);
+
+        btnGoogle = findViewById(R.id.btnGoogle);
+        btnFacebook = findViewById(R.id.btnFacebook);
     }
 
     private void bindActions() {
         tvBack.setOnClickListener(v -> AppNavigator.goToLogin(this));
         btnRegister.setOnClickListener(v -> attemptRegister());
+
+        btnFacebook.setOnClickListener(v ->
+            signInWithFacebook()
+        );
+        btnGoogle.setOnClickListener(v -> {
+            signInWithGoogle();
+        });
     }
 
     private void attemptRegister() {
         clearErrors();
-
         String email = getText(edtEmail);
         String password = getText(edtPassword);
         String confirmPassword = getText(edtConfirmPassword);
@@ -121,54 +159,99 @@ public class RegisterActivity extends BaseActivity {
 
         btnRegister.setEnabled(false);
 
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener(authResult -> {
+        authService.signUpWithEmailAndPassword(email, password, phone, new AuthCallback() {
+                @Override
+                public void onSuccess(User data) {
+                    showToast("Đăng ký thành công");
+                    AppNavigator.goToCustomerHome(RegisterActivity.this);
+                }
 
-                    FirebaseUser user = authResult.getUser();
-                    if (user == null) {
-                        btnRegister.setEnabled(true);
-                        showToast("User null");
-                        return;
-                    }
-
-                    saveUserToFirestore(user.getUid(), email, phone);
-                })
-                .addOnFailureListener(e -> {
+                @Override
+                public void onError(String message) {
                     btnRegister.setEnabled(true);
-                    showToast("Auth lỗi: " + e.getMessage());
-                });
+                    showToast(message);
+                }
+            });
     }
 
-    private void saveUserToFirestore(String uid, String email, String phone) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("uid", uid);
-        userData.put("name", "");
-        userData.put("email", email);
-        userData.put("phone", phone);
-        userData.put("avatarUrl", "");
-        userData.put("role", "customer");
-        userData.put("status", "active");
-        userData.put("memberLevel", "basic");
-        userData.put("points", 0);
-        userData.put("fcmToken", "");
-        userData.put("createdAt", System.currentTimeMillis());
-        userData.put("updatedAt", System.currentTimeMillis());
-        userData.put("deleted", false);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
+        super.onActivityResult(requestCode, resultCode, data, caller);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
-        firestore.collection("users")
-                .document(uid)
-                .set(userData)
-                .addOnSuccessListener(unused -> {
-                    sessionManager.saveLoginState(true, "customer", uid);
-                    sessionManager.saveRememberedEmail(email);
-                    btnRegister.setEnabled(true);
-                    showToast("Đăng ký thành công");
-                    AppNavigator.goToCustomerHome(this);
-                })
-                .addOnFailureListener(e -> {
-                    btnRegister.setEnabled(true);
-                    showToast(e.getMessage() != null ? e.getMessage() : "Không lưu được hồ sơ");
+    private void facebookRegisterCallback(){
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("FacebookAuth", "facebook:onSuccess:" + loginResult);
+                authService.handleFacebookAccessToken(loginResult.getAccessToken(), new AuthCallback() {
+                    @Override
+                    public void onSuccess(User data) {
+                        Log.i("FacebookAuth", "Facebook log in.");
+                        AppNavigator.goToCustomerHome(RegisterActivity.this);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        showToast("Failed login with Facebook.");
+                    }
                 });
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("FacebookAuth", "facebook:onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("FacebookAuth", "facebook:onError", error);
+            }
+        });
+    }
+
+    private void signInWithFacebook(){
+        FacebookAuthProviderConfig facebook = new FacebookAuthProviderConfig();
+
+        LoginManager.getInstance().logInWithReadPermissions(
+            RegisterActivity.this, facebook.getFacebookReadPermissions()
+        );
+    }
+
+    private void signInWithGoogle(){
+        GoogleAuthProviderConfig google = new GoogleAuthProviderConfig();
+        // Create the Credential Manager request
+        GetCredentialRequest request = google.getCredentialRequest(getString(R.string.default_web_client_id));
+
+        credentialManager.getCredentialAsync(
+                this,
+                request,
+                null,
+                executor,
+                new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        Log.i("GoogleAuth", result.toString());
+                        authService.signInWithGoogle(result.getCredential(), new AuthCallback() {
+                            @Override
+                            public void onSuccess(User user) {
+                                AppNavigator.goToCustomerHome(RegisterActivity.this);
+                            }
+
+                            @Override
+                            public void onError(String message) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        Log.e("GET CREDENTIAL", e.toString());
+                    }
+                }
+        );
     }
 
     private void clearErrors() {
