@@ -57,6 +57,28 @@
             android:name=".ui.customer.MovieDetailActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.admin.movie.AdminMovieListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.cinema.AdminCinemaListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.room.AdminRoomListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.showtime.AdminShowtimeListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.user.AdminUserManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.report.AdminReportActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.room.AdminSeatTemplateActivity"
+            android:exported="false" />
 
     </application>
 
