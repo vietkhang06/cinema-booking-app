@@ -1,6 +1,5 @@
 package com.example.cinemabookingapp.ui.auth;
 
-import android.app.ComponentCaller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,14 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.credentials.CredentialManager;
-import androidx.credentials.GetCredentialRequest;
-import androidx.credentials.GetCredentialResponse;
-import androidx.credentials.exceptions.GetCredentialException;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.config.auth.FacebookAuthProviderConfig;
-import com.example.cinemabookingapp.config.auth.GoogleAuthProviderConfig;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
@@ -27,7 +21,6 @@ import com.example.cinemabookingapp.service.AuthenticationService;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.material.button.MaterialButton;
@@ -35,34 +28,29 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+// ✅ Google Sign-In
+import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 public class RegisterActivity extends BaseActivity {
 
-    private TextInputLayout tilEmail;
-    private TextInputLayout tilPassword;
-    private TextInputLayout tilConfirmPassword;
-    private TextInputLayout tilPhone;
-
-    private TextInputEditText edtEmail;
-    private TextInputEditText edtPassword;
-    private TextInputEditText edtConfirmPassword;
-    private TextInputEditText edtPhone;
+    private TextInputLayout tilEmail, tilPassword, tilConfirmPassword, tilPhone;
+    private TextInputEditText edtEmail, edtPassword, edtConfirmPassword, edtPhone;
 
     private MaterialButton btnRegister;
     private TextView tvBack;
 
-    private MaterialCardView btnFacebook, btnGoogle, btnApple;
+    private MaterialCardView btnFacebook, btnGoogle;
 
     private AuthenticationService authService;
 
     // Facebook
-    CallbackManager callbackManager;
+    private CallbackManager callbackManager;
 
     // Google
-    CredentialManager credentialManager;
-    Executor executor;
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_SIGN_IN = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +58,10 @@ public class RegisterActivity extends BaseActivity {
         setContentView(R.layout.activity_register);
 
         authService = ServiceProvider.getInstance().getAuthenticationService();
-        credentialManager = CredentialManager.create(this);
-        executor = Executors.newSingleThreadExecutor();
-
-        callbackManager = CallbackManager.Factory.create();
-        facebookRegisterCallback();
 
         initViews();
+        initGoogle();
+        initFacebook();
         bindActions();
     }
 
@@ -98,20 +83,57 @@ public class RegisterActivity extends BaseActivity {
         btnFacebook = findViewById(R.id.btnFacebook);
     }
 
+    private void initGoogle() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
+    private void initFacebook() {
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult result) {
+                authService.handleFacebookAccessToken(result.getAccessToken(), new AuthCallback() {
+                    @Override
+                    public void onSuccess(User data) {
+                        AppNavigator.goToCustomerHome(RegisterActivity.this);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        showToast("Facebook login failed");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancel() {}
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("FacebookAuth", error.getMessage());
+            }
+        });
+    }
+
     private void bindActions() {
         tvBack.setOnClickListener(v -> AppNavigator.goToLogin(this));
+
         btnRegister.setOnClickListener(v -> attemptRegister());
 
-        btnFacebook.setOnClickListener(v ->
-            signInWithFacebook()
-        );
-        btnGoogle.setOnClickListener(v -> {
-            signInWithGoogle();
-        });
+        btnFacebook.setOnClickListener(v -> signInWithFacebook());
+
+        btnGoogle.setOnClickListener(v -> signInWithGoogle());
     }
 
     private void attemptRegister() {
         clearErrors();
+
         String email = getText(edtEmail);
         String password = getText(edtPassword);
         String confirmPassword = getText(edtConfirmPassword);
@@ -133,125 +155,79 @@ public class RegisterActivity extends BaseActivity {
         }
 
         if (password.length() < 6) {
-            tilPassword.setError("Mật khẩu phải có ít nhất 6 ký tự");
-            return;
-        }
-
-        if (TextUtils.isEmpty(confirmPassword)) {
-            tilConfirmPassword.setError("Vui lòng xác nhận mật khẩu");
+            tilPassword.setError("Mật khẩu >= 6 ký tự");
             return;
         }
 
         if (!password.equals(confirmPassword)) {
-            tilConfirmPassword.setError("Mật khẩu xác nhận không khớp");
+            tilConfirmPassword.setError("Mật khẩu không khớp");
             return;
         }
 
         if (TextUtils.isEmpty(phone)) {
-            tilPhone.setError("Vui lòng nhập số điện thoại");
-            return;
-        }
-
-        if (phone.length() < 9 || phone.length() > 11) {
-            tilPhone.setError("Số điện thoại không hợp lệ");
+            tilPhone.setError("Nhập số điện thoại");
             return;
         }
 
         btnRegister.setEnabled(false);
 
         authService.signUpWithEmailAndPassword(email, password, phone, new AuthCallback() {
-                @Override
-                public void onSuccess(User data) {
-                    showToast("Đăng ký thành công");
-                    AppNavigator.goToCustomerHome(RegisterActivity.this);
-                }
+            @Override
+            public void onSuccess(User data) {
+                showToast("Đăng ký thành công");
+                AppNavigator.goToCustomerHome(RegisterActivity.this);
+            }
 
-                @Override
-                public void onError(String message) {
-                    btnRegister.setEnabled(true);
-                    showToast(message);
-                }
-            });
+            @Override
+            public void onError(String message) {
+                btnRegister.setEnabled(true);
+                showToast(message);
+            }
+        });
+    }
+
+    private void signInWithFacebook() {
+        FacebookAuthProviderConfig config = new FacebookAuthProviderConfig();
+
+        LoginManager.getInstance().logInWithReadPermissions(
+                this,
+                config.getFacebookReadPermissions()
+        );
+    }
+
+    private void signInWithGoogle() {
+        Intent intent = googleSignInClient.getSignInIntent();
+        startActivityForResult(intent, RC_SIGN_IN);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
-        super.onActivityResult(requestCode, resultCode, data, caller);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    private void facebookRegisterCallback(){
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d("FacebookAuth", "facebook:onSuccess:" + loginResult);
-                authService.handleFacebookAccessToken(loginResult.getAccessToken(), new AuthCallback() {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+
+                authService.signInWithGoogle(account.getIdToken(), new AuthCallback() {
                     @Override
-                    public void onSuccess(User data) {
-                        Log.i("FacebookAuth", "Facebook log in.");
+                    public void onSuccess(User user) {
                         AppNavigator.goToCustomerHome(RegisterActivity.this);
                     }
 
                     @Override
                     public void onError(String message) {
-                        showToast("Failed login with Facebook.");
+                        showToast(message);
                     }
                 });
+
+            } catch (ApiException e) {
+                Log.e("GoogleAuth", "Login failed", e);
             }
-
-            @Override
-            public void onCancel() {
-                Log.d("FacebookAuth", "facebook:onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("FacebookAuth", "facebook:onError", error);
-            }
-        });
-    }
-
-    private void signInWithFacebook(){
-        FacebookAuthProviderConfig facebook = new FacebookAuthProviderConfig();
-
-        LoginManager.getInstance().logInWithReadPermissions(
-            RegisterActivity.this, facebook.getFacebookReadPermissions()
-        );
-    }
-
-    private void signInWithGoogle(){
-        GoogleAuthProviderConfig google = new GoogleAuthProviderConfig();
-        // Create the Credential Manager request
-        GetCredentialRequest request = google.getCredentialRequest(getString(R.string.default_web_client_id));
-
-        credentialManager.getCredentialAsync(
-                this,
-                request,
-                null,
-                executor,
-                new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        Log.i("GoogleAuth", result.toString());
-                        authService.signInWithGoogle(result.getCredential(), new AuthCallback() {
-                            @Override
-                            public void onSuccess(User user) {
-                                AppNavigator.goToCustomerHome(RegisterActivity.this);
-                            }
-
-                            @Override
-                            public void onError(String message) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(GetCredentialException e) {
-                        Log.e("GET CREDENTIAL", e.toString());
-                    }
-                }
-        );
+        }
     }
 
     private void clearErrors() {
@@ -262,7 +238,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     @NonNull
-    private String getText(TextInputEditText editText) {
-        return editText.getText() == null ? "" : editText.getText().toString().trim();
+    private String getText(TextInputEditText edt) {
+        return edt.getText() == null ? "" : edt.getText().toString().trim();
     }
 }
