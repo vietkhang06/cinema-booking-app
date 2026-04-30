@@ -6,7 +6,7 @@ plugins {
 
 buildscript {
     repositories {
-        google()        // 🔥 BẮT BUỘC
+        google()
         mavenCentral()
     }
 }

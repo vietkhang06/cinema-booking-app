@@ -4,29 +4,35 @@ import android.content.Context;
 
 import com.example.cinemabookingapp.service.AuthenticationService;
 
-// service locator pattern
 public class ServiceProvider {
 
     private static ServiceProvider instance;
-    private final AuthenticationService authService;
-    public ServiceProvider(Context context){
-        this.authService = new AuthenticationService(context);
+    private final Context appContext;
+
+    private AuthenticationService authenticationService;
+
+    private ServiceProvider(Context context) {
+        this.appContext = context.getApplicationContext();
     }
 
-    public static ServiceProvider getInstance(Context context){
-        if(instance == null){
+    public static synchronized ServiceProvider getInstance(Context context) {
+        if (instance == null) {
             instance = new ServiceProvider(context);
         }
         return instance;
     }
 
-    public static ServiceProvider getInstance(){
-        return getInstance(null);
+    public static synchronized ServiceProvider getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("ServiceProvider chưa được init!");
+        }
+        return instance;
     }
 
-    public AuthenticationService getAuthenticationService(){
-        return authService;
+    public AuthenticationService getAuthenticationService() {
+        if (authenticationService == null) {
+            authenticationService = new AuthenticationService(appContext);
+        }
+        return authenticationService;
     }
-
-
 }
