@@ -13,6 +13,6 @@
         android:gravity="center"
         android:textSize="7sp"
         android:textColor="#FFFFFF"
-        android:background="@drawable/bg_seat_available"/>
+        android:background="@drawable/couch_solid_full"/>
 
 </FrameLayout>

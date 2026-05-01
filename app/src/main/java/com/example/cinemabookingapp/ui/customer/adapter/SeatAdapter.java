@@ -61,22 +61,22 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.ViewHolder> {
             tvSeat.setText(seat.seatCode != null ? seat.seatCode : "");
 
             if ("booked".equalsIgnoreCase(seat.status)) {
-                tvSeat.setBackgroundResource(R.drawable.bg_seat_booked);
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFF444455);
                 itemView.setEnabled(false);
                 itemView.setAlpha(0.5f);
             } else if (seat.isSelected) {
-                tvSeat.setBackgroundResource(R.drawable.bg_seat_selected);
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFFFFFFFF);
                 itemView.setEnabled(true);
                 itemView.setAlpha(1f);
             } else if ("VIP".equalsIgnoreCase(seat.seatType)) {
-                tvSeat.setBackgroundResource(R.drawable.bg_seat_vip);
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFFFFD700);
                 itemView.setEnabled(true);
                 itemView.setAlpha(1f);
             } else {
-                tvSeat.setBackgroundResource(R.drawable.bg_seat_available);
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFFCCCCCC);
                 itemView.setEnabled(true);
                 itemView.setAlpha(1f);
