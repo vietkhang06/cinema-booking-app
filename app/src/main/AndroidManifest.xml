@@ -101,6 +101,22 @@
             android:name=".ui.admin.room.AdminSeatTemplateActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.admin.movie.AdminMovieFormActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.movie.AdminMovieDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.cinema.AdminCinemaFormActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.cinema.AdminCinemaDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
