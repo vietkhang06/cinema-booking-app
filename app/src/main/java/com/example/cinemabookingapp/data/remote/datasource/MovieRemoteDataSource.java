@@ -4,10 +4,13 @@ import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,29 +32,37 @@ public class MovieRemoteDataSource {
     }
 
     public void createMovie(Movie movie, ResultCallback<Movie> callback) {
-        String movieId = readString(movie, "movieId", "id");
-        if (movieId == null || movieId.trim().isEmpty()) {
-            movieId = firestore.collection(COLLECTION_MOVIES).document().getId();
+        String tempMovieId = readString(movie, "movieId", "id");
+
+        if (tempMovieId == null || tempMovieId.trim().isEmpty()) {
+            tempMovieId = firestore.collection(COLLECTION_MOVIES).document().getId();
         }
+
+        final String movieId = tempMovieId; // ✅ FIX CHÍNH
 
         Map<String, Object> movieData = movieToMap(movie);
         movieData.put("movieId", movieId);
+        movieData.put("deleted", false);
         movieData.put("updatedAt", System.currentTimeMillis());
+
+        if (!movieData.containsKey("status") || movieData.get("status") == null) {
+            movieData.put("status", "COMING_SOON");
+        }
+
+        if (!movieData.containsKey("isActive")) {
+            movieData.put("isActive", true);
+        }
 
         if (!movieData.containsKey("createdAt")) {
             movieData.put("createdAt", System.currentTimeMillis());
         }
 
-        final String finalMovieId = movieId;
-        final Map<String, Object> finalMovieData = movieData;
-
         firestore.collection(COLLECTION_MOVIES)
-                .document(finalMovieId)
-                .set(finalMovieData)
+                .document(movieId)
+                .set(movieData)
                 .addOnSuccessListener(unused -> {
-                    Movie savedMovie = mapDocumentToMovie(finalMovieId, finalMovieData);
                     if (callback != null) {
-                        callback.onSuccess(savedMovie);
+                        callback.onSuccess(mapDocumentToMovie(movieId, movieData));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -63,9 +74,7 @@ public class MovieRemoteDataSource {
 
     public void getMovieById(String movieId, ResultCallback<Movie> callback) {
         if (movieId == null || movieId.trim().isEmpty()) {
-            if (callback != null) {
-                callback.onError("movieId không hợp lệ");
-            }
+            if (callback != null) callback.onError("movieId không hợp lệ");
             return;
         }
 
@@ -74,15 +83,12 @@ public class MovieRemoteDataSource {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists() || !isVisible(documentSnapshot)) {
-                        if (callback != null) {
-                            callback.onError("Không tìm thấy phim");
-                        }
+                        if (callback != null) callback.onError("Không tìm thấy phim");
                         return;
                     }
 
-                    Movie movie = mapSnapshotToMovie(documentSnapshot);
                     if (callback != null) {
-                        callback.onSuccess(movie);
+                        callback.onSuccess(mapSnapshotToMovie(documentSnapshot));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -97,12 +103,24 @@ public class MovieRemoteDataSource {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Movie> movies = new ArrayList<>();
+
                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                         if (!isVisible(document)) {
                             continue;
                         }
-                        movies.add(mapSnapshotToMovie(document));
+
+                        Movie movie = mapSnapshotToMovie(document);
+                        if (movie != null) {
+                            movies.add(movie);
+                        }
                     }
+
+                    movies.sort(new Comparator<Movie>() {
+                        @Override
+                        public int compare(Movie a, Movie b) {
+                            return Long.compare(b.updatedAt, a.updatedAt);
+                        }
+                    });
 
                     if (callback != null) {
                         callback.onSuccess(movies);
@@ -116,71 +134,77 @@ public class MovieRemoteDataSource {
     }
 
     public void getMoviesByStatus(String status, ResultCallback<List<Movie>> callback) {
+        final String normalizedStatus = normalizeStatus(status);
+
+        if (normalizedStatus == null || normalizedStatus.isEmpty()) {
+            getAllMovies(callback);
+            return;
+        }
+
         getAllMovies(new ResultCallback<List<Movie>>() {
             @Override
             public void onSuccess(List<Movie> movies) {
                 List<Movie> filteredMovies = new ArrayList<>();
                 for (Movie movie : movies) {
-                    String movieStatus = normalizeStatus(readString(movie, "status"));
-                    if (status != null && status.equals(movieStatus)) {
+                    if (normalizedStatus.equals(normalizeStatus(readString(movie, "status")))) {
                         filteredMovies.add(movie);
                     }
                 }
-                if (callback != null) {
-                    callback.onSuccess(filteredMovies);
-                }
+                if (callback != null) callback.onSuccess(filteredMovies);
             }
 
             @Override
             public void onError(String errorMessage) {
-                if (callback != null) {
-                    callback.onError(errorMessage);
-                }
+                if (callback != null) callback.onError(errorMessage);
             }
         });
     }
 
     public void searchMovies(String keyword, ResultCallback<List<Movie>> callback) {
-        final String safeKeyword = keyword == null ? "" : keyword.trim().toLowerCase(Locale.getDefault());
+        final String safeKeyword = normalizeText(keyword);
 
         getAllMovies(new ResultCallback<List<Movie>>() {
             @Override
             public void onSuccess(List<Movie> movies) {
                 if (safeKeyword.isEmpty()) {
-                    if (callback != null) {
-                        callback.onSuccess(movies);
-                    }
+                    if (callback != null) callback.onSuccess(movies);
                     return;
                 }
 
                 List<Movie> filteredMovies = new ArrayList<>();
                 for (Movie movie : movies) {
-                    String title = readString(movie, "title");
-                    if (title != null && title.toLowerCase(Locale.getDefault()).contains(safeKeyword)) {
+                    String title = normalizeText(readString(movie, "title"));
+                    String description = normalizeText(readString(movie, "description"));
+                    String language = normalizeText(readString(movie, "language"));
+                    String genres = normalizeText(joinGenres(readGenres(readValue(movie, "genres"))));
+
+                    if (title.contains(safeKeyword)
+                            || description.contains(safeKeyword)
+                            || language.contains(safeKeyword)
+                            || genres.contains(safeKeyword)) {
                         filteredMovies.add(movie);
                     }
                 }
 
-                if (callback != null) {
-                    callback.onSuccess(filteredMovies);
-                }
+                if (callback != null) callback.onSuccess(filteredMovies);
             }
 
             @Override
             public void onError(String errorMessage) {
-                if (callback != null) {
-                    callback.onError(errorMessage);
-                }
+                if (callback != null) callback.onError(errorMessage);
             }
         });
     }
 
     public void updateMovie(Movie movie, ResultCallback<Movie> callback) {
+        if (movie == null) {
+            if (callback != null) callback.onError("Movie null");
+            return;
+        }
+
         String movieId = readString(movie, "movieId", "id");
         if (movieId == null || movieId.trim().isEmpty()) {
-            if (callback != null) {
-                callback.onError("movieId không hợp lệ");
-            }
+            if (callback != null) callback.onError("movieId không hợp lệ");
             return;
         }
 
@@ -188,16 +212,12 @@ public class MovieRemoteDataSource {
         movieData.put("movieId", movieId);
         movieData.put("updatedAt", System.currentTimeMillis());
 
-        final String finalMovieId = movieId;
-        final Map<String, Object> finalMovieData = movieData;
-
         firestore.collection(COLLECTION_MOVIES)
-                .document(finalMovieId)
-                .set(finalMovieData)
+                .document(movieId)
+                .set(movieData, SetOptions.merge())
                 .addOnSuccessListener(unused -> {
-                    Movie updatedMovie = mapDocumentToMovie(finalMovieId, finalMovieData);
                     if (callback != null) {
-                        callback.onSuccess(updatedMovie);
+                        callback.onSuccess(mapDocumentToMovie(movieId, movieData));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -209,9 +229,7 @@ public class MovieRemoteDataSource {
 
     public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
         if (movieId == null || movieId.trim().isEmpty()) {
-            if (callback != null) {
-                callback.onError("movieId không hợp lệ");
-            }
+            if (callback != null) callback.onError("movieId không hợp lệ");
             return;
         }
 
@@ -224,9 +242,7 @@ public class MovieRemoteDataSource {
                 .document(movieId)
                 .update(updates)
                 .addOnSuccessListener(unused -> {
-                    if (callback != null) {
-                        callback.onSuccess(null);
-                    }
+                    if (callback != null) callback.onSuccess(null);
                 })
                 .addOnFailureListener(e -> {
                     if (callback != null) {
@@ -236,14 +252,14 @@ public class MovieRemoteDataSource {
     }
 
     private boolean isVisible(DocumentSnapshot documentSnapshot) {
+        Boolean deleted = documentSnapshot.getBoolean("deleted");
+        if (deleted != null && deleted) {
+            return false;
+        }
+
         Boolean isActive = documentSnapshot.getBoolean("isActive");
         if (isActive != null) {
             return isActive;
-        }
-
-        Boolean deleted = documentSnapshot.getBoolean("deleted");
-        if (deleted != null) {
-            return !deleted;
         }
 
         return true;
@@ -267,20 +283,19 @@ public class MovieRemoteDataSource {
         }
 
         setValue(movie, "title", data.get("title"));
-        setValue(movie, "imageUrl", firstNonNull(data.get("imageUrl"), data.get("posterUrl")));
-        setValue(movie, "posterUrl", firstNonNull(data.get("posterUrl"), data.get("imageUrl")));
-        setValue(movie, "rating", firstNonNull(data.get("rating"), data.get("ratingAvg")));
-        setValue(movie, "ratingAvg", data.get("ratingAvg"));
-        setValue(movie, "ratingCount", data.get("ratingCount"));
-        setValue(movie, "ageRating", firstNonNull(data.get("ageRating"), data.get("age")));
-        setValue(movie, "status", normalizeStatus(String.valueOf(firstNonNull(data.get("status"), ""))));
         setValue(movie, "description", data.get("description"));
-        setValue(movie, "durationMinutes", data.get("durationMinutes"));
-        setValue(movie, "duration", data.get("duration"));
-        setValue(movie, "genres", data.get("genres"));
-        setValue(movie, "genre", data.get("genre"));
         setValue(movie, "language", data.get("language"));
+        setValue(movie, "ageRating", firstNonNull(data.get("ageRating"), data.get("age")));
+        setValue(movie, "posterUrl", firstNonNull(data.get("posterUrl"), data.get("imageUrl")));
+        setValue(movie, "imageUrl", firstNonNull(data.get("imageUrl"), data.get("posterUrl")));
         setValue(movie, "trailerUrl", data.get("trailerUrl"));
+        setValue(movie, "ratingAvg", firstNonNull(data.get("ratingAvg"), data.get("rating")));
+        setValue(movie, "ratingCount", data.get("ratingCount"));
+        setValue(movie, "status", normalizeStatus(String.valueOf(firstNonNull(data.get("status"), ""))));
+        setValue(movie, "genres", readGenres(firstNonNull(data.get("genres"), data.get("genre"))));
+        setValue(movie, "genre", firstNonNull(data.get("genre"), joinGenres(readGenres(data.get("genres")))));
+        setValue(movie, "durationMinutes", firstNonNull(data.get("durationMinutes"), data.get("duration")));
+        setValue(movie, "duration", firstNonNull(data.get("duration"), data.get("durationMinutes")));
         setValue(movie, "createdAt", data.get("createdAt"));
         setValue(movie, "updatedAt", data.get("updatedAt"));
         setValue(movie, "isActive", data.get("isActive"));
@@ -299,25 +314,46 @@ public class MovieRemoteDataSource {
 
     private Map<String, Object> movieToMap(Movie movie) {
         Map<String, Object> data = new LinkedHashMap<>();
+
         putIfNotNull(data, "movieId", readValue(movie, "movieId", "id"));
         putIfNotNull(data, "title", readValue(movie, "title"));
-        putIfNotNull(data, "imageUrl", readValue(movie, "imageUrl"));
-        putIfNotNull(data, "posterUrl", readValue(movie, "posterUrl"));
-        putIfNotNull(data, "rating", readValue(movie, "rating"));
-        putIfNotNull(data, "ratingAvg", readValue(movie, "ratingAvg"));
-        putIfNotNull(data, "ratingCount", readValue(movie, "ratingCount"));
-        putIfNotNull(data, "ageRating", readValue(movie, "ageRating"));
-        putIfNotNull(data, "status", normalizeStatus(readString(movie, "status")));
         putIfNotNull(data, "description", readValue(movie, "description"));
-        putIfNotNull(data, "durationMinutes", readValue(movie, "durationMinutes"));
-        putIfNotNull(data, "duration", readValue(movie, "duration"));
-        putIfNotNull(data, "genres", readValue(movie, "genres"));
-        putIfNotNull(data, "genre", readValue(movie, "genre"));
         putIfNotNull(data, "language", readValue(movie, "language"));
+
+        Object ageRating = firstNonNull(readValue(movie, "ageRating"), readValue(movie, "age"));
+        putIfNotNull(data, "ageRating", ageRating);
+        putIfNotNull(data, "age", ageRating);
+
+        Object posterUrl = firstNonNull(readValue(movie, "posterUrl"), readValue(movie, "imageUrl"));
+        putIfNotNull(data, "posterUrl", posterUrl);
+        putIfNotNull(data, "imageUrl", posterUrl);
+
+        putIfNotNull(data, "trailerUrl", readValue(movie, "trailerUrl"));
+
+        Object ratingAvg = firstNonNull(readValue(movie, "ratingAvg"), readValue(movie, "rating"));
+        putIfNotNull(data, "ratingAvg", ratingAvg);
+        putIfNotNull(data, "rating", ratingAvg);
+
+        putIfNotNull(data, "ratingCount", readValue(movie, "ratingCount"));
+
+        String status = normalizeStatus(readString(movie, "status"));
+        if (status != null) {
+            data.put("status", status);
+        }
+
+        Object durationMinutes = firstNonNull(readValue(movie, "durationMinutes"), readValue(movie, "duration"));
+        putIfNotNull(data, "durationMinutes", durationMinutes);
+        putIfNotNull(data, "duration", durationMinutes);
+
+        List<String> genres = readGenres(firstNonNull(readValue(movie, "genres"), readValue(movie, "genre")));
+        if (!genres.isEmpty()) {
+            data.put("genres", genres);
+            data.put("genre", genres.get(0));
+        }
+
         putIfNotNull(data, "isActive", readValue(movie, "isActive"));
         putIfNotNull(data, "deleted", readValue(movie, "deleted"));
-        putIfNotNull(data, "createdAt", readValue(movie, "createdAt"));
-        putIfNotNull(data, "updatedAt", readValue(movie, "updatedAt"));
+        putIfPositiveLong(data, "createdAt", readValue(movie, "createdAt"));
 
         return data;
     }
@@ -328,8 +364,70 @@ public class MovieRemoteDataSource {
         }
     }
 
+    private void putIfPositiveLong(Map<String, Object> data, String key, Object value) {
+        if (value instanceof Number && ((Number) value).longValue() > 0L) {
+            data.put(key, ((Number) value).longValue());
+            return;
+        }
+
+        if (value != null) {
+            try {
+                long parsed = Long.parseLong(String.valueOf(value));
+                if (parsed > 0L) {
+                    data.put(key, parsed);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
     private Object firstNonNull(Object first, Object second) {
         return first != null ? first : second;
+    }
+
+    private List<String> readGenres(Object value) {
+        List<String> genres = new ArrayList<>();
+        if (value == null) {
+            return genres;
+        }
+
+        if (value instanceof List<?>) {
+            for (Object item : (List<?>) value) {
+                if (item == null) continue;
+                String text = String.valueOf(item).trim();
+                if (!text.isEmpty()) genres.add(text);
+            }
+            return genres;
+        }
+
+        String raw = String.valueOf(value).trim();
+        if (raw.isEmpty()) {
+            return genres;
+        }
+
+        String[] parts = raw.split("[,;|]");
+        for (String part : parts) {
+            String text = part.trim();
+            if (!text.isEmpty()) genres.add(text);
+        }
+
+        return genres;
+    }
+
+    private String joinGenres(List<String> genres) {
+        if (genres == null || genres.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (String genre : genres) {
+            if (genre == null) continue;
+            String text = genre.trim();
+            if (text.isEmpty()) continue;
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(text);
+        }
+        return builder.toString();
     }
 
     private String normalizeStatus(String status) {
@@ -337,13 +435,37 @@ public class MovieRemoteDataSource {
             return null;
         }
 
-        String normalized = status.trim().toUpperCase(Locale.getDefault());
-        if ("NOW_SHOWING".equals(normalized) || "NOW SHOWING".equals(normalized)) {
+        String key = normalizeText(status);
+        if (key.isEmpty()) {
+            return null;
+        }
+
+        if ("dang_chieu".equals(key) || "now_showing".equals(key) || "showing".equals(key)) {
             return "NOW_SHOWING";
         }
-        if ("COMING_SOON".equals(normalized) || "COMING SOON".equals(normalized)) {
+
+        if ("sap_chieu".equals(key) || "coming_soon".equals(key) || "upcoming".equals(key)) {
             return "COMING_SOON";
         }
+
+        if ("ngung_chieu".equals(key) || "ended".equals(key) || "inactive".equals(key) || "off".equals(key)) {
+            return "ENDED";
+        }
+
+        return key.toUpperCase(Locale.getDefault());
+    }
+
+    private String normalizeText(String input) {
+        if (input == null) {
+            return "";
+        }
+
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+
+        normalized = normalized.toLowerCase(Locale.getDefault()).trim();
+        normalized = normalized.replaceAll("[^a-z0-9]+", "_");
+        normalized = normalized.replaceAll("^_+|_+$", "");
         return normalized;
     }
 
