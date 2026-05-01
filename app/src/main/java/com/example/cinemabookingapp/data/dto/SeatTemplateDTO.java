@@ -8,7 +8,6 @@ public class SeatTemplateDTO {
     public int columnNo;
     public String seatType;
     public boolean isEnabled;
-
     public SeatTemplateDTO() {
     }
 }
