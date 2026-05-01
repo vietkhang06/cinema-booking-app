@@ -576,9 +576,16 @@ public class MovieDetailActivity extends BaseActivity {
             selectedCinema = cinemaName;
             selectedRoomType = roomType;
             selectedShowtime = time;
-            ensureSectionExpanded(cinemaName);
-            actvCinema.setText(cinemaName, false);
-            renderCinemaGroups();
+
+            Intent intent = new Intent(MovieDetailActivity.this, SeatSelectionActivity.class);
+
+            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
+            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
+            intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, System.currentTimeMillis());
+            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, 85000);
+
+            startActivity(intent);
         });
 
         return button;

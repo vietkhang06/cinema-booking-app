@@ -11,6 +11,10 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     private final MovieRemoteDataSource remoteDataSource;
 
+    public MovieRepositoryImpl() {
+        this(new MovieRemoteDataSource());
+    }
+
     public MovieRepositoryImpl(MovieRemoteDataSource remoteDataSource) {
         this.remoteDataSource = remoteDataSource;
     }

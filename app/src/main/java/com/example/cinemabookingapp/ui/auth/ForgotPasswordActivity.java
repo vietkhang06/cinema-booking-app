@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.di.ServiceProvider;
@@ -12,8 +14,6 @@ import com.example.cinemabookingapp.service.AuthenticationService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Firebase;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends BaseActivity {
 
@@ -22,16 +22,16 @@ public class ForgotPasswordActivity extends BaseActivity {
     private MaterialButton btnSendReset;
     private TextView tvBack;
 
-//    private FirebaseAuth auth;
-    AuthenticationService authService;
+    private AuthenticationService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-//        auth = FirebaseAuth.getInstance();
-        authService = ServiceProvider.getInstance().getAuthenticationService();
+        authService = ServiceProvider
+                .getInstance(getApplicationContext())
+                .getAuthenticationService();
 
         initViews();
         bindActions();
