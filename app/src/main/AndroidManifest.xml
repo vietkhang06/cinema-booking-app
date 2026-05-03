@@ -64,6 +64,9 @@
             android:name=".ui.customer.HomeActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.customer.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.staff.StaffDashboardActivity"
             android:exported="false" />
         <activity

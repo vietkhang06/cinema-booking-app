@@ -17,7 +17,7 @@ public class EInvoiceView extends FrameLayout {
     public EInvoiceView(Context context, AttributeSet attrs){
         super(context, attrs);
         inflate(context, R.layout.invoice_view_layout, this);
-        initView();
+        initViews();
     }
 
     TextView invoiceIdTV, createDateTimeTV, movieNameTV, movieGernesTV, cinemaNameTV, showtimeTV,
@@ -25,7 +25,7 @@ public class EInvoiceView extends FrameLayout {
     RecyclerView snackListView;
     ImageView invoiceIdQR, movieBannerImage;
 
-    void initView(){
+    void initViews(){
         invoiceIdTV = findViewById(R.id.invoice_number);
         createDateTimeTV = findViewById(R.id.invoice_create_datetime);
         movieNameTV = findViewById(R.id.invoice_movie_name);
