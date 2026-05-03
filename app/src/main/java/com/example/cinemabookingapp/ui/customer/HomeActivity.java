@@ -40,6 +40,9 @@ import com.example.cinemabookingapp.domain.model.Banner;
 
 import android.content.Intent;
 
+import androidx.fragment.app.Fragment;
+import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.CinemaFragment;
+
 
 public class HomeActivity extends BaseActivity {
 
@@ -89,6 +92,9 @@ public class HomeActivity extends BaseActivity {
     private String currentMovieFilter = FILTER_NOW_SHOWING;
     private GetBannersUseCase getBannersUseCase;
 
+    private View scrollContent;
+    private View fragmentContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +102,8 @@ public class HomeActivity extends BaseActivity {
 
         initViews();
         initMovieUseCase();
+        initBottomNav();
+        showHomeScreen();
 //        initBottomNav();
 
 //        applyBottomNavState(0);
@@ -113,6 +121,8 @@ public class HomeActivity extends BaseActivity {
         btnComingSoon = findViewById(R.id.btnComingSoon);
         btnLocation = findViewById(R.id.btnLocation);
         rvMovies = findViewById(R.id.rvMovies);
+        scrollContent = findViewById(R.id.scrollContent);
+        fragmentContainer = findViewById(R.id.fragmentContainer);
 
         rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
         rvMovies.setNestedScrollingEnabled(false);
@@ -323,10 +333,10 @@ public class HomeActivity extends BaseActivity {
         navMovieIcon = findViewById(R.id.navMovieIcon);
         navProfileIcon = findViewById(R.id.navProfileIcon);
 
-        navHomeCard.setOnClickListener(v -> applyBottomNavState(0));
+        navHomeCard.setOnClickListener(v -> showHomeScreen());
         navShowtimeCard.setOnClickListener(v -> applyBottomNavState(1));
         navCartCard.setOnClickListener(v -> applyBottomNavState(2));
-        navMovieCard.setOnClickListener(v -> applyBottomNavState(3));
+        navMovieCard.setOnClickListener(v -> showCinemaScreen());
         navProfileCard.setOnClickListener(v -> applyBottomNavState(4));
     }
 
@@ -454,5 +464,24 @@ public class HomeActivity extends BaseActivity {
         intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_RATING, item.getRating());
         intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_AGE_RATING, item.getAgeRating());
         startActivity(intent);
+    }
+
+    private void showHomeScreen() {
+        fragmentContainer.setVisibility(View.GONE);
+        scrollContent.setVisibility(View.VISIBLE);
+        applyBottomNavState(0);
+    }
+
+    private void showCinemaScreen() {
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new CinemaFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(3);
     }
 }

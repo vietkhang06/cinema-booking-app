@@ -19,6 +19,7 @@
             android:name=".ui.staff.StaffInvoiceActivity"
             android:exported="false" />
 
+        <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -30,6 +31,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
+
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true" >
@@ -42,6 +44,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <!-- AUTH -->
         <activity
             android:name=".ui.auth.SplashActivity"
             android:exported="true" >
@@ -51,54 +55,48 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.auth.ForgotPasswordActivity"
+
+        <activity android:name=".ui.auth.ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".ui.auth.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.auth.RegisterActivity" android:exported="false" />
+
+        <!-- CUSTOMER -->
+        <activity android:name=".ui.customer.HomeActivity" android:exported="false" />
+        <activity android:name=".ui.customer.MovieDetailActivity" android:exported="false" />
+
+            android:name=".ui.customer.SeatSelectionActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+            android:name=".ui.customer.BookingConfirmActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <!-- STAFF -->
+        <activity android:name=".ui.staff.StaffDashboardActivity" android:exported="false" />
+
+        <!-- ADMIN -->
+        <activity android:name=".ui.admin.AdminDashboardActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.movie.AdminMovieListActivity" android:exported="false" />
+        <activity android:name=".ui.admin.movie.AdminMovieFormActivity" android:exported="false" />
+        <activity android:name=".ui.admin.movie.AdminMovieDetailActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.cinema.AdminCinemaListActivity" android:exported="false" />
+        <activity android:name=".ui.admin.cinema.AdminCinemaFormActivity" android:exported="false" />
+        <activity android:name=".ui.admin.cinema.AdminCinemaDetailActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.room.AdminRoomListActivity" android:exported="false" />
+        <activity android:name=".ui.admin.room.AdminSeatTemplateActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.showtime.AdminShowtimeListActivity" android:exported="false" />
+        <activity android:name=".ui.admin.user.AdminUserManagementActivity" android:exported="false" />
+        <activity android:name=".ui.admin.report.AdminReportActivity" android:exported="false" />
+
+        <!-- MAIN -->
+        <activity android:name=".MainActivity" android:exported="false" />
+
+            android:name=".ui.customer.Cinema_DienAnh.CinemaContentDetailActivity"
+            android:name=".ui.customer.Cinema_DienAnh.CinemaSearchActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.auth.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.HomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.ProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.staff.StaffDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.AdminDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.MovieDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.movie.AdminMovieListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.cinema.AdminCinemaListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.room.AdminRoomListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.showtime.AdminShowtimeListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.user.AdminUserManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.report.AdminReportActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.room.AdminSeatTemplateActivity"
-            android:exported="false" />
+
     </application>
 
 </manifest>

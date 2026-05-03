@@ -13,6 +13,7 @@ public class SeatDTO {
     public String bookedBy;
     public long bookedAt;
     public double priceOverride;
+    public transient boolean isSelected = false;
 
     public SeatDTO() {
     }
