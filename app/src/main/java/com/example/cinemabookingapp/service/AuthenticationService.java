@@ -99,14 +99,6 @@ public class AuthenticationService {
     ) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-//                    boolean existedEmail;
-//                    FirebaseFirestore.getInstance().collection(FirestoreCollections.USERS)
-//                        .whereEqualTo("email", email)
-//                        .get()
-//                        .addOnCompleteListener(task -> {
-//                            if(task.isSuccessful())
-//                                existedEmail = (task.getResult().size() <= 0);
-//                        });
                     userRepo.createUser(newUserDoc(authResult.getUser(), phone), new ResultCallback<User>() {
                         @Override
                         public void onSuccess(User data) {

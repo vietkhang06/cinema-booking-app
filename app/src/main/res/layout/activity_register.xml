@@ -299,14 +299,15 @@
                         android:layout_height="46dp"
                         app:cardBackgroundColor="#FCE8EB"
                         app:cardCornerRadius="18dp"
-                        app:cardElevation="0dp">
+                        app:cardElevation="0dp"
+                        app:strokeColor="#C7C7C7">
 
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/apple_brands_solid_full"
-                            android:contentDescription="apple" />
+                            android:contentDescription="apple"
+                            android:src="@drawable/apple_brands_solid_full" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 

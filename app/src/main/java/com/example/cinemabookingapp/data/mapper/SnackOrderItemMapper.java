@@ -11,7 +11,7 @@ public final class SnackOrderItemMapper {
         if (dto == null) return null;
         SnackOrderItem model = new SnackOrderItem();
         model.snackId = dto.snackId;
-        model.snackName = dto.snackName;
+//        model.snackName = dto.snackName;
         model.quantity = dto.quantity;
         model.unitPrice = dto.unitPrice;
         return model;
@@ -21,7 +21,7 @@ public final class SnackOrderItemMapper {
         if (model == null) return null;
         SnackOrderItemDTO dto = new SnackOrderItemDTO();
         dto.snackId = model.snackId;
-        dto.snackName = model.snackName;
+//        dto.snackName = model.snackName;
         dto.quantity = model.quantity;
         dto.unitPrice = model.unitPrice;
         return dto;

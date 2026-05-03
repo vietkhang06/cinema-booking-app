@@ -5,9 +5,6 @@ import java.util.List;
 public class Booking {
     public String bookingId;
     public String userId;
-    public String movieId;
-    public String cinemaId;
-    public String roomId;
     public String showtimeId;
     public String movieTitleSnapshot;
     public String cinemaNameSnapshot;
