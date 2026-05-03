@@ -15,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CinemaBookingApp"
         tools:targetApi="31" >
-        <activity
-            android:name=".ui.staff.StaffInvoiceActivity"
-            android:exported="false" />
 
         <!-- Facebook -->
         <meta-data
@@ -63,14 +60,16 @@
         <!-- CUSTOMER -->
         <activity android:name=".ui.customer.HomeActivity" android:exported="false" />
         <activity android:name=".ui.customer.MovieDetailActivity" android:exported="false" />
-
+        <activity
             android:name=".ui.customer.SeatSelectionActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
             android:name=".ui.customer.BookingConfirmActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
         <!-- STAFF -->
         <activity android:name=".ui.staff.StaffDashboardActivity" android:exported="false" />
+        <activity android:name=".ui.staff.StaffInvoiceActivity" android:exported="false" />
 
         <!-- ADMIN -->
         <activity android:name=".ui.admin.AdminDashboardActivity" android:exported="false" />
@@ -93,7 +92,11 @@
         <!-- MAIN -->
         <activity android:name=".MainActivity" android:exported="false" />
 
+        <activity
             android:name=".ui.customer.Cinema_DienAnh.CinemaContentDetailActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.customer.Cinema_DienAnh.CinemaSearchActivity"
             android:exported="false" />
 

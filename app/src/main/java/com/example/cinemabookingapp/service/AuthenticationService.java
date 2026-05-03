@@ -86,7 +86,7 @@ public class AuthenticationService {
     ) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    userRepo.createUser(newUserDoc(authResult.getUser(), phone), new ResultCallback<User>() {
+
                     FirebaseUser fUser = authResult.getUser();
                     if (fUser == null) {
                         callback.onError("User null");
