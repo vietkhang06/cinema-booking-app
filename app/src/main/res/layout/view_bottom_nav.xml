@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomNavRoot"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:layout_margin="16dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="28dp"
-    app:cardElevation="8dp">
+    android:layout_height="88dp"
+    android:background="@android:color/transparent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingStart="6dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="12dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomNavRoot"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="10dp"
+        app:strokeColor="#12000000"
+        app:strokeWidth="1dp">
 
     <LinearLayout
         android:id="@+id/bottomNavContainer"
@@ -15,7 +27,10 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:paddingStart="7dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="7dp"
+        android:paddingBottom="8dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/navHomeCard"
@@ -215,4 +230,6 @@
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

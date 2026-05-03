@@ -1,0 +1,187 @@
+package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh;
+
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.repository.CinemaContentRepositoryImpl;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
+import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
+import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.adapter.CinemaFeedAdapter;
+import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.mapper.CinemaFeedMapper;
+import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CinemaFragment extends Fragment implements CinemaFeedAdapter.OnItemClickListener {
+
+    private enum Tab {
+        COMMENT, NEWS, PERSON
+    }
+
+    private TextView tvTitle, tvSubtitle, tvEmpty;
+    private ImageButton btnSearch;
+    private MaterialButton btnComment, btnNews, btnPerson;
+    private RecyclerView rvFeed;
+
+    private CinemaFeedAdapter adapter;
+    private final List<CinemaContent> allContents = new ArrayList<>();
+    private final CinemaContentRepositoryImpl repository = new CinemaContentRepositoryImpl();
+    private Tab currentTab = Tab.COMMENT;
+
+    public CinemaFragment() {
+        super(R.layout.fragment_cinema_content);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initViews(view);
+        setupRecyclerView();
+        bindActions();
+        loadData();
+    }
+
+    private void initViews(View view) {
+        tvTitle = view.findViewById(R.id.tvTitle);
+        tvSubtitle = view.findViewById(R.id.tvSubtitle);
+        tvEmpty = view.findViewById(R.id.tvEmpty);
+        btnSearch = view.findViewById(R.id.btnSearch);
+        btnComment = view.findViewById(R.id.btnComment);
+        btnNews = view.findViewById(R.id.btnNews);
+        btnPerson = view.findViewById(R.id.btnPerson);
+        rvFeed = view.findViewById(R.id.rvFeed);
+    }
+
+    private void setupRecyclerView() {
+        adapter = new CinemaFeedAdapter(this);
+        rvFeed.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rvFeed.setAdapter(adapter);
+    }
+
+    private void bindActions() {
+        btnSearch.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), CinemaSearchActivity.class))
+        );
+
+        btnComment.setOnClickListener(v -> {
+            currentTab = Tab.COMMENT;
+            renderCurrentTab();
+        });
+
+        btnNews.setOnClickListener(v -> {
+            currentTab = Tab.NEWS;
+            renderCurrentTab();
+        });
+
+        btnPerson.setOnClickListener(v -> {
+            currentTab = Tab.PERSON;
+            renderCurrentTab();
+        });
+    }
+
+    private void loadData() {
+        repository.getAll(new ResultCallback<List<CinemaContent>>() {
+            @Override
+            public void onSuccess(List<CinemaContent> data) {
+                allContents.clear();
+                if (data != null) {
+                    allContents.addAll(data);
+                }
+                renderCurrentTab();
+            }
+
+            @Override
+            public void onError(String message) {
+                tvEmpty.setVisibility(View.VISIBLE);
+                tvEmpty.setText(message == null || message.trim().isEmpty()
+                        ? "Không thể tải nội dung điện ảnh"
+                        : message);
+            }
+        });
+    }
+
+    private void renderCurrentTab() {
+        styleTabs();
+
+        List<CinemaContent> filtered;
+        if (currentTab == Tab.COMMENT) {
+            tvTitle.setText("Điện ảnh");
+            tvSubtitle.setText("Bình luận nổi bật");
+            filtered = filterByType(CinemaContentType.COMMENT);
+        } else if (currentTab == Tab.NEWS) {
+            tvTitle.setText("Điện ảnh");
+            tvSubtitle.setText("Tin tức mới nhất");
+            filtered = filterByType(CinemaContentType.NEWS);
+        } else {
+            tvTitle.setText("Điện ảnh");
+            tvSubtitle.setText("Gương mặt điện ảnh");
+            filtered = filterByType(CinemaContentType.PERSON);
+        }
+
+        List<CinemaFeedItem> feedItems = CinemaFeedMapper.toFeedItems(filtered);
+        adapter.submitList(feedItems);
+
+        if (feedItems.isEmpty()) {
+            tvEmpty.setText("Chưa có nội dung phù hợp");
+            tvEmpty.setVisibility(View.VISIBLE);
+        } else {
+            tvEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    private List<CinemaContent> filterByType(CinemaContentType type) {
+        List<CinemaContent> result = new ArrayList<>();
+        for (CinemaContent item : allContents) {
+            if (item != null && item.type == type) {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
+    private void styleTabs() {
+        styleTab(btnComment, currentTab == Tab.COMMENT);
+        styleTab(btnNews, currentTab == Tab.NEWS);
+        styleTab(btnPerson, currentTab == Tab.PERSON);
+    }
+
+    private void styleTab(MaterialButton button, boolean selected) {
+        if (selected) {
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1B141E")));
+            button.setTextColor(Color.WHITE);
+        } else {
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black));
+        }
+    }
+
+    @Override
+    public void onItemClick(CinemaFeedItem item) {
+        Intent intent = new Intent(requireContext(), CinemaContentDetailActivity.class);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_ID, item.id);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_TITLE, item.title);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_TAG, item.tag);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_EXCERPT, item.excerpt);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_CONTENT, item.content);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_META, item.meta);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_AUTHOR, item.author);
+        intent.putExtra(CinemaContentDetailActivity.EXTRA_IMAGE_URL, item.imageUrl);
+        startActivity(intent);
+    }
+}

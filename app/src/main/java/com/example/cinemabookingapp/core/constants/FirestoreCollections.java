@@ -8,6 +8,7 @@ public final class FirestoreCollections {
     public static final String USERS = "users";
     public static final String MOVIES = "movies";
     public static final String CINEMAS = "cinemas";
+    public static final String CINEMA_CONTENTS = "cinema_contents";
     public static final String ROOMS = "rooms";
     public static final String SHOWTIMES = "showtimes";
     public static final String BOOKINGS = "bookings";

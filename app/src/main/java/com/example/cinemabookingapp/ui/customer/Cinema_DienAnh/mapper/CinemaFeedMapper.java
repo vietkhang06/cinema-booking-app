@@ -1,0 +1,42 @@
+package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.mapper;
+
+import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
+import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class CinemaFeedMapper {
+
+    private CinemaFeedMapper() {
+    }
+
+    public static CinemaFeedItem toFeedItem(CinemaContent src) {
+        if (src == null) return null;
+
+        CinemaFeedItem item = new CinemaFeedItem();
+        item.id = src.id;
+        item.type = src.type;
+        item.tag = src.tag;
+        item.title = src.title;
+        item.excerpt = src.excerpt;
+        item.content = src.content;
+        item.author = src.author;
+        item.meta = src.meta;
+        item.imageUrl = src.imageUrl;
+        return item;
+    }
+
+    public static List<CinemaFeedItem> toFeedItems(List<CinemaContent> src) {
+        List<CinemaFeedItem> result = new ArrayList<>();
+        if (src == null) return result;
+
+        for (CinemaContent content : src) {
+            CinemaFeedItem item = toFeedItem(content);
+            if (item != null) {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+}

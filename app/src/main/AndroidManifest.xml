@@ -88,6 +88,14 @@
         <!-- MAIN -->
         <activity android:name=".MainActivity" android:exported="false" />
 
+        <activity
+            android:name=".ui.customer.Cinema_DienAnh.CinemaContentDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.customer.Cinema_DienAnh.CinemaSearchActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
