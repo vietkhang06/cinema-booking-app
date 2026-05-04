@@ -21,15 +21,28 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class AuthenticationService {
-
     private final FirebaseAuth auth;
     private final SessionManager sessionManager;
-    private final UserRepository userRepo;
+
+    UserRepository userRepo;
 
     public AuthenticationService(Context context) {
         this.auth = FirebaseAuth.getInstance();
-        this.sessionManager = new SessionManager(context.getApplicationContext());
-        this.userRepo = new UserRepositoryImpl();
+        this.sessionManager = new SessionManager(context);
+
+        userRepo = new UserRepositoryImpl();
+    }
+
+    public void getCurrentAuthUser(){
+        userRepo.getUserById(auth.getUid(), new ResultCallback<User>() {
+            @Override
+            public void onSuccess(User data) {
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        });
     }
 
     public void signInWithEmailAndPassword(
@@ -40,35 +53,29 @@ public class AuthenticationService {
     ) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    FirebaseUser fUser = authResult.getUser();
-                    if (fUser == null) {
-                        callback.onError("User null");
-                        return;
-                    }
+                    String uid = authResult.getUser().getUid();
 
-                    loadOrCreateUser(
-                            fUser,
-                            null,
-                            new AuthCallback() {
-                                @Override
-                                public void onSuccess(User user) {
-                                    if (isRemember) {
-                                        sessionManager.saveRememberedEmail(email);
-                                    } else {
-                                        sessionManager.clearRememberedEmail();
-                                    }
-                                    sessionManager.saveLoginState(true, user.role, user.uid);
-                                    callback.onSuccess(user);
-                                }
-
-                                @Override
-                                public void onError(String message) {
-                                    callback.onError(message);
-                                }
+                    userRepo.getUserById(uid, new ResultCallback<User>() {
+                        @Override
+                        public void onSuccess(User data) {
+                            if(data == null){
+                                callback.onError("Không tìm thấy user.");
+                                return;
                             }
-                    );
+
+                            callback.onSuccess(data);
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            callback.onError(message);
+                        }
+
+                    });
                 })
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .addOnFailureListener(e -> {
+                    callback.onError(e.getMessage());
+                });
     }
 
     public void signUpWithEmailAndPassword(
@@ -79,6 +86,7 @@ public class AuthenticationService {
     ) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
+
                     FirebaseUser fUser = authResult.getUser();
                     if (fUser == null) {
                         callback.onError("User null");

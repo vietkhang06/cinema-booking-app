@@ -104,9 +104,10 @@ public class HomeActivity extends BaseActivity {
         initMovieUseCase();
         initBottomNav();
         showHomeScreen();
+//        initBottomNav();
 
-        applyBottomNavState(0);
-        applyFilterStyle(currentMovieFilter);
+//        applyBottomNavState(0);
+//        applyFilterStyle(currentMovieFilter);
         loadMoviesFromFirestore();
 
         initBannerUseCase();
