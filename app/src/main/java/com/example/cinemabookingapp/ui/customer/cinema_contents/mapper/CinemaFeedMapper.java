@@ -1,7 +1,7 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.mapper;
+package com.example.cinemabookingapp.ui.customer.cinema_contents.mapper;
 
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.model.CinemaFeedItem;
 
 import java.util.ArrayList;
 import java.util.List;

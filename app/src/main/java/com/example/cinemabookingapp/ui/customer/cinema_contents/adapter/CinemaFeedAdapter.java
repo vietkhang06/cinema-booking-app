@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.adapter;
+package com.example.cinemabookingapp.ui.customer.cinema_contents.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.model.CinemaFeedItem;
 
 import java.util.ArrayList;
 import java.util.List;

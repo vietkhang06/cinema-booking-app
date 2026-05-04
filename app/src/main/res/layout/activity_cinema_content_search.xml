@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
-    tools:context=".ui.customer.Cinema_DienAnh.CinemaSearchActivity">
+    tools:context=".ui.customer.cinema_contents.CinemaSearchActivity">
 
     <LinearLayout
         android:id="@+id/searchHeader"

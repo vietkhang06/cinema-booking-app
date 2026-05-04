@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh;
+package com.example.cinemabookingapp.ui.customer.cinema_contents;
 
 import android.os.Bundle;
 import android.widget.ImageButton;

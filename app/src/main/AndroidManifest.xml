@@ -60,6 +60,7 @@
         <!-- CUSTOMER -->
         <activity android:name=".ui.customer.HomeActivity" android:exported="false" />
         <activity android:name=".ui.customer.MovieDetailActivity" android:exported="false" />
+        <activity android:name=".ui.customer.cinema.CinemaDetailActivity" android:exported="false" />
         <activity
             android:name=".ui.customer.SeatSelectionActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
@@ -93,11 +94,11 @@
         <activity android:name=".MainActivity" android:exported="false" />
 
         <activity
-            android:name=".ui.customer.Cinema_DienAnh.CinemaContentDetailActivity"
+            android:name=".ui.customer.cinema_contents.CinemaContentDetailActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.customer.Cinema_DienAnh.CinemaSearchActivity"
+            android:name=".ui.customer.cinema_contents.CinemaSearchActivity"
             android:exported="false" />
 
     </application>

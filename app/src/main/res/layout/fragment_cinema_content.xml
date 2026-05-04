@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
-    tools:context=".ui.customer.Cinema_DienAnh.CinemaFragment">
+    tools:context=".ui.customer.cinema_contents.CinemaFragment">
 
     <LinearLayout
         android:id="@+id/headerContainer"

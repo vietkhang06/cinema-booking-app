@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model;
+package com.example.cinemabookingapp.ui.customer.cinema_contents.model;
 
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
 

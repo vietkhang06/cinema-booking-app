@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh;
+package com.example.cinemabookingapp.ui.customer.cinema_contents;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -19,9 +19,9 @@ import com.example.cinemabookingapp.data.repository.CinemaContentRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.adapter.CinemaFeedAdapter;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.mapper.CinemaFeedMapper;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.adapter.CinemaFeedAdapter;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.mapper.CinemaFeedMapper;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.model.CinemaFeedItem;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
