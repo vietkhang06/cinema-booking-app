@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.customer.Cinema_DienAnh;
+package com.example.cinemabookingapp.ui.customer.cinema_contents;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,9 +16,9 @@ import com.example.cinemabookingapp.data.repository.CinemaContentRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
 import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.adapter.CinemaFeedAdapter;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.mapper.CinemaFeedMapper;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.model.CinemaFeedItem;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.adapter.CinemaFeedAdapter;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.mapper.CinemaFeedMapper;
+import com.example.cinemabookingapp.ui.customer.cinema_contents.model.CinemaFeedItem;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 

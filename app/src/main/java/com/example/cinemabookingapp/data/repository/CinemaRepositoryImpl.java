@@ -22,11 +22,17 @@ public class CinemaRepositoryImpl implements CinemaRepository {
     }
 
     @Override
-    public void getCinemaById(String cinemaId, ResultCallback<Cinema> callback) {}
+    public void getCinemaById(String cinemaId, ResultCallback<Cinema> callback) {
+        remote.getCinemaById(cinemaId, callback);
+    }
 
     @Override
-    public void updateCinema(Cinema cinema, ResultCallback<Cinema> callback) {}
+    public void updateCinema(Cinema cinema, ResultCallback<Cinema> callback) {
+        remote.updateCinema(cinema, callback);
+    }
 
     @Override
-    public void softDeleteCinema(String cinemaId, ResultCallback<Void> callback) {}
+    public void softDeleteCinema(String cinemaId, ResultCallback<Void> callback) {
+        remote.softDeleteCinema(cinemaId, callback);
+    }
 }

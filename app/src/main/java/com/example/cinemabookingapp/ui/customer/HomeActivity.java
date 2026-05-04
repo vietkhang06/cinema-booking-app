@@ -41,7 +41,6 @@ import com.example.cinemabookingapp.domain.model.Banner;
 import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
-import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.CinemaFragment;
 
 
 public class HomeActivity extends BaseActivity {
@@ -334,9 +333,9 @@ public class HomeActivity extends BaseActivity {
         navProfileIcon = findViewById(R.id.navProfileIcon);
 
         navHomeCard.setOnClickListener(v -> showHomeScreen());
-        navShowtimeCard.setOnClickListener(v -> applyBottomNavState(1));
+        navShowtimeCard.setOnClickListener(v -> showCinemaScreen());
         navCartCard.setOnClickListener(v -> applyBottomNavState(2));
-        navMovieCard.setOnClickListener(v -> showCinemaScreen());
+        navMovieCard.setOnClickListener(v -> showCinemaContentScreen());
         navProfileCard.setOnClickListener(v -> applyBottomNavState(4));
     }
 
@@ -476,7 +475,20 @@ public class HomeActivity extends BaseActivity {
         scrollContent.setVisibility(View.GONE);
         fragmentContainer.setVisibility(View.VISIBLE);
 
-        Fragment fragment = new CinemaFragment();
+        Fragment fragment = new com.example.cinemabookingapp.ui.customer.cinema.CinemaFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(1);
+    }
+
+    private void showCinemaContentScreen() {
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
