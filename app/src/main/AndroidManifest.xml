@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:name=".MyApp"
@@ -98,6 +99,10 @@
 
         <activity
             android:name=".ui.customer.Cinema_DienAnh.CinemaSearchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.customer.profile.EditProfileActivity"
             android:exported="false" />
 
     </application>

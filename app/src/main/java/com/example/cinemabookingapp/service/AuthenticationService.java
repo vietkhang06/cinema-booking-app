@@ -33,16 +33,28 @@ public class AuthenticationService {
         userRepo = new UserRepositoryImpl();
     }
 
-    public void getCurrentAuthUser(){
-        userRepo.getUserById(auth.getUid(), new ResultCallback<User>() {
-            @Override
-            public void onSuccess(User data) {
-            }
+    User currentAuthUser;
+    public User getCurrentAuthUser(){
+        if(auth.getCurrentUser() == null){
+            return null;
+        }
 
-            @Override
-            public void onError(String message) {
-            }
-        });
+        if(currentAuthUser == null)
+            userRepo.getUserById(auth.getUid(), new ResultCallback<User>() {
+                @Override
+                public void onSuccess(User data) {
+                    currentAuthUser = data;
+                }
+
+                @Override
+                public void onError(String message) {
+                }
+            });
+        return currentAuthUser;
+    }
+
+    public void removeCurrentAuthUser(){
+        currentAuthUser = null;
     }
 
     public void signInWithEmailAndPassword(
@@ -52,30 +64,30 @@ public class AuthenticationService {
             AuthCallback callback
     ) {
         auth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(authResult -> {
-                    String uid = authResult.getUser().getUid();
+            .addOnSuccessListener(authResult -> {
+                String uid = authResult.getUser().getUid();
 
-                    userRepo.getUserById(uid, new ResultCallback<User>() {
-                        @Override
-                        public void onSuccess(User data) {
-                            if(data == null){
-                                callback.onError("Không tìm thấy user.");
-                                return;
-                            }
-
-                            callback.onSuccess(data);
+                userRepo.getUserById(uid, new ResultCallback<User>() {
+                    @Override
+                    public void onSuccess(User data) {
+                        if(data == null){
+                            callback.onError("Không tìm thấy user.");
+                            return;
                         }
 
-                        @Override
-                        public void onError(String message) {
-                            callback.onError(message);
-                        }
+                        callback.onSuccess(data);
+                    }
 
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    callback.onError(e.getMessage());
+                    @Override
+                    public void onError(String message) {
+                        callback.onError(message);
+                    }
+
                 });
+            })
+            .addOnFailureListener(e -> {
+                callback.onError(e.getMessage());
+            });
     }
 
     public void signUpWithEmailAndPassword(

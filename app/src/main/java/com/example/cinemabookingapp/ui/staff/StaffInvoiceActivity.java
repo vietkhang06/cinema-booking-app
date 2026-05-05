@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.core.base.AuthActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.service.InvoiceService;
@@ -18,7 +19,7 @@ import com.example.cinemabookingapp.ui.component.EInvoice.EInvoiceView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
-public class StaffInvoiceActivity extends AppCompatActivity {
+public class StaffInvoiceActivity extends AuthActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class StaffInvoiceActivity extends AppCompatActivity {
 
     private void bindActions() {
         backButton.setOnClickListener(v -> {
-            backToStaffDashboard();
+            finish();
         });
     }
 
@@ -59,26 +60,28 @@ public class StaffInvoiceActivity extends AppCompatActivity {
         String invoiceId = intent.getStringExtra("invoiceId");
 
         if(invoiceId == null || invoiceId.isBlank()){
-            backToStaffDashboard();
+            finish();
+            showToast("Hóa đơn không hợp lệ");
             return;
         }
 
-        Booking testBooking = new Booking();
-        testBooking.bookingId = invoiceId;
+//        Booking testBooking = new Booking();
+//        testBooking.bookingId = invoiceId;
+//
+//        eInvoiceView.setInvoiceDetail(testBooking);
 
-        eInvoiceView.setInvoiceDetail(testBooking);
+        Booking booking = invoiceService.getInvoiceFromId(invoiceId);
 
-//        Booking booking = invoiceService.getInvoiceFromId(invoiceId);
-//        if(booking == null){
-//            backToStaffDashboard();
-//            eInvoiceView.setInvoiceDetail();
-//            return;
-//        }
+        if(booking == null){
+            finish();
+            showToast("Không tìm thấy hóa đơn.");
+            return;
+        }
+
+        InvoiceService.InvoiceDetail invoiceDetail = invoiceService.getInvoiceDetail(invoiceId);
+        eInvoiceView.setInvoiceDetail(invoiceDetail);
     }
 
-    void backToStaffDashboard(){
-        AppNavigator.goToStaffDashboard(this);
-    }
 
 
 }

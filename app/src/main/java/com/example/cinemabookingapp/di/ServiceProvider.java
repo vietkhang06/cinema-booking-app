@@ -3,6 +3,8 @@ package com.example.cinemabookingapp.di;
 import android.content.Context;
 
 import com.example.cinemabookingapp.service.AuthenticationService;
+import com.example.cinemabookingapp.service.ProfileService;
+import com.example.cinemabookingapp.service.UploadService;
 
 public class ServiceProvider {
 
@@ -10,6 +12,8 @@ public class ServiceProvider {
     private final Context appContext;
 
     private AuthenticationService authenticationService;
+    private ProfileService profileService;
+    private UploadService uploadService;
 
     private ServiceProvider(Context context) {
         this.appContext = context.getApplicationContext();
@@ -35,4 +39,17 @@ public class ServiceProvider {
         }
         return authenticationService;
     }
+
+    public ProfileService getProfileService() {
+        if (profileService == null) {
+            profileService = new ProfileService();
+        }
+        return profileService;
+    }
+
+    public UploadService getUploadService(){
+        if (uploadService == null) {
+            uploadService = new UploadService();
+        }
+        return uploadService;    }
 }

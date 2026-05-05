@@ -8,9 +8,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.service.InvoiceService;
+import com.example.cinemabookingapp.utils.DateTimeConverter;
 import com.example.cinemabookingapp.utils.QRCodeGenerator;
 
 public class EInvoiceView extends FrameLayout {
@@ -46,19 +47,23 @@ public class EInvoiceView extends FrameLayout {
         movieBannerImage = findViewById(R.id.invoice_movie_banner);
     }
 
-    void bindViewData(Booking bookingDetail){
-        invoiceIdTV.setText(bookingDetail.bookingId);
-        try {
-            invoiceIdQR.setImageBitmap(QRCodeGenerator.generateQRCodeFromString(bookingDetail.bookingId));
-        }catch (Exception e){
+    void bindViewData(InvoiceService.InvoiceDetail invoiceDetail){
 
-        }
+        invoiceIdTV.setText(invoiceDetail.booking.bookingId);
+        try {
+            invoiceIdQR.setImageBitmap(QRCodeGenerator.generateQRCodeFromString(invoiceDetail.booking.bookingId));
+        }catch (Exception ignored){ }
+
+        invoiceIdTV.setText(invoiceDetail.booking.bookingId);
+        createDateTimeTV.setText(DateTimeConverter.convertToDateTimeString(invoiceDetail.booking.createdAt));
+        
+        movieNameTV.setText(invoiceDetail.booking.movieTitleSnapshot);
 
     }
 
-    Booking mBooking;
-    public void setInvoiceDetail(Booking bookingDetail){
-        mBooking = bookingDetail;
-        bindViewData(bookingDetail);
+    InvoiceService.InvoiceDetail mBooking;
+    public void setInvoiceDetail(InvoiceService.InvoiceDetail invoiceDetail){
+        mBooking = invoiceDetail;
+        bindViewData(invoiceDetail);
     }
 }

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.core.base.AuthActivity;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
@@ -26,6 +27,7 @@ import com.example.cinemabookingapp.ui.customer.adapter.HomeBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeMovieAdapter;
 import com.example.cinemabookingapp.ui.customer.model.HomeBannerItem;
 import com.example.cinemabookingapp.ui.customer.model.HomeMovieItem;
+import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
@@ -44,7 +46,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cinemabookingapp.ui.customer.Cinema_DienAnh.CinemaFragment;
 
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends AuthActivity {
 
     private static final String FILTER_NOW_SHOWING = HomeMovieItem.NOW_SHOWING;
     private static final String FILTER_COMING_SOON = HomeMovieItem.COMING_SOON;
@@ -104,10 +106,9 @@ public class HomeActivity extends BaseActivity {
         initMovieUseCase();
         initBottomNav();
         showHomeScreen();
-//        initBottomNav();
 
-//        applyBottomNavState(0);
-//        applyFilterStyle(currentMovieFilter);
+        applyBottomNavState(0);
+        applyFilterStyle(currentMovieFilter);
         loadMoviesFromFirestore();
 
         initBannerUseCase();
@@ -337,7 +338,7 @@ public class HomeActivity extends BaseActivity {
         navShowtimeCard.setOnClickListener(v -> applyBottomNavState(1));
         navCartCard.setOnClickListener(v -> applyBottomNavState(2));
         navMovieCard.setOnClickListener(v -> showCinemaScreen());
-        navProfileCard.setOnClickListener(v -> applyBottomNavState(4));
+        navProfileCard.setOnClickListener(v -> showProfileScreen());
     }
 
     private void applyBottomNavState(int index) {
@@ -483,5 +484,18 @@ public class HomeActivity extends BaseActivity {
                 .commit();
 
         applyBottomNavState(3);
+    }
+
+    private void showProfileScreen(){
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new ProfileFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(4);
     }
 }

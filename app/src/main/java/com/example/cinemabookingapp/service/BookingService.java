@@ -16,11 +16,4 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BookingService {
-
-
-    public Task<List<User>> getAllSeatInShowtime(String showtimeId){
-        DocumentReference a = null;
-        FirebaseFirestore.getInstance().collection("").document("das").get().getResult().getId();
-        return  null;
-    }
 }
