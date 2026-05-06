@@ -30,15 +30,18 @@ app:strokeWidth="1dp">
                     android:layout_weight="1"
                     android:gravity="center|bottom"
                     android:text="E-Invoice"
+                    android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
+                    android:gravity="center|top"
                     android:text="CineMAX"
-                    android:textSize="16sp"
-                    android:gravity="center|top"/>
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <ImageView
@@ -70,13 +73,15 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Invoice Number"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/invoice_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0898182050" />
+                    android:text="0898182050"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -90,13 +95,15 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Date &amp; Time"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/invoice_create_datetime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="May 1, 2026 14:30 PM" />
+                    android:text="May 1, 2026 14:30 PM"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
         </LinearLayout>
@@ -129,6 +136,7 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:text="Movie Name"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -138,6 +146,7 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:text="movie gernes"
+                    android:textColor="@color/black"
                     android:textStyle="italic" />
             </LinearLayout>
 
@@ -164,6 +173,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cinema"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -172,7 +182,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="CINEMAX - Central Mall" />
+                    android:text="CINEMAX - Central Mall"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -185,6 +196,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Showtime"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -193,7 +205,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="May 1, 2026 - 7:00 PM" />
+                    android:text="May 1, 2026 - 7:00 PM"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -206,6 +219,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Seats"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -214,7 +228,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="A12, A13, A14" />
+                    android:text="A12, A13, A14"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -239,6 +254,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ticket Price"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -247,7 +263,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="$36.00" />
+                    android:text="$36.00"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -260,6 +277,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Snacks &amp; Beverages"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
@@ -345,6 +363,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Snacks Total"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -353,7 +372,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="$80.00" />
+                    android:text="$80.00"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -366,6 +386,7 @@ app:strokeWidth="1dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Discount"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -374,7 +395,8 @@ app:strokeWidth="1dp">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="-$8.00" />
+                    android:text="-$8.00"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -394,6 +416,7 @@ app:strokeWidth="1dp">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -404,6 +427,7 @@ app:strokeWidth="1dp">
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="$72.00"
+                android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -435,7 +459,8 @@ app:strokeWidth="1dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Payment Method" />
+                            android:text="Payment Method"
+                            android:textColor="@color/black" />
 
                         <TextView
                             android:id="@+id/invoice_payment_method"
@@ -443,7 +468,8 @@ app:strokeWidth="1dp">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="right"
-                            android:text="Credit Card" />
+                            android:text="Credit Card"
+                            android:textColor="@color/black" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -454,7 +480,8 @@ app:strokeWidth="1dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Transaction ID" />
+                            android:text="Transaction ID"
+                            android:textColor="@color/black" />
 
                         <TextView
                             android:id="@+id/invoice_transaction_id"
@@ -462,7 +489,8 @@ app:strokeWidth="1dp">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="right"
-                            android:text="TXN789456123" />
+                            android:text="TXN789456123"
+                            android:textColor="@color/black" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

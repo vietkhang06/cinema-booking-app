@@ -3,6 +3,7 @@ package com.example.cinemabookingapp.di;
 import android.content.Context;
 
 import com.example.cinemabookingapp.service.AuthenticationService;
+import com.example.cinemabookingapp.service.InvoiceService;
 import com.example.cinemabookingapp.service.ProfileService;
 import com.example.cinemabookingapp.service.UploadService;
 
@@ -51,5 +52,14 @@ public class ServiceProvider {
         if (uploadService == null) {
             uploadService = new UploadService();
         }
-        return uploadService;    }
+        return uploadService;
+    }
+
+    InvoiceService invoiceService;
+    public InvoiceService getInvoiceService(){
+        if(invoiceService == null){
+            invoiceService = new InvoiceService();
+        }
+        return invoiceService;
+    }
 }

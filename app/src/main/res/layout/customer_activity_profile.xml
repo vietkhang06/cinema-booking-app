@@ -10,104 +10,131 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:padding="12dp"
                 android:text="Tài khoản"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:padding="12dp"
-                android:layout_marginLeft="10dp"/>
+                android:textStyle="bold" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray" />
         </LinearLayout>
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginHorizontal="10dp">
+                android:layout_marginHorizontal="10dp"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
 
                 <!--Profile Header-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical">
+
                         <androidx.cardview.widget.CardView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            app:cardCornerRadius="50dp"
-                            android:layout_margin="10dp">
+                            android:layout_margin="10dp"
+                            app:cardCornerRadius="50dp">
+
                             <ImageView
                                 android:id="@+id/profile_avatar"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:scaleType="centerCrop"/>
+                                android:scaleType="centerCrop" />
                         </androidx.cardview.widget.CardView>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
+
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="8dp">
+
                                 <ImageView
                                     android:id="@+id/profile_customer_badge"
                                     android:layout_width="25dp"
                                     android:layout_height="25dp"
-                                    android:layout_gravity="bottom"/>
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginRight="5dp" />
+
                                 <TextView
                                     android:id="@+id/profile_user_name"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="User Name"
-                                    android:textStyle="bold"
-                                    android:textSize="20dp"/>
+                                    android:textColor="@color/black"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
+
                                 <ImageView
                                     android:layout_width="25dp"
                                     android:layout_height="25dp"
-                                    android:layout_gravity="bottom"/>
+                                    android:layout_gravity="bottom" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0 Stars"
-                                    android:textSize="20dp"/>
+                                    android:textColor="@color/black"
+                                    android:textSize="20dp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="12dp">
+
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/profile_edit_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:strokeWidth="0dp"
-                            android:layout_weight="1">
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@color/black"
+                            app:strokeWidth="0dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -117,24 +144,26 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    app:srcCompat="@drawable/ic_pen_note" />
+                                    app:srcCompat="@drawable/ic_pen_note"
+                                    app:tint="@color/white" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Thông tin"/>
+                                    android:text="Thông tin"
+                                    android:textColor="@color/white" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/darker_gray"
-                            android:layout_marginVertical="12dp"/>
+
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/profile_transaction_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:strokeWidth="0dp"
-                            android:layout_weight="1">
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@color/black"
+                            app:strokeWidth="0dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -144,24 +173,25 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
+                                    android:tint="@color/white"
                                     app:srcCompat="@drawable/ic_transaction_history" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Giao dịch"/>
+                                    android:text="Giao dịch"
+                                    android:textColor="@color/white" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/darker_gray"
-                            android:layout_marginVertical="12dp"/>
+
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/profile_notification_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:strokeWidth="0dp"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@color/black"
+                            app:strokeWidth="0dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -171,11 +201,14 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
+                                    android:tint="@color/white"
                                     app:srcCompat="@drawable/ic_notification" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Thông báo"/>
+                                    android:text="Thông báo"
+                                    android:textColor="@color/white" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
@@ -185,18 +218,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Tổng chi tiêu năm 2026"
-                            android:textStyle="bold"
-                            android:textSize="20dp"/>
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/profile_total_spending"
@@ -219,7 +255,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"/>
+                        android:paddingVertical="8dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -230,137 +267,175 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical">
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:strokeWidth="0dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             android:gravity="center"
                             android:padding="12dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Gọi Đường Dây Nóng: "
-                                android:textStyle="bold"
-                                android:textSize="16dp"/>
+                                android:textColor="@color/black"
+                                android:textSize="16dp"
+                                android:textStyle="bold" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:linksClickable="true"
                                 android:text="0898182050"
                                 android:textColor="#072F74"
-                                android:textStyle="bold"
-                                android:linksClickable="true"/>
+                                android:textSize="16dp"
+                                android:textStyle="bold" />
+
                             <Space
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1" />
+
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ic_arrow_next"
-                                android:backgroundTint="@color/black"/>
+                                android:backgroundTint="@color/black" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@android:color/darker_gray" />
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
                         app:strokeWidth="0dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             android:gravity="center"
                             android:padding="12dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Email: "
-                                android:textStyle="bold"/>
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:linksClickable="true"
                                 android:text="hotro@cinemax.vn"
-                                android:textColor="#072F74"
-                                android:linksClickable="true"/>
+                                android:textColor="#072F74" />
+
                             <Space
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1" />
+
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ic_arrow_next"
-                                android:backgroundTint="@color/black"/>
+                                android:backgroundTint="@color/black" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@android:color/darker_gray" />
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:strokeWidth="0dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             android:gravity="center"
                             android:padding="12dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Thông Tin Công Ty"
-                                android:textStyle="bold"/>
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
                             <Space
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1" />
+
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ic_arrow_next"
-                                android:backgroundTint="@color/black"/>
+                                android:backgroundTint="@color/black" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@android:color/darker_gray" />
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
                         app:strokeWidth="0dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="#FFFFFF"
                             android:gravity="center"
                             android:padding="12dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Điều Khoản Sử Dụng"
-                                android:textStyle="bold"/>
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
                             <Space
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1" />
+
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ic_arrow_next"
-                                android:backgroundTint="@color/black"/>
+                                android:backgroundTint="@color/black" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -370,7 +445,9 @@
                         android:id="@+id/profile_logout_btn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:strokeWidth="0dp">
+                        app:cardBackgroundColor="#FFBABA"
+                        app:strokeColor="@android:color/holo_red_dark"
+                        app:strokeWidth="4dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -378,11 +455,12 @@
                             android:layout_gravity="center"
                             android:layout_margin="12dp"
                             android:text="Đăng Xuất"
-                            android:textSize="22dp" />
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </LinearLayout>
-
 
 
         </ScrollView>

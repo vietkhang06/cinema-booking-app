@@ -86,21 +86,21 @@ public class EditProfileActivity extends AuthActivity {
             finish();
         });
 
-        TextWatcher setBtnState = new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                saveChangesBtn.setEnabled(true);
-            }
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-        };
-
-        phoneInputTV.addTextChangedListener(setBtnState);
-        usernameInputTV.addTextChangedListener(setBtnState);
+//        TextWatcher setBtnState = new TextWatcher() {
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                saveChangesBtn.setEnabled(true);
+//            }
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//        };
+//
+//        phoneInputTV.addTextChangedListener(setBtnState);
+//        usernameInputTV.addTextChangedListener(setBtnState);
     }
 
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.cinemabookingapp.core.constants.FirestoreCollections;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.example.cinemabookingapp.domain.model.Showtime;
@@ -17,9 +18,12 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.lang.Record;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class InvoiceService {
@@ -40,19 +44,37 @@ public class InvoiceService {
     public InvoiceService(){
         firestore = FirebaseFirestore.getInstance();
     }
-    public void updatePaymentStatus(String invoiceId, String status){
-        
+
+    public void updatePaymentStatus(Booking booking, ResultCallback<Void> resultCallback){
+
+        firestore.collection(FirestoreCollections.BOOKINGS)
+                .document(booking.bookingId)
+                .set(booking, SetOptions.mergeFields("paymentStatus", "paymentMethod", ""))
+                .addOnSuccessListener(unused -> {
+                    resultCallback.onSuccess(unused);
+                })
+                .addOnFailureListener(e -> {
+                    resultCallback.onError(e.getMessage());
+                });
     }
 
-    public Booking getInvoiceFromId(String invoiceId){
-        try {
-            Task<DocumentSnapshot> getInvoiceTask = firestore.collection(FirestoreCollections.BOOKINGS)
-                    .document(invoiceId).get();
-            return Tasks.await(getInvoiceTask).toObject(Booking.class);
-        }catch (Exception e){
-            Log.e(logTag, e.getMessage());
-            return null;
-        }
+    public void getInvoiceFromId(String invoiceId, ResultCallback<Booking> callback){
+        firestore.collection(FirestoreCollections.BOOKINGS)
+                .document(invoiceId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    callback.onSuccess(documentSnapshot.toObject(Booking.class));
+                })
+                .addOnFailureListener(e -> {
+                    callback.onError(e.getMessage());
+                });
+//        try {
+//            DocumentSnapshot query = Tasks.await(firestore.collection(FirestoreCollections.BOOKINGS)
+//                    .document(invoiceId).get());
+//            return query.toObject(Booking.class);
+//        }catch (Exception e){
+//            Log.e(logTag, e.getMessage());
+//            return null;
+//        }
     }
 
     @Nullable
@@ -94,7 +116,6 @@ public class InvoiceService {
             }));
 
             invoiceDetail.movie = Tasks.await(firestore.collection(FirestoreCollections.MOVIES).document(invoiceDetail.showtime.movieId).get()).toObject(Movie.class);
-
 
             return invoiceDetail;
         }catch (Exception e){
