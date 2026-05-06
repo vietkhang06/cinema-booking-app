@@ -5,6 +5,7 @@ import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.domain.repository.UserRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.List;
 
@@ -46,7 +47,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void updateUser(User user, ResultCallback<User> callback) {
-
+        firestore.collection(FirestoreCollections.USERS)
+                .document(user.uid)
+                .set(user, SetOptions.mergeFields("phone", "avatarUrl", "name"))
+                .addOnSuccessListener((a) -> {
+                    callback.onSuccess(user);
+                })
+                .addOnFailureListener(e -> {
+                    callback.onError(e.getMessage());
+                });
     }
 
     @Override

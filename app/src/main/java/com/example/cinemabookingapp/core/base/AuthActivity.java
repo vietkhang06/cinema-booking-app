@@ -1,6 +1,7 @@
 package com.example.cinemabookingapp.core.base;
 
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
+import com.example.cinemabookingapp.di.ServiceProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -15,7 +16,9 @@ public class AuthActivity extends BaseActivity{
         super.onStart();
         authStateListener = authState -> {
             FirebaseUser user = authState.getCurrentUser();
+            ServiceProvider.getInstance().getAuthenticationService().getCurrentAuthUser();
             if (user == null) {
+                ServiceProvider.getInstance().getAuthenticationService().removeCurrentAuthUser();
                 // User signed out, redirect to Login
                 AppNavigator.goToLogin(this);
             }

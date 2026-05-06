@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:name=".MyApp"
@@ -13,7 +14,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CinemaBookingApp"
         tools:targetApi="31" >
 
         <!-- Facebook -->
@@ -99,6 +99,10 @@
 
         <activity
             android:name=".ui.customer.cinema_contents.CinemaSearchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.customer.profile.EditProfileActivity"
             android:exported="false" />
 
     </application>
