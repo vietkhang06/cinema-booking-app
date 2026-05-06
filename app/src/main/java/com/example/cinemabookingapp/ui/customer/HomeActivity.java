@@ -42,6 +42,7 @@ import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaFragment;
+import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
 
 
 public class HomeActivity extends BaseActivity {
@@ -334,10 +335,10 @@ public class HomeActivity extends BaseActivity {
         navProfileIcon = findViewById(R.id.navProfileIcon);
 
         navHomeCard.setOnClickListener(v -> showHomeScreen());
-        navShowtimeCard.setOnClickListener(v -> applyBottomNavState(1));
+        navShowtimeCard.setOnClickListener(v -> showRapPhimScreen());
         navCartCard.setOnClickListener(v -> applyBottomNavState(2));
         navMovieCard.setOnClickListener(v -> showCinemaScreen());
-        navProfileCard.setOnClickListener(v -> applyBottomNavState(4));
+        navProfileCard.setOnClickListener(v -> showProfileScreen());
     }
 
     private void applyBottomNavState(int index) {
@@ -483,5 +484,31 @@ public class HomeActivity extends BaseActivity {
                 .commit();
 
         applyBottomNavState(3);
+    }
+
+    private void showProfileScreen() {
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new ProfileFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(4);
+    }
+
+    private void showRapPhimScreen() {
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new com.example.cinemabookingapp.ui.customer.cinema.CinemaFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(1);
     }
 }
