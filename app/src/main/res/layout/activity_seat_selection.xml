@@ -114,14 +114,14 @@
         app:layout_constraintTop_toBottomOf="@id/tvScreen">
 
         <View android:layout_width="12dp" android:layout_height="12dp"
-            android:background="@drawable/couch_solid_full"
+            android:background="@drawable/couch_solid_normal"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="Thường" android:textSize="11sp" android:textColor="#AAAAAA"
             android:layout_marginEnd="12dp"/>
 
         <View android:layout_width="12dp" android:layout_height="12dp"
-            android:background="@drawable/couch_solid_full"
+            android:background="@drawable/couch_solid_vip"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="VIP" android:textSize="11sp" android:textColor="#AAAAAA"
@@ -135,7 +135,7 @@
             android:layout_marginEnd="12dp"/>
 
         <View android:layout_width="12dp" android:layout_height="12dp"
-            android:background="@drawable/couch_solid_full"
+            android:background="@drawable/couch_solid_selection"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="Đang chọn" android:textSize="11sp" android:textColor="#AAAAAA"/>

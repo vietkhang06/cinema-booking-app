@@ -89,9 +89,8 @@ public class SeatSelectionActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
 
-        // Setup RecyclerView - 8 cột
         RecyclerView rvSeatMap = findViewById(R.id.rvSeatMap);
-        rvSeatMap.setLayoutManager(new GridLayoutManager(this, 8));
+        rvSeatMap.setLayoutManager(new GridLayoutManager(this, 9));
 
         adapter = new SeatAdapter(seatList, (seat, position) -> {
             if ("booked".equalsIgnoreCase(seat.status)) return;
@@ -131,7 +130,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
                         int r = a.rowName.compareTo(b.rowName);
                         return r != 0 ? r : Integer.compare(a.columnNo, b.columnNo);
                     });
-                    adapter.notifyDataSetChanged();
+                    adapter.setSeats(seatList);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -153,7 +152,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 seatList.add(s);
             }
         }
-        adapter.notifyDataSetChanged();
+        adapter.setSeats(seatList);
     }
 
     private void updateBottomBar() {
@@ -189,7 +188,6 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 chip.setTextSize(12f);
                 chip.setPadding(24, 8, 24, 8);
 
-                // Màu chip theo loại ghế
                 if ("VIP".equalsIgnoreCase(s.seatType)) {
                     chip.setBackgroundTintList(null);
                     chip.setBackground(getDrawable(R.drawable.bg_chip_vip));
