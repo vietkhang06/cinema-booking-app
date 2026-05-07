@@ -336,8 +336,7 @@ public class HomeActivity extends BaseActivity {
 
         navHomeCard.setOnClickListener(v -> showHomeScreen());
         navShowtimeCard.setOnClickListener(v -> showRapPhimScreen());
-        navCartCard.setOnClickListener(v -> applyBottomNavState(2));
-        navMovieCard.setOnClickListener(v -> showCinemaScreen());
+        navCartCard.setOnClickListener(v -> showSnackShopScreen());         navMovieCard.setOnClickListener(v -> showCinemaScreen());
         navProfileCard.setOnClickListener(v -> showProfileScreen());
     }
 
@@ -497,6 +496,19 @@ public class HomeActivity extends BaseActivity {
                 .commit();
 
         applyBottomNavState(4);
+    }
+
+    private void showSnackShopScreen() {
+        scrollContent.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        Fragment fragment = new SnackShopFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
+
+        applyBottomNavState(2); // Vị trí Cine Shop trên Nav
     }
 
     private void showRapPhimScreen() {
