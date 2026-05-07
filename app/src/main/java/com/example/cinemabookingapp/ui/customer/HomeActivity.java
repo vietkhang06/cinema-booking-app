@@ -336,7 +336,8 @@ public class HomeActivity extends BaseActivity {
 
         navHomeCard.setOnClickListener(v -> showHomeScreen());
         navShowtimeCard.setOnClickListener(v -> showRapPhimScreen());
-        navCartCard.setOnClickListener(v -> showSnackShopScreen());         navMovieCard.setOnClickListener(v -> showCinemaScreen());
+        navCartCard.setOnClickListener(v -> showCineShopScreen());
+        navMovieCard.setOnClickListener(v -> showCinemaScreen());
         navProfileCard.setOnClickListener(v -> showProfileScreen());
     }
 
@@ -498,11 +499,11 @@ public class HomeActivity extends BaseActivity {
         applyBottomNavState(4);
     }
 
-    private void showSnackShopScreen() {
+    private void showCineShopScreen() {
         scrollContent.setVisibility(View.GONE);
         fragmentContainer.setVisibility(View.VISIBLE);
 
-        Fragment fragment = new SnackShopFragment();
+        Fragment fragment = new CineShopFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
