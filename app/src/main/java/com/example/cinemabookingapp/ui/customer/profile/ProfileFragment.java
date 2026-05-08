@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.AuthenticationService;
 import com.example.cinemabookingapp.service.ProfileService;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class ProfileFragment extends Fragment {
     public ProfileFragment() {
-        super(R.layout.customer_activity_profile);
+        super(R.layout.fragment_profile);
     }
 
     // ── Views ─────────────────────────────────────────────────────────────────
@@ -40,6 +41,7 @@ public class ProfileFragment extends Fragment {
     MaterialCardView editProfileBtn, viewTransactionBtn, viewNotificationBtn;
     MaterialCardView logOutBtn;
     LinearLayout btnMemberCard;
+    ImageView btnSettings;
     AchievementProgressBar achievementBar;
 
     // Menu items
@@ -56,9 +58,9 @@ public class ProfileFragment extends Fragment {
     int totalSpending = 0;
     List<Integer> spendingMilestones = Arrays.asList(0, 2_000_000, 4_000_000);
     List<Integer> milestoneIcons = Arrays.asList(
-            R.drawable.ic_small_star,
-            R.drawable.apple_brands_solid_full,
-            R.drawable.ic_scan_qr
+            R.drawable.square_solid_full,
+            R.drawable.pentagon_solid_full,
+            R.drawable.hexagon_solid_full
     );
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -85,38 +87,76 @@ public class ProfileFragment extends Fragment {
     // ── Load data ─────────────────────────────────────────────────────────────
 
     private void loadUserProfile() {
-        User profileData = profileService.getUserProfile();
-        if (profileData == null) return;
+        profileService.getUserProfile(new ResultCallback<User>() {
+            @Override
+            public void onSuccess(User profileData) {
+                if (profileData == null || !isAdded()) return;
 
-        String displayName = (profileData.name == null || profileData.name.isBlank())
-                ? profileData.email : profileData.name;
-        userNameTV.setText(displayName);
-        totalSpendingTV.setText("0đ");
+                String displayName = (profileData.name == null || profileData.name.isBlank())
+                        ? profileData.email : profileData.name;
+                userNameTV.setText(displayName);
+                
+                if (tvMemberLevel != null) {
+                    tvMemberLevel.setText(profileData.memberLevel != null ? profileData.memberLevel : "Basic");
+                }
 
-        Glide.with(this)
-                .load(profileData.avatarUrl != null ? profileData.avatarUrl : R.drawable.user_solid_full)
-                .circleCrop()
-                .into(profileAvatar);
+                Glide.with(ProfileFragment.this)
+                        .load(profileData.avatarUrl != null ? profileData.avatarUrl : R.drawable.user_solid_full)
+                        .circleCrop()
+                        .placeholder(R.drawable.user_solid_full)
+                        .into(profileAvatar);
 
-        totalSpending = (int) profileService.getUserTotalSpending();
+                loadUserSpendingMilestone();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isAdded()) {
+                    Toast.makeText(getContext(), "Lỗi tải thông tin: " + message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void loadUserSpendingMilestone() {
+        totalSpending = (int) profileService.getUserTotalSpending();
+
+        List<Integer> milestoneColors = Arrays.asList(
+                0xFF4A148C, // Square: Tím đậm
+                0xFF800000, // Pentagon: Đỏ đô
+                0xFFEAB308  // Hexagon: Vàng đậm
+        );
+
         AtomicInteger index = new AtomicInteger(0);
         List<AchievementProgressBar.Milestone> milestones = spendingMilestones.stream()
-                .map(value -> new AchievementProgressBar.Milestone(
-                        (float) value / maxSpendingMilestone,
-                        String.format("%,d", value).replace(',', '.'),
-                        milestoneIcons.get(index.getAndIncrement())))
+                .map(value -> {
+                    int i = index.getAndIncrement();
+                    return new AchievementProgressBar.Milestone(
+                            (float) value / maxSpendingMilestone,
+                            String.format("%,d", value).replace(',', '.'),
+                            milestoneIcons.get(i),
+                            milestoneColors.get(i));
+                })
                 .collect(Collectors.toList());
         achievementBar.setMilestones(milestones);
 
         float progress = (float) totalSpending / maxSpendingMilestone;
-        int badgeId = R.drawable.apple_brands_solid_full;
-        for (AchievementProgressBar.Milestone m : milestones) {
-            if (m.fraction < progress) badgeId = m.iconResId;
+        int badgeId = R.drawable.square_solid_full;
+        int badgeColor = 0xFF4A148C; // Mặc định: Tím đậm (Square/Mốc 0)
+
+        if (progress >= (float) spendingMilestones.get(2) / maxSpendingMilestone) {
+            badgeId = milestoneIcons.get(2);
+            badgeColor = 0xFFEAB308; // Hexagon: Vàng đậm
+        } else if (progress >= (float) spendingMilestones.get(1) / maxSpendingMilestone) {
+            badgeId = milestoneIcons.get(1);
+            badgeColor = 0xFF800000; // Pentagon: Đỏ đô
+        } else {
+            badgeId = milestoneIcons.get(0);
+            badgeColor = 0xFF4A148C; // Square: Tím đậm
         }
+
         badgeImage.setImageResource(badgeId);
+        badgeImage.setImageTintList(android.content.res.ColorStateList.valueOf(badgeColor));
         achievementBar.setProgress(progress);
 
         totalSpendingTV.setText(String.format("%,dđ", totalSpending).replace(',', '.'));
@@ -138,6 +178,7 @@ public class ProfileFragment extends Fragment {
         viewNotificationBtn = view.findViewById(R.id.profile_notification_btn);
         logOutBtn           = view.findViewById(R.id.profile_logout_btn);
         btnMemberCard       = view.findViewById(R.id.btnMemberCard);
+        btnSettings         = view.findViewById(R.id.btnProfileSettings);
 
         btnDoiQua           = view.findViewById(R.id.btnDoiQua);
         btnMyRewards        = view.findViewById(R.id.btnMyRewards);
@@ -179,6 +220,12 @@ public class ProfileFragment extends Fragment {
         // Thông tin
         editProfileBtn.setOnClickListener(v ->
                 startActivity(new Intent(getContext(), EditProfileActivity.class)));
+
+        // Cài đặt
+        if (btnSettings != null) {
+            btnSettings.setOnClickListener(v ->
+                    startActivity(new Intent(getContext(), SettingsActivity.class)));
+        }
 
         // Giao dịch (tạm thời toast)
         viewTransactionBtn.setOnClickListener(v ->

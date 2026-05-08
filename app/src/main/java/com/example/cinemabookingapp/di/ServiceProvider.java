@@ -50,7 +50,7 @@ public class ServiceProvider {
 
     public UploadService getUploadService(){
         if (uploadService == null) {
-            uploadService = new UploadService();
+            uploadService = new UploadService(appContext);
         }
         return uploadService;
     }

@@ -14,6 +14,8 @@ public class User {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+    public String birthDate;
+    public String gender;
 
     public User() {
     }

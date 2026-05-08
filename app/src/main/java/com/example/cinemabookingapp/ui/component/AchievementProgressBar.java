@@ -38,11 +38,18 @@ public class AchievementProgressBar extends View {
         public final String label;
         /** Drawable resource id of the icon rendered above the dot */
         public final int    iconResId;
+        /** Optional color to tint the icon */
+        public final Integer tintColor;
 
         public Milestone(float fraction, String label, int iconResId) {
+            this(fraction, label, iconResId, null);
+        }
+
+        public Milestone(float fraction, String label, int iconResId, Integer tintColor) {
             this.fraction  = Math.max(0f, Math.min(1f, fraction));
             this.label     = label;
             this.iconResId = iconResId;
+            this.tintColor = tintColor;
         }
     }
 
@@ -289,12 +296,21 @@ public class AchievementProgressBar extends View {
         iconBitmaps = new Bitmap[milestones.size()];
 
         for (int i = 0; i < milestones.size(); i++) {
-            int resId = milestones.get(i).iconResId;
+            Milestone m = milestones.get(i);
+            int resId = m.iconResId;
             if (resId == 0) continue;
             try {
                 // AppCompatResources handles VectorDrawable on all API levels
                 Drawable drawable = AppCompatResources.getDrawable(getContext(), resId);
                 if (drawable == null) continue;
+
+                // Apply tint if provided
+                if (m.tintColor != null) {
+                    androidx.core.graphics.drawable.DrawableCompat.setTint(
+                            androidx.core.graphics.drawable.DrawableCompat.wrap(drawable.mutate()),
+                            m.tintColor
+                    );
+                }
 
                 // Give the drawable explicit bounds before rasterising
                 drawable.setBounds(0, 0, px, px);

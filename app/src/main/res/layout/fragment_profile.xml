@@ -26,14 +26,14 @@
             android:textColor="#111111"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-medium" />
+            android:fontFamily="sans-serif-light" />
 
         <ImageView
             android:id="@+id/btnProfileSettings"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="6dp"
-            android:src="@drawable/ic_settings_solid"
+            android:src="@drawable/gear_solid_full"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="#333333" />
     </LinearLayout>
@@ -97,10 +97,10 @@
 
                         <ImageView
                             android:id="@+id/profile_customer_badge"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_marginEnd="4dp"
-                            android:src="@drawable/ic_small_star" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="6dp"
+                            android:src="@drawable/apple_brands_solid_full" />
 
                         <TextView
                             android:id="@+id/profile_user_name"
@@ -130,11 +130,12 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🎁 "
-                            android:textSize="13sp" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:padding="2dp"
+                            android:src="@drawable/star_solid_full"
+                            app:tint="#E8640C" />
 
                         <TextView
                             android:id="@+id/tvStarCount"
@@ -209,7 +210,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginEnd="6dp"
-                            android:src="@drawable/ic_pen_note"
+                            android:src="@drawable/circle_info_solid_full"
                             app:tint="#555555" />
 
                         <TextView
@@ -327,8 +328,8 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_notification"
-                        app:tint="#888888" />
+                        android:src="@drawable/coins_solid_full"
+                        app:tint="#E8640C" />
 
                     <TextView
                         android:id="@+id/profile_total_spending"
@@ -381,7 +382,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:padding="16dp"
-                            android:src="@drawable/ic_small_star"
+                            android:src="@drawable/retweet_solid_full"
                             app:tint="#FFD700" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -416,7 +417,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:padding="16dp"
-                            android:src="@drawable/ic_scan_qr"
+                            android:src="@drawable/gift_solid_full"
                             app:tint="#FFD700" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -451,7 +452,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:padding="16dp"
-                            android:src="@drawable/ic_notification"
+                            android:src="@drawable/gem_solid_full"
                             app:tint="#40E0D0" />
                     </com.google.android.material.card.MaterialCardView>
 

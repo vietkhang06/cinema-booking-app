@@ -49,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void updateUser(User user, ResultCallback<User> callback) {
         firestore.collection(FirestoreCollections.USERS)
                 .document(user.uid)
-                .set(user, SetOptions.mergeFields("phone", "avatarUrl", "name"))
+                .set(user, SetOptions.mergeFields("phone", "avatarUrl", "name", "birthDate", "gender"))
                 .addOnSuccessListener((a) -> {
                     callback.onSuccess(user);
                 })

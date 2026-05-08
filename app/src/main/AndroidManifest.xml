@@ -108,6 +108,10 @@
             android:name=".ui.customer.profile.EditProfileActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.customer.profile.SettingsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

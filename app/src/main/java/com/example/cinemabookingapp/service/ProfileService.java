@@ -28,19 +28,25 @@ public class ProfileService {
         userRepo = new UserRepositoryImpl();
         firestore = FirebaseFirestore.getInstance();
     }
-    public User getUserProfile(){
-        return authService.getCurrentAuthUser();
+    public void getUserProfile(ResultCallback<User> callback) {
+        authService.getCurrentAuthUser(callback);
     }
 
-    public void updateUserProfile(User user){
+    public User getCachedProfile() {
+        return authService.getCachedUser();
+    }
+
+    public void updateUserProfile(User user, ResultCallback<User> callback){
         userRepo.updateUser(user, new ResultCallback<User>() {
             @Override
             public void onSuccess(User data) {
-                authService.currentAuthUser = data;
+                authService.setCurrentAuthUser(data);
+                if (callback != null) callback.onSuccess(data);
             }
 
             @Override
             public void onError(String message) {
+                if (callback != null) callback.onError(message);
             }
         });
     }
@@ -50,7 +56,7 @@ public class ProfileService {
             QuerySnapshot querySnapshot = Tasks.await(
                     firestore.collection(FirestoreCollections.BOOKINGS)
                             .where(Filter.and(
-                                    Filter.equalTo("userId", getUserProfile().uid),
+                                    Filter.equalTo("userId", getCachedProfile().uid),
                                     Filter.equalTo("bookingStatus", "confirmed")
                             )).get()
             );
