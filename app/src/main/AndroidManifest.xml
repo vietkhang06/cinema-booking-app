@@ -68,6 +68,8 @@
         <activity
             android:name=".ui.customer.BookingConfirmActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity android:name=".ui.customer.cine_shop.CineCartActivity" android:exported="false" />
+        <activity android:name=".ui.customer.cine_shop.CineCheckoutActivity" android:exported="false" />
 
         <!-- STAFF -->
         <activity android:name=".ui.staff.StaffDashboardActivity" android:exported="false" />
