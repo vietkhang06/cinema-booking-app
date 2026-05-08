@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.AuthActivity;
 import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.ProfileService;
 import com.google.android.gms.tasks.Task;
@@ -139,8 +140,17 @@ public class EditProfileActivity extends AuthActivity {
     private void saveChanges(){
         User user = profileService.getUserProfile();
 
-        String avatarUrl = ServiceProvider.getInstance().getUploadService().uploadImage(s_profileUri);
-        user.avatarUrl = avatarUrl == null || avatarUrl.isBlank() ? user.avatarUrl : avatarUrl;
+        ServiceProvider.getInstance().getUploadService().uploadImage(s_profileUri, new ResultCallback<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                user.avatarUrl = uri == null ? user.avatarUrl : uri.toString();
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        });
+//        user.avatarUrl = avatarUrl == null || avatarUrl.isBlank() ? user.avatarUrl : avatarUrl;
         user.phone = phoneInputTV.getText().toString().isBlank() ? user.phone : phoneInputTV.getText().toString();
         user.name = usernameInputTV.getText().toString().isBlank() ? user.name : usernameInputTV.getText().toString();
 

@@ -2,6 +2,7 @@ package com.example.cinemabookingapp.ui.component.EInvoice;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,10 +13,13 @@ import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.service.InvoiceService;
+import com.example.cinemabookingapp.ui.component.EInvoice.adapter.InvoiceSnackItemAdapter;
+import com.example.cinemabookingapp.ui.component.EInvoice.model.InvoiceSnackItem;
 import com.example.cinemabookingapp.utils.DateTimeConverter;
 import com.example.cinemabookingapp.utils.QRCodeGenerator;
 
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class EInvoiceView extends FrameLayout {
     public EInvoiceView(Context context, AttributeSet attrs){
@@ -51,7 +55,7 @@ public class EInvoiceView extends FrameLayout {
     }
 
     void bindViewData(InvoiceService.InvoiceDetail invoiceDetail){
-
+        Log.i("BRUH", invoiceDetail.booking.bookingId);
         invoiceIdTV.setText(invoiceDetail.booking.bookingId);
         try {
             invoiceIdQR.setImageBitmap(QRCodeGenerator.generateQRCodeFromString(invoiceDetail.booking.bookingId));
@@ -61,17 +65,18 @@ public class EInvoiceView extends FrameLayout {
         createDateTimeTV.setText(DateTimeConverter.convertToDateTimeString(invoiceDetail.booking.createdAt));
         
         movieNameTV.setText(invoiceDetail.booking.movieTitleSnapshot);
-        movieGernesTV.setText(String.join(", ", invoiceDetail.movie.genres));
+//        if(invoiceDetail.movie.genres != null)  movieGernesTV.setText(String.join(", ", invoiceDetail.movie.genres));
         Glide.with(this)
                 .load(invoiceDetail.movie.posterUrl)
                 .into(movieBannerImage);
+
 
 //        cinemaNameTV.setText();
         showtimeTV.setText(DateTimeConverter.convertToDateTimeString(invoiceDetail.showtime.startAt));
         bookingSeatsTV.setText(String.join(",", invoiceDetail.booking.seatCodes));
 
         seatsPriceTV.setText(String.format(Locale.ENGLISH, "%,dvnd", (int) invoiceDetail.booking.subtotal));
-//        snackTotalPriceTV.setText();
+
         discountTV.setText(String.format("%,dvnd",(int) invoiceDetail.booking.discount));
         totalPriceTV.setText(String.format("%,dvnd",(int) invoiceDetail.booking.total));
         discountTV.setText(String.format("%,dvnd",(int) invoiceDetail.booking.discount));
@@ -79,6 +84,21 @@ public class EInvoiceView extends FrameLayout {
         paymentMethodTV.setText(invoiceDetail.booking.paymentMethod);
 //        transactionIdTV.setText(invoiceDetail.booking);
 
+        if(invoiceDetail.snackOrder != null && invoiceDetail.snackItems != null){
+
+            snackListView.setAdapter(new InvoiceSnackItemAdapter(invoiceDetail.snackItems.stream()
+                    .map(s -> {
+                        String[] a = s.split(",");
+                        InvoiceSnackItem item = new InvoiceSnackItem(
+                                a[0],
+                                Integer.parseInt(a[1]),
+                                Integer.parseInt(a[2])
+                        );
+                        return item;
+                    }).collect(Collectors.toList())
+            ));
+//            snackTotalPriceTV.setText();
+        }
     }
 
     InvoiceService.InvoiceDetail mBooking;

@@ -2,6 +2,7 @@ package com.example.cinemabookingapp.ui.staff;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,8 +104,20 @@ public class StaffInvoiceActivity extends AuthActivity {
                     finish();
                     return;
                 }
-                invoiceDetail = invoiceService.getInvoiceDetail(invoiceId);
-                bindDataView(invoiceDetail);
+
+                invoiceService.getInvoiceDetail(invoiceId, new ResultCallback<InvoiceService.InvoiceDetail>() {
+                    @Override
+                    public void onSuccess(InvoiceService.InvoiceDetail data) {
+                        Log.i("BRUH", data.booking.bookingId);
+                        bindDataView(data);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("BRUH", message);
+                    }
+                });
+
             }
 
             @Override

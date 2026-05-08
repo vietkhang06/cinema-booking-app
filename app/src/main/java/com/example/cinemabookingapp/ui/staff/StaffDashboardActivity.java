@@ -36,8 +36,12 @@ public class StaffDashboardActivity extends AuthActivity {
 
     private void bindActions() {
         checkInvoiceButton.setOnClickListener(v -> {
-            openGoogleScanner();
+//            openGoogleScanner();
+            Map<String, String> bundle = new HashMap<>();
+            bundle.put("invoiceId", "booking_a21c95b2");
+            AppNavigator.navigateWithData(this, StaffInvoiceActivity.class, bundle);
         });
+
     }
 
     void openGoogleScanner(){

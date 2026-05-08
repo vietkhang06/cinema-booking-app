@@ -21,6 +21,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.lang.Record;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,6 @@ public class InvoiceService {
         // snack name,price,quantity
         public List<String> snackItems;
         public Movie movie;
-
 
     }
     public static final String logTag = "Invoice Service";
@@ -60,68 +61,71 @@ public class InvoiceService {
 
     public void getInvoiceFromId(String invoiceId, ResultCallback<Booking> callback){
         firestore.collection(FirestoreCollections.BOOKINGS)
-                .document(invoiceId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    callback.onSuccess(documentSnapshot.toObject(Booking.class));
-                })
-                .addOnFailureListener(e -> {
-                    callback.onError(e.getMessage());
-                });
-//        try {
-//            DocumentSnapshot query = Tasks.await(firestore.collection(FirestoreCollections.BOOKINGS)
-//                    .document(invoiceId).get());
-//            return query.toObject(Booking.class);
-//        }catch (Exception e){
-//            Log.e(logTag, e.getMessage());
-//            return null;
-//        }
+            .document(invoiceId).get()
+            .addOnSuccessListener(documentSnapshot -> {
+                callback.onSuccess(documentSnapshot.toObject(Booking.class));
+            })
+            .addOnFailureListener(e -> {
+                callback.onError(e.getMessage());
+            });
     }
 
-    @Nullable
-    public InvoiceDetail getInvoiceDetail(String invoiceId){
-        try {
+    public void getInvoiceDetail(String invoiceId, ResultCallback<InvoiceDetail> callback){
+
             InvoiceDetail invoiceDetail = new InvoiceDetail();
 
-            invoiceDetail.booking = Tasks.await(firestore.collection(FirestoreCollections.BOOKINGS).document(invoiceId).get()).toObject(Booking.class);
+            firestore.collection(FirestoreCollections.BOOKINGS).document(invoiceId).get()
+                    .continueWithTask(task -> {
+                        invoiceDetail.booking = task.getResult().toObject(Booking.class);
+                        return firestore.collection(FirestoreCollections.SHOWTIMES).document(invoiceDetail.booking.showtimeId).get();
 
-            Tasks.await(Tasks.whenAll(
-                firestore.collection(FirestoreCollections.SHOWTIMES).document(invoiceDetail.booking.showtimeId).get()
-                        .addOnSuccessListener(documentSnapshot ->
-                                invoiceDetail.showtime = documentSnapshot.toObject(Showtime.class)
-                        ),
-                firestore.collection(FirestoreCollections.SNACK_ORDERS).document(invoiceDetail.booking.snackOrderId).get()
-                        .addOnSuccessListener(documentSnapshot ->
-                                invoiceDetail.snackOrder = documentSnapshot.toObject(SnackOrder.class)
-                        )
-            ));
+                    })
+                    .continueWithTask(task -> {
+                        invoiceDetail.showtime = task.getResult().toObject(Showtime.class);
+                        return firestore.collection(FirestoreCollections.MOVIES)
+                                .document(invoiceDetail.showtime.movieId)
+                                .get();
+                    })
+                    .addOnSuccessListener(documentSnapshot -> {
+                        invoiceDetail.movie = documentSnapshot.toObject(Movie.class);
+                        if(invoiceDetail.booking.snackOrderId != null && !invoiceDetail.booking.snackOrderId.isBlank()){
+                            firestore.collection(FirestoreCollections.SNACK_ORDERS)
+                                    .document(invoiceDetail.booking.snackOrderId)
+                                    .get()
+                                .continueWithTask(task -> {
+                                    invoiceDetail.snackOrder = task.getResult().toObject(SnackOrder.class);
+                                    if(invoiceDetail.snackOrder == null)
+                                        throw new Exception("Nack Order not found");
+                                    return firestore.collection(FirestoreCollections.SNACKS)
+                                            .whereIn("snackId", invoiceDetail.snackOrder.items.stream().map(item -> item.snackId).collect(Collectors.toList()))
+                                            .get();
+                                })
+                                .addOnSuccessListener(documentSnapshots -> {
+                                    List<Snack> snacks = documentSnapshots.toObjects(Snack.class);
 
-            Tasks.await(Tasks.whenAllComplete(
-                invoiceDetail.snackOrder.items.stream().filter(snackOrderItem -> snackOrderItem.snackId != null && !snackOrderItem.snackId.isBlank())
-                        .map(snackOrderItem ->
-                            firestore.collection(FirestoreCollections.SNACKS).document(snackOrderItem.snackId).get())
-                        .collect(Collectors.toList())
-            ).addOnSuccessListener((tasks) -> {
-                invoiceDetail.snackItems = tasks.stream()
-                        .filter(task -> task.isSuccessful())
-                        .map(task -> {
-                            DocumentSnapshot documentSnapshot = (DocumentSnapshot) task.getResult();
-                            Snack snack = documentSnapshot.toObject(Snack.class);
-                            return String.format("%s,%s,", snack.name, snack.price);
-                        })
-                        .collect(Collectors.toList());
+                                    invoiceDetail.snackItems = new ArrayList<>();
+                                    for(int i =0; i<invoiceDetail.snackOrder.items.size(); i++){
+                                        invoiceDetail.snackItems.add(String.format("%s,%s,%s", snacks.get(i).name, invoiceDetail.snackOrder.items.get(i).quantity, snacks.get(i).price));
+                                    }
 
-                for(int i = 0; i < invoiceDetail.snackOrder.items.size(); i++){
-                    invoiceDetail.snackItems.set(i, invoiceDetail.snackItems.get(i) + invoiceDetail.snackOrder.items.get(i).quantity);
-                }
-            }));
-
-            invoiceDetail.movie = Tasks.await(firestore.collection(FirestoreCollections.MOVIES).document(invoiceDetail.showtime.movieId).get()).toObject(Movie.class);
-
-            return invoiceDetail;
-        }catch (Exception e){
-            Log.e(logTag, e.getMessage());
-            return null;
-        }
+                                    callback.onSuccess(invoiceDetail);
+                                })
+                                .addOnFailureListener(e -> {
+                                    e.printStackTrace();
+                                    callback.onSuccess(invoiceDetail);
+                                    callback.onError(e.getMessage());
+                                });
+                        }
+                        else{
+                            callback.onSuccess(invoiceDetail);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        callback.onError(e.toString());
+                        e.printStackTrace();
+                    });
     }
+
+
 
 }

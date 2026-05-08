@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
+import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.ui.admin.AdminDashboardActivity;
 import com.example.cinemabookingapp.ui.auth.ForgotPasswordActivity;
 import com.example.cinemabookingapp.ui.auth.LoginActivity;
@@ -68,7 +70,12 @@ public final class AppNavigator {
     }
 
     public static void goToHomeByRole(Activity activity, String role) {
-        String safeRole = role == null ? "customer" : role.trim().toLowerCase();
+        User user = ServiceProvider.getInstance().getAuthenticationService().getCurrentAuthUser();
+
+        if(user == null)
+            return;
+
+        String safeRole = user.role == null ? "customer" : user.role.trim().toLowerCase();
 
         if ("admin".equals(safeRole)) {
             goToAdminDashboard(activity);

@@ -16,7 +16,9 @@ import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.AuthenticationService;
 import com.example.cinemabookingapp.service.ProfileService;
 import com.example.cinemabookingapp.ui.component.AchievementProgressBar;
+import com.example.cinemabookingapp.utils.QRCodeGenerator;
 import com.google.android.material.card.MaterialCardView;
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class ProfileFragment extends Fragment {
     }
 
     TextView userNameTV, totalSpendingTV;
-    ImageView profileAvatar, badgeImage;
+    ImageView profileAvatar, badgeImage, userProfileQRBitmap;
     MaterialCardView editProfileBtn, viewTransactionBtn, viewNotificationBtn;
     MaterialCardView logOutBtn;
     MaterialCardView hotlineViewBtn;
@@ -76,6 +78,12 @@ public class ProfileFragment extends Fragment {
                 .load(profileData.avatarUrl != null ? profileData.avatarUrl : R.drawable.user_solid_full)
                 .into(profileAvatar);
 
+//        try {
+//            Glide.with(this)
+//                  .load(QRCodeGenerator.generateQRCodeFromString(profileData.uid))
+//                  .into();
+//        } catch (WriterException ignored) { }
+
         totalSpending = (int) profileService.getUserTotalSpending();
     }
 
@@ -88,6 +96,7 @@ public class ProfileFragment extends Fragment {
                         String.format("%,d", value).replace(',', '.'),
                         milestoneIcons.get(index.getAndIncrement()))
             ).collect(Collectors.toList());
+
         achievementBar.setMilestones(milestones);
 
 
@@ -95,7 +104,7 @@ public class ProfileFragment extends Fragment {
         float progress = (float) totalSpending/maxSpendingMilestone;
         int badgeId = R.drawable.apple_brands_solid_full;
         for (AchievementProgressBar.Milestone m: milestones) {
-            if(m.fraction < progress){
+            if(m.fraction <= progress){
                 badgeId = m.iconResId;
             }
         }

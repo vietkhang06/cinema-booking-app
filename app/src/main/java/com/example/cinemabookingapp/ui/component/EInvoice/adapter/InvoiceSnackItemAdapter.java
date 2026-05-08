@@ -31,6 +31,7 @@ public class InvoiceSnackItemAdapter extends RecyclerView.Adapter<InvoiceSnackIt
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         InvoiceSnackItem item = itemList.get(position);
+
         holder.itemNameAndQuantityTextView.setText(String.format("%sx%s", item.itemName, item.quantity));
         holder.itemPriceTextView.setText(String.format("%,d vnd", item.price));
     }
