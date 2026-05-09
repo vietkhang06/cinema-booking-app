@@ -41,8 +41,10 @@ import com.example.cinemabookingapp.domain.model.Banner;
 import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
-import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaFragment;
+
+import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaContentFragment;
 import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
+import com.example.cinemabookingapp.ui.customer.shop.CineShopFragment;
 
 
 public class HomeActivity extends BaseActivity {
@@ -477,7 +479,7 @@ public class HomeActivity extends BaseActivity {
         scrollContent.setVisibility(View.GONE);
         fragmentContainer.setVisibility(View.VISIBLE);
 
-        Fragment fragment = new CinemaFragment();
+        Fragment fragment = new CinemaContentFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
@@ -509,7 +511,7 @@ public class HomeActivity extends BaseActivity {
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
 
-        applyBottomNavState(2); // Vị trí Cine Shop trên Nav
+        applyBottomNavState(2);
     }
 
     private void showRapPhimScreen() {
