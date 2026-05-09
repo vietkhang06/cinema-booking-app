@@ -27,7 +27,7 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CinemaFragment extends Fragment implements CinemaFeedAdapter.OnItemClickListener {
+public class CinemaContentFragment extends Fragment implements CinemaFeedAdapter.OnItemClickListener {
 
     private enum Tab {
         COMMENT, NEWS, PERSON
@@ -43,7 +43,7 @@ public class CinemaFragment extends Fragment implements CinemaFeedAdapter.OnItem
     private final CinemaContentRepositoryImpl repository = new CinemaContentRepositoryImpl();
     private Tab currentTab = Tab.COMMENT;
 
-    public CinemaFragment() {
+    public CinemaContentFragment() {
         super(R.layout.fragment_cinema_content);
     }
 
