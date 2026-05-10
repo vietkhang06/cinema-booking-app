@@ -33,24 +33,49 @@ public class AuthenticationService {
         userRepo = new UserRepositoryImpl();
     }
 
-    User currentAuthUser;
-    public User getCurrentAuthUser(){
-        if(auth.getCurrentUser() == null){
-            return null;
+    private User currentAuthUser;
+    public void getCurrentAuthUser(ResultCallback<User> callback) {
+        FirebaseUser fUser = auth.getCurrentUser();
+        if (fUser == null) {
+            callback.onSuccess(null);
+            return;
         }
 
-        if(currentAuthUser == null)
-            userRepo.getUserById(auth.getUid(), new ResultCallback<User>() {
-                @Override
-                public void onSuccess(User data) {
-                    currentAuthUser = data;
-                }
+        if (currentAuthUser != null && currentAuthUser.uid.equals(fUser.getUid())) {
+            callback.onSuccess(currentAuthUser);
+            return;
+        }
 
-                @Override
-                public void onError(String message) {
-                }
-            });
+        userRepo.getUserById(fUser.getUid(), new ResultCallback<User>() {
+            @Override
+            public void onSuccess(User data) {
+                currentAuthUser = data;
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(String message) {
+                callback.onError(message);
+            }
+        });
+    }
+
+    public void getCurrentAuthUser() {
+        getCurrentAuthUser(new ResultCallback<User>() {
+            @Override
+            public void onSuccess(User data) {}
+
+            @Override
+            public void onError(String message) {}
+        });
+    }
+
+    public User getCachedUser() {
         return currentAuthUser;
+    }
+
+    public void setCurrentAuthUser(User user) {
+        this.currentAuthUser = user;
     }
 
     public void removeCurrentAuthUser(){
@@ -190,6 +215,14 @@ public class AuthenticationService {
 
     public Task<Void> forgetAndResetPassword(@NonNull String email) {
         return auth.sendPasswordResetEmail(email);
+    }
+
+    public Task<Void> updatePassword(String newPassword) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            return user.updatePassword(newPassword);
+        }
+        return com.google.android.gms.tasks.Tasks.forException(new Exception("User not authenticated"));
     }
 
     public void logOut() {

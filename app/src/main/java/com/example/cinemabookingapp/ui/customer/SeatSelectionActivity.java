@@ -113,29 +113,46 @@ public class SeatSelectionActivity extends AppCompatActivity {
     private void loadSeats() {
         if (showtimeId == null) { loadDummySeats(); return; }
 
-        FirebaseFirestore.getInstance()
-                .collection("seats")
-                .whereEqualTo("showtimeId", showtimeId)
-                .get()
-                .addOnSuccessListener(snap -> {
+        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+                com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
+                .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+
+        seatApi.getSeatsByShowtimeId(showtimeId).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<SeatDTO> apiSeats = response.body().getData();
                     seatList.clear();
-                    for (QueryDocumentSnapshot doc : snap) {
-                        SeatDTO seat = doc.toObject(SeatDTO.class);
-                        seat.isSelected = false;
-                        seatList.add(seat);
+                    
+                    if (apiSeats != null && !apiSeats.isEmpty()) {
+                        for (SeatDTO seat : apiSeats) {
+                            seat.isSelected = false;
+                            seatList.add(seat);
+                        }
+                        // Sort A1 → F8
+                        seatList.sort((a, b) -> {
+                            if (a.rowName == null || b.rowName == null) return 0;
+                            int r = a.rowName.compareTo(b.rowName);
+                            return r != 0 ? r : Integer.compare(a.columnNo, b.columnNo);
+                        });
+                        adapter.setSeats(seatList);
+                    } else {
+                        Toast.makeText(SeatSelectionActivity.this, "Chưa có dữ liệu ghế cho suất chiếu này", Toast.LENGTH_SHORT).show();
+                        loadDummySeats();
                     }
-                    // Sort A1 → F8
-                    seatList.sort((a, b) -> {
-                        if (a.rowName == null || b.rowName == null) return 0;
-                        int r = a.rowName.compareTo(b.rowName);
-                        return r != 0 ? r : Integer.compare(a.columnNo, b.columnNo);
-                    });
-                    adapter.setSeats(seatList);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    String msg = response.body() != null ? response.body().getMessage() : "Lỗi server (" + response.code() + ")";
+                    Toast.makeText(SeatSelectionActivity.this, msg, Toast.LENGTH_SHORT).show();
                     loadDummySeats();
-                });
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> call, Throwable t) {
+                Toast.makeText(SeatSelectionActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadDummySeats();
+            }
+        });
     }
 
     private void loadDummySeats() {

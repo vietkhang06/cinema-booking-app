@@ -1,5 +1,7 @@
 package com.example.cinemabookingapp.data.remote.datasource;
 
+import android.util.Log;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -16,19 +18,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieRemoteDataSource {
-
+    private static final String TAG = "MovieRemoteDataSource";
     private static final String COLLECTION_MOVIES = "movies";
 
     private final FirebaseFirestore firestore;
+    private final com.example.cinemabookingapp.data.remote.api.MovieApiService movieApi;
 
     public MovieRemoteDataSource() {
-        this(FirebaseFirestore.getInstance());
+        this(FirebaseFirestore.getInstance(), com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance().create(com.example.cinemabookingapp.data.remote.api.MovieApiService.class));
     }
 
-    public MovieRemoteDataSource(FirebaseFirestore firestore) {
+    public MovieRemoteDataSource(FirebaseFirestore firestore, com.example.cinemabookingapp.data.remote.api.MovieApiService movieApi) {
         this.firestore = firestore;
+        this.movieApi = movieApi;
     }
 
     public void createMovie(Movie movie, ResultCallback<Movie> callback) {
@@ -78,84 +85,87 @@ public class MovieRemoteDataSource {
             return;
         }
 
-        firestore.collection(COLLECTION_MOVIES)
-                .document(movieId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists() || !isVisible(documentSnapshot)) {
-                        if (callback != null) callback.onError("Không tìm thấy phim");
-                        return;
-                    }
+        Log.d(TAG, "Requesting movie by ID: " + movieId);
+        movieApi.getMovieById(movieId).enqueue(new Callback<ApiResponse<Movie>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Movie>> call, Response<ApiResponse<Movie>> response) {
+                Log.d(TAG, "Response Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Log.d(TAG, "Movie fetched successfully: " + response.body().getData().title);
+                    if (callback != null) callback.onSuccess(response.body().getData());
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage() : "Không tìm thấy phim (Code: " + response.code() + ")";
+                    Log.e(TAG, "API Error: " + msg);
+                    if (callback != null) callback.onError(msg);
+                }
+            }
 
-                    if (callback != null) {
-                        callback.onSuccess(mapSnapshotToMovie(documentSnapshot));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (callback != null) {
-                        callback.onError(messageOrDefault(e, "Không thể tải phim"));
-                    }
-                });
+            @Override
+            public void onFailure(Call<ApiResponse<Movie>> call, Throwable t) {
+                Log.e(TAG, "Network Failure: " + t.getMessage());
+                if (callback != null) callback.onError("Không thể kết nối Server. Vui lòng kiểm tra mạng.");
+            }
+        });
     }
 
     public void getAllMovies(ResultCallback<List<Movie>> callback) {
-        firestore.collection(COLLECTION_MOVIES)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Movie> movies = new ArrayList<>();
-
-                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                        if (!isVisible(document)) {
-                            continue;
-                        }
-
-                        Movie movie = mapSnapshotToMovie(document);
-                        if (movie != null) {
-                            movies.add(movie);
-                        }
-                    }
-
-                    movies.sort(new Comparator<Movie>() {
-                        @Override
-                        public int compare(Movie a, Movie b) {
-                            return Long.compare(b.updatedAt, a.updatedAt);
-                        }
-                    });
-
+        Log.d(TAG, "Requesting all movies");
+        movieApi.getAllMovies(0, 20).enqueue(new Callback<ApiResponse<List<Movie>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
+                Log.d(TAG, "Response Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<Movie> data = response.body().getData();
+                    Log.d(TAG, "Movies fetched: " + (data != null ? data.size() : 0));
+                    if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải phim (Code: " + response.code() + ")";
+                    Log.e(TAG, "API Error: " + msg);
                     if (callback != null) {
-                        callback.onSuccess(movies);
+                        callback.onSuccess(new ArrayList<>()); // Tránh crash UI
+                        callback.onError(msg);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    if (callback != null) {
-                        callback.onError(messageOrDefault(e, "Không thể tải danh sách phim"));
-                    }
-                });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
+                Log.e(TAG, "Network Failure: " + t.getMessage());
+                if (callback != null) {
+                    callback.onError("Server hiện không khả dụng. Vui lòng thử lại sau.");
+                }
+            }
+        });
     }
 
     public void getMoviesByStatus(String status, ResultCallback<List<Movie>> callback) {
         final String normalizedStatus = normalizeStatus(status);
+        Log.d(TAG, "Requesting movies by status: " + normalizedStatus);
 
-        if (normalizedStatus == null || normalizedStatus.isEmpty()) {
-            getAllMovies(callback);
-            return;
-        }
-
-        getAllMovies(new ResultCallback<List<Movie>>() {
+        movieApi.getMoviesByStatus(normalizedStatus, 0, 20).enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
-            public void onSuccess(List<Movie> movies) {
-                List<Movie> filteredMovies = new ArrayList<>();
-                for (Movie movie : movies) {
-                    if (normalizedStatus.equals(normalizeStatus(readString(movie, "status")))) {
-                        filteredMovies.add(movie);
+            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
+                Log.d(TAG, "Response Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<Movie> data = response.body().getData();
+                    Log.d(TAG, "Movies found: " + (data != null ? data.size() : 0));
+                    if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải phim (Code: " + response.code() + ")";
+                    Log.e(TAG, "API Error: " + msg);
+                    if (callback != null) {
+                        callback.onSuccess(new ArrayList<>());
+                        callback.onError(msg);
                     }
                 }
-                if (callback != null) callback.onSuccess(filteredMovies);
             }
 
             @Override
-            public void onError(String errorMessage) {
-                if (callback != null) callback.onError(errorMessage);
+            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
+                Log.e(TAG, "Network Failure: " + t.getMessage());
+                if (callback != null) {
+                    callback.onError("Không thể tải phim theo trạng thái.");
+                }
             }
         });
     }

@@ -69,14 +69,18 @@ public class CinemaContentFragment extends Fragment implements CinemaFeedAdapter
     }
 
     private void setupRecyclerView() {
+        if (getContext() == null) return;
         adapter = new CinemaFeedAdapter(this);
-        rvFeed.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFeed.setAdapter(adapter);
     }
 
     private void bindActions() {
-        btnSearch.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), CinemaSearchActivity.class))
+        btnSearch.setOnClickListener(v -> {
+                if (getContext() != null) {
+                    startActivity(new Intent(getContext(), CinemaSearchActivity.class));
+                }
+            }
         );
 
         btnComment.setOnClickListener(v -> {
@@ -99,6 +103,8 @@ public class CinemaContentFragment extends Fragment implements CinemaFeedAdapter
         repository.getAll(new ResultCallback<List<CinemaContent>>() {
             @Override
             public void onSuccess(List<CinemaContent> data) {
+                if (!isAdded() || getContext() == null) return;
+                
                 allContents.clear();
                 if (data != null) {
                     allContents.addAll(data);
@@ -108,6 +114,8 @@ public class CinemaContentFragment extends Fragment implements CinemaFeedAdapter
 
             @Override
             public void onError(String message) {
+                if (!isAdded() || getContext() == null) return;
+                
                 tvEmpty.setVisibility(View.VISIBLE);
                 tvEmpty.setText(message == null || message.trim().isEmpty()
                         ? "Không thể tải nội dung điện ảnh"
@@ -162,18 +170,22 @@ public class CinemaContentFragment extends Fragment implements CinemaFeedAdapter
     }
 
     private void styleTab(MaterialButton button, boolean selected) {
+        if (getContext() == null) return;
+        
         if (selected) {
             button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1B141E")));
             button.setTextColor(Color.WHITE);
         } else {
             button.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black));
+            button.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
         }
     }
 
     @Override
     public void onItemClick(CinemaFeedItem item) {
-        Intent intent = new Intent(requireContext(), CinemaContentDetailActivity.class);
+        if (getContext() == null) return;
+        
+        Intent intent = new Intent(getContext(), CinemaContentDetailActivity.class);
         intent.putExtra(CinemaContentDetailActivity.EXTRA_ID, item.id);
         intent.putExtra(CinemaContentDetailActivity.EXTRA_TITLE, item.title);
         intent.putExtra(CinemaContentDetailActivity.EXTRA_TAG, item.tag);

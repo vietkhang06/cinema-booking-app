@@ -28,36 +28,50 @@ public class ProfileService {
         userRepo = new UserRepositoryImpl();
         firestore = FirebaseFirestore.getInstance();
     }
-    public User getUserProfile(){
-        return authService.getCurrentAuthUser();
+    public void getUserProfile(ResultCallback<User> callback) {
+        authService.getCurrentAuthUser(callback);
     }
 
-    public void updateUserProfile(User user){
+    public User getCachedProfile() {
+        return authService.getCachedUser();
+    }
+
+    public void updateUserProfile(User user, ResultCallback<User> callback){
         userRepo.updateUser(user, new ResultCallback<User>() {
             @Override
             public void onSuccess(User data) {
-                authService.currentAuthUser = data;
+                authService.setCurrentAuthUser(data);
+                if (callback != null) callback.onSuccess(data);
             }
 
             @Override
             public void onError(String message) {
+                if (callback != null) callback.onError(message);
             }
         });
     }
 
-    public double getUserTotalSpending(){
-        try {
-            QuerySnapshot querySnapshot = Tasks.await(
-                    firestore.collection(FirestoreCollections.BOOKINGS)
-                            .where(Filter.and(
-                                    Filter.equalTo("userId", getUserProfile().uid),
-                                    Filter.equalTo("bookingStatus", "confirmed")
-                            )).get()
-            );
-            return querySnapshot.toObjects(Booking.class).stream()
-                    .mapToDouble(b -> b.total)
-                    .sum();
-        }catch (Exception ignored){ }
-        return 0;
+    public void getUserTotalSpending(ResultCallback<Double> callback){
+        User cached = getCachedProfile();
+        if (cached == null || cached.uid == null) {
+            if (callback != null) callback.onSuccess(0.0);
+            return;
+        }
+
+        firestore.collection(FirestoreCollections.BOOKINGS)
+                .where(com.google.firebase.firestore.Filter.and(
+                        com.google.firebase.firestore.Filter.equalTo("userId", cached.uid),
+                        com.google.firebase.firestore.Filter.equalTo("bookingStatus", "confirmed")
+                ))
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    double total = querySnapshot.toObjects(Booking.class).stream()
+                            .mapToDouble(b -> b.total)
+                            .sum();
+                    if (callback != null) callback.onSuccess(total);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onSuccess(0.0); // Fallback to 0
+                });
     }
 }
