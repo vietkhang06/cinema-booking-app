@@ -3,6 +3,7 @@ package com.example.cinemabookingapp.ui.customer;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
@@ -44,7 +46,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaContentFragment;
 import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
-import com.example.cinemabookingapp.ui.customer.shop.CineShopFragment;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class HomeActivity extends BaseActivity {
@@ -110,9 +114,7 @@ public class HomeActivity extends BaseActivity {
 //        initBottomNav();
 
 //        applyBottomNavState(0);
-//        applyFilterStyle(currentMovieFilter);
         loadMoviesFromFirestore();
-
         initBannerUseCase();
         loadBannersFromFirestore();
     }
@@ -130,16 +132,13 @@ public class HomeActivity extends BaseActivity {
         rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
         rvMovies.setNestedScrollingEnabled(false);
         rvMovies.setAdapter(movieAdapter);
-        movieAdapter.setOnMovieClickListener(item -> openMovieDetail(item));
         movieAdapter.setOnMovieClickListener(item -> {
             Intent intent = new Intent(this, MovieDetailActivity.class);
-
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, item.getMovieId());
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE, item.getTitle());
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL, item.getImageUrl());
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_RATING, item.getRating());
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_AGE_RATING, item.getAgeRating());
-
             startActivity(intent);
         });
 
@@ -187,21 +186,30 @@ public class HomeActivity extends BaseActivity {
             public void onSuccess(List<Movie> movies) {
                 allMovies.clear();
 
-                if (movies != null) {
+                if (movies != null && !movies.isEmpty()) {
                     for (Movie movie : movies) {
                         HomeMovieItem item = mapMovieToHomeMovieItem(movie);
                         if (item != null) {
                             allMovies.add(item);
                         }
                     }
+                } else {
+                    Log.d("HomeActivity", "No movies received from API");
                 }
 
                 showMovies(currentMovieFilter);
+                
+                if (allMovies.isEmpty()) {
+                    showToast("Hiện không có phim nào để hiển thị");
+                }
             }
 
             @Override
             public void onError(String errorMessage) {
-                showToast(errorMessage != null ? errorMessage : "Không thể tải danh sách phim");
+                Log.e("HomeActivity", "Failed to load movies: " + errorMessage);
+                showToast("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
+                // Ensure UI is updated even on error (empty list)
+                showMovies(currentMovieFilter);
             }
         });
     }

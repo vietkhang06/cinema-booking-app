@@ -119,7 +119,23 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserSpendingMilestone() {
-        totalSpending = (int) profileService.getUserTotalSpending();
+        profileService.getUserTotalSpending(new ResultCallback<Double>() {
+            @Override
+            public void onSuccess(Double total) {
+                totalSpending = total.intValue();
+                updateSpendingUI();
+            }
+
+            @Override
+            public void onError(String message) {
+                totalSpending = 0;
+                updateSpendingUI();
+            }
+        });
+    }
+
+    private void updateSpendingUI() {
+        if (!isAdded()) return;
 
         List<Integer> milestoneColors = Arrays.asList(
                 0xFF4A148C, // Square: Tím đậm
@@ -142,17 +158,17 @@ public class ProfileFragment extends Fragment {
 
         float progress = (float) totalSpending / maxSpendingMilestone;
         int badgeId = R.drawable.square_solid_full;
-        int badgeColor = 0xFF4A148C; // Mặc định: Tím đậm (Square/Mốc 0)
+        int badgeColor = 0xFF4A148C;
 
         if (progress >= (float) spendingMilestones.get(2) / maxSpendingMilestone) {
             badgeId = milestoneIcons.get(2);
-            badgeColor = 0xFFEAB308; // Hexagon: Vàng đậm
+            badgeColor = 0xFFEAB308;
         } else if (progress >= (float) spendingMilestones.get(1) / maxSpendingMilestone) {
             badgeId = milestoneIcons.get(1);
-            badgeColor = 0xFF800000; // Pentagon: Đỏ đô
+            badgeColor = 0xFF800000;
         } else {
             badgeId = milestoneIcons.get(0);
-            badgeColor = 0xFF4A148C; // Square: Tím đậm
+            badgeColor = 0xFF4A148C;
         }
 
         badgeImage.setImageResource(badgeId);

@@ -1,42 +1,61 @@
 package com.example.cinemabookingapp.data.remote.datasource;
 
+import android.util.Log;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Cinema;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CinemaRemoteDataSource {
+    private static final String TAG = "CinemaRemoteDataSource";
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final com.example.cinemabookingapp.data.remote.api.CinemaApiService cinemaApi;
     private static final String COLLECTION = "cinemas";
+
+    public CinemaRemoteDataSource() {
+        this.cinemaApi = com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance().create(com.example.cinemabookingapp.data.remote.api.CinemaApiService.class);
+    }
 
     // =========================
     // GET ALL
     // =========================
     public void getAllCinemas(ResultCallback<List<Cinema>> callback) {
-        db.collection(COLLECTION)
-                .get()
-                .addOnSuccessListener(query -> {
-
-                    List<Cinema> list = new ArrayList<>();
-
-                    for (DocumentSnapshot doc : query.getDocuments()) {
-
-                        Cinema c = mapDocToCinema(doc);
-
-                        // ❗ lọc soft delete
-                        if (!c.deleted) {
-                            list.add(c);
-                        }
+        Log.d(TAG, "Requesting all cinemas");
+        cinemaApi.getAllCinemas().enqueue(new Callback<ApiResponse<List<Cinema>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Cinema>>> call, Response<ApiResponse<List<Cinema>>> response) {
+                Log.d(TAG, "Response Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<Cinema> data = response.body().getData();
+                    Log.d(TAG, "Cinemas fetched: " + (data != null ? data.size() : 0));
+                    if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải rạp (Code: " + response.code() + ")";
+                    Log.e(TAG, "API Error: " + msg);
+                    if (callback != null) {
+                        callback.onSuccess(new ArrayList<>());
+                        callback.onError(msg);
                     }
+                }
+            }
 
-                    callback.onSuccess(list);
-                })
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+            @Override
+            public void onFailure(Call<ApiResponse<List<Cinema>>> call, Throwable t) {
+                Log.e(TAG, "Network Failure: " + t.getMessage());
+                if (callback != null) {
+                    callback.onSuccess(new ArrayList<>());
+                    callback.onError("Không thể tải danh sách rạp phim.");
+                }
+            }
+        });
     }
 
     // =========================
@@ -73,17 +92,27 @@ public class CinemaRemoteDataSource {
     // GET BY ID
     // =========================
     public void getCinemaById(String id, ResultCallback<Cinema> callback) {
-        db.collection(COLLECTION)
-                .document(id)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) {
-                        callback.onError("Cinema không tồn tại");
-                        return;
-                    }
-                    callback.onSuccess(mapDocToCinema(doc));
-                })
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+        Log.d(TAG, "Requesting cinema by ID: " + id);
+        cinemaApi.getCinemaById(id).enqueue(new Callback<ApiResponse<Cinema>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Cinema>> call, Response<ApiResponse<Cinema>> response) {
+                Log.d(TAG, "Response Code: " + response.code());
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Log.d(TAG, "Cinema fetched: " + response.body().getData().name);
+                    if (callback != null) callback.onSuccess(response.body().getData());
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage() : "Không tìm thấy rạp (Code: " + response.code() + ")";
+                    Log.e(TAG, "API Error: " + msg);
+                    if (callback != null) callback.onError(msg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Cinema>> call, Throwable t) {
+                Log.e(TAG, "Network Failure: " + t.getMessage());
+                if (callback != null) callback.onError("Lỗi kết nối khi tải thông tin rạp.");
+            }
+        });
     }
 
     // =========================
