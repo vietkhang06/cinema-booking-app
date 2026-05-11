@@ -1,5 +1,6 @@
 package com.cinemabooking.backend.security;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
@@ -26,7 +27,6 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Bearer ")) {
-            logger.debug("Missing or invalid Authorization header format");
             filterChain.doFilter(request, response);
             return;
         }
@@ -34,29 +34,32 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         try {
-            // Xác thực token qua Firebase Admin SDK
+            // Check if Firebase is initialized to avoid static initialization errors
+            if (FirebaseApp.getApps().isEmpty()) {
+                logger.error("FirebaseApp is not initialized! Check FirebaseConfig.");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // Verify token via Firebase Admin SDK
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             
-            // Lấy thông tin cơ bản
             String uid = decodedToken.getUid();
             String email = decodedToken.getEmail();
-            String name = decodedToken.getName();
             
-            logger.info("Token verified successfully for user: UID={}, Email={}", uid, email);
+            logger.debug("Token verified successfully: UID={}, Email={}", uid, email);
 
-            // Gắn thông tin vào SecurityContext.
-            // Truyền trực tiếp FirebaseToken object làm credentials để Controller có thể truy xuất.
+            // Set authentication in SecurityContext
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(uid, decodedToken, Collections.emptyList());
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 
         } catch (Exception e) {
-            logger.error("Token verification failed: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"Invalid or expired Firebase token\"}");
-            return;
+            // We LOG the error but do NOT block the request here.
+            // This allows public endpoints to still work even if the client sends an expired token.
+            // Spring Security's authorization rules will block protected endpoints later if auth is missing.
+            logger.warn("Token verification failed (treating as anonymous): {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

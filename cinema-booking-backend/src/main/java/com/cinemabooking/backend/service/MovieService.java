@@ -27,41 +27,50 @@ public class MovieService {
      * Fetch all movies with lenient filtering (handles missing deleted/isActive fields).
      */
     public List<MovieDTO> getAllMovies(int page, int size) throws ExecutionException, InterruptedException {
-        logger.info("Fetching movies - page: {}, size: {}", page, size);
+        logger.info("Fetching movies from Firestore - page: {}, size: {}", page, size);
         
         try {
-            // We fetch all non-deleted movies. 
-            // To be lenient with old data, we fetch a larger set and filter in Java.
+            // FIX: Removed strict orderBy("updatedAt") because it excludes documents missing that field.
+            // We fetch the latest documents and will sort them in Java.
             ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
-                    .orderBy("updatedAt", Query.Direction.DESCENDING)
-                    .limit(100) // Fetch a reasonable batch
+                    .limit(100) // Fetch a reasonable batch for lenient filtering
                     .get();
 
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            logger.info("Total documents fetched from Firestore: {}", documents.size());
+            logger.info("Retrieved {} documents from Firestore COLLECTION: {}", documents.size(), COLLECTION);
 
             List<MovieDTO> allMovies = documents.stream()
                     .map(this::mapToDTO)
                     .filter(m -> !Boolean.TRUE.equals(m.getDeleted())) // Keep if deleted is null or false
                     .filter(m -> !Boolean.FALSE.equals(m.getIsActive())) // Keep if isActive is null or true
+                    .sorted((m1, m2) -> {
+                        // Sort by updatedAt descending in memory, handling nulls
+                        long t1 = m1.getUpdatedAt() != null ? m1.getUpdatedAt() : 0L;
+                        long t2 = m2.getUpdatedAt() != null ? m2.getUpdatedAt() : 0L;
+                        return Long.compare(t2, t1);
+                    })
                     .collect(Collectors.toList());
 
-            logger.info("Movies after lenient filtering: {}. IDs: {}", 
-                    allMovies.size(), 
-                    allMovies.stream().map(MovieDTO::getMovieId).collect(Collectors.toList()));
+            logger.info("Movies available after lenient filtering and sorting: {}", allMovies.size());
 
             // Simple pagination
             int start = page * size;
-            if (start >= allMovies.size()) return new ArrayList<>();
+            if (start >= allMovies.size()) {
+                logger.debug("Pagination start index {} out of bounds for size {}", start, allMovies.size());
+                return new ArrayList<>();
+            }
             int end = Math.min(start + size, allMovies.size());
             
-            return allMovies.subList(start, end);
+            List<MovieDTO> pagedMovies = allMovies.subList(start, end);
+            logger.info("Returning {} movies for page {}", pagedMovies.size(), page);
+            return pagedMovies;
 
         } catch (Exception e) {
-            logger.error("Error in getAllMovies: {}", e.getMessage());
+            logger.error("Error in getAllMovies (Firestore query failed): {}", e.getMessage(), e);
             throw e;
         }
     }
+
 
     public MovieDTO getMovieById(String id) throws ExecutionException, InterruptedException {
         try {

@@ -19,6 +19,7 @@ Thumbs.db
 .gradle/
 
 local.properties
+serviceAccountKey.json
 
 .env
 .env.*

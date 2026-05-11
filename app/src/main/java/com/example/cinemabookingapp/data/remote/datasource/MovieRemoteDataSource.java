@@ -109,20 +109,20 @@ public class MovieRemoteDataSource {
     }
 
     public void getAllMovies(ResultCallback<List<Movie>> callback) {
-        Log.d(TAG, "Requesting all movies");
+        Log.d(TAG, "Requesting all movies via API");
         movieApi.getAllMovies(0, 20).enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
-                Log.d(TAG, "Response Code: " + response.code());
+                Log.d(TAG, "getAllMovies - Response Code: " + response.code());
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     List<Movie> data = response.body().getData();
-                    Log.d(TAG, "Movies fetched: " + (data != null ? data.size() : 0));
+                    Log.d(TAG, "getAllMovies - Success. Count: " + (data != null ? data.size() : 0));
                     if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
                 } else {
                     String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải phim (Code: " + response.code() + ")";
-                    Log.e(TAG, "API Error: " + msg);
+                    Log.e(TAG, "getAllMovies - API Error: " + msg);
                     if (callback != null) {
-                        callback.onSuccess(new ArrayList<>()); // Tránh crash UI
+                        // FIX: Only trigger onError. ViewModel should handle empty state if needed.
                         callback.onError(msg);
                     }
                 }
@@ -130,7 +130,7 @@ public class MovieRemoteDataSource {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
-                Log.e(TAG, "Network Failure: " + t.getMessage());
+                Log.e(TAG, "getAllMovies - Network Failure: " + t.getMessage(), t);
                 if (callback != null) {
                     callback.onError("Server hiện không khả dụng. Vui lòng thử lại sau.");
                 }
@@ -145,16 +145,16 @@ public class MovieRemoteDataSource {
         movieApi.getMoviesByStatus(normalizedStatus, 0, 20).enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
-                Log.d(TAG, "Response Code: " + response.code());
+                Log.d(TAG, "getMoviesByStatus - Response Code: " + response.code());
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     List<Movie> data = response.body().getData();
-                    Log.d(TAG, "Movies found: " + (data != null ? data.size() : 0));
+                    Log.d(TAG, "getMoviesByStatus - Success. Found: " + (data != null ? data.size() : 0));
                     if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
                 } else {
                     String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải phim (Code: " + response.code() + ")";
-                    Log.e(TAG, "API Error: " + msg);
+                    Log.e(TAG, "getMoviesByStatus - API Error: " + msg);
                     if (callback != null) {
-                        callback.onSuccess(new ArrayList<>());
+                        // FIX: Only trigger onError.
                         callback.onError(msg);
                     }
                 }
@@ -162,7 +162,7 @@ public class MovieRemoteDataSource {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
-                Log.e(TAG, "Network Failure: " + t.getMessage());
+                Log.e(TAG, "getMoviesByStatus - Network Failure: " + t.getMessage(), t);
                 if (callback != null) {
                     callback.onError("Không thể tải phim theo trạng thái.");
                 }
