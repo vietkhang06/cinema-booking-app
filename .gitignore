@@ -20,8 +20,6 @@ Thumbs.db
 
 local.properties
 
-serviceAccountKey.json
-firebase-adminsdk*.json
 .env
 .env.*
 
