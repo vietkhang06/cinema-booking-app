@@ -28,3 +28,6 @@ logs/
 *.log
 
 .vscode/
+
+serviceAccountKey.json
+cinema-booking-backend\src\main\resources\serviceAccountKey.json
