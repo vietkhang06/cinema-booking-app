@@ -32,7 +32,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     public static final String EXTRA_SEAT_CODES    = "seatCodes";
     public static final String EXTRA_SEAT_IDS      = "seatIds";
 
-    private String showtimeId, movieTitle, movieId, cinemaName, posterUrl;
+    private String showtimeId, movieTitle, movieId, cinemaName, imageUrl;
     private long showtimeStart;
     private double total;
     private ArrayList<String> seatCodes, seatIds;
@@ -47,7 +47,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         movieTitle   = getIntent().getStringExtra(EXTRA_MOVIE_TITLE);
         movieId      = getIntent().getStringExtra(EXTRA_MOVIE_ID);
         cinemaName   = getIntent().getStringExtra(EXTRA_CINEMA_NAME);
-        posterUrl    = getIntent().getStringExtra(EXTRA_POSTER_URL);
+        imageUrl     = getIntent().getStringExtra(EXTRA_POSTER_URL);
         showtimeStart = getIntent().getLongExtra(EXTRA_SHOWTIME_START, 0);
         total        = getIntent().getDoubleExtra(EXTRA_TOTAL, 0);
         seatCodes    = getIntent().getStringArrayListExtra(EXTRA_SEAT_CODES);
@@ -101,6 +101,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         booking.put("showtimeId", showtimeId);
         booking.put("cinemaNameSnapshot", cinemaName);
         booking.put("movieTitleSnapshot", movieTitle);
+        booking.put("movieImageUrlSnapshot", imageUrl != null ? imageUrl : "");
         booking.put("showtimeStartAtSnapshot", showtimeStart);
         booking.put("seatCodes", seatCodes);
         booking.put("seatIds", seatIds != null ? seatIds : new ArrayList<>());
@@ -111,6 +112,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         booking.put("createdAt", now);
         booking.put("updatedAt", now);
         booking.put("deleted", false);
+
+        android.util.Log.d("BookingConfirm", "Saving booking with poster: " + imageUrl);
 
         FirebaseFirestore.getInstance()
                 .collection("bookings")

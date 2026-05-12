@@ -102,6 +102,7 @@ public class MovieDetailActivity extends BaseActivity {
     private GetMovieByIdUseCase getMovieByIdUseCase;
 
     private String selectedMovieId = "";
+    private String selectedMoviePosterUrl = "";
     private String selectedTrailerUrl = "";
     private String selectedCity = "";
     private String selectedCinema = "";
@@ -211,7 +212,7 @@ public class MovieDetailActivity extends BaseActivity {
         tvDuration.setText("⏱ " + duration);
         tvReleaseDate.setText("📅 " + releaseDate);
         tvSynopsis.setText(description);
-
+        selectedMoviePosterUrl = posterUrl;
         loadImage(posterUrl);
     }
 
@@ -254,6 +255,7 @@ public class MovieDetailActivity extends BaseActivity {
         }
 
         tvSynopsis.setText(safe(movie.description, tvSynopsis.getText().toString()));
+        selectedMoviePosterUrl = movie.posterUrl;
         loadImage(movie.posterUrl);
     }
 
@@ -581,6 +583,7 @@ public class MovieDetailActivity extends BaseActivity {
 
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
+            intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
             intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
             intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, System.currentTimeMillis());
             intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, 85000);

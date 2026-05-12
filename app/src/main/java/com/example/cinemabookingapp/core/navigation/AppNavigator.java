@@ -10,6 +10,8 @@ import com.example.cinemabookingapp.ui.auth.ForgotPasswordActivity;
 import com.example.cinemabookingapp.ui.auth.LoginActivity;
 import com.example.cinemabookingapp.ui.auth.RegisterActivity;
 import com.example.cinemabookingapp.ui.customer.HomeActivity;
+import com.example.cinemabookingapp.ui.customer.transaction.TicketDetailActivity;
+import com.example.cinemabookingapp.ui.customer.transaction.TransactionHistoryActivity;
 import com.example.cinemabookingapp.ui.staff.StaffDashboardActivity;
 
 import java.util.Map;
@@ -57,6 +59,16 @@ public final class AppNavigator {
 
     public static void goToCustomerHome(Activity activity) {
         openAndClear(activity, HomeActivity.class);
+    }
+
+    public static void goToTransactionHistory(Activity activity) {
+        open(activity, TransactionHistoryActivity.class);
+    }
+
+    public static void goToTicketDetail(Activity activity, String bookingId) {
+        Intent intent = new Intent(activity, TicketDetailActivity.class);
+        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, bookingId);
+        activity.startActivity(intent);
     }
 
     public static void goToStaffDashboard(Activity activity) {

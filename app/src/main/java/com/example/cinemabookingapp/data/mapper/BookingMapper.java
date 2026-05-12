@@ -17,6 +17,7 @@ public final class BookingMapper {
 //        model.roomId = dto.roomId;
         model.showtimeId = dto.showtimeId;
         model.movieTitleSnapshot = dto.movieTitleSnapshot;
+        model.movieImageUrlSnapshot = dto.movieImageUrlSnapshot;
         model.cinemaNameSnapshot = dto.cinemaNameSnapshot;
         model.roomNameSnapshot = dto.roomNameSnapshot;
         model.showtimeStartAtSnapshot = dto.showtimeStartAtSnapshot;
@@ -47,6 +48,7 @@ public final class BookingMapper {
 //        dto.roomId = model.roomId;
         dto.showtimeId = model.showtimeId;
         dto.movieTitleSnapshot = model.movieTitleSnapshot;
+        dto.movieImageUrlSnapshot = model.movieImageUrlSnapshot;
         dto.cinemaNameSnapshot = model.cinemaNameSnapshot;
         dto.roomNameSnapshot = model.roomNameSnapshot;
         dto.showtimeStartAtSnapshot = model.showtimeStartAtSnapshot;

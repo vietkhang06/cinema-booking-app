@@ -20,10 +20,13 @@ import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
+import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMoviesUseCase;
+import com.example.cinemabookingapp.service.BookingService;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.adapter.HomeMovieAdapter;
 import com.example.cinemabookingapp.ui.customer.model.HomeBannerItem;
@@ -105,7 +108,41 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            user.getIdToken(true)
+                    .addOnSuccessListener(result -> {
+                        String token = result.getToken();
+
+                        Log.d("FIREBASE_TOKEN",
+                                token != null ? token : "NULL");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("FIREBASE_TOKEN",
+                                "Failed to get token", e);
+                    });
+        }
+
         setContentView(R.layout.fragment_home);
+
+        BookingService bookingService =
+                ServiceProvider.getInstance()
+                        .getBookingService();
+
+        bookingService.getMyBookings(new ResultCallback<List<Booking>>() {
+            @Override
+            public void onSuccess(List<Booking> data) {
+                Log.d("BOOKING_TEST",
+                        "SIZE = " + data.size());
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("BOOKING_TEST", errorMessage);
+            }
+        });
 
         initViews();
         initMovieUseCase();

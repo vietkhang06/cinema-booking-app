@@ -243,9 +243,9 @@ public class ProfileFragment extends Fragment {
                     startActivity(new Intent(getContext(), SettingsActivity.class)));
         }
 
-        // Giao dịch (tạm thời toast)
+        // Giao dịch
         viewTransactionBtn.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show());
+                AppNavigator.goToTransactionHistory(requireActivity()));
 
         // Thông báo (tạm thời toast)
         viewNotificationBtn.setOnClickListener(v ->
