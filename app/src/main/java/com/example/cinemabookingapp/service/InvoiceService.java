@@ -67,14 +67,6 @@ public class InvoiceService {
                 .addOnFailureListener(e -> {
                     callback.onError(e.getMessage());
                 });
-//        try {
-//            DocumentSnapshot query = Tasks.await(firestore.collection(FirestoreCollections.BOOKINGS)
-//                    .document(invoiceId).get());
-//            return query.toObject(Booking.class);
-//        }catch (Exception e){
-//            Log.e(logTag, e.getMessage());
-//            return null;
-//        }
     }
 
     @Nullable

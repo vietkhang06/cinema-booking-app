@@ -46,7 +46,7 @@ public class StaffInvoiceActivity extends AuthActivity {
         retriveDataFromNavigator();
     }
 
-    MaterialButton backButton, updatePaymentButton;
+    MaterialButton backButton, updatePaymentButton, checkSeatButton, checkOrderButton;
     TextView paymentStatusTV, transactionDateTV;
     ImageView paymentStatusImg;
     EInvoiceView eInvoiceView;
@@ -61,11 +61,21 @@ public class StaffInvoiceActivity extends AuthActivity {
         transactionDateTV = findViewById(R.id.staff_invoice_transaction_date);
 
         paymentStatusImg = findViewById(R.id.staff_invoice_payment_status_img);
+        checkSeatButton = findViewById(R.id.staff_invoice_check_seats);
+        checkOrderButton = findViewById(R.id.staff_invoice_check_order);
     }
 
     private void bindActions() {
         backButton.setOnClickListener(v -> {
             finish();
+        });
+
+        checkOrderButton.setOnClickListener(v -> {
+
+        });
+
+        checkSeatButton.setOnClickListener(v -> {
+
         });
 
         updatePaymentButton.setOnClickListener(v -> {
