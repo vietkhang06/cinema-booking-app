@@ -46,6 +46,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaContentFragment;
 import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
+import com.example.cinemabookingapp.ui.customer.cinema.LocationFilterAdapter;
+import com.example.cinemabookingapp.ui.customer.cinema.LocationBottomSheetFragment;
+
+
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -170,7 +174,16 @@ public class HomeActivity extends BaseActivity {
             applyFilterStyle(currentMovieFilter);
         });
 
-        btnLocation.setOnClickListener(v -> showToast("Chọn khu vực sau"));
+        btnLocation.setOnClickListener(v -> {
+            LocationBottomSheetFragment sheet =
+                    LocationBottomSheetFragment.newInstance("Toan quoc");
+
+            sheet.setOnLocationSelectedListener(location -> {
+                btnLocation.setText(location);
+            });
+
+            sheet.show(getSupportFragmentManager(), "location_picker");
+        });
         chipGroupGenre = findViewById(R.id.chipGroupGenre);
 
     }

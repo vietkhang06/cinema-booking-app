@@ -115,25 +115,16 @@ public class CinemaFragment extends Fragment {
     }
 
     private void showLocationDialog() {
-        String[] locations = {"Toan quoc", "TP Ho Chi Minh", "Ha Noi", "Da Nang", "Ben Tre"};
-        int checkedIndex = 0;
-        for (int i = 0; i < locations.length; i++) {
-            if (locations[i].equals(selectedLocation)) {
-                checkedIndex = i;
-                break;
-            }
-        }
+        LocationBottomSheetFragment sheet =
+                LocationBottomSheetFragment.newInstance(selectedLocation);
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Chon khu vuc")
-                .setSingleChoiceItems(locations, checkedIndex, (dialog, which) -> {
-                    selectedLocation = locations[which];
-                    tvLocation.setText(selectedLocation);
-                    renderCinemas();
-                    dialog.dismiss();
-                })
-                .setNegativeButton("Dong", null)
-                .show();
+        sheet.setOnLocationSelectedListener(location -> {
+            selectedLocation = location;
+            tvLocation.setText(location);
+            renderCinemas();
+        });
+
+        sheet.show(getParentFragmentManager(), "location_picker");
     }
 
     private String normalize(String value) {
