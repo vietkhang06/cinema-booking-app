@@ -15,6 +15,7 @@ public class ServiceProvider {
     private AuthenticationService authenticationService;
     private ProfileService profileService;
     private UploadService uploadService;
+    private com.example.cinemabookingapp.service.BookingService bookingService;
 
     private ServiceProvider(Context context) {
         this.appContext = context.getApplicationContext();
@@ -53,6 +54,13 @@ public class ServiceProvider {
             uploadService = new UploadService(appContext);
         }
         return uploadService;
+    }
+
+    public com.example.cinemabookingapp.service.BookingService getBookingService() {
+        if (bookingService == null) {
+            bookingService = new com.example.cinemabookingapp.service.BookingService();
+        }
+        return bookingService;
     }
 
     InvoiceService invoiceService;

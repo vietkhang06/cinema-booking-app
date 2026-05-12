@@ -10,6 +10,7 @@ public class BookingDTO {
     public String roomId;
     public String showtimeId;
     public String movieTitleSnapshot;
+    public String movieImageUrlSnapshot;
     public String cinemaNameSnapshot;
     public String roomNameSnapshot;
     public long showtimeStartAtSnapshot;
