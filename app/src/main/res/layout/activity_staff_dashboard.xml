@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,8 +12,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- ═══════════════════════════════════════════ -->
         <!--                HEADER CARD                  -->
@@ -26,6 +31,7 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="10dp"
             app:strokeWidth="0dp">
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,27 +41,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="30dp">
+                    android:paddingHorizontal="30dp"
+                    android:paddingVertical="12dp">
 
                     <TextView
                         android:id="@+id/tvWelcome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Welcome to"
-                        android:textSize="18sp"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
 
                     <!-- "CINEMAX" brand title -->
                     <TextView
                         android:id="@+id/tvBrand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
                         android:layout_marginLeft="12dp"
-                        android:textStyle="bold"
-                        android:textSize="22sp"
-                        android:text="CINEMAX"/>
+                        android:text="CINEMAX"
+                        android:textColor="@color/white"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
                     <!-- "Staff Dashboard" subtitle -->
                     <TextView
                         android:id="@+id/tvSubtitle"
@@ -63,8 +69,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="Staff Dashboard"
-                        android:textSize="12sp"
-                        android:textColor="#80ffffff"/>
+                        android:textColor="#80ffffff"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -82,10 +88,10 @@
                 android:id="@+id/tvQuickActions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
                 android:text="Quick Actions"
-                android:textStyle="bold"
                 android:textSize="20sp"
-                android:layout_marginLeft="12dp"/>
+                android:textStyle="bold" />
 
             <!-- Section Title -->
             <androidx.gridlayout.widget.GridLayout
@@ -97,13 +103,13 @@
                     android:id="@+id/staff_db_check_invoice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="5dp"
                     app:cardElevation="10dp"
                     app:layout_columnWeight="1"
-                    android:layout_margin="20dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#60000000">
+                    app:strokeColor="#60000000"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -114,38 +120,40 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_margin="5dp"
-                            app:strokeWidth="0dp"
                             android:layout_gravity="center"
-                            app:cardBackgroundColor="#8B3A3A">
+                            android:layout_margin="5dp"
+                            app:cardBackgroundColor="#8B3A3A"
+                            app:strokeWidth="0dp">
+
                             <ImageView
-                                android:layout_margin="6dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:backgroundTint="@color/white"
-                                android:background="@drawable/ic_scan_qr" />
+                                android:layout_margin="6dp"
+                                android:background="@drawable/ic_scan_qr"
+                                android:backgroundTint="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Check Invoice"
+                            android:text="Kiểm tra hóa đơn"
                             android:textAlignment="center"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/allla"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="5dp"
                     app:cardElevation="10dp"
                     app:layout_columnWeight="1"
-                    android:layout_margin="20dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#60000000">
+                    app:strokeColor="#60000000"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -156,16 +164,17 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_margin="5dp"
-                            app:strokeWidth="0dp"
                             android:layout_gravity="center"
-                            app:cardBackgroundColor="#8B3A3A">
+                            android:layout_margin="5dp"
+                            app:cardBackgroundColor="#8B3A3A"
+                            app:strokeWidth="0dp">
+
                             <ImageView
-                                android:layout_margin="6dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:backgroundTint="@color/white"
-                                android:background="@drawable/chart_line_solid_full" />
+                                android:layout_margin="6dp"
+                                android:background="@drawable/chart_line_solid_full"
+                                android:backgroundTint="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 
 
@@ -177,17 +186,18 @@
                             android:textSize="12sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/allla11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="5dp"
                     app:cardElevation="10dp"
                     app:layout_columnWeight="1"
-                    android:layout_margin="20dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#60000000">
+                    app:strokeColor="#60000000"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -198,16 +208,17 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_margin="5dp"
-                            app:strokeWidth="0dp"
                             android:layout_gravity="center"
-                            app:cardBackgroundColor="#8B3A3A">
+                            android:layout_margin="5dp"
+                            app:cardBackgroundColor="#8B3A3A"
+                            app:strokeWidth="0dp">
+
                             <ImageView
-                                android:layout_margin="6dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:backgroundTint="@color/white"
-                                android:background="@drawable/chart_line_solid_full" />
+                                android:layout_margin="6dp"
+                                android:background="@drawable/chart_line_solid_full"
+                                android:backgroundTint="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 
 
@@ -226,4 +237,4 @@
 
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

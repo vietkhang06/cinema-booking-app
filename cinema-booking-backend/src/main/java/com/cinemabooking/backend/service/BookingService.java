@@ -28,7 +28,7 @@ public class BookingService {
      */
     public List<BookingDTO> getBookingsByUserId(String userId) throws ExecutionException, InterruptedException {
         logger.info("Fetching bookings for user: {}", userId);
-        
+
         try {
             // Query Firestore for bookings by userId
             Query query = firestore.collection(COLLECTION)
@@ -37,7 +37,7 @@ public class BookingService {
 
             ApiFuture<QuerySnapshot> future = query.get();
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            
+
             logger.info("Found {} bookings for user: {}", documents.size(), userId);
 
             return documents.stream()
@@ -60,7 +60,7 @@ public class BookingService {
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
                 .whereEqualTo("userId", userId)
                 .get();
-        
+
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         return documents.stream()
                 .map(this::mapToDTO)
