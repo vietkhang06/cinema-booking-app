@@ -5,45 +5,64 @@ import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.annotation.PostConstruct;
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
 
 @Configuration
 public class FirebaseConfig {
 
-    @PostConstruct
-    public void initialize() {
-        try {
-            InputStream serviceAccount =
-                    getClass().getClassLoader()
-                            .getResourceAsStream("serviceAccountKey.json");
+    private static final Logger logger =
+            LoggerFactory.getLogger(FirebaseConfig.class);
 
-            if (serviceAccount == null) {
-                System.out.println("serviceAccountKey.json not found!");
-                return;
+    @Value("${firebase.service-account-base64}")
+    private String firebaseKey;
+
+    @Bean
+    public FirebaseApp firebaseApp() {
+
+        try {
+
+            if (!FirebaseApp.getApps().isEmpty()) {
+                return FirebaseApp.getInstance();
             }
+
+            byte[] decoded =
+                    Base64.getDecoder().decode(firebaseKey);
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(
-                            GoogleCredentials.fromStream(serviceAccount))
+                            GoogleCredentials.fromStream(
+                                    new ByteArrayInputStream(decoded)
+                            )
+                    )
                     .build();
 
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
+            FirebaseApp app =
+                    FirebaseApp.initializeApp(options);
 
-            System.out.println("Firebase initialized!");
+            logger.info("Firebase initialized successfully");
+
+            return app;
 
         } catch (Exception e) {
-            e.printStackTrace();
+
+            logger.error("Firebase initialization failed", e);
+
+            throw new RuntimeException(
+                    "Failed to initialize Firebase",
+                    e
+            );
         }
     }
 
     @Bean
-    public Firestore getFirestore() {
-        return FirestoreClient.getFirestore();
+    public Firestore firestore(FirebaseApp firebaseApp) {
+        return FirestoreClient.getFirestore(firebaseApp);
     }
 }
