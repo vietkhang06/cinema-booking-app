@@ -36,7 +36,7 @@ public class BookingController {
 
         String uid = principal.toString();
         List<BookingDTO> bookings = bookingService.getBookingsByUserId(uid);
-        
+
         return ApiResponse.<List<BookingDTO>>builder()
                 .success(true)
                 .message("Fetched " + bookings.size() + " bookings")
@@ -49,7 +49,7 @@ public class BookingController {
     public ApiResponse<BookingDTO> getBookingById(
             @PathVariable String id,
             @AuthenticationPrincipal Object principal) throws ExecutionException, InterruptedException {
-        
+
         if (principal == null) {
             return ApiResponse.<BookingDTO>builder()
                     .success(false)

@@ -3,6 +3,10 @@ package com.example.cinemabookingapp.ui.staff;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.AuthActivity;
 import com.example.cinemabookingapp.core.base.BaseActivity;
@@ -22,7 +26,11 @@ public class StaffDashboardActivity extends AuthActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_dashboard);
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         initViews();
         bindActions();
     }
