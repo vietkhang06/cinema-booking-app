@@ -49,6 +49,14 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cinemabookingapp.ui.customer.cinema_contents.CinemaContentFragment;
 import com.example.cinemabookingapp.ui.customer.profile.ProfileFragment;
+import com.example.cinemabookingapp.ui.customer.cinema.LocationFilterAdapter;
+import com.example.cinemabookingapp.ui.customer.cinema.LocationBottomSheetFragment;
+
+
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import java.util.LinkedHashSet;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -104,6 +112,10 @@ public class HomeActivity extends BaseActivity {
 
     private View scrollContent;
     private View fragmentContainer;
+    private com.google.android.material.chip.ChipGroup chipGroupGenre;
+    private String selectedGenre = "Tất cả";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +211,18 @@ public class HomeActivity extends BaseActivity {
             applyFilterStyle(currentMovieFilter);
         });
 
-        btnLocation.setOnClickListener(v -> showToast("Chọn khu vực sau"));
+        btnLocation.setOnClickListener(v -> {
+            LocationBottomSheetFragment sheet =
+                    LocationBottomSheetFragment.newInstance("Toan quoc");
+
+            sheet.setOnLocationSelectedListener(location -> {
+                btnLocation.setText(location);
+            });
+
+            sheet.show(getSupportFragmentManager(), "location_picker");
+        });
+        chipGroupGenre = findViewById(R.id.chipGroupGenre);
+
     }
 
     private void initMovieUseCase() {
@@ -233,7 +256,7 @@ public class HomeActivity extends BaseActivity {
                 } else {
                     Log.d("HomeActivity", "No movies received from API");
                 }
-
+                buildGenreChipsFromData();
                 showMovies(currentMovieFilter);
                 
                 if (allMovies.isEmpty()) {
@@ -245,7 +268,6 @@ public class HomeActivity extends BaseActivity {
             public void onError(String errorMessage) {
                 Log.e("HomeActivity", "Failed to load movies: " + errorMessage);
                 showToast("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
-                // Ensure UI is updated even on error (empty list)
                 showMovies(currentMovieFilter);
             }
         });
@@ -273,6 +295,7 @@ public class HomeActivity extends BaseActivity {
                 readString(movie, "status"),
                 FILTER_NOW_SHOWING
         ));
+        List<String> genres = movie.genres != null ? movie.genres : new ArrayList<>();
 
         return new HomeMovieItem(
                 movie.movieId,
@@ -280,7 +303,8 @@ public class HomeActivity extends BaseActivity {
                 imageUrl,
                 rating,
                 ageRating,
-                status
+                status,
+                genres
         );
     }
 
@@ -341,7 +365,13 @@ public class HomeActivity extends BaseActivity {
     private void showMovies(String filter) {
         visibleMovies.clear();
         for (HomeMovieItem item : allMovies) {
-            if (item != null && filter.equals(item.getStatus())) {
+            if (item == null) continue;
+
+            boolean matchStatus = filter.equals(item.getStatus());
+            boolean matchGenre = "Tất cả".equals(selectedGenre)
+                    || item.getGenres().contains(selectedGenre);
+
+            if (matchStatus && matchGenre) {
                 visibleMovies.add(item);
             }
         }
@@ -354,10 +384,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void styleFilterButton(MaterialButton button, boolean selected) {
-        button.setBackgroundTintList(ColorStateList.valueOf(selected ? activeColor : Color.WHITE));
+        button.setBackgroundTintList(ColorStateList.valueOf(
+                selected ? activeColor : Color.WHITE
+        ));
         button.setTextColor(selected ? activeTint : activeColor);
-        button.setStrokeColor(ColorStateList.valueOf(activeColor));
-        button.setStrokeWidth(dp(1));
+        button.setStrokeWidth(0);
     }
 
     private void initBottomNav() {
@@ -518,7 +549,12 @@ public class HomeActivity extends BaseActivity {
         fragmentContainer.setVisibility(View.GONE);
         scrollContent.setVisibility(View.VISIBLE);
         applyBottomNavState(0);
+
+        currentMovieFilter = FILTER_NOW_SHOWING;
+        applyFilterStyle(currentMovieFilter);
+        showMovies(currentMovieFilter);
     }
+
 
     private void showCinemaScreen() {
         scrollContent.setVisibility(View.GONE);
@@ -570,5 +606,64 @@ public class HomeActivity extends BaseActivity {
                 .commit();
 
         applyBottomNavState(1);
+    }
+    private void buildGenreChipsFromData() {
+        LinkedHashSet<String> genreSet = new LinkedHashSet<>();
+        genreSet.add("Tất cả");
+        for (HomeMovieItem item : allMovies) {
+            for (String g : item.getGenres()) {
+                if (g != null && !g.trim().isEmpty()) {
+                    genreSet.add(g.trim());
+                }
+            }
+        }
+
+        chipGroupGenre.removeAllViews();
+        selectedGenre = "Tất cả";
+
+        for (String genre : genreSet) {
+            Chip chip = new Chip(this);
+            chip.setText(genre);
+            chip.setCheckable(true);
+            chip.setChecked(genre.equals("Tất cả"));
+
+            chip.setTextSize(10f);
+            chip.setChipMinHeight(dp(36));
+            chip.setChipCornerRadius(dp(18));
+            chip.setChipStartPadding(dp(12));
+            chip.setChipEndPadding(dp(12));
+            chip.setTextStartPadding(0f);
+            chip.setTextEndPadding(0f);
+            chip.setEnsureMinTouchTargetSize(false);
+            chip.setCheckedIconVisible(false);
+
+            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.WHITE));
+            chip.setTextColor(ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+            chip.setChipStrokeColor(ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+            chip.setChipStrokeWidth(dp(1));
+            chip.setRippleColor(ColorStateList.valueOf(Color.parseColor("#33000000")));
+
+            if (genre.equals("Tất cả")) {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+                chip.setTextColor(ColorStateList.valueOf(Color.WHITE));
+            }
+
+            chip.setOnCheckedChangeListener((v, checked) -> {
+                if (checked) {
+                    selectedGenre = genre;
+                    chip.setChipBackgroundColor(
+                            ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+                    chip.setTextColor(ColorStateList.valueOf(Color.WHITE));
+                } else {
+                    chip.setChipBackgroundColor(
+                            ColorStateList.valueOf(Color.WHITE));
+                    chip.setTextColor(
+                            ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+                }
+                showMovies(currentMovieFilter);
+            });
+
+            chipGroupGenre.addView(chip);
+        }
     }
 }
