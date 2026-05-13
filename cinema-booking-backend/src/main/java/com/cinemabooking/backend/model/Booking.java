@@ -1,6 +1,5 @@
-package com.cinemabooking.backend.dto;
+package com.cinemabooking.backend.model;
 
-import com.cinemabooking.backend.model.Showtime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDTO {
+public class Booking {
     private String bookingId;
     private String userId;
     private String showtimeId;
@@ -23,7 +22,6 @@ public class BookingDTO {
     private List<String> seatCodes;
     private List<String> seatIds;
     private String snackOrderId;
-//    private  List<SnackOrderItem> snackItemsSnapshot;
     private double subtotal;
     private double discount;
     private double total;
@@ -37,7 +35,7 @@ public class BookingDTO {
     private boolean deleted;
 
     private Long paymentAt;
+    private List<SnackOrderSnapshot> snackOrder;
 
-    private UserDTO user;
-    private ShowtimeDTO showtime;
+
 }
