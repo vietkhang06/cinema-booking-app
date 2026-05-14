@@ -1,6 +1,7 @@
 package com.cinemabooking.backend.dto;
 
 import com.cinemabooking.backend.model.Showtime;
+import com.cinemabooking.backend.model.SnackOrderSnapshot;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,9 @@ public class BookingDTO {
     private String bookingId;
     private String userId;
     private String showtimeId;
+
+    private String movieId;
+    public String movieImageUrlSnapshot;
     private String movieTitleSnapshot;
     private String cinemaNameSnapshot;
     private String roomNameSnapshot;
@@ -23,7 +27,6 @@ public class BookingDTO {
     private List<String> seatCodes;
     private List<String> seatIds;
     private String snackOrderId;
-//    private  List<SnackOrderItem> snackItemsSnapshot;
     private double subtotal;
     private double discount;
     private double total;
@@ -36,8 +39,10 @@ public class BookingDTO {
     private long updatedAt;
     private boolean deleted;
 
-    private Long paymentAt;
+    private long paymentAt;
+    private List<SnackOrderSnapshot> snackOrder;
 
     private UserDTO user;
     private ShowtimeDTO showtime;
+    private MovieDTO movieDTO;
 }

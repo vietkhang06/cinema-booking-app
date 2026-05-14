@@ -10,6 +10,7 @@ import com.cinemabooking.backend.service.UserService;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.SetOptions;
 import com.google.firebase.auth.FirebaseToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,7 @@ import java.io.ObjectInputFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -47,13 +49,13 @@ public class BookingController {
         BookingDTO booking = bookingService.getBookingById(bookingId);
         if(booking == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
-
-        ShowtimeDTO showTime = showtimeService.getShowtimeById(booking.getShowtimeId());
+        if(booking.getShowtimeId() != null){
+            ShowtimeDTO showTime = showtimeService.getShowtimeById(booking.getShowtimeId());
+            booking.setShowtime(showTime);
+        }
         UserDTO user = userService.getUserById(booking.getUserId());
 
-        booking.setShowtime(showTime);
         booking.setUser(user);
-
         return ApiResponse.<BookingDTO>builder()
                 .success(true)
                 .message("Booking fetched successfully")
@@ -66,7 +68,6 @@ public class BookingController {
             @AuthenticationPrincipal String userId,
             @RequestBody SeatBookingRequestDTO bookingRequest
     ) throws ExecutionException, InterruptedException {
-//        BookingDTO booking = bookingService.createSeatBooking(userId, bookingRequest);
         SeatBookingRequestDTO data = bookingRequest;
         List<SnackOrderSnapshot> orders = new ArrayList<>();
         if (data.getSnackOrders() != null && data.getSnackOrders().size() > 0){
@@ -88,6 +89,8 @@ public class BookingController {
             });
         }
 
+        String uniqueID = UUID.randomUUID().toString();
+
         ShowtimeDTO showtime = showtimeService.getShowtimeById(data.getShowtimeId());
         MovieDTO movie = movieService.getMovieById(showtime.getMovieId());
 
@@ -105,8 +108,13 @@ public class BookingController {
                 .get()
                 .get().toObjects(Seat.class);
 
+        double subTotal = showtime.getBasePrice() * seats.size() + orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
+        double discount = 0;
+
         Booking booking = Booking.builder()
+//                .bookingId(uniqueID)
                 .userId(userId)
+                .movieId(showtime.getMovieId())
                 .showtimeId(data.getShowtimeId())
                 .showtimeStartAtSnapshot(showtime.getStartAt())
                 .movieTitleSnapshot(movie.getTitle())
@@ -115,10 +123,12 @@ public class BookingController {
                 .seatIds(data.getSeatIds())
                 .seatCodes(seats.stream().map(seat -> seat.getSeatCode()).collect(Collectors.toList()))
                 .snackOrder(orders)
-                .subtotal(0)
-                .discount(0)
-                .total(0)
+                .subtotal(subTotal)
+                .discount(discount)
+                .total(subTotal - discount)
                 // cap nhat payment
+                .paymentMethod("")
+                .paymentStatus("pending")
                 .createdAt(System.currentTimeMillis())
                 .updatedAt(System.currentTimeMillis())
                 .build();

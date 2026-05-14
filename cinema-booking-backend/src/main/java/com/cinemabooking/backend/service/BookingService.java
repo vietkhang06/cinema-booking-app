@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -55,10 +51,14 @@ public class BookingService {
     ){
         return BookingDTO.builder()
                 .bookingId(booking.getBookingId())
+                .bookingStatus(booking.getBookingStatus())
                 .userId(booking.getUserId())
                 .showtimeId(booking.getShowtimeId())
-                // Mapping Snapshots
+                //movie
+                .movieId(booking.getMovieId())
                 .movieTitleSnapshot(booking.getMovieTitleSnapshot())
+                .movieImageUrlSnapshot(booking.movieImageUrlSnapshot)
+                // Mapping Snapshots
                 .cinemaNameSnapshot(booking.getCinemaNameSnapshot())
                 .roomNameSnapshot(booking.getRoomNameSnapshot())
                 .showtimeStartAtSnapshot(booking.getShowtimeStartAtSnapshot())
@@ -69,9 +69,6 @@ public class BookingService {
                 .bookingStatus(booking.getBookingStatus())
                 .qrCodeValue(booking.getQrCodeValue())
                 .createdAt(booking.getCreatedAt())
-                // Mapping the "Join"
-                .user(user != null ? user : UserDTO.builder().uid(booking.getUserId()).build())
-                .showtime(showtime != null ? showtime : ShowtimeDTO.builder().showtimeId(booking.getShowtimeId()).build())
                 .build();
     }
 
