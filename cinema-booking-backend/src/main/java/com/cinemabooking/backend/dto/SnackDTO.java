@@ -1,4 +1,4 @@
-package com.cinemabooking.backend.model;
+package com.cinemabooking.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Snack {
+public class SnackDTO {
+    public static final String COLLECTION_NAME = "snacks";
+
     public String snackId;
     public String categoryId;
     public String name;
@@ -21,4 +23,5 @@ public class Snack {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+
 }

@@ -2,7 +2,6 @@ package com.cinemabooking.backend.controller;
 
 import com.cinemabooking.backend.dto.*;
 import com.cinemabooking.backend.dto.request.SeatBookingRequestDTO;
-import com.cinemabooking.backend.model.*;
 import com.cinemabooking.backend.service.BookingService;
 import com.cinemabooking.backend.service.MovieService;
 import com.cinemabooking.backend.service.ShowtimeService;
@@ -10,12 +9,8 @@ import com.cinemabooking.backend.service.UserService;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.SetOptions;
-import com.google.firebase.auth.FirebaseToken;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.ObjectInputFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,13 +43,13 @@ public class BookingController {
         BookingDTO booking = bookingService.getBookingById(bookingId);
         if(booking == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
-        if(booking.getShowtimeId() != null){
-            ShowtimeDTO showTime = showtimeService.getShowtimeById(booking.getShowtimeId());
-            booking.setShowtime(showTime);
-        }
+
+        ShowtimeDTO showTime = showtimeService.getShowtimeById(booking.getShowtimeId());
         UserDTO user = userService.getUserById(booking.getUserId());
 
+        booking.setShowtime(showTime);
         booking.setUser(user);
+
         return ApiResponse.<BookingDTO>builder()
                 .success(true)
                 .message("Booking fetched successfully")
@@ -71,10 +65,10 @@ public class BookingController {
         SeatBookingRequestDTO data = bookingRequest;
         List<SnackOrderSnapshot> orders = new ArrayList<>();
         if (data.getSnackOrders() != null && data.getSnackOrders().size() > 0){
-            List<Snack> snacks = firestore.collection("snacks")
+            List<SnackDTO> snacks = firestore.collection("snacks")
                     .whereIn("snackId", data.getSnackOrders().stream().map(item -> item.snackId()).collect(Collectors.toList()) )
                     .get()
-                    .get().toObjects(Snack.class);
+                    .get().toObjects(SnackDTO.class);
             snacks.stream().forEach(snack -> {
                 SeatBookingRequestDTO.SnackOrder order = data.getSnackOrders().stream().filter(snackOrder -> snackOrder.snackId().equals(snack.snackId)).findFirst().orElse(null);
                 orders.add(
@@ -99,20 +93,21 @@ public class BookingController {
                 firestore.collection("cinemas").document(showtime.getCinemaId()).get()
         )).get();
 
-        Room room = taskResult.get(0).toObject(Room.class);
-        Cinema cinema = taskResult.get(1).toObject(Cinema.class);
+        RoomDTO room = taskResult.get(0).toObject(RoomDTO.class);
+        CinemaDTO cinema = taskResult.get(1).toObject(CinemaDTO.class);
 
-        List<Seat> seats = firestore.collection("seats")
+        List<SeatDTO> seats = firestore.collection(SeatDTO.COLLECTION_NAME)
                 .whereIn("seatId", data.getSeatIds())
                 // kiem tra ghe co thuoc phong chieu khong
                 .get()
-                .get().toObjects(Seat.class);
+                .get().toObjects(SeatDTO.class);
 
         double subTotal = showtime.getBasePrice() * seats.size() + orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
         double discount = 0;
 
-        Booking booking = Booking.builder()
-//                .bookingId(uniqueID)
+        BookingDTO booking = BookingDTO.builder()
+                .bookingId(uniqueID)
+                .bookingStatus("")
                 .userId(userId)
                 .movieId(showtime.getMovieId())
                 .showtimeId(data.getShowtimeId())
@@ -127,13 +122,13 @@ public class BookingController {
                 .discount(discount)
                 .total(subTotal - discount)
                 // cap nhat payment
-                .paymentMethod("")
+                .paymentMethod(bookingRequest.getPaymentMethod().name())
                 .paymentStatus("pending")
                 .createdAt(System.currentTimeMillis())
                 .updatedAt(System.currentTimeMillis())
                 .build();
 
-        BookingDTO bookingDTO = bookingService.createSeatBooking(booking);
+        BookingDTO bookingDTO = bookingService.createBooking(booking);
         return ResponseEntity.ok(
             ApiResponse.<BookingDTO>builder()
                     .success(true)

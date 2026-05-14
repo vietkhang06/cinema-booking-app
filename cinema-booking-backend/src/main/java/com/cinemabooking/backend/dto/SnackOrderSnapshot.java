@@ -1,4 +1,4 @@
-package com.cinemabooking.backend.model;
+package com.cinemabooking.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SnackOrderSnapshot {
-    String snackId;
-    String snackName;
-    String snackImgURL;
-    double price;
-    int quantity;
+    private String snackId;
+    private String snackName;
+    private String snackImgURL;
+    private double price;
+    private int quantity;
 }

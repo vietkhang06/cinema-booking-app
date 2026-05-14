@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CinemaDTO {
+    public static final String COLLECTION_NAME = "cinemas";
+
     private String cinemaId;
     private String name;
     private String address;

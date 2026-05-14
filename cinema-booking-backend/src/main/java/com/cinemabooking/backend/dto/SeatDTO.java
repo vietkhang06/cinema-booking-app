@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeatDTO {
+    public static final String COLLECTION_NAME = "seats";
+    
     private String seatId;
     private String showtimeId;
     private String seatCode;

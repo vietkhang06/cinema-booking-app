@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShowtimeDTO {
+    public static final String COLLECTION_NAME = "showtimes";
+
     private String showtimeId;
     private String movieId;
     private String cinemaId;

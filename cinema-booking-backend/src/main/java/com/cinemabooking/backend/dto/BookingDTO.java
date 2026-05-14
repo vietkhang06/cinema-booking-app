@@ -1,7 +1,6 @@
 package com.cinemabooking.backend.dto;
 
-import com.cinemabooking.backend.model.Showtime;
-import com.cinemabooking.backend.model.SnackOrderSnapshot;
+import com.google.cloud.firestore.annotation.Exclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDTO {
+    public static final String COLLECTION_NAME = "bookings";
+
     private String bookingId;
     private String userId;
     private String showtimeId;
@@ -42,7 +43,8 @@ public class BookingDTO {
     private long paymentAt;
     private List<SnackOrderSnapshot> snackOrder;
 
-    private UserDTO user;
-    private ShowtimeDTO showtime;
-    private MovieDTO movieDTO;
+    // dung cho cac phep JOIN ko hien thi trong firestore
+    @Exclude private UserDTO user;
+    @Exclude private ShowtimeDTO showtime;
+    @Exclude private MovieDTO movie;
 }

@@ -1,18 +1,11 @@
 package com.cinemabooking.backend.service;
 
 import com.cinemabooking.backend.dto.*;
-import com.cinemabooking.backend.dto.request.SeatBookingRequestDTO;
-import com.cinemabooking.backend.model.*;
-import com.google.api.core.ApiFuture;
-import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
@@ -23,65 +16,25 @@ public class BookingService {
     private static final String COLLECTION = "bookings";
 
     public BookingDTO getBookingById(String bookingId) throws ExecutionException, InterruptedException {
-        Booking booking = firestore.collection(COLLECTION).document(bookingId).get()
-                .get().toObject(Booking.class);
-        if(booking == null)
-            return null;
+        BookingDTO booking = firestore.collection(BookingDTO.COLLECTION_NAME).document(bookingId).get()
+                .get().toObject(BookingDTO.class);
 
-        BookingDTO bookingDto = mapToDTO(booking, null, null);
-
-        return bookingDto;
+        return booking;
     }
 
-    public BookingDTO createSeatBooking(
-            Booking data
+    public BookingDTO createBooking(
+            BookingDTO data
     ) throws ExecutionException, InterruptedException{
-        Booking booking = firestore.collection(COLLECTION).add(data)
-                .get()
-                .get()
-                .get().toObject(Booking.class);
-
-        return mapToDTO(booking, null, null);
-    }
-
-    public BookingDTO mapToDTO(
-            Booking booking,
-            @Nullable UserDTO user,
-            @Nullable ShowtimeDTO showtime
-    ){
-        return BookingDTO.builder()
-                .bookingId(booking.getBookingId())
-                .bookingStatus(booking.getBookingStatus())
-                .userId(booking.getUserId())
-                .showtimeId(booking.getShowtimeId())
-                //movie
-                .movieId(booking.getMovieId())
-                .movieTitleSnapshot(booking.getMovieTitleSnapshot())
-                .movieImageUrlSnapshot(booking.movieImageUrlSnapshot)
-                // Mapping Snapshots
-                .cinemaNameSnapshot(booking.getCinemaNameSnapshot())
-                .roomNameSnapshot(booking.getRoomNameSnapshot())
-                .showtimeStartAtSnapshot(booking.getShowtimeStartAtSnapshot())
-                // Mapping Collections and Totals
-                .seatCodes(booking.getSeatCodes())
-                .total(booking.getTotal())
-                .paymentStatus(booking.getPaymentStatus())
-                .bookingStatus(booking.getBookingStatus())
-                .qrCodeValue(booking.getQrCodeValue())
-                .createdAt(booking.getCreatedAt())
-                .build();
+        firestore.collection(COLLECTION).document(data.getBookingId()).set(data).get();
+        return data;
     }
 
     public void updatePaymentStatus(String bookingId, String status) throws ExecutionException, InterruptedException {
         firestore.collection(COLLECTION).document(bookingId).set(
-                Booking.builder()
+                BookingDTO.builder()
                     .paymentStatus(status)
                     .paymentAt(status.equals("confirmed") ? System.currentTimeMillis() : 0),
                 SetOptions.mergeFields("paymentStatus", "paymentAt"))
         .get();
-    }
-
-    public void mapToEntity(){
-
     }
 }

@@ -1,4 +1,4 @@
-package com.cinemabooking.backend.model;
+package com.cinemabooking.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cinema {
+public class RoomDTO {
+    public static final String COLLECTION_NAME = "rooms";
+    
+    public String roomId;
     public String cinemaId;
     public String name;
-    public String address;
-    public String city;
-    public String district;
-    public String phone;
-    public double latitude;
-    public double longitude;
+    public String layoutType;
+    public int seatRows;
+    public int seatCols;
+    public int totalSeats;
     public String status;
     public long createdAt;
     public long updatedAt;
