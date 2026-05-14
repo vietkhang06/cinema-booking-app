@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,17 @@ public class BannerController {
                 .success(true)
                 .message("Banners fetched successfully")
                 .data(banners)
+                .build();
+    }
+
+    @PostMapping("/seed")
+    @Operation(summary = "Seed mock banners into Firestore")
+    public ApiResponse<String> seedBanners() throws ExecutionException, InterruptedException {
+        bannerService.seedMockBanners();
+        return ApiResponse.<String>builder()
+                .success(true)
+                .message("Mock banners successfully seeded to Firestore")
+                .data("OK")
                 .build();
     }
 }

@@ -25,6 +25,13 @@ import com.example.cinemabookingapp.ui.customer.adapter.CineShopAdapter;
 import com.example.cinemabookingapp.ui.customer.adapter.CineShopBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.cine_shop.CineCartActivity;
 
+//Zikenic was here
+import com.example.cinemabookingapp.data.remote.datasource.BannerRemoteDataSource;
+import com.example.cinemabookingapp.data.repository.BannerRepositoryImpl;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.Banner;
+import com.example.cinemabookingapp.domain.repository.BannerRepository;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -115,25 +122,60 @@ public class CineShopFragment extends Fragment {
     }
 
     // ── Banner ───────────────────────────────────────────────────────────────
-
+    //Zikenic was here
     private void setupBanner() {
         bannerAdapter = new CineShopBannerAdapter();
-
-        // Mock banner data — URL placeholder (sẽ load thật từ Firestore sau)
-        List<String> mockBannerUrls = Arrays.asList(
-                "placeholder_1",
-                "placeholder_2",
-                "placeholder_3"
-        );
-        bannerAdapter.setBanners(mockBannerUrls);
         bannerPager.setAdapter(bannerAdapter);
-
-        setupBannerDots(mockBannerUrls.size());
 
         bannerPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 updateDots(position);
+            }
+        });
+
+        // Call API to fetch banners
+        fetchBannersFromDatabase();
+    }
+
+    private void fetchBannersFromDatabase() {
+        BannerRepository bannerRepo = new BannerRepositoryImpl(new BannerRemoteDataSource());
+        bannerRepo.getAllBanners(new ResultCallback<List<Banner>>() {
+            @Override
+            public void onSuccess(List<Banner> result) {
+                List<String> bannerUrls = new ArrayList<>();
+
+                if (result == null || result.isEmpty()) {
+                    // MOCK DATA FALLBACK: If DB is empty, use these realistic image URLs
+                    bannerUrls.addAll(Arrays.asList(
+                            "https://www.galaxycine.vn/media/2024/3/6/z5217435133604-0ee030cd3eb04ea12ed2539d09c6f932_1709712711718.jpg",
+                            "https://www.galaxycine.vn/media/2024/5/1/combo-g-1_1714552467319.jpg",
+                            "https://www.galaxycine.vn/media/2024/5/1/combo-g-2_1714552469493.jpg"
+                    ));
+                } else {
+                    // Extract URLs from database result
+                    for (Banner b : result) {
+                        if (b.imageUrl != null) bannerUrls.add(b.imageUrl);
+                    }
+                }
+
+                // Update UI safely on Main Thread
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        bannerAdapter.setBanners(bannerUrls);
+                        setupBannerDots(bannerUrls.size());
+
+                        // Restart auto-scroll with new data
+                        stopBannerAutoScroll();
+                        startBannerAutoScroll();
+                    });
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                // If network fails, you can log it and still show mock data or handle gracefully
+                fetchBannersFromDatabase(); // Or handle error UI
             }
         });
     }
