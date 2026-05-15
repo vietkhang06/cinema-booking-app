@@ -1,6 +1,7 @@
 package com.example.cinemabookingapp.ui.customer;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -8,6 +9,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
+import com.example.cinemabookingapp.data.dto.SeatActionRequest;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.data.remote.api.SeatApiService;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,6 +41,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private long showtimeStart;
     private double total;
     private ArrayList<String> seatCodes, seatIds;
+    
+    // Timer related
+    private TextView tvTimer;
+    private CountDownTimer seatTimer;
+    private static final long SEAT_HOLD_DURATION_MS = 7 * 60 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
         seatIds      = getIntent().getStringArrayListExtra(EXTRA_SEAT_IDS);
 
         initViews();
+        lockSeats();
+        startTimer();
     }
 
     private void initViews() {
@@ -85,6 +97,86 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (btnConfirm != null) {
             btnConfirm.setOnClickListener(v -> confirmBooking());
         }
+        
+        tvTimer = findViewById(R.id.tvTimerBadge);
+    }
+    
+    private void startTimer() {
+        if (tvTimer == null) return;
+        
+        seatTimer = new CountDownTimer(SEAT_HOLD_DURATION_MS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tvTimer.setText(formatTime(millisUntilFinished));
+            }
+
+            @Override
+            public void onFinish() {
+                handleTimeout();
+            }
+        }.start();
+    }
+
+    private String formatTime(long millis) {
+        long seconds = millis / 1000;
+        long min = seconds / 60;
+        long sec = seconds % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", min, sec);
+    }
+
+    private void handleTimeout() {
+        Toast.makeText(this, "Hết thời gian giữ ghế!", Toast.LENGTH_LONG).show();
+        unlockSeats();
+        finish();
+    }
+
+    private void lockSeats() {
+        if (seatIds == null || seatIds.isEmpty()) return;
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null 
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "anonymous";
+        
+        SeatApiService api = RetrofitClient.getInstance().create(SeatApiService.class);
+        api.lockSeats(new SeatActionRequest(seatIds, userId)).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(BookingConfirmActivity.this, "Không thể giữ ghế, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                // Ignore failure for now or handle accordingly
+            }
+        });
+    }
+
+    private void unlockSeats() {
+        if (seatIds == null || seatIds.isEmpty()) return;
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null 
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "anonymous";
+        
+        SeatApiService api = RetrofitClient.getInstance().create(SeatApiService.class);
+        api.unlockSeats(new SeatActionRequest(seatIds, userId)).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {}
+            @Override public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {}
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        unlockSeats();
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (seatTimer != null) {
+            seatTimer.cancel();
+        }
+        // In case of non-timeout/non-back exit (e.g. killed) 
+        // usually we'd rely on backend TTL, but let's try to release
+        super.onDestroy();
     }
 
     private void confirmBooking() {

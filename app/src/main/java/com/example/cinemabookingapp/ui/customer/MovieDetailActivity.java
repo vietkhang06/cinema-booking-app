@@ -23,6 +23,7 @@ import androidx.core.widget.NestedScrollView;
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.data.dto.ShowtimeDTO;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
@@ -42,6 +43,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.example.cinemabookingapp.domain.repository.ShowtimeRepository;
+import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
+import com.example.cinemabookingapp.data.remote.datasource.ShowtimeRemoteDataSource;
+import com.example.cinemabookingapp.domain.repository.CinemaRepository;
+import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
+import com.example.cinemabookingapp.data.remote.datasource.CinemaRemoteDataSource;
+import com.example.cinemabookingapp.domain.model.Showtime;
+import com.example.cinemabookingapp.domain.model.Cinema;
+import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog.ShowtimeInfo;
+import android.util.Log;
 
 public class MovieDetailActivity extends BaseActivity {
 
@@ -100,6 +112,8 @@ public class MovieDetailActivity extends BaseActivity {
 
     private MovieDetailScheduleCatalog scheduleCatalog;
     private GetMovieByIdUseCase getMovieByIdUseCase;
+    private ShowtimeRepository showtimeRepository;
+    private CinemaRepository cinemaRepository;
 
     private String selectedMovieId = "";
     private String selectedMoviePosterUrl = "";
@@ -168,19 +182,13 @@ public class MovieDetailActivity extends BaseActivity {
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
+        
+        showtimeRepository = new ShowtimeRepositoryImpl(new ShowtimeRemoteDataSource());
+        cinemaRepository = new CinemaRepositoryImpl();
     }
 
     private void initScheduleCatalog() {
         scheduleCatalog = MovieDetailScheduleCatalog.createDefault();
-
-        List<String> cityNames = scheduleCatalog.getCityNames();
-        if (!cityNames.isEmpty()) {
-            selectedCity = cityNames.get(0);
-            scheduleCatalog.setExpandedCinema(selectedCity, getFirstCinemaName(selectedCity));
-            selectedCinema = getFirstCinemaName(selectedCity);
-            selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-            selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
-        }
 
         List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
         if (!dateOptions.isEmpty()) {
@@ -188,6 +196,8 @@ public class MovieDetailActivity extends BaseActivity {
             selectedDateLabel = dateOptions.get(0).label;
             selectedDateText = dateOptions.get(0).dateText;
         }
+        
+        // Real data will be loaded in loadShowtimesAndCinemas()
     }
 
     private void bindFallbackExtras() {
@@ -217,7 +227,10 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void loadMovieFromFirestore() {
+        Log.d("MovieDetail", "loadMovieFromFirestore: selectedMovieId = " + selectedMovieId);
         if (TextUtils.isEmpty(selectedMovieId)) {
+            Log.w("MovieDetail", "selectedMovieId is EMPTY! Flow will stop.");
+            // For debugging, try to load showtimes anyway or just return
             return;
         }
 
@@ -226,12 +239,83 @@ public class MovieDetailActivity extends BaseActivity {
             public void onSuccess(Movie movie) {
                 if (movie != null) {
                     bindMovie(movie);
+                    loadShowtimesAndCinemas(); // Load showtimes after movie is bound
                 }
             }
 
             @Override
             public void onError(String errorMessage) {
-                // giữ fallback từ intent
+                Log.e("MovieDetail", "Error loading movie: " + errorMessage);
+                loadShowtimesAndCinemas(); // Try loading showtimes anyway
+            }
+        });
+    }
+
+    private void loadShowtimesAndCinemas() {
+        Log.d("MovieDetail", ">>> [STEP 1] loadShowtimesAndCinemas for: " + selectedMovieId);
+        showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
+            @Override
+            public void onSuccess(List<Showtime> showtimes) {
+                int count = (showtimes != null ? showtimes.size() : 0);
+                Log.d("MovieDetail", ">>> [STEP 2] onSuccess: Fetched " + count + " showtimes");
+                if (showtimes != null) {
+                    for (int i = 0; i < showtimes.size(); i++) {
+                        Showtime st = showtimes.get(i);
+                        Log.d("MovieDetail", String.format("    #%d: ID=%s, MovieId=%s, CinemaId=%s, startAt=%d, format=%s", 
+                            i, st.showtimeId, st.movieId, st.cinemaId, st.startAt, st.format));
+                    }
+                }
+                fetchCinemasAndBuildCatalog(showtimes);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("MovieDetail", ">>> [STEP 2] ERROR fetching showtimes: " + errorMessage);
+                runOnUiThread(() -> renderCinemaGroups()); // Show empty state
+            }
+        });
+    }
+
+    private void fetchCinemasAndBuildCatalog(List<Showtime> showtimes) {
+        Log.d("MovieDetail", ">>> [STEP 3] fetchCinemasAndBuildCatalog");
+        cinemaRepository.getAllCinemas(new ResultCallback<List<Cinema>>() {
+            @Override
+            public void onSuccess(List<Cinema> cinemas) {
+                Log.d("MovieDetail", ">>> [STEP 4] onSuccess: Fetched " + (cinemas != null ? cinemas.size() : 0) + " cinemas");
+                
+                scheduleCatalog.buildFromData(showtimes, cinemas);
+                
+                runOnUiThread(() -> {
+                    List<String> cities = scheduleCatalog.getCityNames();
+                    Log.d("MovieDetail", ">>> [STEP 5] UI Update: Catalog built. Cities found: " + cities.size());
+                    
+                    if (!cities.isEmpty()) {
+                        // Default city if none selected or if previous selection is invalid
+                        if (selectedCity.isEmpty() || !cities.contains(selectedCity)) {
+                            selectedCity = cities.get(0);
+                            Log.d("MovieDetail", "    Defaulted selectedCity to: " + selectedCity);
+                        }
+                        
+                        // Default cinema for the selected city
+                        List<String> cinemasInCity = scheduleCatalog.getCinemaNames(selectedCity);
+                        if (!cinemasInCity.isEmpty() && (selectedCinema.isEmpty() || !cinemasInCity.contains(selectedCinema))) {
+                            selectedCinema = cinemasInCity.get(0);
+                            Log.d("MovieDetail", "    Defaulted selectedCinema to: " + selectedCinema);
+                        }
+                        
+                        scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                    }
+                    
+                    setupDropdowns();
+                    renderDateChips();
+                    renderCinemaGroups();
+                });
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("MovieDetail", ">>> [STEP 4] ERROR fetching cinemas: " + errorMessage);
+                runOnUiThread(() -> renderCinemaGroups());
             }
         });
     }
@@ -280,24 +364,36 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void setupDropdowns() {
-        actvCity.setAdapter(createCenteredAdapter(scheduleCatalog.getCityNames()));
+        List<String> cities = scheduleCatalog.getCityNames();
+        Log.d("MovieDetail", "setupDropdowns: " + cities.size() + " cities");
+        
+        actvCity.setAdapter(createCenteredAdapter(cities));
         actvCity.setText(selectedCity, false);
 
-        actvCinema.setAdapter(createCenteredAdapter(scheduleCatalog.getCinemaNames(selectedCity)));
+        List<String> cinemas = scheduleCatalog.getCinemaNames(selectedCity);
+        Log.d("MovieDetail", "setupDropdowns: " + cinemas.size() + " cinemas for city " + selectedCity);
+        
+        actvCinema.setAdapter(createCenteredAdapter(cinemas));
+        if (selectedCinema.isEmpty() && !cinemas.isEmpty()) {
+            selectedCinema = cinemas.get(0);
+        }
         actvCinema.setText(selectedCinema, false);
 
         actvCity.setOnClickListener(v -> actvCity.showDropDown());
         actvCinema.setOnClickListener(v -> actvCinema.showDropDown());
 
         actvCity.setOnItemClickListener((parent, view, position, id) -> {
-            String city = scheduleCatalog.getCityNames().get(position);
+            String city = cities.get(position);
+            Log.d("MovieDetail", "City selected: " + city);
             onCitySelected(city);
         });
 
         actvCinema.setOnItemClickListener((parent, view, position, id) -> {
-            List<String> cinemas = scheduleCatalog.getCinemaNames(selectedCity);
-            if (position >= 0 && position < cinemas.size()) {
-                onCinemaSelected(cinemas.get(position));
+            List<String> currentCinemas = scheduleCatalog.getCinemaNames(selectedCity);
+            if (position >= 0 && position < currentCinemas.size()) {
+                String cinemaName = currentCinemas.get(position);
+                Log.d("MovieDetail", "Cinema selected: " + cinemaName);
+                onCinemaSelected(cinemaName);
             }
         });
     }
@@ -326,22 +422,21 @@ public class MovieDetailActivity extends BaseActivity {
         selectedCity = city;
         actvCity.setText(city, false);
 
-        selectedCinema = getFirstCinemaName(city);
-        selectedRoomType = getFirstRoomType(city, selectedCinema);
-        selectedShowtime = getFirstShowtime(city, selectedCinema, selectedRoomType);
-
+        List<String> cinemaNames = scheduleCatalog.getCinemaNames(city);
+        if (!cinemaNames.isEmpty()) {
+            selectedCinema = cinemaNames.get(0);
+        } else {
+            selectedCinema = "";
+        }
+        
         scheduleCatalog.setExpandedCinema(city, selectedCinema);
 
         refreshCinemaDropdown();
-        renderDateChips();
         renderCinemaGroups();
     }
 
     private void onCinemaSelected(String cinemaName) {
         selectedCinema = cinemaName;
-        selectedRoomType = getFirstRoomType(selectedCity, cinemaName);
-        selectedShowtime = getFirstShowtime(selectedCity, cinemaName, selectedRoomType);
-
         actvCinema.setText(cinemaName, false);
         scheduleCatalog.setExpandedCinema(selectedCity, cinemaName);
         renderCinemaGroups();
@@ -426,6 +521,7 @@ public class MovieDetailActivity extends BaseActivity {
         selectedDateLabel = option.label;
         selectedDateText = option.dateText;
         renderDateChips();
+        renderCinemaGroups();
     }
 
     private void renderCinemaGroups() {
@@ -509,32 +605,81 @@ public class MovieDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 ));
 
-                List<String> times = group.times;
-                for (int start = 0; start < times.size(); start += 4) {
-                    LinearLayout row = new LinearLayout(this);
-                    row.setOrientation(LinearLayout.HORIZONTAL);
-                    row.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    ));
+                // Filter showtimes for this group by the selected date
+                List<ShowtimeInfo> filteredShowtimes = new ArrayList<>();
 
-                    int end = Math.min(start + 4, times.size());
-                    for (int t = start; t < end; t++) {
-                        String time = times.get(t);
-                        MaterialButton timeButton = buildTimeButton(time, section.name, group.title);
-                        LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                dp(36)
-                        );
-                        timeParams.setMargins(0, 0, dp(8), dp(8));
-                        timeButton.setLayoutParams(timeParams);
-                        row.addView(timeButton);
+                Log.d("MovieDetail", ">>> [STEP 6] Filtering Group: " + group.title + " | Total in group: " + group.showtimes.size());
+
+                for (ShowtimeInfo info : group.showtimes) {
+
+                    if (info == null) {
+                        continue;
                     }
 
-                    rows.addView(row);
+                    try {
+
+                        SimpleDateFormat sdf =
+                                new SimpleDateFormat("dd/MM", Locale.getDefault());
+
+                        String showtimeDate =
+                                sdf.format(info.timestamp);
+
+                        boolean match = showtimeDate.equals(selectedDateText);
+                        
+                        Log.d(
+                                "MovieDetail",
+                                String.format("    COMPARE: ID=%s, ts=%d -> formatted=%s | selected=%s | MATCH=%b",
+                                    info.showtimeId, info.timestamp, showtimeDate, selectedDateText, match)
+                        );
+
+                        if (match) {
+                            filteredShowtimes.add(info);
+                        }
+
+                    } catch (Exception e) {
+
+                        Log.e(
+                                "MovieDetail",
+                                "    DATE FILTER ERROR: "
+                                        + e.getMessage()
+                        );
+                    }
                 }
 
-                content.addView(rows);
+                Log.d("MovieDetail", ">>> [STEP 7] Filtered results for " + group.title + ": " + filteredShowtimes.size());
+
+                if (filteredShowtimes.isEmpty()) {
+                    TextView noShowtime = new TextView(this);
+                    noShowtime.setText("Không có suất chiếu cho ngày này.");
+                    noShowtime.setTextSize(12f);
+                    noShowtime.setTextColor(Color.GRAY);
+                    noShowtime.setPadding(0, dp(8), 0, dp(8));
+                    content.addView(noShowtime);
+                } else {
+                    for (int start = 0; start < filteredShowtimes.size(); start += 4) {
+                        LinearLayout row = new LinearLayout(this);
+                        row.setOrientation(LinearLayout.HORIZONTAL);
+                        row.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+
+                        int end = Math.min(start + 4, filteredShowtimes.size());
+                        for (int t = start; t < end; t++) {
+                            ShowtimeInfo info = filteredShowtimes.get(t);
+                            MaterialButton timeButton = buildTimeButton(info, section.name);
+                            LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    dp(36)
+                            );
+                            timeParams.setMargins(0, 0, dp(8), dp(8));
+                            timeButton.setLayoutParams(timeParams);
+                            row.addView(timeButton);
+                        }
+                        rows.addView(row);
+                    }
+                    content.addView(rows);
+                }
 
                 View divider = new View(this);
                 LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
@@ -557,9 +702,9 @@ public class MovieDetailActivity extends BaseActivity {
         }
     }
 
-    private MaterialButton buildTimeButton(String time, String cinemaName, String roomType) {
+    private MaterialButton buildTimeButton(ShowtimeInfo info, String cinemaName) {
         MaterialButton button = new MaterialButton(this);
-        button.setText(time);
+        button.setText(info.time);
         button.setAllCaps(false);
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         button.setCornerRadius(dp(10));
@@ -568,25 +713,24 @@ public class MovieDetailActivity extends BaseActivity {
         button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         button.setTextColor(Color.parseColor("#111111"));
 
-        boolean selected = cinemaName.equals(selectedCinema)
-                && roomType.equals(selectedRoomType)
-                && time.equals(selectedShowtime);
-
+        boolean selected = info.showtimeId.equals(selectedShowtime);
         styleTimeButton(button, selected);
 
         button.setOnClickListener(v -> {
             selectedCinema = cinemaName;
-            selectedRoomType = roomType;
-            selectedShowtime = time;
+            selectedRoomType = info.format;
+            selectedShowtime = info.showtimeId;
 
+            Log.d("MovieDetail", "Opening SeatSelection for showtime: " + info.showtimeId);
             Intent intent = new Intent(MovieDetailActivity.this, SeatSelectionActivity.class);
 
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, info.showtimeId);
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
             intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
             intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
-            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, System.currentTimeMillis());
-            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, 85000);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, info.timestamp);
+            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, info.price);
 
             startActivity(intent);
         });
@@ -611,8 +755,6 @@ public class MovieDetailActivity extends BaseActivity {
                 section.expanded = !section.expanded;
                 if (section.expanded) {
                     selectedCinema = section.name;
-                    selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-                    selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
                 }
             } else {
                 section.expanded = false;
@@ -795,37 +937,6 @@ public class MovieDetailActivity extends BaseActivity {
         return sdf.format(releaseDate);
     }
 
-    private String getFirstCinemaName(String city) {
-        List<String> cinemas = scheduleCatalog.getCinemaNames(city);
-        if (cinemas.isEmpty()) {
-            return "";
-        }
-        return cinemas.get(0);
-    }
-
-    private String getFirstRoomType(String city, String cinemaName) {
-        List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
-        for (CinemaSection section : sections) {
-            if (section.name.equals(cinemaName) && section.groups != null && !section.groups.isEmpty()) {
-                return section.groups.get(0).title;
-            }
-        }
-        return "";
-    }
-
-    private String getFirstShowtime(String city, String cinemaName, String roomType) {
-        List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
-        for (CinemaSection section : sections) {
-            if (section.name.equals(cinemaName)) {
-                for (ShowtimeGroup group : section.groups) {
-                    if (group.title.equals(roomType) && group.times != null && !group.times.isEmpty()) {
-                        return group.times.get(0);
-                    }
-                }
-            }
-        }
-        return "";
-    }
 
     private String safe(String value, String fallback) {
         if (TextUtils.isEmpty(value)) {
@@ -836,5 +947,64 @@ public class MovieDetailActivity extends BaseActivity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private String getFirstRoomType(String city, String cinemaName) {
+
+        List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
+
+        if (sections == null || sections.isEmpty()) {
+            return "";
+        }
+
+        for (CinemaSection section : sections) {
+
+            if (!section.name.equals(cinemaName)) {
+                continue;
+            }
+
+            if (section.groups == null || section.groups.isEmpty()) {
+                return "";
+            }
+
+            ShowtimeGroup firstGroup = section.groups.get(0);
+
+            return firstGroup.title;
+        }
+
+        return "";
+    }
+
+    private String getFirstShowtime(String city,
+                                    String cinemaName,
+                                    String roomType) {
+
+        List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
+
+        if (sections == null || sections.isEmpty()) {
+            return "";
+        }
+
+        for (CinemaSection section : sections) {
+
+            if (!section.name.equals(cinemaName)) {
+                continue;
+            }
+
+            for (ShowtimeGroup group : section.groups) {
+
+                if (!group.title.equals(roomType)) {
+                    continue;
+                }
+
+                if (group.showtimes == null || group.showtimes.isEmpty()) {
+                    return "";
+                }
+
+                return group.showtimes.get(0).showtimeId;
+            }
+        }
+
+        return "";
     }
 }

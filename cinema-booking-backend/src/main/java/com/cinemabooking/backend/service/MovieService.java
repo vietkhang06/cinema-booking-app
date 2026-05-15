@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class MovieService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(MovieService.class);
 
     @Autowired
     private Firestore firestore;
@@ -24,119 +25,219 @@ public class MovieService {
     private static final String COLLECTION = "movies";
 
     /**
-     * Fetch all movies with lenient filtering (handles missing deleted/isActive fields).
+     * Fetch all movies
      */
-    public List<MovieDTO> getAllMovies(int page, int size) throws ExecutionException, InterruptedException {
-        logger.info("Fetching movies from Firestore - page: {}, size: {}", page, size);
-        
-        try {
-            // FIX: Removed strict orderBy("updatedAt") because it excludes documents missing that field.
-            // We fetch the latest documents and will sort them in Java.
-            ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
-                    .limit(100) // Fetch a reasonable batch for lenient filtering
-                    .get();
+    public List<MovieDTO> getAllMovies(int page, int size)
+            throws ExecutionException, InterruptedException {
 
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            logger.info("Retrieved {} documents from Firestore COLLECTION: {}", documents.size(), COLLECTION);
+        logger.info("Fetching movies from Firestore");
 
-            List<MovieDTO> allMovies = documents.stream()
-                    .map(this::mapToDTO)
-                    .filter(m -> !Boolean.TRUE.equals(m.getDeleted())) // Keep if deleted is null or false
-                    .filter(m -> !Boolean.FALSE.equals(m.getIsActive())) // Keep if isActive is null or true
-                    .sorted((m1, m2) -> {
-                        // Sort by updatedAt descending in memory, handling nulls
-                        long t1 = m1.getUpdatedAt() != null ? m1.getUpdatedAt() : 0L;
-                        long t2 = m2.getUpdatedAt() != null ? m2.getUpdatedAt() : 0L;
-                        return Long.compare(t2, t1);
-                    })
-                    .collect(Collectors.toList());
+        ApiFuture<QuerySnapshot> future =
+                firestore.collection(COLLECTION)
+                        .limit(200)
+                        .get();
 
-            logger.info("Movies available after lenient filtering and sorting: {}", allMovies.size());
+        List<QueryDocumentSnapshot> documents =
+                future.get().getDocuments();
 
-            // Simple pagination
-            int start = page * size;
-            if (start >= allMovies.size()) {
-                logger.debug("Pagination start index {} out of bounds for size {}", start, allMovies.size());
-                return new ArrayList<>();
-            }
-            int end = Math.min(start + size, allMovies.size());
-            
-            List<MovieDTO> pagedMovies = allMovies.subList(start, end);
-            logger.info("Returning {} movies for page {}", pagedMovies.size(), page);
-            return pagedMovies;
+        logger.info("Found {} movie documents", documents.size());
 
-        } catch (Exception e) {
-            logger.error("Error in getAllMovies (Firestore query failed): {}", e.getMessage(), e);
-            throw e;
+        List<MovieDTO> allMovies = documents.stream()
+                .map(this::mapToDTO)
+                .filter(m -> !Boolean.TRUE.equals(m.getDeleted()))
+                .filter(m -> !Boolean.FALSE.equals(m.getIsActive()))
+                .sorted((m1, m2) -> {
+                    long t1 = m1.getUpdatedAt() != null
+                            ? m1.getUpdatedAt()
+                            : 0L;
+
+                    long t2 = m2.getUpdatedAt() != null
+                            ? m2.getUpdatedAt()
+                            : 0L;
+
+                    return Long.compare(t2, t1);
+                })
+                .collect(Collectors.toList());
+
+        int start = page * size;
+
+        if (start >= allMovies.size()) {
+            return new ArrayList<>();
         }
+
+        int end = Math.min(start + size, allMovies.size());
+
+        return allMovies.subList(start, end);
     }
 
+    /**
+     * Get movie by Firestore document ID
+     */
+    public MovieDTO getMovieById(String id)
+            throws ExecutionException, InterruptedException {
 
-    public MovieDTO getMovieById(String id) throws ExecutionException, InterruptedException {
-        try {
-            DocumentSnapshot document = firestore.collection(COLLECTION).document(id).get().get();
-            if (document.exists() && isVisible(document)) {
-                return mapToDTO(document);
-            }
-        } catch (Exception e) {
-            logger.error("Error fetching movie by ID {}: {}", id, e.getMessage());
+        DocumentSnapshot document =
+                firestore.collection(COLLECTION)
+                        .document(id)
+                        .get()
+                        .get();
+
+        if (document.exists() && isVisible(document)) {
+            return mapToDTO(document);
         }
+
         return null;
     }
 
-    public List<MovieDTO> getMoviesByStatus(String status, int page, int size) throws ExecutionException, InterruptedException {
-        logger.info("Fetching movies by status: {}", status);
-        List<MovieDTO> allMovies = getAllMovies(0, 1000); // Fetch all for filtering
-        
+    /**
+     * Get movies by status
+     */
+    public List<MovieDTO> getMoviesByStatus(
+            String status,
+            int page,
+            int size
+    ) throws ExecutionException, InterruptedException {
+
+        List<MovieDTO> allMovies =
+                getAllMovies(0, 1000);
+
         List<MovieDTO> filtered = allMovies.stream()
-                .filter(m -> status.equalsIgnoreCase(m.getStatus()))
+                .filter(m ->
+                        status.equalsIgnoreCase(m.getStatus()))
                 .collect(Collectors.toList());
 
-        logger.info("Movies with status {}: {}", status, filtered.size());
-
         int start = page * size;
-        if (start >= filtered.size()) return new ArrayList<>();
+
+        if (start >= filtered.size()) {
+            return new ArrayList<>();
+        }
+
         int end = Math.min(start + size, filtered.size());
-        
+
         return filtered.subList(start, end);
     }
 
-    public List<MovieDTO> searchMovies(String keyword) throws ExecutionException, InterruptedException {
-        logger.info("Searching movies with keyword: {}", keyword);
-        List<MovieDTO> allMovies = getAllMovies(0, 1000);
-        
+    /**
+     * Search movies
+     */
+    public List<MovieDTO> searchMovies(String keyword)
+            throws ExecutionException, InterruptedException {
+
+        List<MovieDTO> allMovies =
+                getAllMovies(0, 1000);
+
         String lowerKeyword = keyword.toLowerCase();
+
         return allMovies.stream()
-                .filter(m -> m.getTitle() != null && m.getTitle().toLowerCase().contains(lowerKeyword))
+                .filter(m ->
+                        m.getTitle() != null &&
+                                m.getTitle()
+                                        .toLowerCase()
+                                        .contains(lowerKeyword))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Visibility filter
+     */
     private boolean isVisible(DocumentSnapshot doc) {
+
         Boolean deleted = doc.getBoolean("deleted");
         Boolean isActive = doc.getBoolean("isActive");
-        // Lenient: visible if deleted is not true AND isActive is not false
-        return !Boolean.TRUE.equals(deleted) && !Boolean.FALSE.equals(isActive);
+
+        return !Boolean.TRUE.equals(deleted)
+                && !Boolean.FALSE.equals(isActive);
     }
 
+    /**
+     * Firestore -> DTO
+     */
     private MovieDTO mapToDTO(DocumentSnapshot doc) {
+
+        logger.info("""
+                Mapping movie:
+                firestoreId={}
+                customMovieId={}
+                title={}
+                """,
+                doc.getId(),
+                doc.getString("movieId"),
+                doc.getString("title")
+        );
+
         return MovieDTO.builder()
-                .movieId(doc.getId())
+
+                /**
+                 * IMPORTANT:
+                 * REAL FIRESTORE DOCUMENT ID
+                 */
+                .id(doc.getId())
+
+                /**
+                 * custom movie code
+                 */
+                .movieId(doc.getString("movieId"))
+
                 .title(doc.getString("title"))
                 .description(doc.getString("description"))
+
                 .language(doc.getString("language"))
-                .ageRating(doc.contains("ageRating") ? doc.getString("ageRating") : doc.getString("age"))
-                .posterUrl(doc.contains("posterUrl") ? doc.getString("posterUrl") : doc.getString("imageUrl"))
+
+                .ageRating(
+                        doc.contains("ageRating")
+                                ? doc.getString("ageRating")
+                                : doc.getString("age")
+                )
+
+                .posterUrl(
+                        doc.contains("posterUrl")
+                                ? doc.getString("posterUrl")
+                                : doc.getString("imageUrl")
+                )
+
                 .trailerUrl(doc.getString("trailerUrl"))
-                .ratingAvg(doc.getDouble("ratingAvg") != null ? doc.getDouble("ratingAvg") : doc.getDouble("rating"))
-                .ratingCount(doc.getLong("ratingCount") != null ? doc.getLong("ratingCount").intValue() : 0)
+
+                .ratingAvg(
+                        doc.getDouble("ratingAvg") != null
+                                ? doc.getDouble("ratingAvg")
+                                : doc.getDouble("rating")
+                )
+
+                .ratingCount(
+                        doc.getLong("ratingCount") != null
+                                ? doc.getLong("ratingCount").intValue()
+                                : 0
+                )
+
                 .status(doc.getString("status"))
+
                 .genres((List<String>) doc.get("genres"))
-                .durationMinutes(doc.getLong("durationMinutes") != null ? doc.getLong("durationMinutes").intValue() : 
-                                (doc.getLong("duration") != null ? doc.getLong("duration").intValue() : 0))
+
+                .durationMinutes(
+                        doc.getLong("durationMinutes") != null
+                                ? doc.getLong("durationMinutes").intValue()
+                                : (
+                                doc.getLong("duration") != null
+                                        ? doc.getLong("duration").intValue()
+                                        : 0
+                        )
+                )
+
                 .createdAt(doc.getLong("createdAt"))
                 .updatedAt(doc.getLong("updatedAt"))
-                .isActive(doc.getBoolean("isActive") != null ? doc.getBoolean("isActive") : true)
-                .deleted(doc.getBoolean("deleted") != null ? doc.getBoolean("deleted") : false)
+
+                .isActive(
+                        doc.getBoolean("isActive") != null
+                                ? doc.getBoolean("isActive")
+                                : true
+                )
+
+                .deleted(
+                        doc.getBoolean("deleted") != null
+                                ? doc.getBoolean("deleted")
+                                : false
+                )
+
                 .build();
     }
 }

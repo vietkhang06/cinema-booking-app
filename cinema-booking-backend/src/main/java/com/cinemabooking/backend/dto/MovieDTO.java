@@ -12,7 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieDTO {
+
+    // FIRESTORE DOCUMENT ID
+    private String id;
+
+    // custom movie code
     private String movieId;
+
     private String title;
     private String description;
     private String language;

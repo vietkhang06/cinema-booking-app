@@ -19,4 +19,12 @@ public class ShowtimeDTO {
 
     public ShowtimeDTO() {
     }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
 }

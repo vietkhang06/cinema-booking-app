@@ -285,9 +285,11 @@ public class MovieRemoteDataSource {
             return null;
         }
 
-        setValue(movie, "movieId", movieId);
+        // Map movieId from the data map if it exists (custom code), otherwise use docId
+        Object customMovieId = data != null ? data.get("movieId") : null;
+        setValue(movie, "movieId", customMovieId != null ? String.valueOf(customMovieId) : movieId);
         setValue(movie, "id", movieId);
-
+        Log.d("MovieRemoteDataSource", "Mapped Movie: ID=" + movieId + ", title=" + (data != null ? data.get("title") : "null") + ", customMovieId=" + (data != null ? data.get("movieId") : "null"));
         if (data == null) {
             return movie;
         }

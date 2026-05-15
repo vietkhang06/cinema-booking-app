@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,32 @@ public class SeatService {
                 .collect(Collectors.toList());
         logger.info("Loaded {} seats for showtime {}", seats.size(), showtimeId);
         return seats;
+    }
+
+    public void holdSeats(List<String> seatIds, String userId, long durationMinutes) throws ExecutionException, InterruptedException {
+        long heldUntil = System.currentTimeMillis() + (durationMinutes * 60 * 1000);
+        for (String id : seatIds) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("status", "HOLDING");
+            updates.put("heldBy", userId);
+            updates.put("heldUntil", heldUntil);
+            firestore.collection(COLLECTION).document(id).update(updates).get();
+        }
+    }
+
+    public void releaseSeats(List<String> seatIds, String userId) throws ExecutionException, InterruptedException {
+        for (String id : seatIds) {
+            // Only release if held by this user or if status is HOLDING
+            DocumentSnapshot doc = firestore.collection(COLLECTION).document(id).get().get();
+            String currentHolder = doc.getString("heldBy");
+            if (userId.equals(currentHolder) || "HOLDING".equals(doc.getString("status"))) {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("status", "AVAILABLE");
+                updates.put("heldBy", null);
+                updates.put("heldUntil", 0L);
+                firestore.collection(COLLECTION).document(id).update(updates).get();
+            }
+        }
     }
 
     private SeatDTO mapToDTO(DocumentSnapshot doc) {

@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/api/v1/seats/**",
 
                                 "/api/v1/health",
-                                "/api/v1/version"
+                                "/api/v1/version",
+                                "/api/v1/seed/**"
                         ).permitAll()
 
                         .requestMatchers(
