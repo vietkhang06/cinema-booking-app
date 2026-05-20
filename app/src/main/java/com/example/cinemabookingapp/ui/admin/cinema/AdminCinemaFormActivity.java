@@ -3,6 +3,7 @@ package com.example.cinemabookingapp.ui.admin.cinema;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
@@ -41,11 +42,14 @@ public class AdminCinemaFormActivity extends BaseActivity {
         setupStatusDropdown();
         bindActions();
 
+        TextView tvFormTitle = findViewById(R.id.tvFormTitle);
         if (isEditMode) {
             btnSave.setText("Cập nhật rạp");
+            if (tvFormTitle != null) tvFormTitle.setText("Cập nhật rạp chiếu");
             loadCinema();
         } else {
             btnSave.setText("Thêm rạp");
+            if (tvFormTitle != null) tvFormTitle.setText("Thêm rạp mới");
         }
     }
 
@@ -83,6 +87,39 @@ public class AdminCinemaFormActivity extends BaseActivity {
 
     private void bindActions() {
         btnSave.setOnClickListener(v -> saveCinema());
+        
+        android.view.View btnBack = findViewById(R.id.btnAdminBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
+
+        android.view.View btnMapPicker = findViewById(R.id.btnMapPickerSim);
+        if (btnMapPicker != null) {
+            btnMapPicker.setOnClickListener(v -> showMapSimDialog());
+        }
+    }
+
+    private void showMapSimDialog() {
+        String[] locations = {"Hồ Chí Minh (10.7626, 106.6829)", "Hà Nội (21.0285, 105.8542)", "Đà Nẵng (16.0544, 108.2022)"};
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("📍 Mô phỏng chọn vị trí trên Google Maps")
+                .setItems(locations, (dialog, which) -> {
+                    if (which == 0) {
+                        edtLat.setText("10.7626");
+                        edtLng.setText("106.6829");
+                        showToast("Đã ghim vị trí Hồ Chí Minh");
+                    } else if (which == 1) {
+                        edtLat.setText("21.0285");
+                        edtLng.setText("105.8542");
+                        showToast("Đã ghim vị trí Hà Nội");
+                    } else if (which == 2) {
+                        edtLat.setText("16.0544");
+                        edtLng.setText("108.2022");
+                        showToast("Đã ghim vị trí Đà Nẵng");
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void loadCinema() {

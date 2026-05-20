@@ -100,4 +100,151 @@ public class ShowtimeService {
             return null;
         }
     }
+
+    public int seedShowtimes() throws ExecutionException, InterruptedException {
+        logger.info("Starting showtime seeding...");
+        
+        // 1. Fetch active movies
+        List<com.google.cloud.firestore.QueryDocumentSnapshot> movieDocs = firestore.collection("movies").get().get().getDocuments();
+        List<java.util.Map<String, Object>> movies = new ArrayList<>();
+        for (DocumentSnapshot doc : movieDocs) {
+            Boolean deleted = doc.getBoolean("deleted");
+            Boolean isActive = doc.getBoolean("isActive");
+            if (Boolean.TRUE.equals(deleted) || Boolean.FALSE.equals(isActive)) continue;
+            java.util.Map<String, Object> m = doc.getData();
+            if (m != null) {
+                m.put("movieId", doc.getId());
+                movies.add(m);
+            }
+        }
+        logger.info("Found {} active movies for seeding", movies.size());
+        
+        // 2. Fetch active cinemas
+        List<com.google.cloud.firestore.QueryDocumentSnapshot> cinemaDocs = firestore.collection("cinemas").get().get().getDocuments();
+        List<java.util.Map<String, Object>> cinemas = new ArrayList<>();
+        for (DocumentSnapshot doc : cinemaDocs) {
+            Boolean deleted = doc.getBoolean("deleted");
+            if (Boolean.TRUE.equals(deleted)) continue;
+            java.util.Map<String, Object> c = doc.getData();
+            if (c != null) {
+                c.put("cinemaId", doc.getId());
+                cinemas.add(c);
+            }
+        }
+        logger.info("Found {} active cinemas for seeding", cinemas.size());
+        
+        if (movies.isEmpty() || cinemas.isEmpty()) {
+            logger.warn("Seeding aborted: movies or cinemas are empty!");
+            return 0;
+        }
+
+        // 3. Fetch active rooms
+        List<com.google.cloud.firestore.QueryDocumentSnapshot> roomDocs = firestore.collection("rooms").get().get().getDocuments();
+        List<java.util.Map<String, Object>> rooms = new ArrayList<>();
+        for (DocumentSnapshot doc : roomDocs) {
+            Boolean deleted = doc.getBoolean("deleted");
+            if (Boolean.TRUE.equals(deleted)) continue;
+            java.util.Map<String, Object> r = doc.getData();
+            if (r != null) {
+                r.put("roomId", doc.getId());
+                rooms.add(r);
+            }
+        }
+        logger.info("Found {} active rooms for seeding", rooms.size());
+
+        long now = System.currentTimeMillis();
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.add(java.util.Calendar.DAY_OF_YEAR, 1);
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        cal.set(java.util.Calendar.MINUTE, 0);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
+        long tomorrowMidnight = cal.getTimeInMillis();
+        long dayMs = 24 * 60 * 60 * 1000L;
+
+        int cinemaIndex = 0;
+        int seedCount = 0;
+
+        for (java.util.Map<String, Object> movie : movies) {
+            String movieId = (String) movie.get("movieId");
+            String movieTitle = (String) movie.get("title");
+            
+            // Pick a cinema round-robin
+            java.util.Map<String, Object> cinema = cinemas.get(cinemaIndex % cinemas.size());
+            cinemaIndex++;
+            String cinemaId = (String) cinema.get("cinemaId");
+
+            // Filter rooms for this cinema
+            List<java.util.Map<String, Object>> cinemaRooms = new ArrayList<>();
+            for (java.util.Map<String, Object> r : rooms) {
+                if (cinemaId.equals(r.get("cinemaId"))) {
+                    cinemaRooms.add(r);
+                }
+            }
+
+            if (cinemaRooms.isEmpty()) {
+                logger.warn("Cinema {} has no active rooms, skipping movie {}", cinemaId, movieTitle);
+                continue;
+            }
+
+            // Prepare 6 showtimes configs
+            int[][] schedule = {
+                {0, 0, 9, 0},   // Day 1, Room index 0, 09:00
+                {0, 1 % cinemaRooms.size(), 12, 0},  // Day 1, Room index 1, 12:00
+                {0, 2 % cinemaRooms.size(), 15, 0},  // Day 1, Room index 2, 15:00
+                {1, 0, 18, 0},  // Day 2, Room index 0, 18:00
+                {1, 1 % cinemaRooms.size(), 21, 0},  // Day 2, Room index 1, 21:00
+                {1, 2 % cinemaRooms.size(), 13, 30}  // Day 2, Room index 2, 13:30
+            };
+
+            Number durationNum = (Number) movie.get("durationMinutes");
+            long durationMs = (durationNum != null ? durationNum.longValue() : 120L) * 60 * 1000L;
+
+            for (int i = 0; i < 6; i++) {
+                int[] slot = schedule[i];
+                int dayOffset = slot[0];
+                int roomIdx = slot[1];
+                int hour = slot[2];
+                int minute = slot[3];
+
+                java.util.Map<String, Object> room = cinemaRooms.get(roomIdx);
+                String roomId = (String) room.get("roomId");
+                Number totalSeatsNum = (Number) room.get("totalSeats");
+                int totalSeats = totalSeatsNum != null ? totalSeatsNum.intValue() : 64;
+
+                long startAt = tomorrowMidnight + (dayOffset * dayMs) + (hour * 60 * 60 * 1000L) + (minute * 60 * 1000L);
+                long endAt = startAt + durationMs;
+
+                String mPrefix = movieId.substring(0, Math.min(movieId.length(), 6));
+                String rPrefix = roomId.substring(0, Math.min(roomId.length(), 6));
+                String showtimeId = "ST-SEED-" + mPrefix + "-" + rPrefix + "-" + (startAt / 60000);
+
+                DocumentSnapshot existingDoc = firestore.collection("showtimes").document(showtimeId).get().get();
+                if (!existingDoc.exists()) {
+                    java.util.Map<String, Object> showtimeData = new java.util.HashMap<>();
+                    showtimeData.put("showtimeId", showtimeId);
+                    showtimeData.put("movieId", movieId);
+                    showtimeData.put("cinemaId", cinemaId);
+                    showtimeData.put("roomId", roomId);
+                    showtimeData.put("startAt", startAt);
+                    showtimeData.put("endAt", endAt);
+                    showtimeData.put("basePrice", 85000.0);
+                    showtimeData.put("format", "2D PHỤ ĐỀ");
+                    showtimeData.put("language", "Vietnamese Sub");
+                    showtimeData.put("status", "AVAILABLE");
+                    showtimeData.put("totalSeats", totalSeats);
+                    showtimeData.put("bookedSeatsCount", 0);
+                    showtimeData.put("deleted", false);
+                    showtimeData.put("createdAt", now);
+                    showtimeData.put("updatedAt", now);
+
+                    firestore.collection("showtimes").document(showtimeId).set(showtimeData);
+                    seedCount++;
+                }
+            }
+        }
+        logger.info("Successfully seeded {} showtimes", seedCount);
+        return seedCount;
+    }
 }
+

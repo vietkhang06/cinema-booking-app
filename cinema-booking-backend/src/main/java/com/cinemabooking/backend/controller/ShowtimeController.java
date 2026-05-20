@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/v1/showtimes")
-@Tag(name = "Showtimes", description = "Endpoints for showtime schedules (Read-Only)")
+@Tag(name = "Showtimes", description = "Endpoints for showtime schedules")
 public class ShowtimeController {
 
     @Autowired
@@ -69,6 +70,17 @@ public class ShowtimeController {
                 .success(true)
                 .message("Showtimes for cinema fetched successfully")
                 .data(showtimes)
+                .build();
+    }
+
+    @PostMapping("/seed")
+    @Operation(summary = "Seed mock showtimes into Firestore")
+    public ApiResponse<Integer> seedShowtimes() throws ExecutionException, InterruptedException {
+        int count = showtimeService.seedShowtimes();
+        return ApiResponse.<Integer>builder()
+                .success(true)
+                .message("Mock showtimes successfully seeded to Firestore")
+                .data(count)
                 .build();
     }
 }

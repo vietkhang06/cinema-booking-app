@@ -60,6 +60,10 @@ public class AdminMovieListActivity extends BaseActivity {
         rvMovies = findViewById(R.id.rvMovies);
         tvEmpty = findViewById(R.id.tvEmpty);
         btnAddMovie = findViewById(R.id.btnAddMovie);
+        View btnBack = findViewById(R.id.btnAdminBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
     }
 
     private void setupList() {

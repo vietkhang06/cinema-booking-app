@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 
 public class SeatSelectionActivity extends AppCompatActivity {
 
+
+
     public static final String EXTRA_SHOWTIME_ID  = "showtimeId";
     public static final String EXTRA_MOVIE_TITLE  = "movieTitle";
     public static final String EXTRA_MOVIE_ID     = "movieId";
@@ -94,6 +96,13 @@ public class SeatSelectionActivity extends AppCompatActivity {
 
         adapter = new SeatAdapter(seatList, (seat, position) -> {
             if ("booked".equalsIgnoreCase(seat.status)) return;
+            // Enforce maximum 5 seats selection
+            if (!seat.isSelected) {
+                if (getSelectedSeats().size() >= 5) {
+                    Toast.makeText(this, "Bạn chỉ có thể chọn tối đa 5 ghế", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             seat.isSelected = !seat.isSelected;
             adapter.notifyItemChanged(position);
             updateBottomBar();
@@ -108,6 +117,8 @@ public class SeatSelectionActivity extends AppCompatActivity {
             }
             goToBookingConfirm(selected);
         });
+
+
     }
 
     private void loadSeats() {

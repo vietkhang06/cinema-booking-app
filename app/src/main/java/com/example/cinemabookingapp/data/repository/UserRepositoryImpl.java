@@ -12,6 +12,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
@@ -86,7 +87,22 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void getAllUsers(ResultCallback<List<User>> callback) {
-
+        firestore.collection(FirestoreCollections.USERS)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<User> users = new ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                        User user = doc.toObject(User.class);
+                        if (user != null) {
+                            user.uid = doc.getId();
+                            users.add(user);
+                        }
+                    }
+                    if (callback != null) callback.onSuccess(users);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError(e.getMessage());
+                });
     }
 
     @Override

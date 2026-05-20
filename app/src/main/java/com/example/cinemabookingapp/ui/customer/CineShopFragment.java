@@ -26,11 +26,12 @@ import com.example.cinemabookingapp.ui.customer.adapter.CineShopBannerAdapter;
 import com.example.cinemabookingapp.ui.customer.cine_shop.CineCartActivity;
 
 //Zikenic was here
-import com.example.cinemabookingapp.data.remote.datasource.BannerRemoteDataSource;
-import com.example.cinemabookingapp.data.repository.BannerRepositoryImpl;
-import com.example.cinemabookingapp.domain.common.ResultCallback;
-import com.example.cinemabookingapp.domain.model.Banner;
-import com.example.cinemabookingapp.domain.repository.BannerRepository;
+import com.example.cinemabookingapp.data.dto.CineShopBannerDTO;
+import com.example.cinemabookingapp.data.dto.CineShopItemDTO;
+import com.example.cinemabookingapp.utils.CineShopSeeder;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,8 @@ public class CineShopFragment extends Fragment {
     private TextView tabSeasonal, tabMovie;
     private RecyclerView rvProducts;
     private ImageView btnCart;
+    private android.widget.ProgressBar loadingProgress;
+    private TextView tvEmptyState;
 
     // ── Adapters ─────────────────────────────────────────────────────────────
     private CineShopAdapter productAdapter;
@@ -86,11 +89,14 @@ public class CineShopFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cine_shop, container, false);
 
+        // Kích hoạt Seeder khởi tạo dữ liệu mẫu nếu Firestore trống
+        CineShopSeeder.seedIfNeeded();
+
         bindViews(view);
         setupBanner();
         setupTabs();
         setupRecyclerView();
-        loadMockData();
+        loadCineShopItems();
 
         return view;
     }
@@ -116,6 +122,8 @@ public class CineShopFragment extends Fragment {
         tabMovie     = view.findViewById(R.id.tabMovie);
         rvProducts   = view.findViewById(R.id.rvProducts);
         btnCart      = view.findViewById(R.id.btnCart);
+        loadingProgress = view.findViewById(R.id.loadingProgress);
+        tvEmptyState    = view.findViewById(R.id.tvEmptyState);
 
         btnCart.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), CineCartActivity.class)));
@@ -139,45 +147,48 @@ public class CineShopFragment extends Fragment {
     }
 
     private void fetchBannersFromDatabase() {
-        BannerRepository bannerRepo = new BannerRepositoryImpl(new BannerRemoteDataSource());
-        bannerRepo.getAllBanners(new ResultCallback<List<Banner>>() {
-            @Override
-            public void onSuccess(List<Banner> result) {
-                List<String> bannerUrls = new ArrayList<>();
-
-                if (result == null || result.isEmpty()) {
-                    // MOCK DATA FALLBACK: If DB is empty, use these realistic image URLs
-                    bannerUrls.addAll(Arrays.asList(
-                            "https://www.galaxycine.vn/media/2024/3/6/z5217435133604-0ee030cd3eb04ea12ed2539d09c6f932_1709712711718.jpg",
-                            "https://www.galaxycine.vn/media/2024/5/1/combo-g-1_1714552467319.jpg",
-                            "https://www.galaxycine.vn/media/2024/5/1/combo-g-2_1714552469493.jpg"
-                    ));
-                } else {
-                    // Extract URLs from database result
-                    for (Banner b : result) {
-                        if (b.imageUrl != null) bannerUrls.add(b.imageUrl);
+        FirebaseFirestore.getInstance().collection("cine_shop_banners")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<CineShopBannerDTO> activeBanners = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        CineShopBannerDTO banner = doc.toObject(CineShopBannerDTO.class);
+                        if (banner.isActive) {
+                            activeBanners.add(banner);
+                        }
                     }
-                }
 
-                // Update UI safely on Main Thread
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        bannerAdapter.setBanners(bannerUrls);
-                        setupBannerDots(bannerUrls.size());
+                    // Sắp xếp banner theo sortOrder tăng dần trên client
+                    activeBanners.sort((b1, b2) -> Integer.compare(b1.sortOrder, b2.sortOrder));
 
-                        // Restart auto-scroll with new data
-                        stopBannerAutoScroll();
-                        startBannerAutoScroll();
-                    });
-                }
-            }
+                    List<String> bannerUrls = new ArrayList<>();
+                    for (CineShopBannerDTO banner : activeBanners) {
+                        if (banner.imageUrl != null) {
+                            bannerUrls.add(banner.imageUrl);
+                        }
+                    }
 
-            @Override
-            public void onError(String error) {
-                // If network fails, you can log it and still show mock data or handle gracefully
-                fetchBannersFromDatabase(); // Or handle error UI
-            }
-        });
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            bannerAdapter.setBanners(bannerUrls);
+                            setupBannerDots(bannerUrls.size());
+
+                            // Restart auto-scroll with new data
+                            stopBannerAutoScroll();
+                            startBannerAutoScroll();
+                        });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("CineShopFragment", "Failed to fetch banners from Firestore: " + e.getMessage());
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            bannerAdapter.setBanners(new ArrayList<>());
+                            setupBannerDots(0);
+                            stopBannerAutoScroll();
+                        });
+                    }
+                });
     }
 
     private void setupBannerDots(int count) {
@@ -282,33 +293,63 @@ public class CineShopFragment extends Fragment {
 
     // ── Data ─────────────────────────────────────────────────────────────────
 
-    private void loadMockData() {
-        allProducts.clear();
+    private void loadCineShopItems() {
+        if (loadingProgress != null) {
+            loadingProgress.setVisibility(View.VISIBLE);
+        }
+        if (tvEmptyState != null) {
+            tvEmptyState.setVisibility(View.GONE);
+        }
 
-        // SEASONAL products
-        Snack s1 = new Snack(); s1.snackId = "SE01"; s1.categoryId = "CAT_SEASONAL";
-        s1.name = "Ly nước Capybara"; s1.price = 350000;
+        FirebaseFirestore.getInstance().collection("cine_shop_items")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (loadingProgress != null) {
+                        loadingProgress.setVisibility(View.GONE);
+                    }
+                    
+                    List<CineShopItemDTO> activeItems = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        CineShopItemDTO dto = doc.toObject(CineShopItemDTO.class);
+                        if (dto.isActive) {
+                            activeItems.add(dto);
+                        }
+                    }
 
-        Snack s2 = new Snack(); s2.snackId = "SE02"; s2.categoryId = "CAT_SEASONAL";
-        s2.name = "Combo Yummy Capybara"; s2.price = 500000;
+                    // Sắp xếp sản phẩm theo sortOrder tăng dần trên client
+                    activeItems.sort((i1, i2) -> Integer.compare(i1.sortOrder, i2.sortOrder));
 
-        Snack s3 = new Snack(); s3.snackId = "SE03"; s3.categoryId = "CAT_SEASONAL";
-        s3.name = "Set quà tặng Galaxy"; s3.price = 250000;
-
-        // MOVIE products
-        Snack m1 = new Snack(); m1.snackId = "MV01"; m1.categoryId = "CAT_MOVIE";
-        m1.name = "Combo Bắp + Nước (1 người)"; m1.price = 85000;
-
-        Snack m2 = new Snack(); m2.snackId = "MV02"; m2.categoryId = "CAT_MOVIE";
-        m2.name = "Combo Couple (2 Bắp + 2 Nước)"; m2.price = 145000;
-
-        Snack m3 = new Snack(); m3.snackId = "MV03"; m3.categoryId = "CAT_MOVIE";
-        m3.name = "Pepsi Lớn"; m3.price = 35000;
-
-        allProducts.add(s1); allProducts.add(s2); allProducts.add(s3);
-        allProducts.add(m1); allProducts.add(m2); allProducts.add(m3);
-
-        filterProducts(currentTab);
+                    allProducts.clear();
+                    android.util.Log.d("CineShopFragment", "Successfully fetched and client-sorted " + activeItems.size() + " active CineShop products.");
+                    for (CineShopItemDTO dto : activeItems) {
+                        Snack product = new Snack();
+                        product.snackId = dto.itemId;
+                        product.categoryId = dto.categoryId;
+                        product.name = dto.name;
+                        product.description = dto.description;
+                        product.price = dto.price;
+                        product.imageUrl = dto.imageUrl;
+                        product.isAvailable = dto.isActive && "available".equals(dto.status);
+                        product.status = dto.status;
+                        product.createdAt = System.currentTimeMillis();
+                        product.updatedAt = System.currentTimeMillis();
+                        product.deleted = false;
+                        allProducts.add(product);
+                    }
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> filterProducts(currentTab));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("CineShopFragment", "Failed to fetch CineShop items: " + e.getMessage());
+                    if (loadingProgress != null) {
+                        loadingProgress.setVisibility(View.GONE);
+                    }
+                    if (tvEmptyState != null) {
+                        tvEmptyState.setVisibility(View.VISIBLE);
+                        tvEmptyState.setText("Lỗi tải sản phẩm: " + e.getMessage());
+                    }
+                });
     }
 
     private void filterProducts(String tab) {
@@ -321,6 +362,15 @@ public class CineShopFragment extends Fragment {
             }
         }
         productAdapter.setProducts(filtered);
+
+        if (tvEmptyState != null) {
+            if (filtered.isEmpty()) {
+                tvEmptyState.setVisibility(View.VISIBLE);
+                tvEmptyState.setText("Không có sản phẩm nào khả dụng.");
+            } else {
+                tvEmptyState.setVisibility(View.GONE);
+            }
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

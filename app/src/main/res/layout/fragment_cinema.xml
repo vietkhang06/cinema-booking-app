@@ -21,7 +21,7 @@
             android:id="@+id/tvHeaderTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rap phim"
+            android:text="Rạp phim"
             android:textColor="#111827"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Danh sach rap dang hoat dong"
+            android:text="Danh sách các rạp đang hoạt động"
             android:textColor="#6B7280"
             android:textSize="13sp" />
 
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:text="Toan quoc"
+                    android:text="Toàn quốc"
                     android:textColor="#111827"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -104,7 +104,7 @@
         android:id="@+id/tvEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chua co rap phim"
+        android:text="Chưa có rạp phim"
         android:textColor="#9CA3AF"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/rvCinemas"

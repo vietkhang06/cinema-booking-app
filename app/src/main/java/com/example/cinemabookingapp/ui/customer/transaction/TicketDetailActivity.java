@@ -16,6 +16,8 @@ import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.service.BookingService;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,6 +44,8 @@ public class TicketDetailActivity extends AppCompatActivity {
     private BookingService bookingService;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    private View layoutHeaderInfo, dividerLine, gridDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +86,30 @@ public class TicketDetailActivity extends AppCompatActivity {
         ticketContainer = findViewById(R.id.ticket_container);
         btnDownload = findViewById(R.id.btn_download);
 
+        layoutHeaderInfo = findViewById(R.id.layout_header_info);
+        dividerLine      = findViewById(R.id.divider_line);
+        gridDetails      = findViewById(R.id.grid_details);
+
         btnDownload.setOnClickListener(v -> downloadTicket());
     }
 
     private void loadBookingDetails(String bookingId) {
+        FirebaseFirestore.getInstance().collection("cine_shop_orders")
+                .document(bookingId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        bindCineShopData(doc);
+                    } else {
+                        loadMovieBookingDetails(bookingId);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    loadMovieBookingDetails(bookingId);
+                });
+    }
+
+    private void loadMovieBookingDetails(String bookingId) {
         bookingService.getBookingDetails(bookingId, new ResultCallback<Booking>() {
             @Override
             public void onSuccess(Booking booking) {
@@ -100,7 +124,53 @@ public class TicketDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void bindCineShopData(DocumentSnapshot doc) {
+        String orderId = doc.getId();
+        String itemName = doc.getString("itemName");
+        String itemImageUrl = doc.getString("itemImageUrl");
+        String paymentMethod = doc.getString("paymentMethod");
+        Long quantity = doc.getLong("quantity");
+        Double totalPrice = doc.getDouble("totalPrice");
+        Long createdAt = doc.getLong("createdAt");
+        String userId = doc.getString("userId");
+
+        // Keep header info visible, hide grid details and divider line
+        if (layoutHeaderInfo != null) layoutHeaderInfo.setVisibility(View.VISIBLE);
+        if (dividerLine != null) dividerLine.setVisibility(View.GONE);
+        if (gridDetails != null) gridDetails.setVisibility(View.GONE);
+
+        tvTitle.setText(itemName != null ? itemName : "Sản phẩm CineShop");
+        tvCinema.setText("CineShop - Nhận tại quầy rạp");
+
+        tvBookingCode.setText("Order ID: #" + orderId);
+        tvTotal.setText(String.format("%,.0fđ", totalPrice != null ? totalPrice : 0.0).replace(',', '.'));
+
+        // Generate QR Code containing CineShop details
+        String qrContent = String.format("%s|%s|CINE_SHOP|%d",
+                orderId,
+                userId != null ? userId : "",
+                createdAt != null ? createdAt : System.currentTimeMillis());
+
+        new Thread(() -> {
+            Bitmap qrBitmap = QRCodeUtils.generateQRCode(qrContent, 500, 500);
+            if (qrBitmap != null) {
+                runOnUiThread(() -> imgQr.setImageBitmap(qrBitmap));
+            }
+        }).start();
+
+        Glide.with(this)
+                .load(!android.text.TextUtils.isEmpty(itemImageUrl) ? itemImageUrl : R.drawable.bg_banner_placeholder)
+                .placeholder(R.drawable.bg_banner_placeholder)
+                .error(R.drawable.bg_banner_placeholder)
+                .into(imgPoster);
+    }
+
     private void bindData(Booking booking) {
+        // Show above-QR layouts for Movie tickets
+        if (layoutHeaderInfo != null) layoutHeaderInfo.setVisibility(View.VISIBLE);
+        if (dividerLine != null) dividerLine.setVisibility(View.VISIBLE);
+        if (gridDetails != null) gridDetails.setVisibility(View.VISIBLE);
+
         tvTitle.setText(booking.movieTitleSnapshot);
         tvCinema.setText(booking.cinemaNameSnapshot);
         

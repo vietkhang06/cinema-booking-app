@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -74,6 +76,15 @@ public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH
             tvName.setText(item.quantity + "x " + item.snack.name);
             tvPrice.setText(fmt.format(item.snack.price) + "đ");
             tvQty.setText(String.valueOf(item.quantity));
+
+            if (imgItem != null) {
+                Glide.with(itemView.getContext())
+                        .load(item.snack.imageUrl)
+                        .placeholder(R.drawable.bg_banner_placeholder)
+                        .error(R.drawable.bg_banner_placeholder)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(imgItem);
+            }
 
             btnMinus.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
