@@ -133,6 +133,9 @@
             android:name=".ui.admin.showtime.AdminShowtimeListActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.admin.showtime.AdminShowtimeAddEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.user.AdminUserManagementActivity"
             android:exported="false" />
         <activity

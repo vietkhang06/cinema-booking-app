@@ -29,6 +29,10 @@ import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMovieByIdUseCase;
+import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
+import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
+import com.example.cinemabookingapp.domain.model.Cinema;
+import com.example.cinemabookingapp.domain.model.Showtime;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog.CinemaSection;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog.DateOption;
@@ -40,8 +44,11 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import android.util.Log;
 
 public class MovieDetailActivity extends BaseActivity {
 
@@ -100,6 +107,9 @@ public class MovieDetailActivity extends BaseActivity {
 
     private MovieDetailScheduleCatalog scheduleCatalog;
     private GetMovieByIdUseCase getMovieByIdUseCase;
+    private ShowtimeRepositoryImpl showtimeRepository;
+    private CinemaRepositoryImpl cinemaRepository;
+    private final Map<String, Cinema> cinemaMap = new HashMap<>();
 
     private String selectedMovieId = "";
     private String selectedMoviePosterUrl = "";
@@ -168,26 +178,12 @@ public class MovieDetailActivity extends BaseActivity {
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
+        showtimeRepository = new ShowtimeRepositoryImpl();
+        cinemaRepository = new CinemaRepositoryImpl();
     }
 
     private void initScheduleCatalog() {
         scheduleCatalog = MovieDetailScheduleCatalog.createDefault();
-
-        List<String> cityNames = scheduleCatalog.getCityNames();
-        if (!cityNames.isEmpty()) {
-            selectedCity = cityNames.get(0);
-            scheduleCatalog.setExpandedCinema(selectedCity, getFirstCinemaName(selectedCity));
-            selectedCinema = getFirstCinemaName(selectedCity);
-            selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-            selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
-        }
-
-        List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
-        if (!dateOptions.isEmpty()) {
-            selectedDateIndex = 0;
-            selectedDateLabel = dateOptions.get(0).label;
-            selectedDateText = dateOptions.get(0).dateText;
-        }
     }
 
     private void bindFallbackExtras() {
@@ -232,6 +228,78 @@ public class MovieDetailActivity extends BaseActivity {
             @Override
             public void onError(String errorMessage) {
                 // giữ fallback từ intent
+            }
+        });
+
+        loadShowtimesFromFirestore();
+    }
+
+    private void loadShowtimesFromFirestore() {
+        if (TextUtils.isEmpty(selectedMovieId)) {
+            return;
+        }
+
+        cinemaRepository.getAllCinemas(new ResultCallback<List<Cinema>>() {
+            @Override
+            public void onSuccess(List<Cinema> cinemas) {
+                cinemaMap.clear();
+                for (Cinema c : cinemas) {
+                    cinemaMap.put(c.cinemaId, c);
+                }
+
+                showtimeRepository.getAllShowtimes(new ResultCallback<List<Showtime>>() {
+                    @Override
+                    public void onSuccess(List<Showtime> showtimes) {
+                        List<Showtime> filtered = new ArrayList<>();
+                        for (Showtime s : showtimes) {
+                            if (selectedMovieId.equals(s.movieId)) {
+                                filtered.add(s);
+                            }
+                        }
+
+                        scheduleCatalog.buildFromShowtimes(filtered, cinemaMap);
+
+                        List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
+                        if (!dateOptions.isEmpty()) {
+                            selectedDateIndex = 0;
+                            DateOption firstOption = dateOptions.get(0);
+                            selectedDateLabel = firstOption.label;
+                            selectedDateText = firstOption.dateText;
+                            scheduleCatalog.selectDateKey(firstOption.dateKey);
+
+                            List<String> cities = scheduleCatalog.getCityNames();
+                            if (!cities.isEmpty()) {
+                                selectedCity = cities.get(0);
+                                List<String> cinemasInCity = scheduleCatalog.getCinemaNames(selectedCity);
+                                if (!cinemasInCity.isEmpty()) {
+                                    selectedCinema = cinemasInCity.get(0);
+                                    scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                                }
+                            }
+                        } else {
+                            selectedDateIndex = -1;
+                            selectedDateLabel = "";
+                            selectedDateText = "";
+                            selectedCity = "";
+                            selectedCinema = "";
+                        }
+
+                        // Update the dropdowns and UI
+                        setupDropdowns();
+                        renderDateChips();
+                        renderCinemaGroups();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("MovieDetail", "Error loading showtimes: " + message);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("MovieDetail", "Error loading cinemas: " + message);
             }
         });
     }
@@ -425,7 +493,33 @@ public class MovieDetailActivity extends BaseActivity {
         DateOption option = dateOptions.get(index);
         selectedDateLabel = option.label;
         selectedDateText = option.dateText;
+
+        scheduleCatalog.selectDateKey(option.dateKey);
+
+        List<String> cities = scheduleCatalog.getCityNames();
+        if (!cities.isEmpty()) {
+            selectedCity = cities.get(0);
+            List<String> cinemas = scheduleCatalog.getCinemaNames(selectedCity);
+            if (!cinemas.isEmpty()) {
+                selectedCinema = cinemas.get(0);
+                scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
+                selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
+            } else {
+                selectedCinema = "";
+                selectedRoomType = "";
+                selectedShowtime = "";
+            }
+        } else {
+            selectedCity = "";
+            selectedCinema = "";
+            selectedRoomType = "";
+            selectedShowtime = "";
+        }
+
+        refreshCinemaDropdown();
         renderDateChips();
+        renderCinemaGroups();
     }
 
     private void renderCinemaGroups() {
@@ -509,7 +603,7 @@ public class MovieDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 ));
 
-                List<String> times = group.times;
+                List<MovieDetailScheduleCatalog.ShowtimeItem> times = group.showtimes;
                 for (int start = 0; start < times.size(); start += 4) {
                     LinearLayout row = new LinearLayout(this);
                     row.setOrientation(LinearLayout.HORIZONTAL);
@@ -520,8 +614,8 @@ public class MovieDetailActivity extends BaseActivity {
 
                     int end = Math.min(start + 4, times.size());
                     for (int t = start; t < end; t++) {
-                        String time = times.get(t);
-                        MaterialButton timeButton = buildTimeButton(time, section.name, group.title);
+                        MovieDetailScheduleCatalog.ShowtimeItem item = times.get(t);
+                        MaterialButton timeButton = buildTimeButton(item, section.name, group.title);
                         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
                                 dp(36)
@@ -540,7 +634,7 @@ public class MovieDetailActivity extends BaseActivity {
                 LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         dp(1)
-                );
+                    );
                 dividerParams.setMargins(0, dp(10), 0, dp(4));
                 divider.setLayoutParams(dividerParams);
                 divider.setBackgroundColor(Color.parseColor("#EEEEEE"));
@@ -557,9 +651,9 @@ public class MovieDetailActivity extends BaseActivity {
         }
     }
 
-    private MaterialButton buildTimeButton(String time, String cinemaName, String roomType) {
+    private MaterialButton buildTimeButton(MovieDetailScheduleCatalog.ShowtimeItem item, String cinemaName, String roomType) {
         MaterialButton button = new MaterialButton(this);
-        button.setText(time);
+        button.setText(item.timeText);
         button.setAllCaps(false);
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         button.setCornerRadius(dp(10));
@@ -570,23 +664,24 @@ public class MovieDetailActivity extends BaseActivity {
 
         boolean selected = cinemaName.equals(selectedCinema)
                 && roomType.equals(selectedRoomType)
-                && time.equals(selectedShowtime);
+                && item.timeText.equals(selectedShowtime);
 
         styleTimeButton(button, selected);
 
         button.setOnClickListener(v -> {
             selectedCinema = cinemaName;
             selectedRoomType = roomType;
-            selectedShowtime = time;
+            selectedShowtime = item.timeText;
 
             Intent intent = new Intent(MovieDetailActivity.this, SeatSelectionActivity.class);
 
-            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, item.showtimeId);
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
             intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
             intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
-            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, System.currentTimeMillis());
-            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, 85000);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, item.startAt);
+            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, item.basePrice);
+            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
 
             startActivity(intent);
         });
@@ -818,8 +913,8 @@ public class MovieDetailActivity extends BaseActivity {
         for (CinemaSection section : sections) {
             if (section.name.equals(cinemaName)) {
                 for (ShowtimeGroup group : section.groups) {
-                    if (group.title.equals(roomType) && group.times != null && !group.times.isEmpty()) {
-                        return group.times.get(0);
+                    if (group.title.equals(roomType) && group.showtimes != null && !group.showtimes.isEmpty()) {
+                        return group.showtimes.get(0).timeText;
                     }
                 }
             }

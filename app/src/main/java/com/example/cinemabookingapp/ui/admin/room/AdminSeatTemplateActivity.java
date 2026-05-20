@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.repository.SeatRepositoryImpl;
+import com.example.cinemabookingapp.domain.model.SeatTemplate;
+import com.example.cinemabookingapp.domain.repository.SeatRepository;
 import com.example.cinemabookingapp.ui.admin.room.seatplan.SeatPlanCell;
 import com.example.cinemabookingapp.ui.admin.room.seatplan.SeatPlanRow;
 import com.example.cinemabookingapp.ui.admin.room.seatplan.SeatPlanRowAdapter;
@@ -23,6 +26,9 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
 
     private static final int DEFAULT_ROWS = 6;
     private static final int DEFAULT_COLUMNS = 12;
+
+    private String roomId;
+    private SeatRepository seatRepository;
 
     private final List<SeatPlanRow> seatRows = new ArrayList<>();
 
@@ -44,6 +50,17 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
         tvSummary = findViewById(R.id.tvSeatSummary);
         etRows = findViewById(R.id.etSeatRows);
         etColumns = findViewById(R.id.etSeatColumns);
+
+        android.widget.ImageButton ibBack = findViewById(R.id.ibBack);
+        if (ibBack != null) {
+            ibBack.setOnClickListener(v -> finish());
+        }
+
+        String roomName = getIntent().getStringExtra("extra_room_name");
+        TextView tvHeaderSubtitle = findViewById(R.id.tvHeaderSubtitle);
+        if (tvHeaderSubtitle != null && roomName != null) {
+            tvHeaderSubtitle.setText("Phòng chiếu: " + roomName);
+        }
 
         Button btnModeNormal = findViewById(R.id.btnModeNormal);
         Button btnModeVip = findViewById(R.id.btnModeVip);
@@ -72,13 +89,23 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
 
         btnGenerate.setOnClickListener(v -> generateFromInputs());
         btnReset.setOnClickListener(v -> resetTemplate());
-        btnSave.setOnClickListener(v -> {
-            updateSummary();
-            Toast.makeText(this, "Đã lưu mẫu ghế (demo)", Toast.LENGTH_SHORT).show();
-        });
+        btnSave.setOnClickListener(v -> saveSeatTemplates());
 
         setPaintMode(SeatPlanCell.TYPE_NORMAL);
-        generateTemplate(DEFAULT_ROWS, DEFAULT_COLUMNS);
+
+        roomId = getIntent().getStringExtra("extra_room_id");
+        seatRepository = new SeatRepositoryImpl();
+
+        int rows = getIntent().getIntExtra("extra_rows", DEFAULT_ROWS);
+        int cols = getIntent().getIntExtra("extra_cols", DEFAULT_COLUMNS);
+        if (etRows != null) etRows.setText(String.valueOf(rows));
+        if (etColumns != null) etColumns.setText(String.valueOf(cols));
+
+        if (roomId != null) {
+            loadSeatTemplates();
+        } else {
+            generateTemplate(rows, cols);
+        }
     }
 
     private void setPaintMode(int type) {
@@ -115,13 +142,13 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
             String rowName = String.valueOf((char) ('A' + r));
             List<SeatPlanCell> cells = new ArrayList<>();
 
-            for (int c = columnCount; c >= 1; c--) {
+            for (int c = 1; c <= columnCount; c++) {
                 String seatCode = rowName + String.format(Locale.getDefault(), "%02d", c);
 
                 int type = SeatPlanCell.TYPE_NORMAL;
 
-                // Tạo điểm nhấn giống kiểu bạn gửi: 2 ghế đầu hàng A là VIP
-                if (r == 0 && (c == columnCount || c == columnCount - 1)) {
+                // Tạo điểm nhấn mặc định: Hàng C và D là VIP
+                if (rowName.equals("C") || rowName.equals("D")) {
                     type = SeatPlanCell.TYPE_VIP;
                 }
 
@@ -133,6 +160,135 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
 
         rowAdapter.notifyDataSetChanged();
         updateSummary();
+    }
+
+    private void loadSeatTemplates() {
+        if (roomId == null) return;
+
+        seatRepository.getSeatTemplatesByRoomId(roomId, new com.example.cinemabookingapp.domain.common.ResultCallback<List<SeatTemplate>>() {
+            @Override
+            public void onSuccess(List<SeatTemplate> templates) {
+                if (isFinishing() || isDestroyed()) return;
+
+                if (templates != null && !templates.isEmpty()) {
+                    populateFromTemplates(templates);
+                } else {
+                    int rows = getIntent().getIntExtra("extra_rows", DEFAULT_ROWS);
+                    int cols = getIntent().getIntExtra("extra_cols", DEFAULT_COLUMNS);
+                    generateTemplate(rows, cols);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isFinishing() || isDestroyed()) return;
+                Toast.makeText(AdminSeatTemplateActivity.this, "Lỗi tải sơ đồ ghế: " + message, Toast.LENGTH_SHORT).show();
+
+                int rows = getIntent().getIntExtra("extra_rows", DEFAULT_ROWS);
+                int cols = getIntent().getIntExtra("extra_cols", DEFAULT_COLUMNS);
+                generateTemplate(rows, cols);
+            }
+        });
+    }
+
+    private void populateFromTemplates(List<SeatTemplate> templates) {
+        seatRows.clear();
+
+        int maxRow = 0;
+        int maxCol = 0;
+
+        java.util.Map<String, List<SeatTemplate>> groups = new java.util.TreeMap<>();
+        for (SeatTemplate t : templates) {
+            if (t.rowName == null) continue;
+            if (!groups.containsKey(t.rowName)) {
+                groups.put(t.rowName, new ArrayList<>());
+            }
+            groups.get(t.rowName).add(t);
+
+            int rIdx = t.rowName.charAt(0) - 'A';
+            if (rIdx > maxRow) maxRow = rIdx;
+            if (t.columnNo > maxCol) maxCol = t.columnNo;
+        }
+
+        maxRow += 1;
+
+        if (etRows != null) etRows.setText(String.valueOf(maxRow));
+        if (etColumns != null) etColumns.setText(String.valueOf(maxCol));
+
+        for (java.util.Map.Entry<String, List<SeatTemplate>> entry : groups.entrySet()) {
+            String rowName = entry.getKey();
+            List<SeatTemplate> rowTemplates = entry.getValue();
+
+            rowTemplates.sort((a, b) -> Integer.compare(a.columnNo, b.columnNo));
+
+            List<SeatPlanCell> cells = new ArrayList<>();
+            for (SeatTemplate t : rowTemplates) {
+                int cellType = SeatPlanCell.TYPE_NORMAL;
+                if (!t.isEnabled) {
+                    cellType = SeatPlanCell.TYPE_LOCKED;
+                } else if ("VIP".equalsIgnoreCase(t.seatType)) {
+                    cellType = SeatPlanCell.TYPE_VIP;
+                } else if ("COUPLE".equalsIgnoreCase(t.seatType)) {
+                    cellType = SeatPlanCell.TYPE_COUPLE;
+                }
+
+                cells.add(new SeatPlanCell(t.seatCode, cellType));
+            }
+
+            seatRows.add(new SeatPlanRow(rowName, cells));
+        }
+
+        rowAdapter.notifyDataSetChanged();
+        updateSummary();
+    }
+
+    private void saveSeatTemplates() {
+        if (roomId == null) {
+            Toast.makeText(this, "Không tìm thấy Room ID để lưu", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<SeatTemplate> templates = new ArrayList<>();
+        for (SeatPlanRow row : seatRows) {
+            for (int i = 0; i < row.cells.size(); i++) {
+                SeatPlanCell cell = row.cells.get(i);
+                SeatTemplate t = new SeatTemplate();
+                t.roomId = roomId;
+                t.seatCode = cell.seatCode;
+                t.rowName = row.rowName;
+                t.columnNo = i + 1;
+
+                if (cell.type == SeatPlanCell.TYPE_LOCKED) {
+                    t.seatType = "STANDARD";
+                    t.isEnabled = false;
+                } else {
+                    t.isEnabled = true;
+                    if (cell.type == SeatPlanCell.TYPE_VIP) {
+                        t.seatType = "VIP";
+                    } else if (cell.type == SeatPlanCell.TYPE_COUPLE) {
+                        t.seatType = "COUPLE";
+                    } else {
+                        t.seatType = "STANDARD";
+                    }
+                }
+
+                t.seatId = roomId + "_" + t.seatCode;
+                templates.add(t);
+            }
+        }
+
+        seatRepository.createSeatTemplates(roomId, templates, new com.example.cinemabookingapp.domain.common.ResultCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                Toast.makeText(AdminSeatTemplateActivity.this, "Đã lưu sơ đồ ghế thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(AdminSeatTemplateActivity.this, "Lỗi khi lưu sơ đồ ghế: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateSummary() {

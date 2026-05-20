@@ -16,10 +16,15 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.cinemabookingapp.R;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CineCheckoutActivity — Màn hình Thanh toán.
@@ -113,10 +118,69 @@ public class CineCheckoutActivity extends FragmentActivity {
                 Toast.makeText(this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // TODO: kết nối API thanh toán thực tế
-            Toast.makeText(this, "Đặt hàng thành công! 🎉", Toast.LENGTH_LONG).show();
-            CineCartManager.getInstance().clear();
-            finish();
+
+            String currentUid = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    : null;
+            if (currentUid == null) {
+                Toast.makeText(this, "Vui lòng đăng nhập để thanh toán", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<CineCartManager.CartItem> items = CineCartManager.getInstance().getItems();
+            if (items.isEmpty()) {
+                Toast.makeText(this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create summary fields
+            String primaryItemName = "";
+            String primaryImageUrl = "";
+            int totalQuantity = 0;
+            double totalPrice = CineCartManager.getInstance().getTotalPrice();
+
+            if (items.size() > 0) {
+                CineCartManager.CartItem firstItem = items.get(0);
+                primaryItemName = firstItem.snack.name;
+                primaryImageUrl = firstItem.snack.imageUrl;
+                if (items.size() > 1) {
+                    primaryItemName += " và " + (items.size() - 1) + " sản phẩm khác";
+                }
+            }
+
+            for (CineCartManager.CartItem item : items) {
+                totalQuantity += item.quantity;
+            }
+
+            // Generate an order ID
+            String orderId = FirebaseFirestore.getInstance().collection("cine_shop_orders").document().getId();
+
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("orderId", orderId);
+            orderData.put("userId", currentUid);
+            orderData.put("type", "CINE_SHOP");
+            orderData.put("itemName", primaryItemName);
+            orderData.put("itemImageUrl", primaryImageUrl);
+            orderData.put("quantity", totalQuantity);
+            orderData.put("totalPrice", totalPrice);
+            orderData.put("paymentMethod", selectedPayment.toUpperCase());
+            orderData.put("status", "success");
+            orderData.put("createdAt", System.currentTimeMillis());
+
+            // Save to Firestore
+            btnCheckoutPay.setEnabled(false);
+            FirebaseFirestore.getInstance().collection("cine_shop_orders")
+                    .document(orderId)
+                    .set(orderData)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Đặt hàng thành công! 🎉", Toast.LENGTH_LONG).show();
+                        CineCartManager.getInstance().clear();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        btnCheckoutPay.setEnabled(true);
+                        Toast.makeText(this, "Lỗi thanh toán: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
         });
     }
 
@@ -135,6 +199,15 @@ public class CineCheckoutActivity extends FragmentActivity {
             row.findViewById(R.id.btnCartPlus).setVisibility(View.GONE);
             row.findViewById(R.id.tvCartQty).setVisibility(View.GONE);
             row.findViewById(R.id.btnCartDelete).setVisibility(View.GONE);
+
+            ImageView imgCartItem = row.findViewById(R.id.imgCartItem);
+            if (imgCartItem != null) {
+                Glide.with(this)
+                        .load(item.snack.imageUrl)
+                        .placeholder(R.drawable.bg_banner_placeholder)
+                        .error(R.drawable.bg_banner_placeholder)
+                        .into(imgCartItem);
+            }
 
             ((TextView) row.findViewById(R.id.tvCartItemName))
                     .setText(item.quantity + "x " + item.snack.name);

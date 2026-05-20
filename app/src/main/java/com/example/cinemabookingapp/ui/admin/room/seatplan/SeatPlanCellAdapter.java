@@ -41,15 +41,32 @@ public class SeatPlanCellAdapter extends RecyclerView.Adapter<SeatPlanCellAdapte
         SeatPlanCell cell = cells.get(position);
 
         holder.tvSeatCode.setText(cell.seatCode);
-        holder.cardSeat.setCardBackgroundColor(colorForType(cell.type));
-        holder.cardSeat.setStrokeWidth(cell.type == SeatPlanCell.TYPE_LOCKED ? 2 : 0);
-        holder.cardSeat.setStrokeColor(Color.parseColor("#E2E8F0"));
 
-        holder.tvSeatCode.setTextColor(
-                cell.type == SeatPlanCell.TYPE_LOCKED
-                        ? Color.parseColor("#F8FAFC")
-                        : Color.WHITE
-        );
+        switch (cell.type) {
+            case SeatPlanCell.TYPE_VIP:
+                holder.tvSeatCode.setBackgroundResource(R.drawable.couch_solid_vip);
+                holder.tvSeatCode.setTextColor(Color.WHITE);
+                holder.tvSeatCode.setAlpha(1f);
+                break;
+            case SeatPlanCell.TYPE_COUPLE:
+                holder.tvSeatCode.setBackgroundResource(R.drawable.couch_solid_normal);
+                holder.tvSeatCode.getBackground().setTint(Color.parseColor("#C026D3"));
+                holder.tvSeatCode.setTextColor(Color.WHITE);
+                holder.tvSeatCode.setAlpha(1f);
+                break;
+            case SeatPlanCell.TYPE_LOCKED:
+                holder.tvSeatCode.setBackgroundResource(R.drawable.couch_solid_full);
+                holder.tvSeatCode.getBackground().setTint(Color.parseColor("#475569"));
+                holder.tvSeatCode.setTextColor(Color.parseColor("#A0AEC0"));
+                holder.tvSeatCode.setAlpha(0.6f);
+                break;
+            default: // TYPE_NORMAL
+                holder.tvSeatCode.setBackgroundResource(R.drawable.couch_solid_normal);
+                holder.tvSeatCode.getBackground().setTintList(null);
+                holder.tvSeatCode.setTextColor(Color.parseColor("#E2E8F0"));
+                holder.tvSeatCode.setAlpha(1f);
+                break;
+        }
 
         holder.itemView.setOnClickListener(v -> listener.onSeatCellClicked(position));
     }
@@ -59,26 +76,11 @@ public class SeatPlanCellAdapter extends RecyclerView.Adapter<SeatPlanCellAdapte
         return cells.size();
     }
 
-    private int colorForType(int type) {
-        switch (type) {
-            case SeatPlanCell.TYPE_VIP:
-                return Color.parseColor("#6D28D9");
-            case SeatPlanCell.TYPE_COUPLE:
-                return Color.parseColor("#C026D3");
-            case SeatPlanCell.TYPE_LOCKED:
-                return Color.parseColor("#475569");
-            default:
-                return Color.parseColor("#334155");
-        }
-    }
-
     static class CellVH extends RecyclerView.ViewHolder {
-        MaterialCardView cardSeat;
         TextView tvSeatCode;
 
         CellVH(@NonNull View itemView) {
             super(itemView);
-            cardSeat = itemView.findViewById(R.id.cardSeatCell);
             tvSeatCode = itemView.findViewById(R.id.tvSeatCode);
         }
     }
