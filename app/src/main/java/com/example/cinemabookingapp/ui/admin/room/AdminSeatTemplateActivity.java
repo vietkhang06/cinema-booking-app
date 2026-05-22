@@ -34,7 +34,6 @@ public class AdminSeatTemplateActivity extends AppCompatActivity {
 
     private SeatPlanRowAdapter rowAdapter;
     private int selectedPaintType = SeatPlanCell.TYPE_NORMAL;
-
     private TextView tvCurrentMode;
     private TextView tvSummary;
     private EditText etRows;

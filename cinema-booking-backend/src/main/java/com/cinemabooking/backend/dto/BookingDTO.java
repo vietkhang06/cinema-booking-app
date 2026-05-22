@@ -34,6 +34,7 @@ public class BookingDTO {
     private String paymentMethod;
     private String paymentStatus;
     private String bookingStatus;
+    private String paymentCode;
     private String qrCodeValue;
     private long checkInAt;
     private long createdAt;

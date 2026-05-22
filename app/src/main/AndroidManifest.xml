@@ -75,6 +75,10 @@
         <activity
             android:name=".ui.customer.BookingConfirmActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name=".ui.customer.PaymentInstructionActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
+            android:exported="false" />
 
         <activity android:name=".ui.customer.cine_shop.CineCartActivity" android:exported="false" />
         <activity android:name=".ui.customer.cine_shop.CineCheckoutActivity" android:exported="false" />
@@ -104,6 +108,10 @@
         <!-- ADMIN -->
         <activity
             android:name=".ui.admin.AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.AdminPaymentListActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".ui.admin.movie.AdminMovieListActivity"

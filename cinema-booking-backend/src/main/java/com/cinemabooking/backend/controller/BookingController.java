@@ -6,11 +6,14 @@ import com.cinemabooking.backend.service.BookingService;
 import com.cinemabooking.backend.service.MovieService;
 import com.cinemabooking.backend.service.ShowtimeService;
 import com.cinemabooking.backend.service.UserService;
+import com.cinemabooking.backend.payment.service.PaymentService;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +33,15 @@ import java.util.stream.Collectors;
 @Tag(name = "Bookings", description = "Endpoints for advertising booking")
 public class BookingController {
 
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+
     @Autowired private Firestore firestore;
 
     @Autowired private BookingService bookingService;
     @Autowired private ShowtimeService showtimeService;
     @Autowired private UserService userService;
     @Autowired private MovieService movieService;
+    @Autowired private PaymentService paymentService;
 
     @GetMapping("{id}")
     @Operation(summary = "Get booking detail by id")
@@ -105,9 +111,15 @@ public class BookingController {
         double subTotal = showtime.getBasePrice() * seats.size() + orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
         double discount = 0;
 
+        String suffix = uniqueID.contains("_") ? uniqueID.substring(uniqueID.indexOf("_") + 1) : uniqueID;
+        if (suffix.length() > 8) {
+            suffix = suffix.substring(0, 8);
+        }
+        String paymentCode = ("BK" + suffix).toUpperCase();
+
         BookingDTO booking = BookingDTO.builder()
                 .bookingId(uniqueID)
-                .bookingStatus("")
+                .bookingStatus("PENDING")
                 .userId(userId)
                 .movieId(showtime.getMovieId())
                 .showtimeId(data.getShowtimeId())
@@ -123,12 +135,25 @@ public class BookingController {
                 .total(subTotal - discount)
                 // cap nhat payment
                 .paymentMethod(bookingRequest.getPaymentMethod().name())
-                .paymentStatus("pending")
+                .paymentStatus("PENDING")
+                .paymentCode(paymentCode)
                 .createdAt(System.currentTimeMillis())
                 .updatedAt(System.currentTimeMillis())
                 .build();
 
+        log.info("[BOOKING_FLOW] Creating booking record: bookingId={}, userId={}, total={}, status=PENDING",
+                uniqueID, userId, subTotal - discount);
+
         BookingDTO bookingDTO = bookingService.createBooking(booking);
+
+        // Tạo document payment với status = PENDING
+        paymentService.createPendingPayment(
+                bookingDTO.getBookingId(),
+                bookingDTO.getUserId(),
+                bookingDTO.getPaymentMethod(),
+                bookingDTO.getTotal()
+        );
+
         return ResponseEntity.ok(
             ApiResponse.<BookingDTO>builder()
                     .success(true)

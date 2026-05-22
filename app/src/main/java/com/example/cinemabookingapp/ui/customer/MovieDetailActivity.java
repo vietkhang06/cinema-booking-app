@@ -43,7 +43,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -178,7 +177,7 @@ public class MovieDetailActivity extends BaseActivity {
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
-        showtimeRepository = new ShowtimeRepositoryImpl();
+        showtimeRepository = new ShowtimeRepositoryImpl(true);
         cinemaRepository = new CinemaRepositoryImpl();
     }
 
@@ -247,17 +246,10 @@ public class MovieDetailActivity extends BaseActivity {
                     cinemaMap.put(c.cinemaId, c);
                 }
 
-                showtimeRepository.getAllShowtimes(new ResultCallback<List<Showtime>>() {
+                showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
                     @Override
                     public void onSuccess(List<Showtime> showtimes) {
-                        List<Showtime> filtered = new ArrayList<>();
-                        for (Showtime s : showtimes) {
-                            if (selectedMovieId.equals(s.movieId)) {
-                                filtered.add(s);
-                            }
-                        }
-
-                        scheduleCatalog.buildFromShowtimes(filtered, cinemaMap);
+                        scheduleCatalog.buildFromShowtimes(showtimes, cinemaMap);
 
                         List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
                         if (!dateOptions.isEmpty()) {
