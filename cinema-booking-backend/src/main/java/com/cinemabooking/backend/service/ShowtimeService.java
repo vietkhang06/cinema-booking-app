@@ -231,7 +231,7 @@ public class ShowtimeService {
                     showtimeData.put("basePrice", 85000.0);
                     showtimeData.put("format", "2D PHỤ ĐỀ");
                     showtimeData.put("language", "Vietnamese Sub");
-                    showtimeData.put("status", "AVAILABLE");
+                    showtimeData.put("status", "active");
                     showtimeData.put("totalSeats", totalSeats);
                     showtimeData.put("bookedSeatsCount", 0);
                     showtimeData.put("deleted", false);
@@ -239,6 +239,9 @@ public class ShowtimeService {
                     showtimeData.put("updatedAt", now);
 
                     firestore.collection("showtimes").document(showtimeId).set(showtimeData);
+                    seedCount++;
+                } else if ("AVAILABLE".equals(existingDoc.getString("status"))) {
+                    firestore.collection("showtimes").document(showtimeId).update("status", "active");
                     seedCount++;
                 }
             }

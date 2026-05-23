@@ -1,5 +1,6 @@
 package com.example.cinemabookingapp.ui.customer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -424,6 +425,55 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void saveBookingToFirestore(String bookingId, String userId, String movieId, long now, double finalTotal, String paymentMethod, String paymentStatus) {
+        String suffix = bookingId.contains("_") ? bookingId.substring(bookingId.indexOf("_") + 1) : bookingId;
+        if (suffix.length() > 8) {
+            suffix = suffix.substring(0, 8);
+        }
+        String paymentCode = ("BK" + suffix).toUpperCase();
+        String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
+
+        // Lưu cả Booking và Payment dưới trạng thái PENDING trước
+        saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, paymentMethod, "PENDING", "PENDING", "PENDING", new com.google.android.gms.tasks.OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
+                    BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
+                    Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, bookingId);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, paymentId);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, paymentCode);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, finalTotal);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
+                    Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán)!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void saveBookingAndPaymentToFirestore(
+            String bookingId,
+            String paymentId,
+            String userId,
+            String movieId,
+            long now,
+            double finalTotal,
+            String paymentMethod,
+            String bookingStatus,
+            String paymentStatus,
+            String paymentRecordStatus,
+            com.google.android.gms.tasks.OnSuccessListener<Void> onSuccessListener
+    ) {
+        String suffix = bookingId.contains("_") ? bookingId.substring(bookingId.indexOf("_") + 1) : bookingId;
+        if (suffix.length() > 8) {
+            suffix = suffix.substring(0, 8);
+        }
+        String paymentCode = ("BK" + suffix).toUpperCase();
+
         Map<String, Object> booking = new HashMap<>();
         booking.put("bookingId", bookingId);
         booking.put("userId", userId);
@@ -442,25 +492,60 @@ public class BookingConfirmActivity extends AppCompatActivity {
         booking.put("appliedPromoCode", appliedPromoCode);
         booking.put("paymentMethod", paymentMethod);
         booking.put("paymentStatus", paymentStatus);
-        booking.put("bookingStatus", "confirmed");
+        booking.put("bookingStatus", bookingStatus);
+        booking.put("paymentCode", paymentCode);
         booking.put("createdAt", now);
         booking.put("updatedAt", now);
         booking.put("deleted", false);
 
-        android.util.Log.d("BookingConfirm", "Saving booking with poster: " + imageUrl);
+        Map<String, Object> payment = new HashMap<>();
+        payment.put("paymentId", paymentId);
+        payment.put("bookingId", bookingId);
+        payment.put("paymentCode", paymentCode);
+        payment.put("userId", userId);
+        payment.put("provider", paymentMethod);
+        payment.put("amount", finalTotal);
+        payment.put("status", paymentRecordStatus);
+        payment.put("transactionId", "TXN_" + UUID.randomUUID().toString().substring(0, 8));
+        payment.put("payUrl", "http://fake-payurl.com/pay/" + paymentId);
+        payment.put("createdAt", now);
+        payment.put("updatedAt", now);
 
-        FirebaseFirestore.getInstance()
-                .collection("bookings")
-                .document(bookingId)
-                .set(booking)
-                .addOnSuccessListener(unused -> {
-                    BookingTimerManager.getInstance().stopTimer(this);
-                    Toast.makeText(this, "Đặt vé thành công!", Toast.LENGTH_SHORT).show();
-                    // TODO: Navigate sang màn hình thành công
-                    finish();
-                })
+        android.util.Log.d("BOOKING_FLOW", "Creating/updating booking record: bookingId=" + bookingId + ", paymentCode=" + paymentCode + ", status=" + bookingStatus + ", paymentStatus=" + paymentStatus);
+        android.util.Log.d("PAYMENT_FLOW", "Creating/updating payment record: paymentId=" + paymentId + ", bookingId=" + bookingId + ", paymentCode=" + paymentCode + ", amount=" + finalTotal + ", status=" + paymentRecordStatus);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        com.google.firebase.firestore.WriteBatch batch = db.batch();
+        batch.set(db.collection("bookings").document(bookingId), booking);
+        batch.set(db.collection("payments").document(paymentId), payment);
+
+        batch.commit()
+                .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Lỗi Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void showMomoSimulationDialog(String bookingId, String userId, String movieId, long now, double finalTotal) {
+        String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Mô phỏng thanh toán MoMo")
+                .setMessage("Chọn kết quả giao dịch thanh toán để mô phỏng (local fake):")
+                .setPositiveButton("Thành công (SUCCESS)", (dialog, which) -> {
+                    saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, "momo", "confirmed", "paid", "SUCCESS", aVoid -> {
+                        BookingTimerManager.getInstance().stopTimer(this);
+                        Toast.makeText(this, "Thanh toán MoMo thành công!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                })
+                .setNegativeButton("Thất bại (FAILED)", (dialog, which) -> {
+                    saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, "momo", "cancelled", "failed", "FAILED", aVoid -> {
+                        BookingTimerManager.getInstance().stopTimer(this);
+                        Toast.makeText(this, "Thanh toán MoMo thất bại!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void showMomoCheckoutDialog(String bookingId, String userId, String movieId, long now, double finalTotal) {
@@ -487,8 +572,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
             btnConfirmMomo.setOnClickListener(v -> {
                 momoDialog.dismiss();
                 Toast.makeText(this, "Đang xử lý giao dịch MoMo...", Toast.LENGTH_SHORT).show();
-                // Save with paymentStatus = "paid" on successful MoMo simulation!
-                saveBookingToFirestore(bookingId, userId, movieId, now, finalTotal, "momo", "paid");
+                // Thực hiện tạo PENDING trước
+                saveBookingToFirestore(bookingId, userId, movieId, now, finalTotal, "momo", "pending");
             });
         }
 

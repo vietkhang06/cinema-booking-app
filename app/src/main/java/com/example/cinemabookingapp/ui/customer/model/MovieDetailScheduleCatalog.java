@@ -43,9 +43,10 @@ public class MovieDetailScheduleCatalog {
         // 1. Group showtimes by dateKey
         Map<String, List<Showtime>> showtimesByDate = new HashMap<>();
         List<String> sortedDateKeys = new ArrayList<>();
+        long now = System.currentTimeMillis();
 
         for (Showtime s : showtimes) {
-            if (s.deleted || "inactive".equalsIgnoreCase(s.status)) {
+            if (s.deleted || s.startAt < now || !isBookableStatus(s.status)) {
                 continue;
             }
             Date showDate = new Date(s.startAt);
@@ -177,6 +178,15 @@ public class MovieDetailScheduleCatalog {
     private boolean isSameDay(Calendar cal1, Calendar cal2) {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    private boolean isBookableStatus(String status) {
+        if (status == null || status.trim().isEmpty()) {
+            return true;
+        }
+
+        return "active".equalsIgnoreCase(status)
+                || "available".equalsIgnoreCase(status);
     }
 
     private String dayLabel(int dayOfWeek) {

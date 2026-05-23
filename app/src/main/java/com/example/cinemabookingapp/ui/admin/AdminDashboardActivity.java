@@ -266,7 +266,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         List<AdminFeatureItem> items = new ArrayList<>();
         items.add(new AdminFeatureItem("Phim", "Quản lý danh sách phim", R.drawable.clapperboard_solid_full, AdminMovieListActivity.class));
         items.add(new AdminFeatureItem("CineShop", "Quản lý sản phẩm, combos", R.drawable.cart_shopping_solid_full, null));
-        items.add(new AdminFeatureItem("Đơn hàng", "Theo dõi lịch sử giao dịch", R.drawable.clipboard_solid_full, null));
+        items.add(new AdminFeatureItem("Duyệt thanh toán", "Xử lý chuyển khoản & MoMo", R.drawable.clipboard_solid_full, AdminPaymentListActivity.class));
         return items;
     }
 
