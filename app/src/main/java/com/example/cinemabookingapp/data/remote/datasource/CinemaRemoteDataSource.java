@@ -41,7 +41,6 @@ public class CinemaRemoteDataSource {
                     String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải rạp (Code: " + response.code() + ")";
                     Log.e(TAG, "API Error: " + msg);
                     if (callback != null) {
-                        callback.onSuccess(new ArrayList<>());
                         callback.onError(msg);
                     }
                 }
@@ -51,7 +50,6 @@ public class CinemaRemoteDataSource {
             public void onFailure(Call<ApiResponse<List<Cinema>>> call, Throwable t) {
                 Log.e(TAG, "Network Failure: " + t.getMessage());
                 if (callback != null) {
-                    callback.onSuccess(new ArrayList<>());
                     callback.onError("Không thể tải danh sách rạp phim.");
                 }
             }

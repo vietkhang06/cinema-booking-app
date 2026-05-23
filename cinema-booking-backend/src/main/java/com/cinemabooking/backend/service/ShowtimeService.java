@@ -51,9 +51,9 @@ public class ShowtimeService {
         logger.info("Fetching showtimes for movieId: {}", movieId);
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
                 .whereEqualTo("movieId", movieId)
-                .orderBy("startAt", Query.Direction.ASCENDING)
                 .get();
         List<ShowtimeDTO> showtimes = processQuerySnapshot(future.get());
+        showtimes.sort(java.util.Comparator.comparingLong(ShowtimeDTO::getStartAt));
         logger.info("Loaded {} showtimes for movie {}", showtimes.size(), movieId);
         return showtimes;
     }
@@ -62,9 +62,9 @@ public class ShowtimeService {
         logger.info("Fetching showtimes for cinemaId: {}", cinemaId);
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
                 .whereEqualTo("cinemaId", cinemaId)
-                .orderBy("startAt", Query.Direction.ASCENDING)
                 .get();
         List<ShowtimeDTO> showtimes = processQuerySnapshot(future.get());
+        showtimes.sort(java.util.Comparator.comparingLong(ShowtimeDTO::getStartAt));
         logger.info("Loaded {} showtimes for cinema {}", showtimes.size(), cinemaId);
         return showtimes;
     }

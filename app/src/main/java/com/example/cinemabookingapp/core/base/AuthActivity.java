@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-// auto redirect to login when user logout
 public class AuthActivity extends BaseActivity{
     FirebaseAuth.AuthStateListener authStateListener;
     @Override
