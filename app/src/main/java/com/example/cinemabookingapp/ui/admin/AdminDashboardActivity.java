@@ -33,6 +33,7 @@ import com.example.cinemabookingapp.ui.admin.promotion.AdminPromotionListActivit
 import com.example.cinemabookingapp.ui.admin.report.AdminReportActivity;
 import com.example.cinemabookingapp.ui.admin.log.AdminAuditLogActivity;
 import com.example.cinemabookingapp.ui.admin.room.AdminSeatTemplateActivity;
+import com.example.cinemabookingapp.di.ServiceProvider;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -101,7 +102,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         loadRealStats();
 
-        btnLogout.setOnClickListener(v -> AppNavigator.goToLogin(this));
+        btnLogout.setOnClickListener(v -> {
+            ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().logOut();
+            AppNavigator.goToLogin(this);
+        });
     }
 
     private void loadRealStats() {

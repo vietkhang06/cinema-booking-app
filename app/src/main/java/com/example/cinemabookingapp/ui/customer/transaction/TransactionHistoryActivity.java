@@ -56,7 +56,14 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         layoutEmpty = findViewById(R.id.layout_empty);
 
         adapter = new TransactionAdapter(booking -> {
-            AppNavigator.goToTicketDetail(this, booking.bookingId);
+            boolean isPaid = "paid".equalsIgnoreCase(booking.paymentStatus)
+                    || "confirmed".equalsIgnoreCase(booking.bookingStatus)
+                    || "success".equalsIgnoreCase(booking.bookingStatus);
+            if (isPaid) {
+                AppNavigator.goToTicketDetail(this, booking.bookingId);
+            } else {
+                Toast.makeText(this, "Chỉ vé đã thanh toán mới xem được chi tiết và mã QR!", Toast.LENGTH_LONG).show();
+            }
         });
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));

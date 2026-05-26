@@ -113,7 +113,15 @@ public class TicketDetailActivity extends AppCompatActivity {
         bookingService.getBookingDetails(bookingId, new ResultCallback<Booking>() {
             @Override
             public void onSuccess(Booking booking) {
-                bindData(booking);
+                boolean isPaid = "paid".equalsIgnoreCase(booking.paymentStatus)
+                        || "confirmed".equalsIgnoreCase(booking.bookingStatus)
+                        || "success".equalsIgnoreCase(booking.bookingStatus);
+                if (isPaid) {
+                    bindData(booking);
+                } else {
+                    Toast.makeText(TicketDetailActivity.this, "Vé chưa được thanh toán!", Toast.LENGTH_LONG).show();
+                    finish();
+                }
             }
 
             @Override
@@ -125,6 +133,16 @@ public class TicketDetailActivity extends AppCompatActivity {
     }
 
     private void bindCineShopData(DocumentSnapshot doc) {
+        String status = doc.getString("status");
+        boolean isPaid = "paid".equalsIgnoreCase(status)
+                || "confirmed".equalsIgnoreCase(status)
+                || "success".equalsIgnoreCase(status);
+        if (!isPaid) {
+            Toast.makeText(TicketDetailActivity.this, "Đơn hàng chưa được thanh toán!", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         String orderId = doc.getId();
         String itemName = doc.getString("itemName");
         String itemImageUrl = doc.getString("itemImageUrl");

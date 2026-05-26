@@ -17,6 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
+import com.example.cinemabookingapp.data.remote.api.BookingApiService;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.ui.customer.transaction.TicketDetailActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,9 +49,16 @@ public class PaymentInstructionActivity extends AppCompatActivity {
     private ImageView imgQrCode;
     private ProgressBar pbQrLoading;
     private MaterialButton btnOpenApp;
+    private View layoutTestButtons;
+    private MaterialButton btnTestSuccess;
+    private MaterialButton btnTestFailed;
 
     private FirebaseFirestore db;
     private ListenerRegistration paymentListener;
+    private ListenerRegistration bookingListener;
+
+    // Guard: đảm bảo payment chỉ được xử lý MỘT LẦN dù listener fire nhiều lần
+    private volatile boolean paymentHandled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +84,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         setupListeners();
         loadQrCode();
         startPaymentListener();
+        startBookingListener(); // Listener thứ 2: lắng nghe bookings doc để bắt paymentStatus
     }
 
     private void initViews() {
@@ -86,14 +97,23 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         imgQrCode = findViewById(R.id.imgQrCode);
         pbQrLoading = findViewById(R.id.pbQrLoading);
         btnOpenApp = findViewById(R.id.btnOpenApp);
+        layoutTestButtons = findViewById(R.id.layoutTestButtons);
+        btnTestSuccess = findViewById(R.id.btnTestSuccess);
+        btnTestFailed = findViewById(R.id.btnTestFailed);
 
         tvAmount.setText(String.format(Locale.getDefault(), "%,.0f đ", amount));
         tvPaymentCode.setText(paymentCode);
 
         if ("momo".equals(paymentMethod)) {
             btnOpenApp.setText("Mở ứng dụng MoMo");
+            if (layoutTestButtons != null) {
+                layoutTestButtons.setVisibility(View.VISIBLE);
+            }
         } else {
             btnOpenApp.setText("Mở ứng dụng Ngân hàng");
+            if (layoutTestButtons != null) {
+                layoutTestButtons.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -108,7 +128,6 @@ public class PaymentInstructionActivity extends AppCompatActivity {
 
         if (btnCopyAmount != null) {
             btnCopyAmount.setOnClickListener(v -> {
-                // Copy raw double value for easy bank input
                 String rawAmount = String.format(Locale.getDefault(), "%.0f", amount);
                 copyToClipboard("Số tiền", rawAmount);
             });
@@ -121,11 +140,17 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         if (btnOpenApp != null) {
             btnOpenApp.setOnClickListener(v -> openPaymentApp());
         }
+
+        if (btnTestSuccess != null) {
+            btnTestSuccess.setOnClickListener(v -> handleTestPaymentSuccess());
+        }
+
+        if (btnTestFailed != null) {
+            btnTestFailed.setOnClickListener(v -> handleTestPaymentFailed());
+        }
     }
 
     private void loadQrCode() {
-        // MBBank code: MB (970422)
-        // VietQR endpoint: https://img.vietqr.io/image/{BIN}-{AccountNumber}-{Template}.png?amount={Amount}&addInfo={AddInfo}&accountName={AccountName}
         String encodedAccountName = Uri.encode("CONG TY CP CINEMA VIETNAM");
         String qrUrl = String.format(Locale.US,
                 "https://img.vietqr.io/image/MB-09012345678-compact.png?amount=%.0f&addInfo=%s&accountName=%s",
@@ -179,7 +204,6 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 }
             }
         } else {
-            // Universal deep link / website redirection for banking apps, or prompt user
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dl.vietqr.co/pay"));
                 startActivity(intent);
@@ -189,81 +213,173 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener 1: Lắng nghe collection "payments" — bắt khi payment doc được tạo/cập nhật.
+     */
     private void startPaymentListener() {
-        if (paymentId == null) {
-            // Fallback: If no direct payment ID, query payments by bookingId
+        if (paymentId != null && !paymentId.isEmpty()) {
+            paymentListener = db.collection("payments").document(paymentId)
+                    .addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            android.util.Log.e("PAYMENT_FLOW", "payments listener failed", e);
+                            return;
+                        }
+                        if (snapshot != null && snapshot.exists()) {
+                            checkPaymentStatus(snapshot.getString("status"));
+                        }
+                    });
+        } else {
+            // Fallback: query by bookingId
             paymentListener = db.collection("payments")
                     .whereEqualTo("bookingId", bookingId)
                     .addSnapshotListener((snapshots, e) -> {
                         if (e != null) {
-                            android.util.Log.e("PAYMENT_FLOW", "Listen failed", e);
+                            android.util.Log.e("PAYMENT_FLOW", "payments query listener failed", e);
                             return;
                         }
                         if (snapshots != null && !snapshots.isEmpty()) {
                             DocumentSnapshot doc = snapshots.getDocuments().get(0);
-                            checkPaymentStatus(doc);
-                        }
-                    });
-        } else {
-            // Direct listen to the payment document
-            paymentListener = db.collection("payments").document(paymentId)
-                    .addSnapshotListener((snapshot, e) -> {
-                        if (e != null) {
-                            android.util.Log.e("PAYMENT_FLOW", "Listen failed", e);
-                            return;
-                        }
-                        if (snapshot != null && snapshot.exists()) {
-                            checkPaymentStatus(snapshot);
+                            checkPaymentStatus(doc.getString("status"));
                         }
                     });
         }
     }
 
-    private void checkPaymentStatus(DocumentSnapshot document) {
-        String status = document.getString("status");
+    /**
+     * Listener 2: Lắng nghe document "bookings/{bookingId}" — bắt khi backend
+     * update paymentStatus trực tiếp trên booking document (không qua payments collection).
+     * Đây là fallback quan trọng khi payments doc chưa tồn tại.
+     */
+    private void startBookingListener() {
+        if (bookingId == null) return;
+        bookingListener = db.collection("bookings").document(bookingId)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null) {
+                        android.util.Log.e("PAYMENT_FLOW", "bookings listener failed", e);
+                        return;
+                    }
+                    if (snapshot != null && snapshot.exists()) {
+                        // Kiểm tra cả paymentStatus lẫn bookingStatus
+                        String paymentStatus = snapshot.getString("paymentStatus");
+                        String bookingStatus = snapshot.getString("bookingStatus");
+                        android.util.Log.d("PAYMENT_FLOW", "Booking doc update — paymentStatus=" + paymentStatus + " bookingStatus=" + bookingStatus);
+                        // Ưu tiên paymentStatus, fallback sang bookingStatus
+                        String effectiveStatus = paymentStatus != null ? paymentStatus : bookingStatus;
+                        checkPaymentStatus(effectiveStatus);
+                    }
+                });
+    }
+
+    /**
+     * Kiểm tra và xử lý trạng thái payment. Guard paymentHandled đảm bảo
+     * chỉ xử lý 1 lần dù 2 listeners cùng fire.
+     */
+    private void checkPaymentStatus(String status) {
         if (status == null) return;
+        // Guard: đã xử lý rồi thì bỏ qua
+        if (paymentHandled) return;
 
-        android.util.Log.d("PAYMENT_FLOW", "Payment status updated: " + status);
+        android.util.Log.d("PAYMENT_FLOW", "checkPaymentStatus: " + status);
 
-        if ("SUCCESS".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status)) {
-            // Stop listener
-            stopPaymentListener();
-
-            // Stop booking hold timer
+        if ("SUCCESS".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status)
+                || "CONFIRMED".equalsIgnoreCase(status)) {
+            // Đánh dấu đã xử lý TRƯỚC — tránh race condition từ 2 listeners
+            paymentHandled = true;
+            stopAllListeners();
             BookingTimerManager.getInstance().stopTimer(this);
 
             Toast.makeText(this, "Thanh toán thành công! Đang xuất vé...", Toast.LENGTH_LONG).show();
 
-            // Open TicketDetailActivity
             Intent intent = new Intent(this, TicketDetailActivity.class);
             intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, bookingId);
             startActivity(intent);
             finish();
+
         } else if ("FAILED".equalsIgnoreCase(status) || "CANCELLED".equalsIgnoreCase(status)) {
-            tvStatusText.setText("Trạng thái: Giao dịch thất bại hoặc đã bị huỷ");
-            View banner = findViewById(R.id.layoutStatusBanner);
-            if (banner != null) {
-                banner.setBackgroundColor(0xFFD32F2F); // Red
+            if (!paymentHandled) {
+                tvStatusText.setText("Trạng thái: Giao dịch thất bại hoặc đã bị huỷ");
+                View banner = findViewById(R.id.layoutStatusBanner);
+                if (banner != null) {
+                    banner.setBackgroundColor(0xFFD32F2F);
+                }
             }
-        } else if ("WAITING_CONFIRMATION".equalsIgnoreCase(status)) {
+        } else if ("WAITING_CONFIRMATION".equalsIgnoreCase(status)
+                || "PENDING".equalsIgnoreCase(status)) {
             tvStatusText.setText("Trạng thái: Chờ Admin xác nhận...");
             View banner = findViewById(R.id.layoutStatusBanner);
             if (banner != null) {
-                banner.setBackgroundColor(0xFF1976D2); // Blue
+                banner.setBackgroundColor(0xFF1976D2);
             }
         }
     }
 
-    private void stopPaymentListener() {
+    private void handleTestPaymentSuccess() {
+        // Disable button immediately to prevent double-click spam
+        if (btnTestSuccess != null) btnTestSuccess.setEnabled(false);
+
+        android.util.Log.d("BOOKING_FLOW", "TEST_BUTTON_CLICKED: SUCCESS. Calling PUT /api/v1/bookings/payment/" + bookingId + "/confirmed");
+
+        BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
+        bookingApi.confirmPayment(bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    android.util.Log.d("BOOKING_FLOW", "confirmPayment API succeeded — waiting for Firestore listener to fire");
+                    // KHÔNG Toast ở đây — listener sẽ tự xử lý khi Firestore update
+                } else {
+                    if (btnTestSuccess != null) btnTestSuccess.setEnabled(true);
+                    Toast.makeText(PaymentInstructionActivity.this, "Lỗi cập nhật test success: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                if (btnTestSuccess != null) btnTestSuccess.setEnabled(true);
+                Toast.makeText(PaymentInstructionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleTestPaymentFailed() {
+        if (btnTestFailed != null) btnTestFailed.setEnabled(false);
+
+        android.util.Log.d("BOOKING_FLOW", "TEST_BUTTON_CLICKED: FAILED. Calling PUT /api/v1/bookings/payment/" + bookingId + "/failed");
+
+        BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
+        bookingApi.cancelBooking(bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    android.util.Log.d("BOOKING_FLOW", "cancelBooking API succeeded");
+                    Toast.makeText(PaymentInstructionActivity.this, "Giả lập: Thanh toán thất bại!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (btnTestFailed != null) btnTestFailed.setEnabled(true);
+                    Toast.makeText(PaymentInstructionActivity.this, "Lỗi cập nhật test failed: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                if (btnTestFailed != null) btnTestFailed.setEnabled(true);
+                Toast.makeText(PaymentInstructionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void stopAllListeners() {
         if (paymentListener != null) {
             paymentListener.remove();
             paymentListener = null;
+        }
+        if (bookingListener != null) {
+            bookingListener.remove();
+            bookingListener = null;
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopPaymentListener();
+        stopAllListeners();
     }
 }

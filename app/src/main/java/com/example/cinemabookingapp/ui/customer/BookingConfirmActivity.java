@@ -9,6 +9,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
+import com.example.cinemabookingapp.data.dto.BookingDTO;
+import com.example.cinemabookingapp.data.dto.SeatBookingRequestDTO;
+import com.example.cinemabookingapp.data.remote.api.BookingApiService;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -62,6 +68,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private TextView tvAgeRatingBadge;
     private String movieAgeRating = "P";
 
+    private boolean isBookingConfirmed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +112,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 }
                 if (momoDialog != null && momoDialog.isShowing()) {
                     momoDialog.dismiss();
+                }
+                if (!isBookingConfirmed) {
+                    releaseLockedSeats();
                 }
                 Toast.makeText(BookingConfirmActivity.this, "Thời gian giữ ghế đã hết! Vui lòng chọn lại.", Toast.LENGTH_LONG).show();
                 finish();
@@ -408,147 +419,73 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void confirmBooking() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser() != null
-                ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "anonymous";
-
-        String bookingId = "booking_" + UUID.randomUUID().toString().substring(0, 8);
-        long now = System.currentTimeMillis();
-
-        double finalTotal = total - discountVoucher - discountRank - discountStars;
-        if (finalTotal < 0) finalTotal = 0;
-
         if ("momo".equals(selectedPaymentMethod)) {
-            showMomoCheckoutDialog(bookingId, userId, movieId, now, finalTotal);
+            showMomoCheckoutDialog(selectedPaymentMethod);
         } else {
-            saveBookingToFirestore(bookingId, userId, movieId, now, finalTotal, selectedPaymentMethod, "pending");
+            createBookingOnBackend(selectedPaymentMethod);
         }
     }
 
-    private void saveBookingToFirestore(String bookingId, String userId, String movieId, long now, double finalTotal, String paymentMethod, String paymentStatus) {
-        String suffix = bookingId.contains("_") ? bookingId.substring(bookingId.indexOf("_") + 1) : bookingId;
-        if (suffix.length() > 8) {
-            suffix = suffix.substring(0, 8);
-        }
-        String paymentCode = ("BK" + suffix).toUpperCase();
-        String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
+    private void createBookingOnBackend(String paymentMethod) {
+        MaterialButton btnConfirm = findViewById(R.id.btnConfirm);
+        if (btnConfirm != null) btnConfirm.setEnabled(false);
 
-        // Lưu cả Booking và Payment dưới trạng thái PENDING trước
-        saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, paymentMethod, "PENDING", "PENDING", "PENDING", new com.google.android.gms.tasks.OnSuccessListener<Void>() {
+        List<SeatBookingRequestDTO.SnackOrder> snackOrders = new ArrayList<>();
+
+        SeatBookingRequestDTO request = new SeatBookingRequestDTO(
+                showtimeId,
+                seatIds != null ? seatIds : new ArrayList<>(),
+                snackOrders,
+                paymentMethod
+        );
+
+        BookingApiService bookingApi = RetrofitClient.getInstance()
+                .create(BookingApiService.class);
+
+        bookingApi.createBooking(request).enqueue(new retrofit2.Callback<ApiResponse<BookingDTO>>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
+            public void onResponse(retrofit2.Call<ApiResponse<BookingDTO>> call, retrofit2.Response<ApiResponse<BookingDTO>> response) {
+                if (btnConfirm != null) btnConfirm.setEnabled(true);
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    BookingDTO booking = response.body().getData();
+                    isBookingConfirmed = true;
                     BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
-                    Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
-                    intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, bookingId);
-                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, paymentId);
-                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, paymentCode);
-                    intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, finalTotal);
-                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
-                    startActivity(intent);
-                    finish();
+
+                    if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
+                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null); // will query via bookingId
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 } else {
-                    BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
-                    Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán)!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    String msg = "Lỗi tạo vé. Vui lòng thử lại.";
+                    if (response.code() == 409) {
+                        msg = "Xung đột: Ghế đã được đặt hoặc đang có người khác giữ!";
+                    } else if (response.code() == 403) {
+                        msg = "Lỗi: Bạn không giữ ghế này hoặc đã hết hạn giữ ghế!";
+                    } else if (response.body() != null && response.body().getMessage() != null) {
+                        msg = response.body().getMessage();
+                    }
+                    Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<BookingDTO>> call, Throwable t) {
+                if (btnConfirm != null) btnConfirm.setEnabled(true);
+                Toast.makeText(BookingConfirmActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void saveBookingAndPaymentToFirestore(
-            String bookingId,
-            String paymentId,
-            String userId,
-            String movieId,
-            long now,
-            double finalTotal,
-            String paymentMethod,
-            String bookingStatus,
-            String paymentStatus,
-            String paymentRecordStatus,
-            com.google.android.gms.tasks.OnSuccessListener<Void> onSuccessListener
-    ) {
-        String suffix = bookingId.contains("_") ? bookingId.substring(bookingId.indexOf("_") + 1) : bookingId;
-        if (suffix.length() > 8) {
-            suffix = suffix.substring(0, 8);
-        }
-        String paymentCode = ("BK" + suffix).toUpperCase();
-
-        Map<String, Object> booking = new HashMap<>();
-        booking.put("bookingId", bookingId);
-        booking.put("userId", userId);
-        booking.put("movieId", movieId);
-        booking.put("showtimeId", showtimeId);
-        booking.put("cinemaNameSnapshot", cinemaName);
-        booking.put("movieTitleSnapshot", movieTitle);
-        booking.put("movieImageUrlSnapshot", imageUrl != null ? imageUrl : "");
-        booking.put("showtimeStartAtSnapshot", showtimeStart);
-        booking.put("seatCodes", seatCodes);
-        booking.put("seatIds", seatIds != null ? seatIds : new ArrayList<>());
-        booking.put("total", finalTotal);
-        booking.put("discountVoucher", discountVoucher);
-        booking.put("discountRank", discountRank);
-        booking.put("discountStars", discountStars);
-        booking.put("appliedPromoCode", appliedPromoCode);
-        booking.put("paymentMethod", paymentMethod);
-        booking.put("paymentStatus", paymentStatus);
-        booking.put("bookingStatus", bookingStatus);
-        booking.put("paymentCode", paymentCode);
-        booking.put("createdAt", now);
-        booking.put("updatedAt", now);
-        booking.put("deleted", false);
-
-        Map<String, Object> payment = new HashMap<>();
-        payment.put("paymentId", paymentId);
-        payment.put("bookingId", bookingId);
-        payment.put("paymentCode", paymentCode);
-        payment.put("userId", userId);
-        payment.put("provider", paymentMethod);
-        payment.put("amount", finalTotal);
-        payment.put("status", paymentRecordStatus);
-        payment.put("transactionId", "TXN_" + UUID.randomUUID().toString().substring(0, 8));
-        payment.put("payUrl", "http://fake-payurl.com/pay/" + paymentId);
-        payment.put("createdAt", now);
-        payment.put("updatedAt", now);
-
-        android.util.Log.d("BOOKING_FLOW", "Creating/updating booking record: bookingId=" + bookingId + ", paymentCode=" + paymentCode + ", status=" + bookingStatus + ", paymentStatus=" + paymentStatus);
-        android.util.Log.d("PAYMENT_FLOW", "Creating/updating payment record: paymentId=" + paymentId + ", bookingId=" + bookingId + ", paymentCode=" + paymentCode + ", amount=" + finalTotal + ", status=" + paymentRecordStatus);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        com.google.firebase.firestore.WriteBatch batch = db.batch();
-        batch.set(db.collection("bookings").document(bookingId), booking);
-        batch.set(db.collection("payments").document(paymentId), payment);
-
-        batch.commit()
-                .addOnSuccessListener(onSuccessListener)
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Lỗi Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void showMomoSimulationDialog(String bookingId, String userId, String movieId, long now, double finalTotal) {
-        String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Mô phỏng thanh toán MoMo")
-                .setMessage("Chọn kết quả giao dịch thanh toán để mô phỏng (local fake):")
-                .setPositiveButton("Thành công (SUCCESS)", (dialog, which) -> {
-                    saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, "momo", "confirmed", "paid", "SUCCESS", aVoid -> {
-                        BookingTimerManager.getInstance().stopTimer(this);
-                        Toast.makeText(this, "Thanh toán MoMo thành công!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    });
-                })
-                .setNegativeButton("Thất bại (FAILED)", (dialog, which) -> {
-                    saveBookingAndPaymentToFirestore(bookingId, paymentId, userId, movieId, now, finalTotal, "momo", "cancelled", "failed", "FAILED", aVoid -> {
-                        BookingTimerManager.getInstance().stopTimer(this);
-                        Toast.makeText(this, "Thanh toán MoMo thất bại!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    });
-                })
-                .setCancelable(false)
-                .show();
-    }
-
-    private void showMomoCheckoutDialog(String bookingId, String userId, String movieId, long now, double finalTotal) {
+    private void showMomoCheckoutDialog(String paymentMethod) {
         momoDialog = new com.google.android.material.bottomsheet.BottomSheetDialog(this);
         android.view.View view = getLayoutInflater().inflate(R.layout.dialog_momo_checkout, null);
         momoDialog.setContentView(view);
@@ -556,6 +493,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
         TextView tvMomoAmount = view.findViewById(R.id.tvMomoAmount);
         android.widget.Button btnCancelMomo = view.findViewById(R.id.btnCancelMomo);
         android.widget.Button btnConfirmMomo = view.findViewById(R.id.btnConfirmMomo);
+
+        double finalTotal = total - discountVoucher - discountRank - discountStars;
+        if (finalTotal < 0) finalTotal = 0;
 
         if (tvMomoAmount != null) {
             tvMomoAmount.setText(String.format(Locale.getDefault(), "Số tiền: %,.0f đ", finalTotal));
@@ -572,8 +512,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
             btnConfirmMomo.setOnClickListener(v -> {
                 momoDialog.dismiss();
                 Toast.makeText(this, "Đang xử lý giao dịch MoMo...", Toast.LENGTH_SHORT).show();
-                // Thực hiện tạo PENDING trước
-                saveBookingToFirestore(bookingId, userId, movieId, now, finalTotal, "momo", "pending");
+                createBookingOnBackend(paymentMethod);
             });
         }
 
@@ -592,11 +531,37 @@ public class BookingConfirmActivity extends AppCompatActivity {
         BookingTimerManager.getInstance().unregisterListener(timerListener);
     }
 
+    private void releaseLockedSeats() {
+        if (seatIds == null || seatIds.isEmpty() || showtimeId == null) return;
+        
+        com.example.cinemabookingapp.data.dto.SeatLockRequestDTO releaseReq = 
+                new com.example.cinemabookingapp.data.dto.SeatLockRequestDTO(showtimeId, seatIds);
+        
+        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+                com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
+                .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+        
+        seatApi.releaseSeats(releaseReq).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> response) {
+                android.util.Log.d("BOOKING_FLOW", "Seats released successfully in background");
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, Throwable t) {
+                android.util.Log.e("BOOKING_FLOW", "Failed to release seats: " + t.getMessage());
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
             BookingTimerManager.getInstance().stopTimer(this);
+            if (!isBookingConfirmed) {
+                releaseLockedSeats();
+            }
         }
     }
 }

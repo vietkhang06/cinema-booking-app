@@ -2,6 +2,8 @@ package com.example.cinemabookingapp.data.remote.api;
 
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.BookingDTO;
+import com.example.cinemabookingapp.data.dto.SeatBookingRequestDTO;
+import com.example.cinemabookingapp.data.dto.StaffStatsDTO;
 
 import java.util.List;
 
@@ -15,4 +17,22 @@ public interface BookingApiService {
 
     @GET("bookings/{id}")
     Call<ApiResponse<BookingDTO>> getBookingById(@Path("id") String id);
+
+    @GET("bookings/search")
+    Call<ApiResponse<List<BookingDTO>>> searchBookings(@retrofit2.http.Query("query") String query);
+
+    @GET("bookings/stats")
+    Call<ApiResponse<StaffStatsDTO>> getStaffStats();
+
+    @retrofit2.http.PUT("bookings/{id}/checkin")
+    Call<ApiResponse<Void>> checkInBooking(@Path("id") String id);
+
+    @retrofit2.http.POST("bookings")
+    Call<ApiResponse<BookingDTO>> createBooking(@retrofit2.http.Body SeatBookingRequestDTO request);
+
+    @retrofit2.http.PUT("bookings/payment/{id}/confirmed")
+    Call<ApiResponse<Void>> confirmPayment(@retrofit2.http.Path("id") String bookingId);
+
+    @retrofit2.http.PUT("bookings/payment/{id}/failed")
+    Call<ApiResponse<Void>> cancelBooking(@retrofit2.http.Path("id") String bookingId);
 }

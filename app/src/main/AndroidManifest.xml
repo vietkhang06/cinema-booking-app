@@ -97,6 +97,9 @@
             android:name=".ui.staff.StaffDashboardActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.staff.StaffScanQRActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.staff.StaffInvoiceActivity"
             android:exported="false" />
         <activity
@@ -104,6 +107,21 @@
             android:exported="false" />
         <activity
             android:name=".ui.staff.StaffCheckSeat"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffSearchBookingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffShowtimesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffPaymentSupportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffAuditLogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffProfileActivity"
             android:exported="false" />
         <!-- ADMIN -->
         <activity

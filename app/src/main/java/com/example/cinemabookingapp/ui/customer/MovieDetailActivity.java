@@ -243,55 +243,81 @@ public class MovieDetailActivity extends BaseActivity {
             public void onSuccess(List<Cinema> cinemas) {
                 cinemaMap.clear();
                 for (Cinema c : cinemas) {
-                    cinemaMap.put(c.cinemaId, c);
+                    if (c.cinemaId != null) cinemaMap.put(c.cinemaId, c);
                 }
-
-                showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
-                    @Override
-                    public void onSuccess(List<Showtime> showtimes) {
-                        scheduleCatalog.buildFromShowtimes(showtimes, cinemaMap);
-
-                        List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
-                        if (!dateOptions.isEmpty()) {
-                            selectedDateIndex = 0;
-                            DateOption firstOption = dateOptions.get(0);
-                            selectedDateLabel = firstOption.label;
-                            selectedDateText = firstOption.dateText;
-                            scheduleCatalog.selectDateKey(firstOption.dateKey);
-
-                            List<String> cities = scheduleCatalog.getCityNames();
-                            if (!cities.isEmpty()) {
-                                selectedCity = cities.get(0);
-                                List<String> cinemasInCity = scheduleCatalog.getCinemaNames(selectedCity);
-                                if (!cinemasInCity.isEmpty()) {
-                                    selectedCinema = cinemasInCity.get(0);
-                                    scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
-                                }
-                            }
-                        } else {
-                            selectedDateIndex = -1;
-                            selectedDateLabel = "";
-                            selectedDateText = "";
-                            selectedCity = "";
-                            selectedCinema = "";
-                        }
-
-                        // Update the dropdowns and UI
-                        setupDropdowns();
-                        renderDateChips();
-                        renderCinemaGroups();
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Log.e("MovieDetail", "Error loading showtimes: " + message);
-                    }
-                });
+                Log.d("MovieDetail", "cinemaMap loaded: " + cinemaMap.size() + " cinemas");
+                loadShowtimesForMovie();
             }
 
             @Override
             public void onError(String message) {
-                Log.e("MovieDetail", "Error loading cinemas: " + message);
+                // Ngay cả khi cinema load lỗi, vẫn tiếp tục load showtime với cinemaMap hiện tại
+                Log.w("MovieDetail", "Error loading cinemas (will proceed anyway): " + message);
+                loadShowtimesForMovie();
+            }
+        });
+    }
+
+    private void loadShowtimesForMovie() {
+        showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
+            @Override
+            public void onSuccess(List<Showtime> showtimes) {
+                Log.d("MovieDetail", "Showtimes loaded: " + showtimes.size() + " for movieId=" + selectedMovieId);
+
+                // Nếu cinemaMap rỗng nhưng có showtimes, tạo placeholder Cinema từ cinemaId
+                // Đảm bảo UI không bị trống hoàn toàn dù cinema API thất bại
+                if (cinemaMap.isEmpty() && !showtimes.isEmpty()) {
+                    for (Showtime s : showtimes) {
+                        if (s.cinemaId != null && !cinemaMap.containsKey(s.cinemaId)) {
+                            Cinema placeholder = new Cinema();
+                            placeholder.cinemaId = s.cinemaId;
+                            placeholder.name = "Rạp " + s.cinemaId;
+                            placeholder.city = "Khác";
+                            cinemaMap.put(s.cinemaId, placeholder);
+                        }
+                    }
+                    Log.w("MovieDetail", "Using placeholder cinemas: " + cinemaMap.size());
+                }
+
+                scheduleCatalog.buildFromShowtimes(showtimes, cinemaMap);
+
+                List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
+                Log.d("MovieDetail", "DateOptions count: " + dateOptions.size());
+
+                if (!dateOptions.isEmpty()) {
+                    selectedDateIndex = 0;
+                    DateOption firstOption = dateOptions.get(0);
+                    selectedDateLabel = firstOption.label;
+                    selectedDateText = firstOption.dateText;
+                    scheduleCatalog.selectDateKey(firstOption.dateKey);
+
+                    List<String> cities = scheduleCatalog.getCityNames();
+                    Log.d("MovieDetail", "Cities: " + cities);
+                    if (!cities.isEmpty()) {
+                        selectedCity = cities.get(0);
+                        List<String> cinemasInCity = scheduleCatalog.getCinemaNames(selectedCity);
+                        if (!cinemasInCity.isEmpty()) {
+                            selectedCinema = cinemasInCity.get(0);
+                            scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                        }
+                    }
+                } else {
+                    selectedDateIndex = -1;
+                    selectedDateLabel = "";
+                    selectedDateText = "";
+                    selectedCity = "";
+                    selectedCinema = "";
+                }
+
+                // Update the dropdowns and UI
+                setupDropdowns();
+                renderDateChips();
+                renderCinemaGroups();
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("MovieDetail", "Error loading showtimes: " + message);
             }
         });
     }

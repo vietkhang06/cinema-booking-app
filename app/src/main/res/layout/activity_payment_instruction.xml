@@ -389,6 +389,47 @@
             android:textColor="@color/white"
             app:backgroundTint="#A13345"
             app:cornerRadius="26dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutTestButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTestSuccess"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="Test Thành Công"
+                android:textAllCaps="false"
+                android:textColor="#2E7D32"
+                app:strokeColor="#2E7D32"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="24dp"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTestFailed"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="Test Thất Bại"
+                android:textAllCaps="false"
+                android:textColor="#C62828"
+                app:strokeColor="#C62828"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="24dp"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

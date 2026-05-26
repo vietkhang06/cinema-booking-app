@@ -100,6 +100,14 @@ public class AuthenticationService {
                             return;
                         }
 
+                        sessionManager.saveLoginState(true, data.role, data.uid);
+                        sessionManager.saveRememberMe(isRemember);
+                        if (isRemember) {
+                            sessionManager.saveRememberedEmail(email);
+                        } else {
+                            sessionManager.clearRememberedEmail();
+                        }
+
                         callback.onSuccess(data);
                     }
 
@@ -139,6 +147,7 @@ public class AuthenticationService {
                             }
 
                             sessionManager.saveLoginState(true, data.role, data.uid);
+                            sessionManager.saveRememberMe(true);
                             callback.onSuccess(data);
                         }
 
@@ -169,6 +178,7 @@ public class AuthenticationService {
                                 @Override
                                 public void onSuccess(User user) {
                                     sessionManager.saveLoginState(true, user.role, user.uid);
+                                    sessionManager.saveRememberMe(true);
                                     callback.onSuccess(user);
                                 }
 
@@ -200,6 +210,7 @@ public class AuthenticationService {
                                 @Override
                                 public void onSuccess(User user) {
                                     sessionManager.saveLoginState(true, user.role, user.uid);
+                                    sessionManager.saveRememberMe(true);
                                     callback.onSuccess(user);
                                 }
 

@@ -10,6 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
+import com.example.cinemabookingapp.di.ServiceProvider;
 
 public class SplashActivity extends BaseActivity {
 
@@ -26,9 +27,10 @@ public class SplashActivity extends BaseActivity {
         startDotAnimation();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (sessionManager.isLoggedIn()) {
+            if (sessionManager.isLoggedIn() && sessionManager.isRememberMe()) {
                 AppNavigator.goToHomeByRole(this, sessionManager.getRole());
             } else {
+                ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().logOut();
                 AppNavigator.goToLogin(this);
             }
         }, SPLASH_DELAY);

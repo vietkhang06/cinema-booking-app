@@ -45,8 +45,17 @@ public class MovieDetailScheduleCatalog {
         List<String> sortedDateKeys = new ArrayList<>();
         long now = System.currentTimeMillis();
 
+        // Tính đầu ngày hôm nay (để không bỏ lỡ showtime hôm nay đã qua giờ chiếu)
+        Calendar startOfTodayCal = Calendar.getInstance();
+        startOfTodayCal.set(Calendar.HOUR_OF_DAY, 0);
+        startOfTodayCal.set(Calendar.MINUTE, 0);
+        startOfTodayCal.set(Calendar.SECOND, 0);
+        startOfTodayCal.set(Calendar.MILLISECOND, 0);
+        long startOfToday = startOfTodayCal.getTimeInMillis();
+
         for (Showtime s : showtimes) {
-            if (s.deleted || s.startAt < now || !isBookableStatus(s.status)) {
+            // Chỉ bỏ lỡ showtime đã qua ngày (không phải qua giờ — để show tất cả suất hôm nay)
+            if (s.deleted || s.startAt < startOfToday || !isBookableStatus(s.status)) {
                 continue;
             }
             Date showDate = new Date(s.startAt);
@@ -181,12 +190,16 @@ public class MovieDetailScheduleCatalog {
     }
 
     private boolean isBookableStatus(String status) {
+        // null hoặc rỗng → coi là bookable (Admin có thể chưa set)
         if (status == null || status.trim().isEmpty()) {
             return true;
         }
-
-        return "active".equalsIgnoreCase(status)
-                || "available".equalsIgnoreCase(status);
+        String s = status.trim().toLowerCase();
+        return s.equals("active")
+                || s.equals("available")
+                || s.equals("open")
+                || s.equals("scheduled")
+                || s.equals("published");
     }
 
     private String dayLabel(int dayOfWeek) {
