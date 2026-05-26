@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.data.dto.SeatDTO;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -102,24 +103,49 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(SeatDTO seat) {
-            // Giữ nguyên code bind() của bạn ở đây
             tvSeat.setText(seat.seatCode != null ? seat.seatCode : "");
-            if ("booked".equalsIgnoreCase(seat.status)) {
+            
+            long now = System.currentTimeMillis();
+            boolean isBooked = "booked".equalsIgnoreCase(seat.status);
+            
+            String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    : "";
+            
+            boolean isHeldByMe = "held".equalsIgnoreCase(seat.status) 
+                    && (seat.heldUntil > now) 
+                    && currentUserId.equals(seat.heldBy);
+            
+            boolean isHeldByOther = "held".equalsIgnoreCase(seat.status) 
+                    && (seat.heldUntil > now) 
+                    && !currentUserId.equals(seat.heldBy);
+
+            if (isBooked) {
+                // BOOKED: slate color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFF555566);
                 itemView.setEnabled(false);
                 itemView.setAlpha(0.6f);
-            } else if (seat.isSelected) {
+            } else if (isHeldByOther) {
+                // HELD BY OTHER: locked gray color
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
+                tvSeat.setTextColor(0xFF888888);
+                itemView.setEnabled(false);
+                itemView.setAlpha(0.4f);
+            } else if (isHeldByMe || seat.isSelected) {
+                // HELD BY ME / SELECTED: selected color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_selection);
                 tvSeat.setTextColor(0xFFFFFFFF);
                 itemView.setEnabled(true);
                 itemView.setAlpha(1f);
             } else if ("VIP".equalsIgnoreCase(seat.seatType)) {
+                // VIP
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_vip);
                 tvSeat.setTextColor(0xFF1A1A1A);
                 itemView.setEnabled(true);
                 itemView.setAlpha(1f);
             } else {
+                // AVAILABLE STANDARD
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_normal);
                 tvSeat.setTextColor(0xFFCCCCCC);
                 itemView.setEnabled(true);

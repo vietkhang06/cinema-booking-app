@@ -12,6 +12,7 @@ public class SessionManager {
     private static final String KEY_ROLE = "role";
     private static final String KEY_UID = "uid";
     private static final String KEY_REMEMBERED_EMAIL = "remembered_email";
+    private static final String KEY_REMEMBER_ME = "remember_me";
 
     private final SharedPreferences sharedPreferences;
 
@@ -56,11 +57,22 @@ public class SessionManager {
                 .apply();
     }
 
+    public void saveRememberMe(boolean rememberMe) {
+        sharedPreferences.edit()
+                .putBoolean(KEY_REMEMBER_ME, rememberMe)
+                .apply();
+    }
+
+    public boolean isRememberMe() {
+        return sharedPreferences.getBoolean(KEY_REMEMBER_ME, false);
+    }
+
     public void logout() {
         sharedPreferences.edit()
                 .remove(KEY_IS_LOGGED_IN)
                 .remove(KEY_ROLE)
                 .remove(KEY_UID)
+                .remove(KEY_REMEMBER_ME)
                 .apply();
     }
 
