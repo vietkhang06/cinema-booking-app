@@ -188,4 +188,25 @@ public class BookingRepositoryImpl implements BookingRepository {
     public void softDeleteBooking(String bookingId, ResultCallback<Void> callback) {
         if (callback != null) callback.onError("Tính năng xóa vé chưa được hỗ trợ.");
     }
+
+    @Override
+    public void checkUserHasBookedMovie(String userId, String movieId, ResultCallback<Boolean> callback) {
+        FirebaseFirestore.getInstance()
+                .collection("bookings")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("movieId", movieId)
+                .whereIn("bookingStatus", java.util.Arrays.asList(
+                        com.example.cinemabookingapp.core.constants.BookingStatus.CONFIRMED,
+                        com.example.cinemabookingapp.core.constants.BookingStatus.USED
+                ))
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    boolean hasBooked = !queryDocumentSnapshots.isEmpty();
+                    if (callback != null) callback.onSuccess(hasBooked);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError(e.getMessage());
+                });
+    }
 }
