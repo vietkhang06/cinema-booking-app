@@ -249,7 +249,7 @@ public class ProfileFragment extends Fragment {
 
         // Thông báo (tạm thời toast)
         viewNotificationBtn.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Chưa có thông báo mới", Toast.LENGTH_SHORT).show());
+                AppNavigator.goToNotification(requireActivity()));
 
         // Mã thành viên
         if (btnMemberCard != null)
