@@ -13,6 +13,7 @@ public class Cinema {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+    public java.util.List<String> roomIds;
 
     public Cinema() {
     }

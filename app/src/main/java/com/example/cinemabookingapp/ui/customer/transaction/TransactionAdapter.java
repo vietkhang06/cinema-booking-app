@@ -82,6 +82,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             
             if (booking.showtimeStartAtSnapshot > 0) {
                 tvShowtime.setText(dateFormat.format(new Date(booking.showtimeStartAtSnapshot)));
+            } else if (booking.createdAt > 0) {
+                tvShowtime.setText(dateFormat.format(new Date(booking.createdAt)));
             } else {
                 tvShowtime.setText("Chưa xác định");
             }

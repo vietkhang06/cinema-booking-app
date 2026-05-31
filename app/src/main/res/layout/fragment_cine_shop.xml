@@ -160,4 +160,29 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- ========== LOADING PROGRESS BAR ========== -->
+    <ProgressBar
+        android:id="@+id/loadingProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ========== EMPTY STATE VIEW ========== -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Không có sản phẩm nào khả dụng."
+        android:textColor="#888888"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,14 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.domain.model.SnackOrderItem;
 
 import java.util.List;
 
 public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.ItemViewHolder> {
-    private List<SnackOrderItem> itemList;
+    private List<String> itemList; // Elements in format "name,price,quantity"
 
-    public OrderItemAdapter(List<SnackOrderItem> itemList) {
+    public OrderItemAdapter(List<String> itemList) {
         this.itemList = itemList;
     }
 
@@ -31,14 +30,29 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Item
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-//        InvoiceSnackItem item = itemList.get(position);
-//        holder.itemNameAndQuantityTextView.setText(String.format("%sx%s", item.itemName, item.quantity));
-//        holder.itemPriceTextView.setText(String.format("%,d vnd", item.price));
+        String raw = itemList.get(position);
+        try {
+            String[] parts = raw.split(",");
+            String name = parts[0];
+            double price = Double.parseDouble(parts[1]);
+            int quantity = Integer.parseInt(parts[2]);
+
+            holder.itemNameTV.setText(name);
+            holder.itemPriceTV.setText(String.format("Đơn giá: %,.0f vnd", price));
+            holder.itemQuantityTV.setText("x" + quantity);
+            
+            // Set default popcorn/snack indicator icon
+            holder.snackImageView.setImageResource(R.drawable.login_icon);
+        } catch (Exception e) {
+            holder.itemNameTV.setText("Đồ ăn");
+            holder.itemPriceTV.setText("");
+            holder.itemQuantityTV.setText("");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return itemList != null ? itemList.size() : 0;
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {

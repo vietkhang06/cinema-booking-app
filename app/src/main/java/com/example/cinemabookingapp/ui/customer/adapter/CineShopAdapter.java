@@ -23,6 +23,8 @@ import com.example.cinemabookingapp.domain.model.Snack;
 import com.example.cinemabookingapp.ui.customer.cine_shop.CineCartActivity;
 import com.example.cinemabookingapp.ui.customer.cine_shop.CineCartManager;
 import com.google.android.material.card.MaterialCardView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -94,6 +96,14 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
             DecimalFormat fmt = new DecimalFormat("#,###");
             tvProductPrice.setText(fmt.format(snack.price) + "đ");
 
+            // Load ảnh sản phẩm từ Firestore thông qua Glide
+            Glide.with(itemView.getContext())
+                    .load(snack.imageUrl)
+                    .placeholder(R.drawable.bg_banner_placeholder)
+                    .error(R.drawable.bg_banner_placeholder)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(imgProduct);
+
             btnBuyNow.setOnClickListener(v ->
                     showBuyNowDialog(itemView.getContext(), snack));
 
@@ -106,6 +116,7 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
     private void showBuyNowDialog(Context ctx, Snack snack) {
         Dialog dialog = buildBottomDialog(ctx, R.layout.dialog_cine_buy_now);
 
+        ImageView imgProduct = dialog.findViewById(R.id.dialogImgProduct);
         TextView tvName     = dialog.findViewById(R.id.dialogTvProductName);
         TextView tvPrice    = dialog.findViewById(R.id.dialogTvProductPrice);
         TextView tvQty      = dialog.findViewById(R.id.dialogTvQuantity);
@@ -114,6 +125,15 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         MaterialCardView btnPlus   = dialog.findViewById(R.id.btnDialogPlus);
         TextView btnCancel  = dialog.findViewById(R.id.btnDialogCancel);
         TextView btnConfirm = dialog.findViewById(R.id.btnDialogConfirmBuy);
+
+        if (imgProduct != null) {
+            Glide.with(ctx)
+                    .load(snack.imageUrl)
+                    .placeholder(R.drawable.bg_banner_placeholder)
+                    .error(R.drawable.bg_banner_placeholder)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(imgProduct);
+        }
 
         DecimalFormat fmt = new DecimalFormat("#,###");
         tvName.setText(snack.name);
@@ -154,6 +174,7 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
     private void showAddToCartDialog(Context ctx, Snack snack) {
         Dialog dialog = buildBottomDialog(ctx, R.layout.dialog_cine_add_to_cart);
 
+        ImageView imgProduct = dialog.findViewById(R.id.cartDialogImgProduct);
         TextView tvName  = dialog.findViewById(R.id.cartDialogTvProductName);
         TextView tvPrice = dialog.findViewById(R.id.cartDialogTvProductPrice);
         TextView tvQty   = dialog.findViewById(R.id.cartDialogTvQuantity);
@@ -161,6 +182,15 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         MaterialCardView btnPlus   = dialog.findViewById(R.id.btnCartDialogPlus);
         TextView btnCancel  = dialog.findViewById(R.id.btnCartDialogCancel);
         TextView btnConfirm = dialog.findViewById(R.id.btnCartDialogConfirm);
+
+        if (imgProduct != null) {
+            Glide.with(ctx)
+                    .load(snack.imageUrl)
+                    .placeholder(R.drawable.bg_banner_placeholder)
+                    .error(R.drawable.bg_banner_placeholder)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(imgProduct);
+        }
 
         DecimalFormat fmt = new DecimalFormat("#,###");
         tvName.setText(snack.name);

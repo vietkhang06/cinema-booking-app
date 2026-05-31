@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -36,5 +38,23 @@ public class BannerService {
                     .build());
         }
         return banners;
+    }
+
+    // Method moved outside of getAllBanners()
+    public void seedMockBanners() throws ExecutionException, InterruptedException {
+        String[] mockUrls = {
+                "https://www.galaxycine.vn/media/2024/3/6/z5217435133604-0ee030cd3eb04ea12ed2539d09c6f932_1709712711718.jpg",
+                "https://www.galaxycine.vn/media/2024/5/1/combo-g-1_1714552467319.jpg",
+                "https://www.galaxycine.vn/media/2024/5/1/combo-g-2_1714552469493.jpg"
+        };
+
+        for (int i = 0; i < mockUrls.length; i++) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("imageUrl", mockUrls[i]);
+            data.put("isActive", true);
+
+            // Add to Firestore
+            firestore.collection(COLLECTION).document("mock_banner_" + i).set(data).get();
+        }
     }
 }

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+    public static final String COLLECTION_NAME = "users";
+    
     private String uid;
     private String email;
     private String phone;

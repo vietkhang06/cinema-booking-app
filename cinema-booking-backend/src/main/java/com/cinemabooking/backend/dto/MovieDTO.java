@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieDTO {
+    public static final String COLLECTION_NAME = "movies";
+    
     private String movieId;
     private String title;
     private String description;

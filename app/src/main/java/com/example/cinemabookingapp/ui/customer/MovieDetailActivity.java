@@ -20,6 +20,15 @@ import android.graphics.Color;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import com.example.cinemabookingapp.domain.repository.ReviewRepository;
+import com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl;
+import com.example.cinemabookingapp.ui.customer.adapter.ReviewAdapter;
+import com.example.cinemabookingapp.domain.model.Review;
+
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
@@ -29,6 +38,10 @@ import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Movie;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMovieByIdUseCase;
+import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
+import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
+import com.example.cinemabookingapp.domain.model.Cinema;
+import com.example.cinemabookingapp.domain.model.Showtime;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog.CinemaSection;
 import com.example.cinemabookingapp.ui.customer.model.MovieDetailScheduleCatalog.DateOption;
@@ -39,9 +52,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import android.util.Log;
 
 public class MovieDetailActivity extends BaseActivity {
 
@@ -85,11 +100,20 @@ public class MovieDetailActivity extends BaseActivity {
     private MaterialButtonToggleGroup toggleSections;
     private MaterialButton btnTabSchedule;
     private MaterialButton btnTabInfo;
-    private MaterialButton btnTabNews;
+    private MaterialButton btnTabReview;
 
     private LinearLayout layoutScheduleSection;
     private LinearLayout layoutInfoSection;
-    private LinearLayout layoutNewsSection;
+    private LinearLayout layoutReviewSection;
+
+    private RecyclerView rvReviews;
+    private EditText etComment;
+    private RatingBar ratingBar;
+    private MaterialButton btnSendReview;
+    private ReviewAdapter reviewAdapter;
+    private ReviewRepository reviewRepository;
+    private Review parentReviewToReply = null;
+    private com.example.cinemabookingapp.domain.repository.BookingRepository bookingRepository;
 
     private MaterialAutoCompleteTextView actvCity;
     private MaterialAutoCompleteTextView actvCinema;
@@ -100,6 +124,9 @@ public class MovieDetailActivity extends BaseActivity {
 
     private MovieDetailScheduleCatalog scheduleCatalog;
     private GetMovieByIdUseCase getMovieByIdUseCase;
+    private ShowtimeRepositoryImpl showtimeRepository;
+    private CinemaRepositoryImpl cinemaRepository;
+    private final Map<String, Cinema> cinemaMap = new HashMap<>();
 
     private String selectedMovieId = "";
     private String selectedMoviePosterUrl = "";
@@ -126,6 +153,7 @@ public class MovieDetailActivity extends BaseActivity {
         renderCinemaGroups();
         setupTabs();
         setupActions();
+        setupReviews();
         loadMovieFromFirestore();
     }
 
@@ -150,11 +178,16 @@ public class MovieDetailActivity extends BaseActivity {
         toggleSections = findViewById(R.id.toggleSections);
         btnTabSchedule = findViewById(R.id.btnTabSchedule);
         btnTabInfo = findViewById(R.id.btnTabInfo);
-        btnTabNews = findViewById(R.id.btnTabNews);
+        btnTabReview = findViewById(R.id.btnTabReview);
 
         layoutScheduleSection = findViewById(R.id.layoutScheduleSection);
         layoutInfoSection = findViewById(R.id.layoutInfoSection);
-        layoutNewsSection = findViewById(R.id.layoutNewsSection);
+        layoutReviewSection = findViewById(R.id.layoutReviewSection);
+
+        rvReviews = findViewById(R.id.rvReviews);
+        etComment = findViewById(R.id.etComment);
+        ratingBar = findViewById(R.id.ratingBar);
+        btnSendReview = findViewById(R.id.btnSendReview);
 
         actvCity = findViewById(R.id.actvCity);
         actvCinema = findViewById(R.id.actvCinema);
@@ -168,26 +201,14 @@ public class MovieDetailActivity extends BaseActivity {
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
+        showtimeRepository = new ShowtimeRepositoryImpl(true);
+        cinemaRepository = new CinemaRepositoryImpl();
+        reviewRepository = new ReviewRepositoryImpl();
+        bookingRepository = new com.example.cinemabookingapp.data.repository.BookingRepositoryImpl();
     }
 
     private void initScheduleCatalog() {
         scheduleCatalog = MovieDetailScheduleCatalog.createDefault();
-
-        List<String> cityNames = scheduleCatalog.getCityNames();
-        if (!cityNames.isEmpty()) {
-            selectedCity = cityNames.get(0);
-            scheduleCatalog.setExpandedCinema(selectedCity, getFirstCinemaName(selectedCity));
-            selectedCinema = getFirstCinemaName(selectedCity);
-            selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-            selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
-        }
-
-        List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
-        if (!dateOptions.isEmpty()) {
-            selectedDateIndex = 0;
-            selectedDateLabel = dateOptions.get(0).label;
-            selectedDateText = dateOptions.get(0).dateText;
-        }
     }
 
     private void bindFallbackExtras() {
@@ -232,6 +253,98 @@ public class MovieDetailActivity extends BaseActivity {
             @Override
             public void onError(String errorMessage) {
                 // giữ fallback từ intent
+            }
+        });
+
+        loadShowtimesFromFirestore();
+        loadReviews();
+    }
+
+    private void loadShowtimesFromFirestore() {
+        if (TextUtils.isEmpty(selectedMovieId)) {
+            return;
+        }
+
+        cinemaRepository.getAllCinemas(new ResultCallback<List<Cinema>>() {
+            @Override
+            public void onSuccess(List<Cinema> cinemas) {
+                cinemaMap.clear();
+                for (Cinema c : cinemas) {
+                    if (c.cinemaId != null) cinemaMap.put(c.cinemaId, c);
+                }
+                Log.d("MovieDetail", "cinemaMap loaded: " + cinemaMap.size() + " cinemas");
+                loadShowtimesForMovie();
+            }
+
+            @Override
+            public void onError(String message) {
+                // Ngay cả khi cinema load lỗi, vẫn tiếp tục load showtime với cinemaMap hiện tại
+                Log.w("MovieDetail", "Error loading cinemas (will proceed anyway): " + message);
+                loadShowtimesForMovie();
+            }
+        });
+    }
+
+    private void loadShowtimesForMovie() {
+        showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
+            @Override
+            public void onSuccess(List<Showtime> showtimes) {
+                Log.d("MovieDetail", "Showtimes loaded: " + showtimes.size() + " for movieId=" + selectedMovieId);
+
+                // Nếu cinemaMap rỗng nhưng có showtimes, tạo placeholder Cinema từ cinemaId
+                // Đảm bảo UI không bị trống hoàn toàn dù cinema API thất bại
+                if (cinemaMap.isEmpty() && !showtimes.isEmpty()) {
+                    for (Showtime s : showtimes) {
+                        if (s.cinemaId != null && !cinemaMap.containsKey(s.cinemaId)) {
+                            Cinema placeholder = new Cinema();
+                            placeholder.cinemaId = s.cinemaId;
+                            placeholder.name = "Rạp " + s.cinemaId;
+                            placeholder.city = "Khác";
+                            cinemaMap.put(s.cinemaId, placeholder);
+                        }
+                    }
+                    Log.w("MovieDetail", "Using placeholder cinemas: " + cinemaMap.size());
+                }
+
+                scheduleCatalog.buildFromShowtimes(showtimes, cinemaMap);
+
+                List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
+                Log.d("MovieDetail", "DateOptions count: " + dateOptions.size());
+
+                if (!dateOptions.isEmpty()) {
+                    selectedDateIndex = 0;
+                    DateOption firstOption = dateOptions.get(0);
+                    selectedDateLabel = firstOption.label;
+                    selectedDateText = firstOption.dateText;
+                    scheduleCatalog.selectDateKey(firstOption.dateKey);
+
+                    List<String> cities = scheduleCatalog.getCityNames();
+                    Log.d("MovieDetail", "Cities: " + cities);
+                    if (!cities.isEmpty()) {
+                        selectedCity = cities.get(0);
+                        List<String> cinemasInCity = scheduleCatalog.getCinemaNames(selectedCity);
+                        if (!cinemasInCity.isEmpty()) {
+                            selectedCinema = cinemasInCity.get(0);
+                            scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                        }
+                    }
+                } else {
+                    selectedDateIndex = -1;
+                    selectedDateLabel = "";
+                    selectedDateText = "";
+                    selectedCity = "";
+                    selectedCinema = "";
+                }
+
+                // Update the dropdowns and UI
+                setupDropdowns();
+                renderDateChips();
+                renderCinemaGroups();
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("MovieDetail", "Error loading showtimes: " + message);
             }
         });
     }
@@ -425,7 +538,33 @@ public class MovieDetailActivity extends BaseActivity {
         DateOption option = dateOptions.get(index);
         selectedDateLabel = option.label;
         selectedDateText = option.dateText;
+
+        scheduleCatalog.selectDateKey(option.dateKey);
+
+        List<String> cities = scheduleCatalog.getCityNames();
+        if (!cities.isEmpty()) {
+            selectedCity = cities.get(0);
+            List<String> cinemas = scheduleCatalog.getCinemaNames(selectedCity);
+            if (!cinemas.isEmpty()) {
+                selectedCinema = cinemas.get(0);
+                scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
+                selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
+            } else {
+                selectedCinema = "";
+                selectedRoomType = "";
+                selectedShowtime = "";
+            }
+        } else {
+            selectedCity = "";
+            selectedCinema = "";
+            selectedRoomType = "";
+            selectedShowtime = "";
+        }
+
+        refreshCinemaDropdown();
         renderDateChips();
+        renderCinemaGroups();
     }
 
     private void renderCinemaGroups() {
@@ -509,7 +648,7 @@ public class MovieDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 ));
 
-                List<String> times = group.times;
+                List<MovieDetailScheduleCatalog.ShowtimeItem> times = group.showtimes;
                 for (int start = 0; start < times.size(); start += 4) {
                     LinearLayout row = new LinearLayout(this);
                     row.setOrientation(LinearLayout.HORIZONTAL);
@@ -520,8 +659,8 @@ public class MovieDetailActivity extends BaseActivity {
 
                     int end = Math.min(start + 4, times.size());
                     for (int t = start; t < end; t++) {
-                        String time = times.get(t);
-                        MaterialButton timeButton = buildTimeButton(time, section.name, group.title);
+                        MovieDetailScheduleCatalog.ShowtimeItem item = times.get(t);
+                        MaterialButton timeButton = buildTimeButton(item, section.name, group.title);
                         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
                                 dp(36)
@@ -540,7 +679,7 @@ public class MovieDetailActivity extends BaseActivity {
                 LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         dp(1)
-                );
+                    );
                 dividerParams.setMargins(0, dp(10), 0, dp(4));
                 divider.setLayoutParams(dividerParams);
                 divider.setBackgroundColor(Color.parseColor("#EEEEEE"));
@@ -557,9 +696,9 @@ public class MovieDetailActivity extends BaseActivity {
         }
     }
 
-    private MaterialButton buildTimeButton(String time, String cinemaName, String roomType) {
+    private MaterialButton buildTimeButton(MovieDetailScheduleCatalog.ShowtimeItem item, String cinemaName, String roomType) {
         MaterialButton button = new MaterialButton(this);
-        button.setText(time);
+        button.setText(item.timeText);
         button.setAllCaps(false);
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         button.setCornerRadius(dp(10));
@@ -570,23 +709,24 @@ public class MovieDetailActivity extends BaseActivity {
 
         boolean selected = cinemaName.equals(selectedCinema)
                 && roomType.equals(selectedRoomType)
-                && time.equals(selectedShowtime);
+                && item.timeText.equals(selectedShowtime);
 
         styleTimeButton(button, selected);
 
         button.setOnClickListener(v -> {
             selectedCinema = cinemaName;
             selectedRoomType = roomType;
-            selectedShowtime = time;
+            selectedShowtime = item.timeText;
 
             Intent intent = new Intent(MovieDetailActivity.this, SeatSelectionActivity.class);
 
-            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, item.showtimeId);
             intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
             intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
             intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
-            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, System.currentTimeMillis());
-            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, 85000);
+            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, item.startAt);
+            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, item.basePrice);
+            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
 
             startActivity(intent);
         });
@@ -665,17 +805,17 @@ public class MovieDetailActivity extends BaseActivity {
     private void updateTabUi(int checkedId) {
         boolean scheduleSelected = checkedId == R.id.btnTabSchedule;
         boolean infoSelected = checkedId == R.id.btnTabInfo;
-        boolean newsSelected = checkedId == R.id.btnTabNews;
+        boolean reviewSelected = checkedId == R.id.btnTabReview;
 
         layoutScheduleSection.setVisibility(scheduleSelected ? View.VISIBLE : View.GONE);
         layoutInfoSection.setVisibility(infoSelected ? View.VISIBLE : View.GONE);
-        layoutNewsSection.setVisibility(newsSelected ? View.VISIBLE : View.GONE);
+        layoutReviewSection.setVisibility(reviewSelected ? View.VISIBLE : View.GONE);
 
         showBookingButton(scheduleSelected);
 
         applyTabStyle(btnTabSchedule, scheduleSelected);
         applyTabStyle(btnTabInfo, infoSelected);
-        applyTabStyle(btnTabNews, newsSelected);
+        applyTabStyle(btnTabReview, reviewSelected);
     }
 
     private void applyTabStyle(MaterialButton button, boolean selected) {
@@ -719,6 +859,140 @@ public class MovieDetailActivity extends BaseActivity {
         btnPlayTrailer.setOnClickListener(v -> openTrailer());
 
         btnBookTickets.setOnClickListener(v -> prepareBookingPayload());
+    }
+
+    private void setupReviews() {
+        reviewAdapter = new ReviewAdapter(new ReviewAdapter.OnReviewInteractionListener() {
+            @Override
+            public void onReplyClick(Review parentReview) {
+                parentReviewToReply = parentReview;
+                etComment.setHint("Đang trả lời...");
+                etComment.requestFocus();
+                ratingBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLikeClick(Review review) {
+                reviewRepository.likeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review result) {
+                        loadReviews();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        showToast("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+
+            @Override
+            public void onDislikeClick(Review review) {
+                reviewRepository.dislikeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review result) {
+                        loadReviews();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        showToast("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+        });
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        rvReviews.setAdapter(reviewAdapter);
+
+        btnSendReview.setOnClickListener(v -> submitReview());
+    }
+
+    private void loadReviews() {
+        if (TextUtils.isEmpty(selectedMovieId)) return;
+        reviewRepository.getReviewsByMovieId(selectedMovieId, new ResultCallback<List<Review>>() {
+            @Override
+            public void onSuccess(List<Review> result) {
+                reviewAdapter.setReviews(result);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showToast("Lỗi tải đánh giá: " + errorMessage);
+            }
+        });
+    }
+
+    private void submitReview() {
+        String content = etComment.getText().toString().trim();
+        if (TextUtils.isEmpty(content)) {
+            showToast("Vui lòng nhập nội dung");
+            return;
+        }
+
+        btnSendReview.setEnabled(false);
+        String currentUserId = "user_123"; // TODO: Lấy User ID thực tế
+
+        bookingRepository.checkUserHasBookedMovie(currentUserId, selectedMovieId, new ResultCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean hasBooked) {
+                if (!hasBooked) {
+                    btnSendReview.setEnabled(true);
+                    showToast("Bạn cần mua vé xem bộ phim này để có thể tham gia đánh giá và bình luận!");
+                    return;
+                }
+
+                Review review = new Review();
+                review.movieId = selectedMovieId;
+                review.content = content;
+                review.userId = currentUserId;
+                review.movieTitleSnapshot = tvMovieTitle.getText().toString();
+
+                if (parentReviewToReply == null) {
+                    // Thêm review gốc
+                    review.rating = (int) ratingBar.getRating();
+                    reviewRepository.createReview(review, new ResultCallback<Review>() {
+                        @Override
+                        public void onSuccess(Review result) {
+                            etComment.setText("");
+                            ratingBar.setRating(5);
+                            btnSendReview.setEnabled(true);
+                            loadReviews(); // Tải lại danh sách
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            btnSendReview.setEnabled(true);
+                            showToast("Lỗi thêm đánh giá");
+                        }
+                    });
+                } else {
+                    // Thêm reply
+                    reviewRepository.addReply(parentReviewToReply.reviewId, review, new ResultCallback<Review>() {
+                        @Override
+                        public void onSuccess(Review result) {
+                            etComment.setText("");
+                            etComment.setHint("Viết đánh giá...");
+                            parentReviewToReply = null;
+                            ratingBar.setVisibility(View.VISIBLE);
+                            btnSendReview.setEnabled(true);
+                            loadReviews(); // Tải lại danh sách
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            btnSendReview.setEnabled(true);
+                            showToast("Lỗi thêm câu trả lời");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                btnSendReview.setEnabled(true);
+                showToast("Lỗi kiểm tra lịch sử mua vé: " + errorMessage);
+            }
+        });
     }
 
     private void shareMovie() {
@@ -818,8 +1092,8 @@ public class MovieDetailActivity extends BaseActivity {
         for (CinemaSection section : sections) {
             if (section.name.equals(cinemaName)) {
                 for (ShowtimeGroup group : section.groups) {
-                    if (group.title.equals(roomType) && group.times != null && !group.times.isEmpty()) {
-                        return group.times.get(0);
+                    if (group.title.equals(roomType) && group.showtimes != null && !group.showtimes.isEmpty()) {
+                        return group.showtimes.get(0).timeText;
                     }
                 }
             }

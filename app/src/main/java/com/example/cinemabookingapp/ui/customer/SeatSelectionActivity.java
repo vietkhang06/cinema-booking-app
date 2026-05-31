@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 
 public class SeatSelectionActivity extends AppCompatActivity {
 
+
+
     public static final String EXTRA_SHOWTIME_ID  = "showtimeId";
     public static final String EXTRA_MOVIE_TITLE  = "movieTitle";
     public static final String EXTRA_MOVIE_ID     = "movieId";
@@ -46,6 +48,8 @@ public class SeatSelectionActivity extends AppCompatActivity {
     private String showtimeId, movieTitle, movieId, posterUrl, cinemaName;
     private double basePrice = 85000;
     private long showtimeStart;
+
+    private com.google.firebase.firestore.ListenerRegistration seatListenerRegistration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +97,32 @@ public class SeatSelectionActivity extends AppCompatActivity {
         rvSeatMap.setLayoutManager(new GridLayoutManager(this, 9));
 
         adapter = new SeatAdapter(seatList, (seat, position) -> {
-            if ("booked".equalsIgnoreCase(seat.status)) return;
+            long now = System.currentTimeMillis();
+            String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    : "";
+            
+            boolean isBooked = "booked".equalsIgnoreCase(seat.status);
+            boolean isHeldByOther = "held".equalsIgnoreCase(seat.status) 
+                    && (seat.heldUntil > now) 
+                    && !currentUserId.equals(seat.heldBy);
+            
+            if (isBooked) {
+                Toast.makeText(this, "Ghế đã được đặt trước!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (isHeldByOther) {
+                Toast.makeText(this, "Ghế đang được người khác giữ!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Enforce maximum 5 seats selection
+            if (!seat.isSelected) {
+                if (getSelectedSeats().size() >= 5) {
+                    Toast.makeText(this, "Bạn chỉ có thể chọn tối đa 5 ghế", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             seat.isSelected = !seat.isSelected;
             adapter.notifyItemChanged(position);
             updateBottomBar();
@@ -106,8 +135,51 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 Toast.makeText(this, "Vui lòng chọn ít nhất 1 ghế!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            goToBookingConfirm(selected);
+            
+            btnContinue.setEnabled(false);
+            Toast.makeText(this, "Đang kiểm tra trạng thái ghế...", Toast.LENGTH_SHORT).show();
+
+            List<String> selectedSeatIds = new ArrayList<>();
+            for (SeatDTO s : selected) {
+                if (s.seatId != null) selectedSeatIds.add(s.seatId);
+            }
+
+            com.example.cinemabookingapp.data.dto.SeatLockRequestDTO lockRequest = 
+                    new com.example.cinemabookingapp.data.dto.SeatLockRequestDTO(showtimeId, selectedSeatIds);
+
+            com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+                    com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
+                    .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+
+            seatApi.lockSeats(lockRequest).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<Void>>() {
+                @Override
+                public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> response) {
+                    btnContinue.setEnabled(true);
+                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                        goToBookingConfirm(selected);
+                    } else {
+                        String errMsg = "Ghế đã có người khác chọn hoặc hết hạn khóa ghế. Vui lòng chọn ghế khác!";
+                        if (response.body() != null && response.body().getMessage() != null) {
+                            errMsg = response.body().getMessage();
+                        } else if (response.code() == 409) {
+                            errMsg = "Xung đột: Ghế đã có người giữ hoặc đã được đặt!";
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            errMsg = "Lỗi xác thực: Vui lòng đăng nhập lại!";
+                        }
+                        Toast.makeText(SeatSelectionActivity.this, errMsg, Toast.LENGTH_LONG).show();
+                        loadSeats(); // Refresh seat map
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, Throwable t) {
+                    btnContinue.setEnabled(true);
+                    Toast.makeText(SeatSelectionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         });
+
+
     }
 
     private void loadSeats() {
@@ -121,38 +193,126 @@ public class SeatSelectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    List<SeatDTO> apiSeats = response.body().getData();
-                    seatList.clear();
-                    
-                    if (apiSeats != null && !apiSeats.isEmpty()) {
-                        for (SeatDTO seat : apiSeats) {
-                            seat.isSelected = false;
-                            seatList.add(seat);
-                        }
-                        // Sort A1 → F8
-                        seatList.sort((a, b) -> {
-                            if (a.rowName == null || b.rowName == null) return 0;
-                            int r = a.rowName.compareTo(b.rowName);
-                            return r != 0 ? r : Integer.compare(a.columnNo, b.columnNo);
-                        });
-                        adapter.setSeats(seatList);
-                    } else {
-                        Toast.makeText(SeatSelectionActivity.this, "Chưa có dữ liệu ghế cho suất chiếu này", Toast.LENGTH_SHORT).show();
-                        loadDummySeats();
-                    }
+                    // Initial load successful. Now start realtime Firestore sync!
+                    startRealtimeSeatSync();
                 } else {
                     String msg = response.body() != null ? response.body().getMessage() : "Lỗi server (" + response.code() + ")";
                     Toast.makeText(SeatSelectionActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    loadDummySeats();
+                    finish();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> call, Throwable t) {
                 Toast.makeText(SeatSelectionActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                loadDummySeats();
+                finish();
             }
         });
+    }
+
+    private void startRealtimeSeatSync() {
+        if (showtimeId == null) return;
+        
+        if (seatListenerRegistration != null) {
+            seatListenerRegistration.remove();
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        seatListenerRegistration = db.collection("seats")
+                .whereEqualTo("showtimeId", showtimeId)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        android.util.Log.e("SEAT_SYNC", "Listen failed.", e);
+                        return;
+                    }
+
+                    if (snapshots != null) {
+                        // 1. Keep track of currently selected seat IDs
+                        java.util.Set<String> currentlySelectedIds = new java.util.HashSet<>();
+                        for (SeatDTO s : seatList) {
+                            if (s.isSelected) {
+                                currentlySelectedIds.add(s.seatId);
+                            }
+                        }
+
+                        // 2. Parse new seats from Firestore snapshot
+                        List<SeatDTO> newSeats = new ArrayList<>();
+                        int maxCol = 1;
+                        boolean seatStolen = false;
+                        String stolenSeatCode = "";
+                        
+                        long now = System.currentTimeMillis();
+                        String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
+                                ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
+                                : "";
+
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : snapshots.getDocuments()) {
+                            SeatDTO seat = doc.toObject(SeatDTO.class);
+                            if (seat != null) {
+                                seat.seatId = doc.getId();
+                                
+                                boolean isAvailable = "available".equalsIgnoreCase(seat.status) 
+                                        || ("held".equalsIgnoreCase(seat.status) && seat.heldUntil < now);
+                                
+                                boolean isHeldByMe = "held".equalsIgnoreCase(seat.status) 
+                                        && (seat.heldUntil >= now) 
+                                        && currentUserId.equals(seat.heldBy);
+
+                                // Check if this seat was selected by me previously
+                                if (currentlySelectedIds.contains(seat.seatId)) {
+                                    if (isAvailable || isHeldByMe) {
+                                        seat.isSelected = true;
+                                    } else {
+                                        // Stolen! The status has changed to booked or held by someone else!
+                                        seat.isSelected = false;
+                                        seatStolen = true;
+                                        stolenSeatCode = seat.seatCode;
+                                    }
+                                } else {
+                                    seat.isSelected = false;
+                                }
+                                newSeats.add(seat);
+                                if (seat.columnNo > maxCol) {
+                                    maxCol = seat.columnNo;
+                                }
+                            }
+                        }
+
+                        if (seatStolen) {
+                            Toast.makeText(SeatSelectionActivity.this, 
+                                    "Ghế " + stolenSeatCode + " đã được người khác giữ hoặc đặt trước!", 
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        // 3. Sort A1 -> F8
+                        newSeats.sort((a, b) -> {
+                            if (a.rowName == null || b.rowName == null) return 0;
+                            int r = a.rowName.compareTo(b.rowName);
+                            return r != 0 ? r : Integer.compare(a.columnNo, b.columnNo);
+                        });
+
+                        // 4. Update the seatList and UI
+                        seatList.clear();
+                        seatList.addAll(newSeats);
+
+                        RecyclerView rvSeatMap = findViewById(R.id.rvSeatMap);
+                        if (rvSeatMap != null && rvSeatMap.getLayoutManager() instanceof GridLayoutManager) {
+                            ((GridLayoutManager) rvSeatMap.getLayoutManager()).setSpanCount(maxCol + 1);
+                        }
+
+                        adapter.setSeats(seatList);
+                        updateBottomBar();
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (seatListenerRegistration != null) {
+            seatListenerRegistration.remove();
+            seatListenerRegistration = null;
+        }
     }
 
     private void loadDummySeats() {
@@ -160,7 +320,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
         for (String row : rows) {
             for (int col = 1; col <= 8; col++) {
                 SeatDTO s = new SeatDTO();
-                s.seatCode = row + col;
+                s.seatCode = row + String.format(Locale.getDefault(), "%02d", col);
                 s.rowName = row;
                 s.columnNo = col;
                 s.seatType = (row.equals("C") || row.equals("D")) ? "VIP" : "STANDARD";
@@ -168,6 +328,10 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 s.isSelected = false;
                 seatList.add(s);
             }
+        }
+        RecyclerView rvSeatMap = findViewById(R.id.rvSeatMap);
+        if (rvSeatMap != null && rvSeatMap.getLayoutManager() instanceof GridLayoutManager) {
+            ((GridLayoutManager) rvSeatMap.getLayoutManager()).setSpanCount(9);
         }
         adapter.setSeats(seatList);
     }

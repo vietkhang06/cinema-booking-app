@@ -43,8 +43,19 @@ public class AdminFeatureAdapter extends RecyclerView.Adapter<AdminFeatureAdapte
         holder.ivIcon.setImageResource(item.iconRes);
 
         holder.card.setOnClickListener(v -> {
-            Intent intent = new Intent(context, item.targetActivity);
-            context.startActivity(intent);
+            if (item.targetActivity != null) {
+                Intent intent = new Intent(context, item.targetActivity);
+                if ("Ghế mẫu".equalsIgnoreCase(item.title)) {
+                    intent.putExtra("extra_from_seat_menu", true);
+                }
+                context.startActivity(intent);
+            } else {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
+                        .setTitle("Tính năng đang phát triển")
+                        .setMessage("Chức năng quản trị " + item.title + " đang được thiết lập giao diện và chuẩn bị ra mắt trong giai đoạn tiếp theo của hệ thống.")
+                        .setPositiveButton("Đồng ý", (dialog, which) -> dialog.dismiss())
+                        .show();
+            }
         });
     }
 
