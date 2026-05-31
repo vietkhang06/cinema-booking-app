@@ -43,8 +43,7 @@ public class FirebaseConfig {
                     )
                     .build();
 
-            FirebaseApp app =
-                    FirebaseApp.initializeApp(options);
+            FirebaseApp app = FirebaseApp.initializeApp(options);
 
             logger.info("Firebase initialized successfully");
 

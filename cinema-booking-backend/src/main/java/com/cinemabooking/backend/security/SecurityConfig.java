@@ -21,7 +21,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 // Basic config
-                .httpBasic(Customizer.withDefaults())
+                //.httpBasic(Customizer.withDefaults())
 
                 // Stateless session
                 .sessionManagement(session ->
@@ -37,64 +37,31 @@ public class SecurityConfig {
                          * ====================================================
                          */
                         .requestMatchers(
-
-                                // Health
                                 "/api/ping",
                                 "/api/v1/health",
                                 "/api/v1/version",
 
-                                // Swagger
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
 
-                                // Movies
-                                "/api/v1/movies",
                                 "/api/v1/movies/**",
-
-                                // Banners
-                                "/api/v1/banners",
+                                "/api/v1/showtimes/**",
+                                "/api/v1/cinemas/**",
                                 "/api/v1/banners/**",
 
-                                // Cinemas
-                                "/api/v1/cinemas",
-                                "/api/v1/cinemas/**",
-
-                                // Showtimes
-                                "/api/v1/showtimes",
-                                "/api/v1/showtimes/**",
-
-                                // Seats (TEMP DEBUG MODE)
-                                "/api/v1/seats/**"
-
+                                "/api/v1/seats/showtime/**"
                         ).permitAll()
 
-                        /*
-                         * ====================================================
-                         * AUTH REQUIRED APIs
-                         * ====================================================
-                         */
                         .requestMatchers(
+                                "/api/v1/seats/lock",
+                                "/api/v1/seats/release",
+                                "/api/v1/seats/release-by-staff",
 
-                                // Profile
-                                "/api/v1/profile",
-                                "/api/v1/profile/**",
-
-                                // User
-                                "/api/v1/user",
-                                "/api/v1/user/**",
-
-                                // Booking
-                                "/api/v1/bookings",
                                 "/api/v1/bookings/**",
-
-                                "/api/v1/booking",
-                                "/api/v1/booking/**",
-
-                                // Payment
-                                "/api/v1/payment",
-                                "/api/v1/payment/**"
-
+                                "/api/v1/payment/**",
+                                "/api/v1/profile/**",
+                                "/api/v1/user/**"
                         ).authenticated()
 
                         // Everything else
