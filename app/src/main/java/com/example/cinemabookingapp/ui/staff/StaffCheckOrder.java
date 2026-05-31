@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.di.ServiceProvider;
-import com.example.cinemabookingapp.service.InvoiceService;
+import com.example.cinemabookingapp.core.navigation.DataNavigator;
+import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.ui.staff.adapter.OrderItemAdapter;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.concurrent.Executors;
 
@@ -29,7 +28,8 @@ public class StaffCheckOrder extends AppCompatActivity {
     private View backBtn;
     private LinearLayout snackLayout;
     private TextView noOrderFoundTV;
-    private String invoiceId;
+    private Booking booking;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +42,10 @@ public class StaffCheckOrder extends AppCompatActivity {
             return insets;
         });
 
-        invoiceId = getIntent().getStringExtra("invoiceId");
-        if (invoiceId == null || invoiceId.trim().isEmpty()) {
-            Toast.makeText(this, "Hóa đơn không hợp lệ", Toast.LENGTH_SHORT).show();
+        int resourceId = getIntent().getIntExtra("resourceId", 0);
+        booking = DataNavigator.getInstance().<Booking>popData(resourceId);
+        if(booking == null){
+            Toast.makeText(this, "Không tìm thấy tài nguyên", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -71,22 +72,20 @@ public class StaffCheckOrder extends AppCompatActivity {
 
     private void loadSnackOrder() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            InvoiceService invoiceService = ServiceProvider.getInstance().getInvoiceService();
-            InvoiceService.InvoiceDetail detail = invoiceService.getInvoiceDetail(invoiceId);
 
             runOnUiThread(() -> {
-                if (detail == null || detail.snackOrder == null || detail.snackOrder.items == null || detail.snackOrder.items.isEmpty()) {
+                if (booking.snackOrder == null) {
                     noOrderFoundTV.setVisibility(View.VISIBLE);
                     snackLayout.setVisibility(View.GONE);
                 } else {
                     noOrderFoundTV.setVisibility(View.GONE);
                     snackLayout.setVisibility(View.VISIBLE);
 
-                    totalSnackPriceTV.setText(String.format("Tổng giá: %,.0f vnd", detail.snackOrder.total));
-                    int totalQty = detail.snackOrder.items.stream().mapToInt(item -> item.quantity).sum();
+                    totalSnackPriceTV.setText(String.format("Tổng giá: %,.0f vnd", booking.subtotal));
+                    int totalQty = booking.snackOrder.stream().mapToInt(item -> item.quantity).sum();
                     amountSnackTV.setText("Số lượng: " + totalQty);
 
-                    OrderItemAdapter adapter = new OrderItemAdapter(detail.snackItems);
+                    OrderItemAdapter adapter = new OrderItemAdapter(booking.snackOrder);
                     snackContainerView.setAdapter(adapter);
                 }
             });

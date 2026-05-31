@@ -88,24 +88,7 @@
         <activity android:name=".ui.customer.transaction.TicketDetailActivity" android:exported="false" />
 
 
-        <activity
-            android:name=".ui.customer.cine_shop.CineCartActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.cine_shop.CineCartActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.cine_shop.CineCheckoutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.cine_shop.CineCheckoutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.transaction.TransactionHistoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.transaction.TicketDetailActivity"
-            android:exported="false" /> <!-- STAFF -->
+        <!-- STAFF -->
         <activity
             android:name=".ui.staff.StaffDashboardActivity"
             android:exported="false" />
@@ -120,8 +103,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.staff.StaffCheckSeat"
-            android:exported="false" /> <!-- ADMIN -->
             android:exported="false" />
+
+        <!-- ADMIN -->
         <activity
             android:name=".ui.staff.StaffSearchBookingActivity"
             android:exported="false" />

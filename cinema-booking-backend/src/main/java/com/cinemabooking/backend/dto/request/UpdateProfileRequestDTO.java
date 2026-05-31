@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileUpdateRequestDTO {
-    String username;
+public class UpdateProfileRequestDTO {
     String phone;
     String avatarUrl;
+    String name;
+    String birthDate;
+    String gender;
 }

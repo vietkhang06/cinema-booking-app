@@ -9,14 +9,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.domain.model.Booking;
 
 import java.util.List;
 
 public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.ItemViewHolder> {
-    private List<String> itemList; // Elements in format "name,price,quantity"
+    private List<Booking.SnackOrderSnapshot> itemList; // Elements in format "name,price,quantity"ity"
 
-    public OrderItemAdapter(List<String> itemList) {
+    public OrderItemAdapter(List<Booking.SnackOrderSnapshot> itemList) {
         this.itemList = itemList;
     }
 
@@ -30,19 +32,23 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Item
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        String raw = itemList.get(position);
+        Booking.SnackOrderSnapshot item = itemList.get(position);
         try {
-            String[] parts = raw.split(",");
-            String name = parts[0];
-            double price = Double.parseDouble(parts[1]);
-            int quantity = Integer.parseInt(parts[2]);
+//            String[] parts = raw.split(",");
+//            String name = parts[0];
+//            double price = Double.parseDouble(parts[1]);
+//            int quantity = Integer.parseInt(parts[2]);
 
-            holder.itemNameTV.setText(name);
-            holder.itemPriceTV.setText(String.format("Đơn giá: %,.0f vnd", price));
-            holder.itemQuantityTV.setText("x" + quantity);
+            holder.itemNameTV.setText(item.snackName);
+            holder.itemPriceTV.setText(String.format("Đơn giá: %,.0f vnd", item.price));
+            holder.itemQuantityTV.setText("x" + item.quantity);
             
             // Set default popcorn/snack indicator icon
-            holder.snackImageView.setImageResource(R.drawable.login_icon);
+//            holder.snackImageView.setImageResource(R.drawable.login_icon);
+            Glide.with(holder.snackImageView.getContext())
+                    .load(item.snackImgURL)
+                    .placeholder(R.drawable.login_icon) // Optional placeholder while loadingg
+                    .into(holder.snackImageView);
         } catch (Exception e) {
             holder.itemNameTV.setText("Đồ ăn");
             holder.itemPriceTV.setText("");
