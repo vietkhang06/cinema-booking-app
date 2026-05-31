@@ -12,6 +12,13 @@ public class Review {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+    public String parentId;
+    public int replyCount;
+    public java.util.List<Review> replies;
+    public int likes;
+    public int dislikes;
+    public java.util.List<String> likedBy = new java.util.ArrayList<>();
+    public java.util.List<String> dislikedBy = new java.util.ArrayList<>();
 
     public Review() {
     }

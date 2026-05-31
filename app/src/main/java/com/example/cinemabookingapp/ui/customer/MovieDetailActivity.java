@@ -20,6 +20,15 @@ import android.graphics.Color;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import com.example.cinemabookingapp.domain.repository.ReviewRepository;
+import com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl;
+import com.example.cinemabookingapp.ui.customer.adapter.ReviewAdapter;
+import com.example.cinemabookingapp.domain.model.Review;
+
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
@@ -91,11 +100,20 @@ public class MovieDetailActivity extends BaseActivity {
     private MaterialButtonToggleGroup toggleSections;
     private MaterialButton btnTabSchedule;
     private MaterialButton btnTabInfo;
-    private MaterialButton btnTabNews;
+    private MaterialButton btnTabReview;
 
     private LinearLayout layoutScheduleSection;
     private LinearLayout layoutInfoSection;
-    private LinearLayout layoutNewsSection;
+    private LinearLayout layoutReviewSection;
+
+    private RecyclerView rvReviews;
+    private EditText etComment;
+    private RatingBar ratingBar;
+    private MaterialButton btnSendReview;
+    private ReviewAdapter reviewAdapter;
+    private ReviewRepository reviewRepository;
+    private Review parentReviewToReply = null;
+    private com.example.cinemabookingapp.domain.repository.BookingRepository bookingRepository;
 
     private MaterialAutoCompleteTextView actvCity;
     private MaterialAutoCompleteTextView actvCinema;
@@ -135,6 +153,7 @@ public class MovieDetailActivity extends BaseActivity {
         renderCinemaGroups();
         setupTabs();
         setupActions();
+        setupReviews();
         loadMovieFromFirestore();
     }
 
@@ -159,11 +178,16 @@ public class MovieDetailActivity extends BaseActivity {
         toggleSections = findViewById(R.id.toggleSections);
         btnTabSchedule = findViewById(R.id.btnTabSchedule);
         btnTabInfo = findViewById(R.id.btnTabInfo);
-        btnTabNews = findViewById(R.id.btnTabNews);
+        btnTabReview = findViewById(R.id.btnTabReview);
 
         layoutScheduleSection = findViewById(R.id.layoutScheduleSection);
         layoutInfoSection = findViewById(R.id.layoutInfoSection);
-        layoutNewsSection = findViewById(R.id.layoutNewsSection);
+        layoutReviewSection = findViewById(R.id.layoutReviewSection);
+
+        rvReviews = findViewById(R.id.rvReviews);
+        etComment = findViewById(R.id.etComment);
+        ratingBar = findViewById(R.id.ratingBar);
+        btnSendReview = findViewById(R.id.btnSendReview);
 
         actvCity = findViewById(R.id.actvCity);
         actvCinema = findViewById(R.id.actvCinema);
@@ -179,6 +203,8 @@ public class MovieDetailActivity extends BaseActivity {
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
         showtimeRepository = new ShowtimeRepositoryImpl(true);
         cinemaRepository = new CinemaRepositoryImpl();
+        reviewRepository = new ReviewRepositoryImpl();
+        bookingRepository = new com.example.cinemabookingapp.data.repository.BookingRepositoryImpl();
     }
 
     private void initScheduleCatalog() {
@@ -231,6 +257,7 @@ public class MovieDetailActivity extends BaseActivity {
         });
 
         loadShowtimesFromFirestore();
+        loadReviews();
     }
 
     private void loadShowtimesFromFirestore() {
@@ -778,17 +805,17 @@ public class MovieDetailActivity extends BaseActivity {
     private void updateTabUi(int checkedId) {
         boolean scheduleSelected = checkedId == R.id.btnTabSchedule;
         boolean infoSelected = checkedId == R.id.btnTabInfo;
-        boolean newsSelected = checkedId == R.id.btnTabNews;
+        boolean reviewSelected = checkedId == R.id.btnTabReview;
 
         layoutScheduleSection.setVisibility(scheduleSelected ? View.VISIBLE : View.GONE);
         layoutInfoSection.setVisibility(infoSelected ? View.VISIBLE : View.GONE);
-        layoutNewsSection.setVisibility(newsSelected ? View.VISIBLE : View.GONE);
+        layoutReviewSection.setVisibility(reviewSelected ? View.VISIBLE : View.GONE);
 
         showBookingButton(scheduleSelected);
 
         applyTabStyle(btnTabSchedule, scheduleSelected);
         applyTabStyle(btnTabInfo, infoSelected);
-        applyTabStyle(btnTabNews, newsSelected);
+        applyTabStyle(btnTabReview, reviewSelected);
     }
 
     private void applyTabStyle(MaterialButton button, boolean selected) {
@@ -832,6 +859,140 @@ public class MovieDetailActivity extends BaseActivity {
         btnPlayTrailer.setOnClickListener(v -> openTrailer());
 
         btnBookTickets.setOnClickListener(v -> prepareBookingPayload());
+    }
+
+    private void setupReviews() {
+        reviewAdapter = new ReviewAdapter(new ReviewAdapter.OnReviewInteractionListener() {
+            @Override
+            public void onReplyClick(Review parentReview) {
+                parentReviewToReply = parentReview;
+                etComment.setHint("Đang trả lời...");
+                etComment.requestFocus();
+                ratingBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLikeClick(Review review) {
+                reviewRepository.likeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review result) {
+                        loadReviews();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        showToast("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+
+            @Override
+            public void onDislikeClick(Review review) {
+                reviewRepository.dislikeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review result) {
+                        loadReviews();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        showToast("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+        });
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        rvReviews.setAdapter(reviewAdapter);
+
+        btnSendReview.setOnClickListener(v -> submitReview());
+    }
+
+    private void loadReviews() {
+        if (TextUtils.isEmpty(selectedMovieId)) return;
+        reviewRepository.getReviewsByMovieId(selectedMovieId, new ResultCallback<List<Review>>() {
+            @Override
+            public void onSuccess(List<Review> result) {
+                reviewAdapter.setReviews(result);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showToast("Lỗi tải đánh giá: " + errorMessage);
+            }
+        });
+    }
+
+    private void submitReview() {
+        String content = etComment.getText().toString().trim();
+        if (TextUtils.isEmpty(content)) {
+            showToast("Vui lòng nhập nội dung");
+            return;
+        }
+
+        btnSendReview.setEnabled(false);
+        String currentUserId = "user_123"; // TODO: Lấy User ID thực tế
+
+        bookingRepository.checkUserHasBookedMovie(currentUserId, selectedMovieId, new ResultCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean hasBooked) {
+                if (!hasBooked) {
+                    btnSendReview.setEnabled(true);
+                    showToast("Bạn cần mua vé xem bộ phim này để có thể tham gia đánh giá và bình luận!");
+                    return;
+                }
+
+                Review review = new Review();
+                review.movieId = selectedMovieId;
+                review.content = content;
+                review.userId = currentUserId;
+                review.movieTitleSnapshot = tvMovieTitle.getText().toString();
+
+                if (parentReviewToReply == null) {
+                    // Thêm review gốc
+                    review.rating = (int) ratingBar.getRating();
+                    reviewRepository.createReview(review, new ResultCallback<Review>() {
+                        @Override
+                        public void onSuccess(Review result) {
+                            etComment.setText("");
+                            ratingBar.setRating(5);
+                            btnSendReview.setEnabled(true);
+                            loadReviews(); // Tải lại danh sách
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            btnSendReview.setEnabled(true);
+                            showToast("Lỗi thêm đánh giá");
+                        }
+                    });
+                } else {
+                    // Thêm reply
+                    reviewRepository.addReply(parentReviewToReply.reviewId, review, new ResultCallback<Review>() {
+                        @Override
+                        public void onSuccess(Review result) {
+                            etComment.setText("");
+                            etComment.setHint("Viết đánh giá...");
+                            parentReviewToReply = null;
+                            ratingBar.setVisibility(View.VISIBLE);
+                            btnSendReview.setEnabled(true);
+                            loadReviews(); // Tải lại danh sách
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            btnSendReview.setEnabled(true);
+                            showToast("Lỗi thêm câu trả lời");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                btnSendReview.setEnabled(true);
+                showToast("Lỗi kiểm tra lịch sử mua vé: " + errorMessage);
+            }
+        });
     }
 
     private void shareMovie() {
