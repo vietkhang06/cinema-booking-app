@@ -1,6 +1,10 @@
 package com.example.cinemabookingapp.service;
 
 import com.example.cinemabookingapp.core.constants.FirestoreCollections;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
+import com.example.cinemabookingapp.data.dto.request.UpdateProfileRequest;
+import com.example.cinemabookingapp.data.remote.api.ProfileApiService;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.data.repository.UserRepositoryImpl;
 import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
@@ -16,6 +20,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class ProfileService {
 
@@ -37,16 +44,34 @@ public class ProfileService {
     }
 
     public void updateUserProfile(User user, ResultCallback<User> callback){
-        userRepo.updateUser(user, new ResultCallback<User>() {
+        ProfileApiService profileApiService = RetrofitClient.getInstance().create(ProfileApiService.class);
+
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        request.phone = user.phone;
+        request.avatarUrl = user.avatarUrl;
+        request.name = user.name;
+        request.birthDate = user.birthDate;
+        request.gender = user.gender;
+
+        profileApiService.updateProfile(request).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<User>>() {
             @Override
-            public void onSuccess(User data) {
-                authService.setCurrentAuthUser(data);
-                if (callback != null) callback.onSuccess(data);
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if(!response.body().isSuccess()){
+                        User updatedUser = response.body().getData();
+                        authService.setCurrentAuthUser(updatedUser);
+                        callback.onSuccess(updatedUser);
+                    }else {
+                        callback.onError(response.body().getMessage());
+                    }
+                } else {
+                    callback.onError("Failed to update profile");
+                }
             }
 
             @Override
-            public void onError(String message) {
-                if (callback != null) callback.onError(message);
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                callback.onError(t.getMessage());
             }
         });
     }

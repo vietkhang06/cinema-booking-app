@@ -28,6 +28,19 @@ public class Booking {
     public long updatedAt;
     public boolean deleted;
 
+    public List<SnackOrderSnapshot> snackOrder;
+
+    public Showtime showtime;
+    public Movie movie;
+
+    public static class SnackOrderSnapshot {
+        public String snackId;
+        public String snackName;
+        public String snackImgURL;
+        public double price;
+        public int quantity;
+    }
+
     public Booking() {
     }
 }
