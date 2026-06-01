@@ -138,6 +138,7 @@ public class BookingController {
                 .showtimeId(data.getShowtimeId())
                 .showtimeStartAtSnapshot(showtime.getStartAt())
                 .movieTitleSnapshot(movie.getTitle())
+                .movieImageUrlSnapshot(movie.getPosterUrl())
                 .roomNameSnapshot(room.getName())
                 .cinemaNameSnapshot(cinema.getName())
                 .seatIds(data.getSeatIds())
@@ -188,7 +189,7 @@ public class BookingController {
         if (!userId.equals(booking.getUserId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xác nhận vé này.");
         }
-        bookingService.updatePaymentStatus(bookingId, "confirmed");
+        bookingService.updatePaymentStatus(bookingId, "SUCCESS", "CONFIRMED");
         bookingService.confirmBookingSeats(bookingId);
 
         // Also update payments document status to SUCCESS
@@ -227,7 +228,7 @@ public class BookingController {
         if (!userId.equals(booking.getUserId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền hủy vé này.");
         }
-        bookingService.updatePaymentStatus(bookingId, "failed");
+        bookingService.updatePaymentStatus(bookingId, "FAILED", "CANCELLED");
         bookingService.releaseBookingSeats(bookingId);
 
         // Also update payments document status to FAILED

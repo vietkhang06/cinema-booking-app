@@ -86,7 +86,10 @@ public class ProfileService {
         firestore.collection(FirestoreCollections.BOOKINGS)
                 .where(com.google.firebase.firestore.Filter.and(
                         com.google.firebase.firestore.Filter.equalTo("userId", cached.uid),
-                        com.google.firebase.firestore.Filter.equalTo("bookingStatus", "confirmed")
+                        com.google.firebase.firestore.Filter.or(
+                                com.google.firebase.firestore.Filter.equalTo("bookingStatus", "confirmed"),
+                                com.google.firebase.firestore.Filter.equalTo("bookingStatus", "CONFIRMED")
+                        )
                 ))
                 .get()
                 .addOnSuccessListener(querySnapshot -> {

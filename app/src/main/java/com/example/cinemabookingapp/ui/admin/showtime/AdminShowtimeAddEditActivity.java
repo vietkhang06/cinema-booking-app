@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -47,6 +48,17 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
     private TextInputEditText tietStartTime;
     private TextInputEditText tietEndTime;
     private TextInputEditText tietBasePrice;
+
+    private android.view.View layoutMovieDetails;
+    private android.widget.ImageView imgMoviePoster;
+    private TextView tvMovieDuration;
+    private TextView tvTimePreview;
+
+    private TextView tvPreviewMovie;
+    private TextView tvPreviewCinemaRoom;
+    private TextView tvPreviewTime;
+    private TextView tvPreviewFormatLang;
+    private TextView tvPreviewPrice;
 
     private ShowtimeRepositoryImpl showtimeRepository;
     private CinemaRepositoryImpl cinemaRepository;
@@ -118,11 +130,28 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
         tietEndTime = findViewById(R.id.tietEndTime);
         tietBasePrice = findViewById(R.id.tietBasePrice);
 
+        tvPreviewMovie = findViewById(R.id.tvPreviewMovie);
+        tvPreviewCinemaRoom = findViewById(R.id.tvPreviewCinemaRoom);
+        tvPreviewTime = findViewById(R.id.tvPreviewTime);
+        tvPreviewFormatLang = findViewById(R.id.tvPreviewFormatLang);
+        tvPreviewPrice = findViewById(R.id.tvPreviewPrice);
+
+        layoutMovieDetails = findViewById(R.id.layoutMovieDetails);
+        imgMoviePoster = findViewById(R.id.imgMoviePoster);
+        tvMovieDuration = findViewById(R.id.tvMovieDuration);
+        tvTimePreview = findViewById(R.id.tvTimePreview);
+
+        tietEndTime.setEnabled(false);
+        tietEndTime.setFocusable(false);
+        tietEndTime.setClickable(false);
+
         android.widget.TextView tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(isEditMode ? "Cập nhật suất chiếu" : "Thêm suất chiếu mới");
 
         actvMovie.setOnItemClickListener((parent, view, position, id) -> {
             selectedMovieId = moviesList.get(position).movieId;
+            calculateAndDisplayEndTime();
+            updatePreview();
         });
 
         actvCinema.setOnItemClickListener((parent, view, position, id) -> {
@@ -130,10 +159,26 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
             selectedRoomId = null;
             actvRoom.setText("", false);
             loadRoomsForCinema(selectedCinemaId);
+            updatePreview();
         });
 
         actvRoom.setOnItemClickListener((parent, view, position, id) -> {
             selectedRoomId = roomsList.get(position).roomId;
+            updatePreview();
+        });
+
+        actvFormat.setOnItemClickListener((parent, view, position, id) -> updatePreview());
+        actvLanguage.setOnItemClickListener((parent, view, position, id) -> updatePreview());
+
+        tietBasePrice.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                updatePreview();
+            }
         });
     }
 
@@ -148,6 +193,7 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                 selectedMonth = month;
                 selectedDay = dayOfMonth;
                 tietDate.setText(String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year));
+                calculateAndDisplayEndTime();
             }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
         });
 
@@ -161,19 +207,7 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                 selectedStartHour = hourOfDay;
                 selectedStartMinute = minute;
                 tietStartTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
-            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
-        });
-
-        tietEndTime.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            if (selectedEndHour != -1) {
-                cal.set(Calendar.HOUR_OF_DAY, selectedEndHour);
-                cal.set(Calendar.MINUTE, selectedEndMinute);
-            }
-            new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-                selectedEndHour = hourOfDay;
-                selectedEndMinute = minute;
-                tietEndTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
+                calculateAndDisplayEndTime();
             }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
         });
     }
@@ -256,6 +290,7 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                         }
                     }
                 }
+                updatePreview();
             }
 
             @Override
@@ -311,6 +346,8 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                 selectedEndMinute = calEnd.get(Calendar.MINUTE);
                 tietEndTime.setText(timeFormat.format(new Date(showtime.endAt)));
 
+                calculateAndDisplayEndTime();
+
                 // Bind format, lang, price
                 actvFormat.setText(showtime.format, false);
                 actvLanguage.setText(showtime.language, false);
@@ -359,13 +396,27 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
         calStart.set(Calendar.MILLISECOND, 0);
         long startAt = calStart.getTimeInMillis();
 
-        Calendar calEnd = Calendar.getInstance();
-        calEnd.set(selectedYear, selectedMonth, selectedDay, selectedEndHour, selectedEndMinute, 0);
-        calEnd.set(Calendar.MILLISECOND, 0);
-        long endAt = calEnd.getTimeInMillis();
+        // Calculate endAt based on movie duration
+        Movie selectedMovie = null;
+        for (Movie m : moviesList) {
+            if (m.movieId.equals(selectedMovieId)) {
+                selectedMovie = m;
+                break;
+            }
+        }
+
+        long endAt;
+        if (selectedMovie != null && selectedMovie.durationMinutes > 0) {
+            endAt = startAt + (selectedMovie.durationMinutes * 60L * 1000L);
+        } else {
+            Calendar calEnd = Calendar.getInstance();
+            calEnd.set(selectedYear, selectedMonth, selectedDay, selectedEndHour, selectedEndMinute, 0);
+            calEnd.set(Calendar.MILLISECOND, 0);
+            endAt = calEnd.getTimeInMillis();
+        }
 
         if (endAt <= startAt) {
-            showToast("Giờ kết thúc phải sau giờ bắt đầu!");
+            showToast("Thời gian kết thúc phải lớn hơn thời gian bắt đầu.");
             return;
         }
 
@@ -377,45 +428,67 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
         showtimeRepository.getAllShowtimes(new ResultCallback<List<Showtime>>() {
             @Override
             public void onSuccess(List<Showtime> showtimes) {
-                // Check if any active showtime in the same room overlaps
-                for (Showtime s : showtimes) {
-                    if (s.roomId.equals(selectedRoomId) && !s.deleted) {
-                        // Skip checking current showtime if in edit mode
-                        if (isEditMode && s.showtimeId.equals(currentShowtimeId)) {
-                            continue;
-                        }
-
-                        // Overlap condition: (startAt < s.endAt) && (endAt > s.startAt)
-                        if (startAt < s.endAt && endAt > s.startAt) {
-                            new AlertDialog.Builder(AdminShowtimeAddEditActivity.this)
-                                    .setTitle("Trùng lịch chiếu")
-                                    .setMessage("Phòng chiếu này đã được lên lịch suất chiếu khác từ " +
-                                            timeFormat.format(new Date(s.startAt)) + " đến " +
-                                            timeFormat.format(new Date(s.endAt)) + " cùng ngày.")
-                                    .setPositiveButton("Đã hiểu", null)
-                                    .show();
-                            return;
-                        }
-                    }
-                }
-
-                // Retrieve seat templates count to determine totalSeats
-                seatRepository.getSeatTemplatesByRoomId(selectedRoomId, new ResultCallback<List<SeatTemplate>>() {
+                showtimeRepository.getAllShowtimeSchedules(new ResultCallback<List<Showtime>>() {
                     @Override
-                    public void onSuccess(List<SeatTemplate> templates) {
-                        int totalSeats = templates.size();
-                        if (totalSeats == 0) {
-                            // If no templates configured, fall back to default count (e.g. 64)
-                            totalSeats = 64;
+                    public void onSuccess(List<Showtime> schedules) {
+                        List<Showtime> combinedList = new ArrayList<>(showtimes);
+                        if (schedules != null) {
+                            for (Showtime s : schedules) {
+                                if (!s.executed) {
+                                    combinedList.add(s);
+                                }
+                            }
                         }
 
-                        saveToFirestore(startAt, endAt, format, language, basePrice, totalSeats);
+                        // Check if any active showtime or pending schedule in the same room overlaps
+                        for (Showtime s : combinedList) {
+                            if (s.roomId.equals(selectedRoomId) && !s.deleted) {
+                                // Skip checking current showtime if in edit mode
+                                if (isEditMode && s.showtimeId.equals(currentShowtimeId)) {
+                                    continue;
+                                }
+
+                                // Overlap condition: (startAt < s.endAt) && (endAt > s.startAt)
+                                if (startAt < s.endAt && endAt > s.startAt) {
+                                    String msg = s.isScheduled ? 
+                                            "Phòng chiếu này đã có lịch trình suất chiếu từ " : 
+                                            "Phòng chiếu này đã được lên lịch suất chiếu khác từ ";
+                                    new AlertDialog.Builder(AdminShowtimeAddEditActivity.this)
+                                            .setTitle("Trùng lịch chiếu")
+                                            .setMessage(msg +
+                                                    timeFormat.format(new Date(s.startAt)) + " đến " +
+                                                    timeFormat.format(new Date(s.endAt)) + " cùng ngày.")
+                                            .setPositiveButton("Đã hiểu", null)
+                                            .show();
+                                    return;
+                                }
+                            }
+                        }
+
+                        // Retrieve seat templates count to determine totalSeats
+                        seatRepository.getSeatTemplatesByRoomId(selectedRoomId, new ResultCallback<List<SeatTemplate>>() {
+                            @Override
+                            public void onSuccess(List<SeatTemplate> templates) {
+                                int totalSeats = templates.size();
+                                if (totalSeats == 0) {
+                                    // If no templates configured, fall back to default count (e.g. 64)
+                                    totalSeats = 64;
+                                }
+
+                                saveToFirestore(startAt, endAt, format, language, basePrice, totalSeats);
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                // Fall back to default total seats count
+                                saveToFirestore(startAt, endAt, format, language, basePrice, 64);
+                            }
+                        });
                     }
 
                     @Override
                     public void onError(String message) {
-                        // Fall back to default total seats count
-                        saveToFirestore(startAt, endAt, format, language, basePrice, 64);
+                        showToast("Lỗi kiểm tra trùng lịch trình suất chiếu: " + message);
                     }
                 });
             }
@@ -442,6 +515,7 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
         if (!isEditMode) {
             showtime.status = "active";
             showtime.bookedSeatsCount = 0;
+            showtime.isScheduled = false;
             
             showtimeRepository.createShowtime(showtime, new ResultCallback<Showtime>() {
                 @Override
@@ -483,6 +557,143 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                     showToast("Cập nhật suất chiếu thất bại: " + message);
                 }
             });
+        }
+    }
+
+    private void calculateAndDisplayEndTime() {
+        updateMovieDetailViews();
+
+        if (selectedMovieId == null || selectedYear == -1 || selectedStartHour == -1 || selectedStartMinute == -1) {
+            return;
+        }
+
+        Movie selectedMovie = null;
+        for (Movie m : moviesList) {
+            if (m.movieId.equals(selectedMovieId)) {
+                selectedMovie = m;
+                break;
+            }
+        }
+
+        if (selectedMovie == null || selectedMovie.durationMinutes <= 0) {
+            return;
+        }
+
+        Calendar calStart = Calendar.getInstance();
+        calStart.set(selectedYear, selectedMonth, selectedDay, selectedStartHour, selectedStartMinute, 0);
+        calStart.set(Calendar.MILLISECOND, 0);
+
+        Calendar calEnd = (Calendar) calStart.clone();
+        calEnd.add(Calendar.MINUTE, selectedMovie.durationMinutes);
+
+        selectedEndHour = calEnd.get(Calendar.HOUR_OF_DAY);
+        selectedEndMinute = calEnd.get(Calendar.MINUTE);
+
+        tietEndTime.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedEndHour, selectedEndMinute));
+        updatePreview();
+    }
+
+    private void updateMovieDetailViews() {
+        if (selectedMovieId == null) {
+            layoutMovieDetails.setVisibility(android.view.View.GONE);
+            return;
+        }
+
+        Movie selectedMovie = null;
+        for (Movie m : moviesList) {
+            if (m.movieId.equals(selectedMovieId)) {
+                selectedMovie = m;
+                break;
+            }
+        }
+
+        if (selectedMovie == null) {
+            layoutMovieDetails.setVisibility(android.view.View.GONE);
+            return;
+        }
+
+        layoutMovieDetails.setVisibility(android.view.View.VISIBLE);
+        tvMovieDuration.setText("Thời lượng: " + selectedMovie.durationMinutes + " phút");
+
+        if (selectedMovie.posterUrl != null && !selectedMovie.posterUrl.isEmpty()) {
+            com.bumptech.glide.Glide.with(this)
+                    .load(selectedMovie.posterUrl)
+                    .placeholder(R.drawable.clapperboard_solid_full)
+                    .into(imgMoviePoster);
+        } else {
+            imgMoviePoster.setImageResource(R.drawable.clapperboard_solid_full);
+        }
+
+        updateTimePreviewText(selectedMovie.durationMinutes);
+    }
+
+    private void updateTimePreviewText(int durationMinutes) {
+        if (selectedStartHour != -1 && selectedStartMinute != -1) {
+            String startStr = String.format(Locale.getDefault(), "%02d:%02d", selectedStartHour, selectedStartMinute);
+            
+            // Calculate end hour and minute
+            Calendar calStart = Calendar.getInstance();
+            calStart.set(2026, 0, 1, selectedStartHour, selectedStartMinute, 0);
+            calStart.add(Calendar.MINUTE, durationMinutes);
+            String endStr = String.format(Locale.getDefault(), "%02d:%02d", calStart.get(Calendar.HOUR_OF_DAY), calStart.get(Calendar.MINUTE));
+
+            tvTimePreview.setText("Bắt đầu: " + startStr + " | Kết thúc: " + endStr);
+        } else {
+            tvTimePreview.setText("Bắt đầu: --:-- | Kết thúc: --:--");
+        }
+    }
+
+    private void updatePreview() {
+        if (tvPreviewMovie == null) return;
+
+        String movie = actvMovie.getText().toString();
+        tvPreviewMovie.setText(movie.isEmpty() ? "Chưa chọn phim" : movie);
+
+        String cinema = actvCinema.getText().toString();
+        String room = actvRoom.getText().toString();
+        String cinemaRoom = "";
+        if (!cinema.isEmpty()) cinemaRoom += cinema;
+        if (!room.isEmpty()) {
+            if (!cinemaRoom.isEmpty()) cinemaRoom += " - ";
+            cinemaRoom += room;
+        }
+        tvPreviewCinemaRoom.setText(cinemaRoom.isEmpty() ? "Chưa chọn rạp & phòng" : cinemaRoom);
+
+        String date = tietDate.getText().toString();
+        String start = tietStartTime.getText().toString();
+        String end = tietEndTime.getText().toString();
+        String timeStr = "";
+        if (!date.isEmpty()) timeStr += date;
+        if (!start.isEmpty()) {
+            if (!timeStr.isEmpty()) timeStr += " | ";
+            timeStr += start;
+        }
+        if (!end.isEmpty()) {
+            timeStr += " ~ " + end;
+        }
+        tvPreviewTime.setText(timeStr.isEmpty() ? "Chưa chọn thời gian" : timeStr);
+
+        String format = actvFormat.getText().toString();
+        String lang = actvLanguage.getText().toString();
+        String formatLang = "";
+        if (!format.isEmpty()) formatLang += format;
+        if (!lang.isEmpty()) {
+            if (!formatLang.isEmpty()) formatLang += " | ";
+            formatLang += lang;
+        }
+        tvPreviewFormatLang.setText(formatLang.isEmpty() ? "2D | Phụ đề" : formatLang);
+
+        String price = tietBasePrice.getText().toString();
+        if (!price.isEmpty()) {
+            try {
+                double val = Double.parseDouble(price);
+                java.text.NumberFormat cf = java.text.NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                tvPreviewPrice.setText(cf.format(val));
+            } catch (Exception e) {
+                tvPreviewPrice.setText(price + " đ");
+            }
+        } else {
+            tvPreviewPrice.setText("0 đ");
         }
     }
 

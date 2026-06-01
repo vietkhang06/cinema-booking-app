@@ -33,13 +33,15 @@ public class BookingService {
         return data;
     }
 
-    public void updatePaymentStatus(String bookingId, String status) throws ExecutionException, InterruptedException {
+    public void updatePaymentStatus(String bookingId, String paymentStatus, String bookingStatus) throws ExecutionException, InterruptedException {
         firestore.collection(COLLECTION).document(bookingId).set(
                 BookingDTO.builder()
-                    .paymentStatus(status)
-                    .paymentAt(status.equals("confirmed") ? System.currentTimeMillis() : 0)
+                    .paymentStatus(paymentStatus)
+                    .bookingStatus(bookingStatus)
+                    .paymentAt("SUCCESS".equalsIgnoreCase(paymentStatus) || "confirmed".equalsIgnoreCase(paymentStatus) ? System.currentTimeMillis() : 0)
+                    .updatedAt(System.currentTimeMillis())
                     .build(),
-                SetOptions.mergeFields("paymentStatus", "paymentAt"))
+                SetOptions.mergeFields("paymentStatus", "bookingStatus", "paymentAt", "updatedAt"))
         .get();
     }
 
