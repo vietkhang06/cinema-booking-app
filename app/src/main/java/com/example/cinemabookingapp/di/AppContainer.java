@@ -41,6 +41,10 @@ public class AppContainer {
         return getMoviesUseCase;
     }
 
+    public MovieRepository getMovieRepository() {
+        return movieRepository;
+    }
+
     public GetBannersUseCase getBannersUseCase() {
         return getBannersUseCase;
     }
