@@ -280,6 +280,59 @@ public class ShowtimeRepositoryImpl implements ShowtimeRepository {
                 });
     }
 
+    @Override
+    public void createShowtimeSchedule(Showtime showtime, ResultCallback<Showtime> callback) {
+        DocumentReference ref = firestore.collection(FirestoreCollections.SHOWTIME_SCHEDULES).document();
+        showtime.showtimeId = ref.getId();
+        showtime.createdAt = System.currentTimeMillis();
+        showtime.updatedAt = System.currentTimeMillis();
+        showtime.deleted = false;
+        showtime.executed = false;
+
+        ref.set(showtime)
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess(showtime);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError(e.getMessage());
+                });
+    }
+
+    @Override
+    public void getAllShowtimeSchedules(ResultCallback<List<Showtime>> callback) {
+        firestore.collection(FirestoreCollections.SHOWTIME_SCHEDULES)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Showtime> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                        Showtime showtime = doc.toObject(Showtime.class);
+                        if (showtime != null) {
+                            showtime.showtimeId = doc.getId();
+                            if (!showtime.deleted) {
+                                list.add(showtime);
+                            }
+                        }
+                    }
+                    if (callback != null) callback.onSuccess(list);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError(e.getMessage());
+                });
+    }
+
+    @Override
+    public void deleteShowtimeSchedule(String scheduleId, ResultCallback<Void> callback) {
+        firestore.collection(FirestoreCollections.SHOWTIME_SCHEDULES)
+                .document(scheduleId)
+                .update("deleted", true, "updatedAt", System.currentTimeMillis())
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess(null);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onError(e.getMessage());
+                });
+    }
+
     private void enqueueList(Call<ApiResponse<List<Showtime>>> call, ResultCallback<List<Showtime>> callback, String fallbackMessage) {
         call.enqueue(new Callback<ApiResponse<List<Showtime>>>() {
             @Override

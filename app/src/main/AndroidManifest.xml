@@ -160,6 +160,9 @@
             android:name=".ui.admin.showtime.AdminShowtimeAddEditActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.admin.showtime.AdminShowtimeScheduleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.user.AdminUserManagementActivity"
             android:exported="false" />
         <activity
