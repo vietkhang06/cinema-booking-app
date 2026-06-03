@@ -3,6 +3,7 @@ package com.example.cinemabookingapp.core.config;
 public class ApiConfig {
 
     public static final String BASE_URL =
+//            "http://10.0.159.143:8080/api/v1/";
             "http://10.0.2.2:8080/api/v1/";
 
     public static final int CONNECT_TIMEOUT = 15;

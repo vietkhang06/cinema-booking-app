@@ -40,7 +40,7 @@ public class StaffDashboardActivity extends AuthActivity {
     private MaterialCardView btnStaffProfile;
     private ImageView ivStaffAvatar;
     private TextView tvStatTotal, tvStatPaid, tvStatPending, tvStatCancelled, tvStatUpcoming, tvStatHeldSeats;
-    private MaterialCardView checkInvoiceButton, searchBookingButton, seatSupportButton, paymentSupportButton, showtimesButton, auditLogButton;
+    private MaterialCardView checkInvoiceButton, searchBookingButton, seatSupportButton, paymentSupportButton, showtimesButton, auditLogButton, customerChatButton;
     private com.google.firebase.firestore.ListenerRegistration heldSeatsListener;
 
     @Override
@@ -89,6 +89,7 @@ public class StaffDashboardActivity extends AuthActivity {
         paymentSupportButton = findViewById(R.id.staff_db_payment_support);
         showtimesButton = findViewById(R.id.staff_db_showtimes);
         auditLogButton = findViewById(R.id.staff_db_audit_log);
+        customerChatButton = findViewById(R.id.staff_customer_chat);
     }
 
     private void bindActions() {
@@ -116,6 +117,9 @@ public class StaffDashboardActivity extends AuthActivity {
         });
         auditLogButton.setOnClickListener(v -> {
             startActivity(new Intent(this, StaffAuditLogActivity.class));
+        });
+        customerChatButton.setOnClickListener(v -> {
+            startActivity(new Intent(this, StaffCustomerChatActivity.class));
         });
     }
 

@@ -9,6 +9,7 @@ import com.google.cloud.firestore.Firestore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -75,5 +76,12 @@ public class UserService {
                 .updatedAt(doc.get("updatedAt") instanceof Number ? doc.getLong("updatedAt") : 0L)
                 .deleted(doc.getBoolean("deleted") != null ? doc.getBoolean("deleted") : false)
                 .build();
+    }
+
+    public List<UserDTO> getAllStaffs() throws ExecutionException, InterruptedException {
+        return firestore.collection(UserDTO.COLLECTION_NAME)
+                .whereEqualTo("role", "staff")
+                .get()
+                .get().toObjects(UserDTO.class);
     }
 }
