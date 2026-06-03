@@ -6,14 +6,23 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private Firestore firestore;
@@ -60,28 +69,229 @@ public class UserService {
         return user;
     }
 
+    public UserDTO createStaff(UserDTO staff, String password) throws Exception {
+        logger.info("Starting staff creation for email: {}", staff.getEmail());
+        
+        // Sanitize & Format phone number to E.164
+        String formattedPhone = null;
+        if (staff.getPhone() != null && !staff.getPhone().isBlank()) {
+            String rawPhone = staff.getPhone().trim();
+            if (rawPhone.startsWith("0") && rawPhone.length() == 10) {
+                formattedPhone = "+84" + rawPhone.substring(1);
+            } else if (rawPhone.startsWith("+")) {
+                formattedPhone = rawPhone;
+            }
+            if (formattedPhone != null) {
+                staff.setPhone(formattedPhone);
+            }
+        }
+
+        // 1. Create in Firebase Auth using Firebase Admin SDK
+        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest()
+                .setEmail(staff.getEmail())
+                .setPassword(password)
+                .setDisplayName(staff.getName());
+        
+        if (formattedPhone != null) {
+            try {
+                createRequest.setPhoneNumber(formattedPhone);
+            } catch (Exception e) {
+                logger.warn("Failed to set phone number in Firebase Auth creation request: {}", e.getMessage());
+            }
+        }
+        
+        String uid = null;
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+            uid = userRecord.getUid();
+            logger.info("Firebase Auth user created successfully with UID: {}", uid);
+            
+            // 2. Set fields
+            staff.setUid(uid);
+            staff.setRole("staff");
+            staff.setStatus("active");
+            staff.setDeleted(false);
+            staff.setCreatedAt(System.currentTimeMillis());
+            staff.setUpdatedAt(System.currentTimeMillis());
+            
+            // 3. Save to Firestore
+            logger.info("Saving staff document to Firestore for UID: {}", uid);
+            firestore.collection(COLLECTION).document(uid).set(staff).get();
+            logger.info("Firestore document saved successfully for UID: {}", uid);
+            return staff;
+        } catch (Exception e) {
+            logger.error("Error occurred during staff creation flow: {}", e.getMessage(), e);
+            if (uid != null) {
+                try {
+                    logger.info("Rolling back Firebase Auth user for UID: {}", uid);
+                    FirebaseAuth.getInstance().deleteUser(uid);
+                    logger.info("Rollback completed for UID: {}", uid);
+                } catch (Exception rollbackEx) {
+                    logger.error("Rollback failed to delete Firebase Auth user: {}", rollbackEx.getMessage(), rollbackEx);
+                }
+            }
+            throw e;
+        }
+    }
+
+    public UserDTO updateStaff(String uid, UserDTO staff) throws Exception {
+        logger.info("Updating staff info for UID: {}", uid);
+        DocumentReference ref = firestore.collection(COLLECTION).document(uid);
+        DocumentSnapshot doc = ref.get().get();
+        if (!doc.exists()) {
+            throw new RuntimeException("Staff user not found");
+        }
+
+        String role = staff.getRole() != null ? staff.getRole().toLowerCase() : "staff";
+        String status = staff.getStatus() != null ? staff.getStatus().toLowerCase() : "active";
+
+        ref.update(
+                "name", staff.getName(),
+                "phone", staff.getPhone(),
+                "status", status,
+                "cinemaId", staff.getCinemaId(),
+                "cinemaName", staff.getCinemaName(),
+                "internalNotes", staff.getInternalNotes(),
+                "role", role,
+                "updatedAt", System.currentTimeMillis()
+        ).get();
+        logger.info("Firestore document updated successfully for UID: {}", uid);
+
+        // Also update Auth profile name and disabled status if changed
+        try {
+            boolean disable = "inactive".equalsIgnoreCase(status);
+            UserRecord.UpdateRequest authUpdate = new UserRecord.UpdateRequest(uid)
+                    .setDisplayName(staff.getName())
+                    .setDisabled(disable);
+            FirebaseAuth.getInstance().updateUser(authUpdate);
+            logger.info("Firebase Auth user synced (Name: {}, Disabled: {})", staff.getName(), disable);
+        } catch (Exception e) {
+            logger.warn("Could not sync updated info with Firebase Auth: {}", e.getMessage());
+        }
+
+        return getUserById(uid);
+    }
+
+    public void deleteStaff(String uid) throws Exception {
+        logger.info("Soft deleting staff account for UID: {}", uid);
+        DocumentReference ref = firestore.collection(COLLECTION).document(uid);
+        ref.update(
+                "deleted", true,
+                "status", "inactive",
+                "updatedAt", System.currentTimeMillis()
+        ).get();
+
+        // Also disable account in Firebase Auth so they cannot log in anymore
+        try {
+            UserRecord.UpdateRequest authUpdate = new UserRecord.UpdateRequest(uid)
+                    .setDisabled(true);
+            FirebaseAuth.getInstance().updateUser(authUpdate);
+            logger.info("Firebase Auth user disabled for UID: {}", uid);
+        } catch (Exception e) {
+            logger.warn("Could not disable user in Firebase Auth on soft delete: {}", e.getMessage());
+        }
+    }
+
+    public void resetPassword(String uid, String newPassword) throws Exception {
+        logger.info("Resetting password for UID: {}", uid);
+        UserRecord.UpdateRequest authUpdate = new UserRecord.UpdateRequest(uid)
+                .setPassword(newPassword);
+        FirebaseAuth.getInstance().updateUser(authUpdate);
+        logger.info("Password reset successfully in Firebase Auth for UID: {}", uid);
+    }
+
+    private String getSafeString(DocumentSnapshot doc, String field) {
+        try {
+            Object val = doc.get(field);
+            return val != null ? val.toString() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Boolean getSafeBoolean(DocumentSnapshot doc, String field, boolean defaultValue) {
+        try {
+            Boolean val = doc.getBoolean(field);
+            return val != null ? val : defaultValue;
+        } catch (Exception e) {
+            Object val = doc.get(field);
+            if (val instanceof String) {
+                return Boolean.parseBoolean((String) val);
+            } else if (val instanceof Number) {
+                return ((Number) val).intValue() != 0;
+            }
+            return defaultValue;
+        }
+    }
+
+    private Long getSafeLong(DocumentSnapshot doc, String field, long defaultValue) {
+        try {
+            Object val = doc.get(field);
+            if (val instanceof Number) {
+                return ((Number) val).longValue();
+            } else if (val instanceof com.google.cloud.Timestamp) {
+                return ((com.google.cloud.Timestamp) val).toDate().getTime();
+            } else if (val instanceof String) {
+                return Long.parseLong((String) val);
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     private UserDTO mapToDTO(DocumentSnapshot doc) {
         return UserDTO.builder()
                 .uid(doc.getId())
-                .email(doc.getString("email"))
-                .phone(doc.getString("phone"))
-                .name(doc.getString("name"))
-                .birthDate(doc.getString("birthDate"))
-                .gender(doc.getString("gender"))
-                .avatarUrl(doc.getString("avatarUrl"))
-                .role(doc.getString("role"))
-                .status(doc.getString("status"))
-                .memberLevel(doc.getString("memberLevel"))
-                .createdAt(doc.get("createdAt") instanceof Number ? doc.getLong("createdAt") : 0L)
-                .updatedAt(doc.get("updatedAt") instanceof Number ? doc.getLong("updatedAt") : 0L)
-                .deleted(doc.getBoolean("deleted") != null ? doc.getBoolean("deleted") : false)
+                .email(getSafeString(doc, "email"))
+                .phone(getSafeString(doc, "phone"))
+                .name(getSafeString(doc, "name"))
+                .birthDate(getSafeString(doc, "birthDate"))
+                .gender(getSafeString(doc, "gender"))
+                .avatarUrl(getSafeString(doc, "avatarUrl"))
+                .role(getSafeString(doc, "role"))
+                .status(getSafeString(doc, "status"))
+                .memberLevel(getSafeString(doc, "memberLevel"))
+                .cinemaId(getSafeString(doc, "cinemaId"))
+                .cinemaName(getSafeString(doc, "cinemaName"))
+                .internalNotes(getSafeString(doc, "internalNotes"))
+                .createdAt(getSafeLong(doc, "createdAt", 0L))
+                .updatedAt(getSafeLong(doc, "updatedAt", 0L))
+                .deleted(getSafeBoolean(doc, "deleted", false))
+                .loginCount(getSafeLong(doc, "loginCount", 0L).intValue())
                 .build();
     }
 
+    public void incrementLoginCount(String uid) throws ExecutionException, InterruptedException {
+        logger.info("Incrementing loginCount for UID: {}", uid);
+        DocumentReference ref = firestore.collection(COLLECTION).document(uid);
+        firestore.runTransaction(transaction -> {
+            DocumentSnapshot doc = transaction.get(ref).get();
+            if (doc.exists()) {
+                long currentCount = getSafeLong(doc, "loginCount", 0L);
+                transaction.update(ref, "loginCount", currentCount + 1);
+            }
+            return null;
+        }).get();
+    }
+
     public List<UserDTO> getAllStaffs() throws ExecutionException, InterruptedException {
-        return firestore.collection(UserDTO.COLLECTION_NAME)
-                .whereEqualTo("role", "staff")
-                .get()
-                .get().toObjects(UserDTO.class);
+        logger.info("Fetching all staff/admin users from Firestore (optimized query)");
+        List<UserDTO> list = new ArrayList<>();
+        try {
+            // Optimized query: only fetch users with role 'staff' or 'admin'
+            Query query = firestore.collection(COLLECTION).whereIn("role", List.of("staff", "admin"));
+            List<QueryDocumentSnapshot> documents = query.get().get().getDocuments();
+            logger.info("Found {} staff/admin documents in Firestore", documents.size());
+            for (DocumentSnapshot doc : documents) {
+                Boolean deleted = getSafeBoolean(doc, "deleted", false);
+                if (deleted) continue;
+                list.add(mapToDTO(doc));
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching staff list from Firestore: {}", e.getMessage(), e);
+            throw e;
+        }
+        return list;
     }
 }
