@@ -10,88 +10,131 @@
     app:strokeWidth="1.5dp"
     app:cardElevation="1dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:padding="16dp">
 
-        <!-- Showtime Info Column -->
-        <LinearLayout
+        <!-- Showtime ID -->
+        <TextView
+            android:id="@+id/tvShowtimeId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mã: ST-12345"
+            android:textColor="#7A757F"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- Showtime Status Badge -->
+        <TextView
+            android:id="@+id/tvShowtimeStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Đang hoạt động"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_date_selected"
+            android:backgroundTint="#2E7D32"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            app:layout_constraintTop_toTopOf="@id/tvShowtimeId"
+            app:layout_constraintBottom_toBottomOf="@id/tvShowtimeId"
+            app:layout_constraintStart_toEndOf="@id/tvShowtimeId"/>
+
+        <!-- Movie Title -->
+        <TextView
+            android:id="@+id/tvMovieTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="12dp"
+            android:text="Tên phim"
+            android:textColor="#1E1A23"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/tvShowtimeId"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/layoutActions"/>
 
-            <!-- Movie Title -->
+        <!-- Cinema & Room -->
+        <TextView
+            android:id="@+id/tvCinemaRoom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:text="Rạp - Phòng"
+            android:textColor="#7A757F"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@id/tvMovieTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/layoutActions"/>
+
+        <!-- Date & Time -->
+        <TextView
+            android:id="@+id/tvShowtimeTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:text="Thời gian: 10:00 - 12:00 (20/05/2026)"
+            android:textColor="#7B39F0"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/tvCinemaRoom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/layoutActions"/>
+
+        <!-- Specs & Price Row -->
+        <LinearLayout
+            android:id="@+id/layoutSpecs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/tvShowtimeTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/layoutActions">
+
             <TextView
-                android:id="@+id/tvMovieTitle"
+                android:id="@+id/tvFormatLang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tên phim"
-                android:textColor="#1E1A23"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
+                android:text="2D | Phụ đề"
+                android:textColor="#4A4A4A"
+                android:textSize="12sp"
+                android:background="#F1F5F9"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"/>
 
-            <!-- Cinema & Room -->
             <TextView
-                android:id="@+id/tvCinemaRoom"
+                android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rạp - Phòng"
-                android:textColor="#7A757F"
+                android:layout_marginStart="12dp"
+                android:text="85.000 đ"
+                android:textColor="#EF4444"
                 android:textSize="13sp"
-                android:layout_marginBottom="4dp"/>
-
-            <!-- Date & Time -->
-            <TextView
-                android:id="@+id/tvShowtimeTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thời gian: 10:00 - 12:00 (20/05/2026)"
-                android:textColor="#7B39F0"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
-
-            <!-- Price & Format -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tvFormatLang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2D | Phụ đề"
-                    android:textColor="#4A4A4A"
-                    android:textSize="12sp"
-                    android:background="#F1F5F9"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="2dp"/>
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="85.000 đ"
-                    android:textColor="#EF4444"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+                android:textStyle="bold"/>
         </LinearLayout>
 
-        <!-- Actions Column -->
+        <!-- Actions Column (Edit/Delete) -->
         <LinearLayout
+            android:id="@+id/layoutActions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="8dp">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnEdit"
@@ -132,5 +175,5 @@
                     app:tint="#EF4444" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
