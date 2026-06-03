@@ -109,33 +109,85 @@ public class MovieRemoteDataSource {
     }
 
     public void getAllMovies(ResultCallback<List<Movie>> callback) {
-        Log.d(TAG, "Requesting all movies via API");
-        movieApi.getAllMovies(0, 20).enqueue(new Callback<ApiResponse<List<Movie>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
-                Log.d(TAG, "getAllMovies - Response Code: " + response.code());
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    List<Movie> data = response.body().getData();
-                    Log.d(TAG, "getAllMovies - Success. Count: " + (data != null ? data.size() : 0));
-                    if (callback != null) callback.onSuccess(data != null ? data : new ArrayList<>());
-                } else {
-                    String msg = (response.body() != null) ? response.body().getMessage() : "Lỗi tải phim (Code: " + response.code() + ")";
-                    Log.e(TAG, "getAllMovies - API Error: " + msg);
-                    if (callback != null) {
-                        // FIX: Only trigger onError. ViewModel should handle empty state if needed.
-                        callback.onError(msg);
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
-                Log.e(TAG, "getAllMovies - Network Failure: " + t.getMessage(), t);
-                if (callback != null) {
-                    callback.onError("Server hiện không khả dụng. Vui lòng thử lại sau.");
-                }
-            }
-        });
+        Log.e("MOVIE_API", "CALLING MOVIE API");
+
+        movieApi.getAllMovies(0,20)
+                .enqueue(new Callback<ApiResponse<List<Movie>>>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<ApiResponse<List<Movie>>> call,
+                            Response<ApiResponse<List<Movie>>> response) {
+
+                        Log.e("MOVIE_API",
+                                "HTTP CODE = " + response.code());
+
+                        Log.e("MOVIE_API",
+                                "BODY = " + response.body());
+
+                        if(response.body()!=null){
+
+                            Log.e("MOVIE_API",
+                                    "SUCCESS = "
+                                            + response.body().isSuccess());
+
+                            Log.e("MOVIE_API",
+                                    "MESSAGE = "
+                                            + response.body().getMessage());
+
+                            if(response.body().getData()!=null){
+
+                                Log.e("MOVIE_API",
+                                        "COUNT = "
+                                                + response.body()
+                                                .getData()
+                                                .size());
+
+                                if(!response.body().getData().isEmpty()){
+
+                                    Movie m =
+                                            response.body()
+                                                    .getData()
+                                                    .get(0);
+
+                                    Log.e("MOVIE_API",
+                                            "FIRST TITLE = "
+                                                    + m.title);
+                                }
+                            }
+                        }
+
+                        if(response.isSuccessful()
+                                && response.body()!=null
+                                && response.body().isSuccess()){
+
+                            callback.onSuccess(response.body().getData());
+
+                        }else{
+
+                            callback.onError(
+                                    response.body()!=null
+                                            ? response.body().getMessage()
+                                            : "API Error"
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<ApiResponse<List<Movie>>> call,
+                            Throwable t) {
+
+                        Log.e(
+                                "MOVIE_API",
+                                "FAILURE",
+                                t
+                        );
+
+                        callback.onError(t.getMessage());
+                    }
+                });
     }
 
     public void getMoviesByStatus(String status, ResultCallback<List<Movie>> callback) {

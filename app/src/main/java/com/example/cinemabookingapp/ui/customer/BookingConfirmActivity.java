@@ -64,7 +64,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private String selectedPaymentMethod = "cash";
     private com.google.android.material.bottomsheet.BottomSheetDialog momoDialog;
 
-    // Phase 5 Age Rating Fields
     private TextView tvAgeRatingBadge;
     private String movieAgeRating = "P";
 
@@ -75,7 +74,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_confirm);
 
-        // Nhận data
         showtimeId   = getIntent().getStringExtra(EXTRA_SHOWTIME_ID);
         movieTitle   = getIntent().getStringExtra(EXTRA_MOVIE_TITLE);
         movieId      = getIntent().getStringExtra(EXTRA_MOVIE_ID);
@@ -88,7 +86,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         tvTimer = findViewById(R.id.tvTimer);
 
-        // Start timer if not already active
         if (!BookingTimerManager.getInstance().isTimerActive(this)) {
             BookingTimerManager.getInstance().startTimer(this, 7 * 60 * 1000);
         } else {
@@ -129,7 +126,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private void initViews() {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Bind data lên UI
         TextView tvMovie = findViewById(R.id.tvMovieName);
         TextView tvCinema = findViewById(R.id.tvCinemaName);
         TextView tvTime = findViewById(R.id.tvShowtime);
@@ -283,7 +279,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String message) {
-                    // Fail silently
                 }
             }
         );
@@ -295,13 +290,13 @@ public class BookingConfirmActivity extends AppCompatActivity {
         double factor = 0;
         String levelName = "Thành viên";
         if (level.contains("vip")) {
-            factor = 0.10; // 10%
+            factor = 0.10;
             levelName = "VIP";
         } else if (level.contains("platinum")) {
-            factor = 0.15; // 15%
+            factor = 0.15;
             levelName = "Platinum";
         } else if (level.contains("gold")) {
-            factor = 0.08; // 8%
+            factor = 0.08;
             levelName = "Gold";
         }
         if (factor > 0) {
@@ -324,7 +319,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
             switchStars.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 isStarsApplied = isChecked;
                 if (isChecked) {
-                    // 1 Stars = 1,000 VND
                     discountStars = points * 1000.0;
                 } else {
                     discountStars = 0;

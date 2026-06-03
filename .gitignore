@@ -32,3 +32,5 @@ logs/
 
 serviceAccountKey.json
 cinema-booking-backend\src\main\resources\serviceAccountKey.json
+
+application-local.yml
