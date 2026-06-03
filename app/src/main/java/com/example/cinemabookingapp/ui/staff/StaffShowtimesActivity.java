@@ -246,14 +246,17 @@ public class StaffShowtimesActivity extends AuthActivity {
                             @Override
                             public void onSuccess(String result) {
                                 progressDialog.dismiss();
+                                int currentPos = holder.getAdapterPosition();
+                                if (currentPos == RecyclerView.NO_POSITION) return;
+
                                 if ("DELETED".equals(result)) {
-                                    items.remove(position);
-                                    notifyItemRemoved(position);
-                                    notifyItemRangeChanged(position, items.size());
+                                    items.remove(currentPos);
+                                    notifyItemRemoved(currentPos);
+                                    notifyItemRangeChanged(currentPos, items.size());
                                     showToast("Đã xóa hoàn toàn suất chiếu (chưa có vé).");
                                 } else if ("CANCELLED".equals(result)) {
                                     s.status = "cancelled";
-                                    notifyItemChanged(position);
+                                    notifyItemChanged(currentPos);
                                     showToast("Đã hủy suất chiếu và phát Voucher đền bù cho khách.");
                                 }
                             }
