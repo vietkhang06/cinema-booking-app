@@ -17,6 +17,11 @@ public class User {
     public String birthDate;
     public String gender;
 
+    public String cinemaId;
+    public String cinemaName;
+    public String internalNotes;
+    public int loginCount;
+
     public User() {
     }
 }

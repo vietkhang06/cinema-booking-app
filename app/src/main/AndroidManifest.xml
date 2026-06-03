@@ -175,6 +175,24 @@
             android:name=".ui.admin.user.AdminUserManagementActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.admin.user.AdminStaffDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.user.AdminStaffFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.user.AdminViolationFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.promotion.AdminPromotionListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.log.AdminAuditLogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.staff.StaffAttendanceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.report.AdminReportActivity"
             android:exported="false" /> <!-- MAIN -->
         <activity

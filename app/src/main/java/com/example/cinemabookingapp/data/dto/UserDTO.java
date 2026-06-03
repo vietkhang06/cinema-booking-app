@@ -15,6 +15,13 @@ public class UserDTO {
     public long updatedAt;
     public boolean deleted;
 
+    public String birthDate;
+    public String gender;
+    public String cinemaId;
+    public String cinemaName;
+    public String internalNotes;
+    public int loginCount;
+
     public UserDTO() {
     }
 }
