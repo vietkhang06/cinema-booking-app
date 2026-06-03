@@ -1,6 +1,9 @@
 package com.example.cinemabookingapp.ui.staff;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -214,7 +217,66 @@ public class StaffShowtimesActivity extends AuthActivity {
                 holder.imgPoster.setImageResource(R.drawable.login_icon);
             }
 
+            // Đổi giao diện nếu suất chiếu đã hủy
+            if ("cancelled".equals(s.status)) {
+                holder.itemView.setBackgroundColor(Color.parseColor("#F5F5F5"));
+                holder.btnDelete.setVisibility(View.GONE);
+                holder.tvMovieTitle.setText(movieTitle + " (Đã hủy)");
+                holder.tvMovieTitle.setTextColor(Color.RED);
+            } else {
+                holder.itemView.setBackgroundColor(Color.WHITE);
+                holder.btnDelete.setVisibility(View.VISIBLE);
+                holder.tvMovieTitle.setText(movieTitle);
+                holder.tvMovieTitle.setTextColor(Color.parseColor("#1E1A23"));
+            }
+
+            holder.btnDelete.setOnClickListener(v -> {
+                new AlertDialog.Builder(StaffShowtimesActivity.this)
+                    .setTitle("Hủy Suất Chiếu")
+                    .setMessage("Bạn có chắc chắn muốn hủy? Các vé đã đặt sẽ bị hủy và hệ thống sẽ tự động tạo Voucher đền bù 10% cho khách hàng.")
+                    .setPositiveButton("Hủy suất chiếu", (dialog, which) -> {
+                        ProgressDialog progressDialog = new ProgressDialog(StaffShowtimesActivity.this);
+                        progressDialog.setMessage("Đang xử lý hủy và đền bù...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+
+                        com.example.cinemabookingapp.domain.repository.ShowtimeRepository repository = new com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl();
+                        // Dùng tài khoản admin tạm thời, nếu có auth thì lấy từ session
+                        repository.cancelShowtime(s.showtimeId, "admin_1", new com.example.cinemabookingapp.domain.common.ResultCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                progressDialog.dismiss();
+                                int currentPos = holder.getAdapterPosition();
+                                if (currentPos == RecyclerView.NO_POSITION) return;
+
+                                if ("DELETED".equals(result)) {
+                                    items.remove(currentPos);
+                                    notifyItemRemoved(currentPos);
+                                    notifyItemRangeChanged(currentPos, items.size());
+                                    showToast("Đã xóa hoàn toàn suất chiếu (chưa có vé).");
+                                } else if ("CANCELLED".equals(result)) {
+                                    s.status = "cancelled";
+                                    notifyItemChanged(currentPos);
+                                    showToast("Đã hủy suất chiếu và phát Voucher đền bù cho khách.");
+                                }
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                progressDialog.dismiss();
+                                showToast("Lỗi: " + message);
+                            }
+                        });
+                    })
+                    .setNegativeButton("Quay lại", null)
+                    .show();
+            });
+
             holder.itemView.setOnClickListener(v -> {
+                if ("cancelled".equals(s.status)) {
+                    showToast("Suất chiếu này đã bị hủy, không thể xem chi tiết ghế.");
+                    return;
+                }
                 Intent intent = new Intent(StaffShowtimesActivity.this, StaffCheckSeat.class);
                 intent.putExtra("showtimeId", s.showtimeId);
                 startActivity(intent);
@@ -229,7 +291,7 @@ public class StaffShowtimesActivity extends AuthActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvStartTime, tvMovieTitle, tvCinemaRoom, tvFormatLang, tvSeatsCount;
             ProgressBar pbSeats;
-            android.widget.ImageView imgPoster;
+            android.widget.ImageView imgPoster, btnDelete;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -240,6 +302,7 @@ public class StaffShowtimesActivity extends AuthActivity {
                 tvSeatsCount = itemView.findViewById(R.id.tv_seats_count);
                 pbSeats = itemView.findViewById(R.id.pb_seats);
                 imgPoster = itemView.findViewById(R.id.img_poster);
+                btnDelete = itemView.findViewById(R.id.btn_delete_showtime);
             }
         }
     }

@@ -450,6 +450,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     BookingDTO booking = response.body().getData();
                     isBookingConfirmed = true;
                     BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
+                    
+                    // Gửi thông báo đặt vé
+                    com.example.cinemabookingapp.domain.model.Notification notif = new com.example.cinemabookingapp.domain.model.Notification();
+                    notif.userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    notif.title = "Đặt vé thành công";
+                    notif.message = "Bạn đã đặt thành công vé xem phim " + movieTitle + " tại rạp " + cinemaName + ".";
+                    notif.type = com.example.cinemabookingapp.domain.model.NotificationType.BOOKING_SUCCESS.name();
+                    notif.refId = booking.bookingId;
+                    notif.isRead = false;
+                    new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl().sendNotification(notif, null);
 
                     if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
                         Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
