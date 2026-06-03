@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.MyApp;
 import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.domain.model.Movie;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.SimpleDateFormat;
@@ -60,92 +62,182 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return bookings.size();
     }
 
+    private void bindUnifiedStatus(TextView tvStatus, MaterialCardView cardStatus, Booking booking, long now) {
+        String bookingStatus = booking.bookingStatus != null ? booking.bookingStatus.toUpperCase() : "PENDING";
+        String paymentStatus = booking.paymentStatus != null ? booking.paymentStatus.toUpperCase() : "PENDING";
+        boolean isCineShop = (booking.showtimeId == null);
+
+        // 1. FAILED hoặc CANCELLED -> Đã huỷ
+        if ("FAILED".equals(bookingStatus) || "CANCELLED".equals(bookingStatus) ||
+            "FAILED".equals(paymentStatus) || "CANCELLED".equals(paymentStatus)) {
+            tvStatus.setText("Đã huỷ");
+            tvStatus.setTextColor(0xFFC62828); // Red
+            cardStatus.setCardBackgroundColor(0xFFFFEBEE);
+            return;
+        }
+
+        // 2. checkInAt > 0 -> Đã sử dụng
+        if (booking.checkInAt > 0) {
+            tvStatus.setText("Đã sử dụng");
+            tvStatus.setTextColor(0xFF757575); // Grey
+            cardStatus.setCardBackgroundColor(0xFFEEEEEE);
+            return;
+        }
+
+        // 3. showtimeStartAtSnapshot < now -> Đã hết suất
+        if (!isCineShop && booking.showtimeStartAtSnapshot > 0 && booking.showtimeStartAtSnapshot < now) {
+            tvStatus.setText("Đã hết suất");
+            tvStatus.setTextColor(0xFF757575); // Grey
+            cardStatus.setCardBackgroundColor(0xFFEEEEEE);
+            return;
+        }
+
+        // 4. SUCCESS + suất chiếu chưa diễn ra -> Có hiệu lực
+        boolean isSuccess = "SUCCESS".equals(paymentStatus) || "PAID".equals(paymentStatus) ||
+                            "CONFIRMED".equals(bookingStatus) || "SUCCESS".equals(bookingStatus);
+        if (isSuccess) {
+            tvStatus.setText("Có hiệu lực");
+            tvStatus.setTextColor(0xFF2E7D32); // Green
+            cardStatus.setCardBackgroundColor(0xFFE8F5E9);
+            return;
+        }
+
+        // 5. PENDING -> Đang chờ thanh toán
+        tvStatus.setText("Đang chờ thanh toán");
+        tvStatus.setTextColor(0xFFE8640C); // Orange
+        cardStatus.setCardBackgroundColor(0xFFFFF3E0);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
-        TextView tvTitle, tvCinema, tvShowtime, tvPrice, tvStatus;
+        TextView tvTitle, tvCinema, tvRoom, tvSeats, tvShowtime;
+        TextView tvStatus;
         MaterialCardView cardStatus;
+        TextView tvBookingCode, tvCreatedAt, tvPrice;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPoster = itemView.findViewById(R.id.img_movie_poster);
             tvTitle = itemView.findViewById(R.id.tv_movie_title);
             tvCinema = itemView.findViewById(R.id.tv_cinema_name);
+            tvRoom = itemView.findViewById(R.id.tv_room);
+            tvSeats = itemView.findViewById(R.id.tv_seats);
             tvShowtime = itemView.findViewById(R.id.tv_showtime);
-            tvPrice = itemView.findViewById(R.id.tv_total_price);
             tvStatus = itemView.findViewById(R.id.tv_status);
             cardStatus = itemView.findViewById(R.id.card_status);
+            tvBookingCode = itemView.findViewById(R.id.tv_booking_code);
+            tvCreatedAt = itemView.findViewById(R.id.tv_created_at);
+            tvPrice = itemView.findViewById(R.id.tv_total_price);
         }
 
         public void bind(Booking booking) {
             tvTitle.setText(booking.movieTitleSnapshot);
             tvCinema.setText(booking.cinemaNameSnapshot);
             
-            if (booking.showtimeStartAtSnapshot > 0) {
-                tvShowtime.setText(dateFormat.format(new Date(booking.showtimeStartAtSnapshot)));
-            } else if (booking.createdAt > 0) {
-                tvShowtime.setText(dateFormat.format(new Date(booking.createdAt)));
+            // Check if CineShop order (showtimeId is null)
+            boolean isCineShop = (booking.showtimeId == null);
+            
+            if (isCineShop) {
+                tvRoom.setText(booking.roomNameSnapshot != null ? booking.roomNameSnapshot : "");
+                tvSeats.setVisibility(View.GONE);
+                tvShowtime.setVisibility(View.GONE);
             } else {
-                tvShowtime.setText("Chưa xác định");
+                tvSeats.setVisibility(View.VISIBLE);
+                tvShowtime.setVisibility(View.VISIBLE);
+                tvRoom.setText(booking.roomNameSnapshot != null ? booking.roomNameSnapshot : "Chưa xác định");
+                if (booking.seatCodes != null && !booking.seatCodes.isEmpty()) {
+                    tvSeats.setText("Ghế: " + String.join(", ", booking.seatCodes));
+                } else {
+                    tvSeats.setText("Ghế: Chưa xác định");
+                }
+                
+                if (booking.showtimeStartAtSnapshot > 0) {
+                    tvShowtime.setText("Suất: " + dateFormat.format(new Date(booking.showtimeStartAtSnapshot)));
+                } else {
+                    tvShowtime.setText("Suất: Chưa xác định");
+                }
+            }
+
+            long now = System.currentTimeMillis();
+            boolean isExpired = (!isCineShop && booking.showtimeStartAtSnapshot > 0 && booking.showtimeStartAtSnapshot < now);
+            String bookingStatus = booking.bookingStatus != null ? booking.bookingStatus.toUpperCase() : "PENDING";
+            String paymentStatus = booking.paymentStatus != null ? booking.paymentStatus.toUpperCase() : "PENDING";
+            boolean isCancelled = "FAILED".equals(bookingStatus) || "CANCELLED".equals(bookingStatus) ||
+                                  "FAILED".equals(paymentStatus) || "CANCELLED".equals(paymentStatus);
+            boolean isUsed = booking.checkInAt > 0;
+
+            // Bind unified status
+            bindUnifiedStatus(tvStatus, cardStatus, booking, now);
+
+            // Booking code & Date
+            tvBookingCode.setText("Mã vé: " + (booking.paymentCode != null ? booking.paymentCode : booking.bookingId));
+            if (booking.createdAt > 0) {
+                tvCreatedAt.setText("Đặt ngày: " + dateFormat.format(new Date(booking.createdAt)));
+            } else {
+                tvCreatedAt.setText("Đặt ngày: Chưa rõ");
             }
 
             tvPrice.setText(String.format("%,.0fđ", booking.total).replace(',', '.'));
 
-            // Expiration Logic: 4 hours past showtime start
-            long now = System.currentTimeMillis();
-            long fourHoursInMillis = 4 * 60 * 60 * 1000;
-            boolean isExpired = (booking.showtimeStartAtSnapshot > 0) && (now > (booking.showtimeStartAtSnapshot + fourHoursInMillis));
-
-            // Status Badge Logic
-            String status = booking.bookingStatus != null ? booking.bookingStatus.toLowerCase() : "unknown";
-            if (isExpired && ("confirmed".equals(status) || "success".equals(status))) {
-                tvStatus.setText("Đã hết suất");
-                tvStatus.setTextColor(0xFF757575);
-                cardStatus.setCardBackgroundColor(0xFFEEEEEE);
-            } else {
-                switch (status) {
-                    case "confirmed":
-                    case "success":
-                        tvStatus.setText("Thành công");
-                        tvStatus.setTextColor(0xFF2E7D32);
-                        cardStatus.setCardBackgroundColor(0xFFE8F5E9);
-                        break;
-                    case "pending":
-                        tvStatus.setText("Đang chờ");
-                        tvStatus.setTextColor(0xFFE8640C);
-                        cardStatus.setCardBackgroundColor(0xFFFFF3E0);
-                        break;
-                    case "cancelled":
-                    case "failed":
-                        tvStatus.setText("Đã hủy");
-                        tvStatus.setTextColor(0xFFC62828);
-                        cardStatus.setCardBackgroundColor(0xFFFFEBEE);
-                        break;
-                    default:
-                        tvStatus.setText("Khác");
-                        tvStatus.setTextColor(0xFF757575);
-                        cardStatus.setCardBackgroundColor(0xFFF5F5F5);
-                        break;
-                }
-            }
-
-            // Expiration UI handling
-            if (isExpired) {
-                itemView.setAlpha(0.5f);
-                itemView.setOnClickListener(null); // Disable click
+            // Click handling and visual indication
+            if (isExpired || isCancelled || isUsed) {
+                itemView.setAlpha(0.6f);
             } else {
                 itemView.setAlpha(1.0f);
-                itemView.setOnClickListener(v -> {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION && listener != null) {
-                        listener.onItemClick(bookings.get(pos));
-                    }
-                });
             }
             
-            Glide.with(itemView.getContext())
-                    .load(!android.text.TextUtils.isEmpty(booking.movieImageUrlSnapshot) ? booking.movieImageUrlSnapshot : R.drawable.square_solid_full)
-                    .placeholder(R.drawable.square_solid_full)
-                    .into(imgPoster);
+            itemView.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onItemClick(bookings.get(pos));
+                }
+            });
+            
+            // Poster Loading Fallback logic
+            if (!android.text.TextUtils.isEmpty(booking.movieImageUrlSnapshot)) {
+                Glide.with(itemView.getContext())
+                        .load(booking.movieImageUrlSnapshot)
+                        .placeholder(R.drawable.square_solid_full)
+                        .error(R.drawable.square_solid_full)
+                        .into(imgPoster);
+            } else if (!android.text.TextUtils.isEmpty(booking.movieId)) {
+                // Fetch from MovieRepository
+                try {
+                    MyApp app = (MyApp) itemView.getContext().getApplicationContext();
+                    app.getAppContainer().getMovieRepository().getMovieById(booking.movieId, new com.example.cinemabookingapp.domain.common.ResultCallback<Movie>() {
+                        @Override
+                        public void onSuccess(Movie movie) {
+                            if (movie != null && !android.text.TextUtils.isEmpty(movie.posterUrl)) {
+                                booking.movieImageUrlSnapshot = movie.posterUrl;
+                                itemView.post(() -> Glide.with(itemView.getContext())
+                                        .load(movie.posterUrl)
+                                        .placeholder(R.drawable.square_solid_full)
+                                        .error(R.drawable.square_solid_full)
+                                        .into(imgPoster));
+                            } else {
+                                itemView.post(() -> Glide.with(itemView.getContext())
+                                        .load(R.drawable.square_solid_full)
+                                        .into(imgPoster));
+                            }
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            itemView.post(() -> Glide.with(itemView.getContext())
+                                    .load(R.drawable.square_solid_full)
+                                    .into(imgPoster));
+                        }
+                    });
+                } catch (Exception e) {
+                    Glide.with(itemView.getContext())
+                            .load(R.drawable.square_solid_full)
+                            .into(imgPoster);
+                }
+            } else {
+                Glide.with(itemView.getContext())
+                        .load(R.drawable.square_solid_full)
+                        .into(imgPoster);
+            }
         }
     }
 }

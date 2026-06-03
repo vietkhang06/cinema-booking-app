@@ -7,11 +7,15 @@ import android.widget.Toast;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.AuthActivity;
+import com.example.cinemabookingapp.core.navigation.DataNavigator;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.AuditLogDTO;
 import com.example.cinemabookingapp.data.dto.SeatDTO;
@@ -19,8 +23,8 @@ import com.example.cinemabookingapp.data.dto.SeatLockRequestDTO;
 import com.example.cinemabookingapp.data.remote.api.AuditLogApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.data.remote.api.SeatApiService;
-import com.example.cinemabookingapp.ui.staff.adapter.StaffSeatAdapter;
-import com.google.android.material.button.MaterialButton;
+import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.ui.customer.adapter.SeatAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,16 +45,25 @@ public class StaffCheckSeat extends AuthActivity {
 
     private RecyclerView rvSeatMap;
     private View backBtn;
-    private StaffSeatAdapter adapter;
+    private SeatAdapter adapter;
     private final List<SeatDTO> seatList = new ArrayList<>();
+    private List<String> mySeats;
     private String showtimeId;
     private ListenerRegistration seatListenerRegistration;
-
+    private Booking booking;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_staff_check_seat);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        int resourceId = getIntent().getIntExtra("resourceId", 0);
+        booking = DataNavigator.getInstance().<Booking>popData(resourceId);
 
         showtimeId = getIntent().getStringExtra("showtimeId");
         if (showtimeId == null || showtimeId.trim().isEmpty()) {
@@ -78,16 +91,16 @@ public class StaffCheckSeat extends AuthActivity {
 
         // Khởi tạo với span count mặc định 9; sẽ được cập nhật động sau khi load data
         GridLayoutManager gridLayout = new GridLayoutManager(this, 9);
-        gridLayout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                // Row label chiếm full width (tất cả cột); ghế chiếm 1 cột
-                return adapter.isLabel(position) ? gridLayout.getSpanCount() : 1;
-            }
-        });
+//        gridLayout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                // Row label chiếm full width (tất cả cột); ghế chiếm 1 cột
+//                return adapter.isLabel(position) ? gridLayout.getSpanCount() : 1;
+//            }
+//        });
         rvSeatMap.setLayoutManager(gridLayout);
 
-        adapter = new StaffSeatAdapter(seatList, (seat, position) -> handleSeatClick(seat));
+        adapter = new SeatAdapter(seatList, (seat, position) -> handleSeatClick(seat));
         rvSeatMap.setAdapter(adapter);
     }
 
@@ -103,6 +116,7 @@ public class StaffCheckSeat extends AuthActivity {
             public void onResponse(Call<ApiResponse<List<SeatDTO>>> call, Response<ApiResponse<List<SeatDTO>>> response) {
                 showLoading(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+//                    mySeats = new ArrayList<>(booking.seatIds);
                     startRealtimeSeatSync();
                 } else {
                     String msg = response.body() != null ? response.body().getMessage() : "Lỗi server (" + response.code() + ")";
@@ -158,7 +172,7 @@ public class StaffCheckSeat extends AuthActivity {
 
                         // Cập nhật span count động để khớp với số cột thực tế
                         if (rvSeatMap.getLayoutManager() instanceof GridLayoutManager) {
-                            ((GridLayoutManager) rvSeatMap.getLayoutManager()).setSpanCount(maxCol);
+                            ((GridLayoutManager) rvSeatMap.getLayoutManager()).setSpanCount(maxCol + 1);
                         }
 
                         seatList.clear();

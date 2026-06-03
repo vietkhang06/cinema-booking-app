@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="88dp"
+    android:background="@android:color/transparent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingStart="6dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="12dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/adminBottomNavRoot"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="10dp"
+        app:strokeColor="#12000000"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:id="@+id/adminBottomNavContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="7dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="8dp">
+
+            <!-- Tab 0: Tổng quan -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/adminNavHomeCard"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="4dp"
+                app:cardCornerRadius="24dp"
+                app:cardBackgroundColor="#1E1A23"
+                app:strokeWidth="0dp"
+                app:rippleColor="#22000000">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:id="@+id/adminNavHomeIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/house_user_solid_full"
+                        app:tint="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/adminNavHomeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="8dp"
+                        android:text="Tổng quan"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tab 1: Rạp & Lịch -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/adminNavCinemaCard"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="0.8"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:strokeColor="#D3CAD7"
+                app:strokeWidth="1dp"
+                app:rippleColor="#22000000">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:id="@+id/adminNavCinemaIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/calendar_days_solid_full"
+                        app:tint="#4A4650" />
+
+                    <TextView
+                        android:id="@+id/adminNavCinemaLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="8dp"
+                        android:text="Rạp &amp; Lịch"
+                        android:textColor="#1E1A23"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tab 2: Vận hành -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/adminNavOpsCard"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="0.8"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:strokeColor="#D3CAD7"
+                app:strokeWidth="1dp"
+                app:rippleColor="#22000000">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:id="@+id/adminNavOpsIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/clipboard_solid_full"
+                        app:tint="#4A4650" />
+
+                    <TextView
+                        android:id="@+id/adminNavOpsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="8dp"
+                        android:text="Vận hành"
+                        android:textColor="#1E1A23"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tab 3: Cá nhân -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/adminNavProfileCard"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="0.8"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:strokeColor="#D3CAD7"
+                app:strokeWidth="1dp"
+                app:rippleColor="#22000000">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:id="@+id/adminNavProfileIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/user_solid_full"
+                        app:tint="#4A4650" />
+
+                    <TextView
+                        android:id="@+id/adminNavProfileLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="8dp"
+                        android:text="Cá nhân"
+                        android:textColor="#1E1A23"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

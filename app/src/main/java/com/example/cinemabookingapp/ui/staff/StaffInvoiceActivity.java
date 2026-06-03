@@ -6,35 +6,36 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.AuthActivity;
+import com.example.cinemabookingapp.core.navigation.DataNavigator;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.AuditLogDTO;
 import com.example.cinemabookingapp.data.remote.api.AuditLogApiService;
 import com.example.cinemabookingapp.data.remote.api.BookingApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
-import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.data.repository.BookingRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Booking;
-import com.example.cinemabookingapp.service.InvoiceService;
-import com.example.cinemabookingapp.ui.component.EInvoice.EInvoiceView;
+import com.example.cinemabookingapp.ui.staff.component.EInvoiceView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StaffInvoiceActivity extends AuthActivity {
-
-    private InvoiceService invoiceService;
-    private InvoiceService.InvoiceDetail invoiceDetail;
 
     private View backButton;
     private MaterialButton updatePaymentButton, checkinButton, checkSeatButton, checkOrderButton;
@@ -47,11 +48,13 @@ public class StaffInvoiceActivity extends AuthActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_invoice);
-
-        invoiceService = ServiceProvider.getInstance().getInvoiceService();
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         initViews();
-        bindActions();
         retrieveDataFromNavigator();
     }
 
@@ -68,31 +71,31 @@ public class StaffInvoiceActivity extends AuthActivity {
         checkOrderButton = findViewById(R.id.staff_invoice_check_order);
     }
 
-    private void bindActions() {
+    private void bindActions(Booking booking) {
         backButton.setOnClickListener(v -> finish());
 
         checkOrderButton.setOnClickListener(v -> {
-            if (invoiceDetail != null && invoiceDetail.booking != null) {
+            if (booking != null) {
                 Intent intent = new Intent(this, StaffCheckOrder.class);
-                intent.putExtra("invoiceId", invoiceDetail.booking.bookingId);
+                intent.putExtra("resourceId", DataNavigator.getInstance().pushData(booking));
                 startActivity(intent);
             }
         });
 
         checkSeatButton.setOnClickListener(v -> {
-            if (invoiceDetail != null && invoiceDetail.booking != null) {
+            if (booking != null) {
                 Intent intent = new Intent(this, StaffCheckSeat.class);
-                intent.putExtra("invoiceId", invoiceDetail.booking.bookingId);
-                intent.putExtra("showtimeId", invoiceDetail.booking.showtimeId);
+                intent.putExtra("resourceId", DataNavigator.getInstance().pushData(booking));
+                intent.putExtra("showtimeId", booking.showtimeId);
                 startActivity(intent);
             }
         });
 
         updatePaymentButton.setOnClickListener(v -> {
-            if (invoiceDetail == null || invoiceDetail.booking == null) return;
+            if (booking == null) return;
             showLoading(true);
             BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
-            bookingApi.confirmPayment(invoiceDetail.booking.bookingId).enqueue(new Callback<ApiResponse<Void>>() {
+            bookingApi.confirmPayment(booking.bookingId).enqueue(new Callback<ApiResponse<Void>>() {
                 @Override
                 public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                     if (response.isSuccessful()) {
@@ -114,10 +117,10 @@ public class StaffInvoiceActivity extends AuthActivity {
         });
 
         checkinButton.setOnClickListener(v -> {
-            if (invoiceDetail == null || invoiceDetail.booking == null) return;
+            if (booking == null) return;
             showLoading(true);
             BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
-            bookingApi.checkInBooking(invoiceDetail.booking.bookingId).enqueue(new Callback<ApiResponse<Void>>() {
+            bookingApi.checkInBooking(booking.bookingId).enqueue(new Callback<ApiResponse<Void>>() {
                 @Override
                 public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                     if (response.isSuccessful()) {
@@ -150,44 +153,33 @@ public class StaffInvoiceActivity extends AuthActivity {
         }
 
         showLoading(true);
-        invoiceService.getInvoiceFromId(invoiceId, new ResultCallback<Booking>() {
+        BookingRepositoryImpl bookingRepo = new BookingRepositoryImpl();
+        bookingRepo.getBookingById(invoiceId, new ResultCallback<Booking>() {
             @Override
-            public void onSuccess(Booking booking) {
-                if (booking == null) {
+            public void onSuccess(Booking result) {
+                runOnUiThread(() -> {
                     showLoading(false);
-                    showToast("Không tìm thấy hóa đơn: " + invoiceId);
-                    finish();
-                    return;
-                }
-
-                Executors.newSingleThreadExecutor().execute(() -> {
-                    invoiceDetail = invoiceService.getInvoiceDetail(invoiceId);
-                    runOnUiThread(() -> {
-                        showLoading(false);
-                        if (invoiceDetail != null) {
-                            bindDataView(invoiceDetail);
-                        } else {
-                            showToast("Lỗi tải chi tiết hóa đơn");
-                        }
-                    });
+                    bindActions(result);
+                    bindDataView(result);
                 });
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(String errorMessage) {
                 showLoading(false);
-                showToast("Lỗi: " + message);
+                showToast("Lỗi tải chi tiết hóa đơn: " + errorMessage);
+                finish();
             }
         });
     }
 
-    private void bindDataView(InvoiceService.InvoiceDetail detail) {
+    private void bindDataView(Booking detail) {
         eInvoiceView.setInvoiceDetail(detail);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        transactionDateTV.setText("Ngày tạo: " + sdf.format(new Date(detail.booking.createdAt)));
+        transactionDateTV.setText("Ngày tạo: " + sdf.format(new Date(detail.createdAt)));
 
-        String payStatus = detail.booking.paymentStatus;
+        String payStatus = detail.paymentStatus;
         if ("confirmed".equalsIgnoreCase(payStatus) || "paid".equalsIgnoreCase(payStatus)) {
             paymentStatusTV.setText("ĐÃ THANH TOÁN");
             paymentStatusTV.setTextColor(0xFF4CAF50);
@@ -195,10 +187,10 @@ public class StaffInvoiceActivity extends AuthActivity {
             checkinButton.setVisibility(View.VISIBLE);
             Glide.with(this).load(R.drawable.ic_confirm).into(paymentStatusImg);
 
-            if (detail.booking.checkInAt > 0) {
+            if (detail.checkInAt > 0) {
                 checkinButton.setEnabled(false);
                 checkinButton.setText("Đã Check-in");
-                checkinStatusTV.setText("Đã Check-in lúc: " + sdf.format(new Date(detail.booking.checkInAt)));
+                checkinStatusTV.setText("Đã Check-in lúc: " + sdf.format(new Date(detail.checkInAt)));
                 checkinStatusTV.setTextColor(0xFF4CAF50);
             } else {
                 checkinButton.setEnabled(true);

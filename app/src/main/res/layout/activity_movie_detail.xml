@@ -287,11 +287,11 @@
                             app:strokeWidth="1dp" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTabNews"
+                            android:id="@+id/btnTabReview"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Tin tức"
+                            android:text="Đánh giá"
                             android:textAllCaps="false"
                             android:textColor="#1E1A23"
                             android:textSize="13sp"
@@ -436,81 +436,70 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/layoutNewsSection"
+                        android:id="@+id/layoutReviewSection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <com.google.android.material.card.MaterialCardView
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvReviews"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            app:cardBackgroundColor="#FFFFFF"
-                            app:cardCornerRadius="16dp"
-                            app:cardElevation="0dp"
-                            app:strokeColor="#E6E6E6"
-                            app:strokeWidth="1dp">
+                            android:nestedScrollingEnabled="false"
+                            android:layout_marginBottom="16dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@android:color/transparent"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="16dp">
+
+                            <RatingBar
+                                android:id="@+id/ratingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:numStars="5"
+                                android:rating="5"
+                                android:stepSize="1.0"
+                                android:scaleX="0.8"
+                                android:scaleY="0.8"
+                                android:progressTint="#FFB400"
+                                android:secondaryProgressTint="#FFB400"
+                                android:layout_marginBottom="4dp" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <EditText
+                                    android:id="@+id/etComment"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Tin nổi bật"
-                                    android:textColor="#111111"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:lineSpacingExtra="4dp"
-                                    android:text="Sẽ hiển thị tin tức, hậu trường hoặc bài viết liên quan đến phim."
-                                    android:textColor="#555555"
+                                    android:layout_weight="1"
+                                    android:hint="Viết đánh giá..."
+                                    android:background="@drawable/bg_chat_input"
+                                    android:padding="12dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:inputType="textMultiLine|textFilter|textCapSentences"
                                     android:textSize="14sp" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:cardBackgroundColor="#FFFFFF"
-                            app:cardCornerRadius="16dp"
-                            app:cardElevation="0dp"
-                            app:strokeColor="#E6E6E6"
-                            app:strokeWidth="1dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
-
-                                <TextView
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnSendReview"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Bài viết khác"
-                                    android:textColor="#111111"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:lineSpacingExtra="4dp"
-                                    android:text="Khu vực này sẽ dùng cho các nội dung quảng bá, review hoặc thông báo mới."
-                                    android:textColor="#555555"
-                                    android:textSize="14sp" />
+                                    android:layout_height="48dp"
+                                    android:text="Gửi"
+                                    android:textColor="#FFFFFF"
+                                    app:cornerRadius="24dp"
+                                    app:backgroundTint="#1E4F8F" />
                             </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton

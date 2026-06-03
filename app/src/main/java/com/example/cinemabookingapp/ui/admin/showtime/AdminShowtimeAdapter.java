@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,28 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Showtime showtime = showtimes.get(position);
 
+        holder.tvShowtimeId.setText("Mã: " + showtime.showtimeId);
+
+        long currentTime = System.currentTimeMillis();
+        boolean isExpired = showtime.endAt < currentTime;
+
+        if (isExpired) {
+            holder.tvShowtimeStatus.setText("● Hết hạn");
+            holder.tvShowtimeStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9CA3AF")));
+            holder.itemView.setAlpha(0.6f);
+            holder.cardRoot.setCardBackgroundColor(Color.parseColor("#F1F5F9"));
+        } else if (showtime.isScheduled && !showtime.executed) {
+            holder.tvShowtimeStatus.setText("● Lên lịch");
+            holder.tvShowtimeStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            holder.itemView.setAlpha(1.0f);
+            holder.cardRoot.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+        } else {
+            holder.tvShowtimeStatus.setText("● Đang hoạt động");
+            holder.tvShowtimeStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+            holder.itemView.setAlpha(1.0f);
+            holder.cardRoot.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+
         // Resolve movie name
         Movie movie = movieMap.get(showtime.movieId);
         holder.tvMovieTitle.setText(movie != null ? movie.title : "Phim không xác định");
@@ -88,9 +111,14 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
         holder.tvPrice.setText(currencyFormat.format(showtime.basePrice));
 
         // Click listeners
-        holder.btnEdit.setOnClickListener(v -> {
-            if (listener != null) listener.onEdit(showtime);
-        });
+        if (showtime.isScheduled && !showtime.executed) {
+            holder.btnEdit.setVisibility(View.GONE);
+        } else {
+            holder.btnEdit.setVisibility(View.VISIBLE);
+            holder.btnEdit.setOnClickListener(v -> {
+                if (listener != null) listener.onEdit(showtime);
+            });
+        }
 
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDelete(showtime);
@@ -110,6 +138,9 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
         TextView tvPrice;
         View btnEdit;
         View btnDelete;
+        TextView tvShowtimeId;
+        TextView tvShowtimeStatus;
+        com.google.android.material.card.MaterialCardView cardRoot;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,6 +151,9 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
             tvPrice = itemView.findViewById(R.id.tvPrice);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            tvShowtimeId = itemView.findViewById(R.id.tvShowtimeId);
+            tvShowtimeStatus = itemView.findViewById(R.id.tvShowtimeStatus);
+            cardRoot = (com.google.android.material.card.MaterialCardView) itemView;
         }
     }
 }

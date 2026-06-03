@@ -14,4 +14,5 @@ public interface BookingRepository {
     void updateBookingStatus(String bookingId, String status, ResultCallback<Booking> callback);
     void cancelBooking(String bookingId, ResultCallback<Booking> callback);
     void softDeleteBooking(String bookingId, ResultCallback<Void> callback);
+    void checkUserHasBookedMovie(String userId, String movieId, ResultCallback<Boolean> callback);
 }
