@@ -23,6 +23,7 @@ import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.AuthenticationService;
 import com.example.cinemabookingapp.service.ProfileService;
 import com.example.cinemabookingapp.ui.component.AchievementProgressBar;
+import com.example.cinemabookingapp.ui.customer.chat.CustomerChatActivity;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class ProfileFragment extends Fragment {
 
     // Menu items
     LinearLayout menuHotline, menuEmail, menuCompanyInfo,
-            menuTerms, menuPaymentPolicy, menuPrivacyPolicy, menuFaq;
+            menuTerms, menuPaymentPolicy, menuPrivacyPolicy, menuFaq, staffChat;
     LinearLayout btnDoiQua, btnMyRewards, btnTinhNangMoi;
 
     // ── Services ──────────────────────────────────────────────────────────────
@@ -207,6 +208,8 @@ public class ProfileFragment extends Fragment {
         menuPaymentPolicy   = view.findViewById(R.id.menuPaymentPolicy);
         menuPrivacyPolicy   = view.findViewById(R.id.menuPrivacyPolicy);
         menuFaq             = view.findViewById(R.id.menuFaq);
+
+        staffChat           = view.findViewById(R.id.staffChat);
     }
 
     // ── Set rich-text menu labels ─────────────────────────────────────────────
@@ -308,6 +311,11 @@ public class ProfileFragment extends Fragment {
                     })
                     .setNegativeButton("Huỷ", null)
                     .show();
+        });
+
+        staffChat.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), CustomerChatActivity.class);
+            startActivity(intent);
         });
     }
 }
