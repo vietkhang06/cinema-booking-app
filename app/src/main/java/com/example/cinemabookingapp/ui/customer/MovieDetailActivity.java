@@ -197,7 +197,7 @@ public class MovieDetailActivity extends BaseActivity {
         btnBookTickets = findViewById(R.id.btnBookTickets);
         btnBookTickets.setVisibility(View.GONE);
     }
-
+    //Zikenic was here _ commit test
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
