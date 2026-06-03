@@ -36,6 +36,7 @@ import com.example.cinemabookingapp.ui.customer.chat.adapter.MessageAdapter;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,6 +94,7 @@ public class MessageActivity extends AppCompatActivity {
                 @Override
                 public void onError(String message) {
                     receiver = new Conversation.UserSnapShot(t_receiver);
+                    sender = new Conversation.UserSnapShot(ServiceProvider.getInstance().getProfileService().getCachedProfile());
 
                     bindViews();
                     setupToolbar();
@@ -281,6 +283,7 @@ public class MessageActivity extends AppCompatActivity {
             return;
         listener = FirebaseFirestore.getInstance().collection("chat_messages")
                 .whereEqualTo("convoId", convoId)
+                .orderBy("sentAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
                         // Handle error
@@ -321,7 +324,7 @@ public class MessageActivity extends AppCompatActivity {
                         messages.addAll(newMessages);
                         messageAdapter.submitList(new ArrayList<>(messages));
 
-                        recyclerViewMessages.scrollToPosition(messageAdapter.getItemCount() - 1);
+                        recyclerViewMessages.scrollToPosition(messageAdapter.getItemCount());
                     }
                 });
     }

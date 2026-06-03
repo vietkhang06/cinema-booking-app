@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -173,15 +174,15 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
                         return;
                     }
                     if (snapshot != null && !snapshot.isEmpty()) {
-                        Log.i("StaffCustomerChatActivity", "Realtime convo update: " + snapshot.size() + " docs");
-                        List<Conversation> conversations = snapshot.toObjects(Conversation.class);
+                        Log.i("StaffCustomerChatActivity", "Realtime convo listener: " + snapshot.size() + " docs");
+                        snapshot.getDocuments().forEach(doc -> Log.i("StaffCustomerChatActivity", " - " + doc.getId() + ": " + doc.getData()));
+                        List<Conversation> conversations = snapshot.toObjects(Conversation.class).stream()
+                                .filter(conversation -> conversation != null && conversation.lastMessage != null)
+                                .collect(Collectors.toList());
+
                         allConversations.clear();
                         allConversations.addAll(conversations);
 
-                        List<ConversationItem> conversationItems = allConversations.stream()
-                                .map(conversation -> new ConversationItem(conversation, true, profileService.getCachedProfile().uid))
-                                .collect(Collectors.toList());
-                        conversationAdapter.submitList(conversationItems);
                         applyFilters();
                     }
                 });

@@ -205,7 +205,9 @@ public class CustomerChatActivity extends AppCompatActivity {
                     }
                     if (snapshot != null && !snapshot.isEmpty()) {
                         Log.i("CustomerChatActivity", "New message received: " + snapshot.size());
-                        List<Conversation> conversations = snapshot.toObjects(Conversation.class);
+                        List<Conversation> conversations = snapshot.toObjects(Conversation.class).stream()
+                                .filter(conversation -> conversation != null && conversation.lastMessage != null)
+                                .collect(Collectors.toList());
 
                         allConversations.clear();
                         allConversations.addAll(conversations);
