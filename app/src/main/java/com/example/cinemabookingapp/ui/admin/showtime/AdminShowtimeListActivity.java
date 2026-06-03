@@ -1,6 +1,7 @@
 package com.example.cinemabookingapp.ui.admin.showtime;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +42,10 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
     private MaterialAutoCompleteTextView actvCinemaChooser;
     private RecyclerView rvShowtimes;
     private TextView tvEmptyShowtimes;
+    private com.google.android.material.button.MaterialButton btnActiveShowtimes;
+    private com.google.android.material.button.MaterialButton btnScheduledShowtimes;
+    private com.google.android.material.button.MaterialButton btnExpiredShowtimes;
+    private int currentTab = 0; // 0: Active, 1: Scheduled, 2: Expired
 
     private ShowtimeRepositoryImpl showtimeRepository;
     private CinemaRepositoryImpl cinemaRepository;
@@ -48,6 +53,7 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
     private RoomRepositoryImpl roomRepository;
 
     private final List<Showtime> allShowtimes = new ArrayList<>();
+    private final List<Showtime> allSchedules = new ArrayList<>();
     private final List<Showtime> displayedShowtimes = new ArrayList<>();
     private final List<Cinema> cinemaList = new ArrayList<>();
     
@@ -90,6 +96,19 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
             Intent intent = new Intent(this, AdminShowtimeAddEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_ADD_EDIT);
         });
+
+        findViewById(R.id.btnScheduleShowtime).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminShowtimeScheduleActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_ADD_EDIT);
+        });
+
+        btnActiveShowtimes = findViewById(R.id.btnActiveShowtimes);
+        btnScheduledShowtimes = findViewById(R.id.btnScheduledShowtimes);
+        btnExpiredShowtimes = findViewById(R.id.btnExpiredShowtimes);
+
+        btnActiveShowtimes.setOnClickListener(v -> switchTab(0));
+        btnScheduledShowtimes.setOnClickListener(v -> switchTab(1));
+        btnExpiredShowtimes.setOnClickListener(v -> switchTab(2));
 
         actvCinemaChooser.setOnItemClickListener((parent, view, position, id) -> {
             if (position == 0) {
@@ -175,7 +194,21 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
             public void onSuccess(List<Showtime> showtimes) {
                 allShowtimes.clear();
                 allShowtimes.addAll(showtimes);
-                filterShowtimes();
+                
+                showtimeRepository.getAllShowtimeSchedules(new ResultCallback<List<Showtime>>() {
+                    @Override
+                    public void onSuccess(List<Showtime> schedules) {
+                        allSchedules.clear();
+                        allSchedules.addAll(schedules);
+                        filterShowtimes();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        showToast("Lỗi tải lịch trình suất chiếu: " + message);
+                        filterShowtimes();
+                    }
+                });
             }
 
             @Override
@@ -185,11 +218,93 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
         });
     }
 
+    private void switchTab(int tabIndex) {
+        currentTab = tabIndex;
+        
+        // Active Tab
+        if (currentTab == 0) {
+            btnActiveShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+            btnActiveShowtimes.setTextColor(Color.WHITE);
+        } else {
+            btnActiveShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.WHITE));
+            btnActiveShowtimes.setTextColor(Color.parseColor("#1E1A23"));
+        }
+
+        // Scheduled Tab
+        if (currentTab == 1) {
+            btnScheduledShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+            btnScheduledShowtimes.setTextColor(Color.WHITE);
+        } else {
+            btnScheduledShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.WHITE));
+            btnScheduledShowtimes.setTextColor(Color.parseColor("#1E1A23"));
+        }
+
+        // Expired Tab
+        if (currentTab == 2) {
+            btnExpiredShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1E1A23")));
+            btnExpiredShowtimes.setTextColor(Color.WHITE);
+        } else {
+            btnExpiredShowtimes.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.WHITE));
+            btnExpiredShowtimes.setTextColor(Color.parseColor("#1E1A23"));
+        }
+
+        filterShowtimes();
+    }
+
     private void filterShowtimes() {
-        displayedShowtimes.clear();
+        long currentTime = System.currentTimeMillis();
+        int activeCount = 0;
+        int scheduledCount = 0;
+        int expiredCount = 0;
+
+        // Calculate active and expired counts from allShowtimes
         for (Showtime s : allShowtimes) {
             if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
-                displayedShowtimes.add(s);
+                if (s.endAt < currentTime) {
+                    expiredCount++;
+                } else {
+                    activeCount++;
+                }
+            }
+        }
+
+        // Calculate scheduled counts from allSchedules (where executed = false)
+        for (Showtime s : allSchedules) {
+            if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
+                if (!s.executed) {
+                    scheduledCount++;
+                }
+            }
+        }
+
+        btnActiveShowtimes.setText("Hoạt động (" + activeCount + ")");
+        btnScheduledShowtimes.setText("Lên lịch (" + scheduledCount + ")");
+        btnExpiredShowtimes.setText("Hết hạn (" + expiredCount + ")");
+
+        displayedShowtimes.clear();
+        if (currentTab == 0) { // Active
+            for (Showtime s : allShowtimes) {
+                if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
+                    if (s.endAt >= currentTime) {
+                        displayedShowtimes.add(s);
+                    }
+                }
+            }
+        } else if (currentTab == 1) { // Scheduled
+            for (Showtime s : allSchedules) {
+                if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
+                    if (!s.executed) {
+                        displayedShowtimes.add(s);
+                    }
+                }
+            }
+        } else if (currentTab == 2) { // Expired
+            for (Showtime s : allShowtimes) {
+                if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
+                    if (s.endAt < currentTime) {
+                        displayedShowtimes.add(s);
+                    }
+                }
             }
         }
         
@@ -238,18 +353,33 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
     }
 
     private void deleteShowtime(Showtime showtime) {
-        showtimeRepository.softDeleteShowtime(showtime.showtimeId, new ResultCallback<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                showToast("Đã xóa suất chiếu thành công");
-                loadShowtimes();
-            }
+        if (showtime.isScheduled && !showtime.executed) {
+            showtimeRepository.deleteShowtimeSchedule(showtime.showtimeId, new ResultCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    showToast("Đã xóa lịch trình suất chiếu thành công");
+                    loadShowtimes();
+                }
 
-            @Override
-            public void onError(String message) {
-                showToast("Xóa suất chiếu thất bại: " + message);
-            }
-        });
+                @Override
+                public void onError(String message) {
+                    showToast("Xóa lịch trình thất bại: " + message);
+                }
+            });
+        } else {
+            showtimeRepository.softDeleteShowtime(showtime.showtimeId, new ResultCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    showToast("Đã xóa suất chiếu thành công");
+                    loadShowtimes();
+                }
+
+                @Override
+                public void onError(String message) {
+                    showToast("Xóa suất chiếu thất bại: " + message);
+                }
+            });
+        }
     }
 
     @Override

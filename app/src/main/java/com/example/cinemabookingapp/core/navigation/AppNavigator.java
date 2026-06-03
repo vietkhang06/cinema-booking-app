@@ -10,6 +10,7 @@ import com.example.cinemabookingapp.ui.auth.ForgotPasswordActivity;
 import com.example.cinemabookingapp.ui.auth.LoginActivity;
 import com.example.cinemabookingapp.ui.auth.RegisterActivity;
 import com.example.cinemabookingapp.ui.customer.HomeActivity;
+import com.example.cinemabookingapp.ui.customer.notification.NotificationActivity;
 import com.example.cinemabookingapp.ui.customer.transaction.TicketDetailActivity;
 import com.example.cinemabookingapp.ui.customer.transaction.TransactionHistoryActivity;
 import com.example.cinemabookingapp.ui.staff.StaffDashboardActivity;
@@ -63,6 +64,10 @@ public final class AppNavigator {
 
     public static void goToTransactionHistory(Activity activity) {
         open(activity, TransactionHistoryActivity.class);
+    }
+
+    public static void goToNotification(Activity activity) {
+        open(activity, NotificationActivity.class);
     }
 
     public static void goToTicketDetail(Activity activity, String bookingId) {

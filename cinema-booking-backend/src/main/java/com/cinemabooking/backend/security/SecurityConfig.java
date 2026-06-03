@@ -52,6 +52,10 @@ public class SecurityConfig {
                                 "/api/v1/movies",
                                 "/api/v1/movies/**",
 
+                                // chat
+                                "/api/v1/chat",
+                                "/api/v1/chat/**",
+
                                 // Banners
                                 "/api/v1/banners",
                                 "/api/v1/banners/**",

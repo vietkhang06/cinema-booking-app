@@ -519,8 +519,35 @@
                         android:layout_weight="1"
                         android:textColor="#111111"
                         android:textSize="14sp">
-                        <![CDATA[Email:  <font color="#E8640C">hotro@galaxystudio.vn</font>]]>
+                        <!-- [CDATA[Email:  <font color="#E8640C">hotro@galaxystudio.vn</font>]] -->
                     </TextView>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_next"
+                        app:tint="#AAAAAA" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
+
+                <!-- Chăm sóc khách hàng -->
+                <LinearLayout
+                    android:id="@+id/staffChat"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:background="?attr/selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Chăm sóc khách hàng"
+                        android:textColor="#111111"
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="16dp"

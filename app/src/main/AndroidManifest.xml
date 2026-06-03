@@ -17,7 +17,18 @@
         android:theme="@style/Theme.CinemaBookingApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!-- Facebook -->
+        <activity
+            android:name=".ui.staff.StaffCustomerChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.chat.MessageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.chat.CustomerChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.notification.NotificationActivity"
+            android:exported="false" /> <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -58,8 +69,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.auth.RegisterActivity"
-            android:exported="false" />
-        <!-- CUSTOMER -->
+            android:exported="false" /> <!-- CUSTOMER -->
         <activity
             android:name=".ui.customer.HomeActivity"
             android:exported="false" />
@@ -77,22 +87,20 @@
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
             android:name=".ui.customer.PaymentInstructionActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
-            android:exported="false" />
-
-        <activity android:name=".ui.customer.cine_shop.CineCartActivity" android:exported="false" />
-        <activity android:name=".ui.customer.cine_shop.CineCheckoutActivity" android:exported="false" />
-        <activity android:name=".ui.customer.transaction.TransactionHistoryActivity" android:exported="false" />
-        <activity android:name=".ui.customer.transaction.TicketDetailActivity" android:exported="false" />
-
-
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
             android:name=".ui.customer.cine_shop.CineCartActivity"
             android:exported="false" />
         <activity
             android:name=".ui.customer.cine_shop.CineCheckoutActivity"
             android:exported="false" />
-        <!-- STAFF -->
+        <activity
+            android:name=".ui.customer.transaction.TransactionHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.transaction.TicketDetailActivity"
+            android:exported="false" /> <!-- STAFF -->
         <activity
             android:name=".ui.staff.StaffDashboardActivity"
             android:exported="false" />
@@ -107,7 +115,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.staff.StaffCheckSeat"
-            android:exported="false" />
+            android:exported="false" /> <!-- ADMIN -->
         <activity
             android:name=".ui.staff.StaffSearchBookingActivity"
             android:exported="false" />
@@ -122,15 +130,14 @@
             android:exported="false" />
         <activity
             android:name=".ui.staff.StaffProfileActivity"
-            android:exported="false" />
-        <!-- ADMIN -->
+            android:exported="false" /> <!-- ADMIN -->
         <activity
             android:name=".ui.admin.AdminDashboardActivity"
             android:exported="false" />
         <activity
             android:name=".ui.admin.AdminPaymentListActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
             android:name=".ui.admin.movie.AdminMovieListActivity"
             android:exported="false" />
@@ -160,6 +167,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.admin.showtime.AdminShowtimeAddEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.showtime.AdminShowtimeScheduleActivity"
             android:exported="false" />
         <activity
             android:name=".ui.admin.user.AdminUserManagementActivity"

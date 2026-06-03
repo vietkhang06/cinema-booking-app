@@ -2,14 +2,15 @@ package com.cinemabooking.backend.controller;
 
 import com.cinemabooking.backend.dto.ApiResponse;
 import com.cinemabooking.backend.dto.UserDTO;
+import com.cinemabooking.backend.dto.request.UpdateProfileRequestDTO;
 import com.cinemabooking.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
 
@@ -46,5 +47,35 @@ public class ProfileController {
                 .message("User profile fetched successfully")
                 .data(user)
                 .build();
+    }
+
+    @PutMapping
+    @Operation(summary = "Update current authenticated user profile")
+    public ResponseEntity<ApiResponse<UserDTO>> updateProfile(
+            @AuthenticationPrincipal Object principal,
+            @RequestBody UpdateProfileRequestDTO request
+    ) throws ExecutionException, InterruptedException {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<UserDTO>builder()
+                    .success(false)
+                    .message("Unauthorized: No principal found in security context")
+                    .build());
+        }
+
+        if(request == null)
+            return ResponseEntity.badRequest().body(ApiResponse.<UserDTO>builder()
+                    .success(false)
+                    .message("Bad request.")
+                    .build());
+
+        String uid = principal.toString();
+        UserDTO user = userService.updateUserProfile(uid, request);
+
+        return ResponseEntity.ok()
+                .body(ApiResponse.<UserDTO>builder()
+                    .success(true)
+                    .message("User profile updated successfully")
+                    .data(user)
+                    .build());
     }
 }

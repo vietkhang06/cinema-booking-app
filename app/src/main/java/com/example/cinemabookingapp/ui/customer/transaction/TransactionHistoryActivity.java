@@ -7,6 +7,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,10 +35,20 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     private View layoutEmpty;
     private BookingService bookingService;
 
+    private com.google.firebase.firestore.ListenerRegistration bookingsListener;
+    private com.google.firebase.firestore.ListenerRegistration shopOrdersListener;
+    private final List<Booking> movieBookings = new ArrayList<>();
+    private final List<Booking> cineShopBookings = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         bookingService = ServiceProvider.getInstance().getBookingService();
 
@@ -56,9 +69,10 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         layoutEmpty = findViewById(R.id.layout_empty);
 
         adapter = new TransactionAdapter(booking -> {
-            boolean isPaid = "paid".equalsIgnoreCase(booking.paymentStatus)
-                    || "confirmed".equalsIgnoreCase(booking.bookingStatus)
-                    || "success".equalsIgnoreCase(booking.bookingStatus);
+            String pStatus = booking.paymentStatus != null ? booking.paymentStatus.toUpperCase() : "PENDING";
+            String bStatus = booking.bookingStatus != null ? booking.bookingStatus.toUpperCase() : "PENDING";
+            boolean isPaid = "SUCCESS".equals(pStatus) || "PAID".equals(pStatus) ||
+                             "CONFIRMED".equals(bStatus) || "SUCCESS".equals(bStatus);
             if (isPaid) {
                 AppNavigator.goToTicketDetail(this, booking.bookingId);
             } else {
@@ -82,134 +96,113 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             return;
         }
 
-        bookingService.getMyBookings(new ResultCallback<List<Booking>>() {
-            @Override
-            public void onSuccess(List<Booking> movieBookings) {
-                // Fetch CineShop orders
-                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("cine_shop_orders")
-                        .whereEqualTo("userId", currentUid)
-                        .get()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            List<Booking> allTransactions = new ArrayList<>();
-                            if (movieBookings != null) {
-                                allTransactions.addAll(movieBookings);
+        if (bookingsListener != null) {
+            bookingsListener.remove();
+        }
+        if (shopOrdersListener != null) {
+            shopOrdersListener.remove();
+        }
+
+        movieBookings.clear();
+        cineShopBookings.clear();
+
+        // 1. Listen to movie bookings collection in real-time
+        bookingsListener = com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("bookings")
+                .whereEqualTo("userId", currentUid)
+                .addSnapshotListener((querySnapshot, error) -> {
+                    if (error != null) {
+                        android.util.Log.e("TransactionHistory", "Bookings listen error: " + error.getMessage());
+                        return;
+                    }
+                    if (querySnapshot != null) {
+                        List<Booking> list = new ArrayList<>();
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            Booking booking = doc.toObject(Booking.class);
+                            if (booking != null && !booking.deleted) {
+                                booking.bookingId = doc.getId();
+                                list.add(booking);
                             }
+                        }
+                        movieBookings.clear();
+                        movieBookings.addAll(list);
+                        combineAndDisplay();
+                    }
+                });
 
-                            for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                                // Map fields programmatically to temporary Booking object
-                                Booking orderBooking = new Booking();
-                                orderBooking.bookingId = doc.getId();
-                                orderBooking.userId = doc.getString("userId");
-                                orderBooking.showtimeId = null; // Mark as CineShop order
-                                orderBooking.movieTitleSnapshot = doc.getString("itemName");
-                                orderBooking.movieImageUrlSnapshot = doc.getString("itemImageUrl");
-                                
-                                String paymentMethod = doc.getString("paymentMethod");
-                                orderBooking.cinemaNameSnapshot = "CineShop - Nhận tại rạp (" + (paymentMethod != null ? paymentMethod : "ZALOPAY") + ")";
-                                
-                                Long qtyObj = doc.getLong("quantity");
-                                int qty = qtyObj != null ? qtyObj.intValue() : 1;
-                                orderBooking.roomNameSnapshot = "Số lượng: " + qty;
-                                orderBooking.showtimeStartAtSnapshot = 0;
-                                
-                                Double priceObj = doc.getDouble("totalPrice");
-                                double price = priceObj != null ? priceObj : 0.0;
-                                orderBooking.total = price;
-                                orderBooking.subtotal = price;
-                                
-                                orderBooking.bookingStatus = doc.getString("status");
-                                orderBooking.paymentStatus = doc.getString("status");
-                                
-                                Long createdAtObj = doc.getLong("createdAt");
-                                orderBooking.createdAt = createdAtObj != null ? createdAtObj : 0;
-
-                                allTransactions.add(orderBooking);
-                            }
-
-                            // Sort combined list by createdAt descending
-                            allTransactions.sort((t1, t2) -> Long.compare(t2.createdAt, t1.createdAt));
-
-                            showLoading(false);
-                            if (allTransactions.isEmpty()) {
-                                layoutEmpty.setVisibility(View.VISIBLE);
-                                rvTransactions.setVisibility(View.GONE);
-                            } else {
-                                layoutEmpty.setVisibility(View.GONE);
-                                rvTransactions.setVisibility(View.VISIBLE);
-                                adapter.setBookings(allTransactions);
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            // If CineShop fetch fails, fallback to show only movie bookings
-                            showLoading(false);
-                            List<Booking> fallbackList = movieBookings != null ? movieBookings : new ArrayList<>();
-                            if (fallbackList.isEmpty()) {
-                                layoutEmpty.setVisibility(View.VISIBLE);
-                                rvTransactions.setVisibility(View.GONE);
-                            } else {
-                                layoutEmpty.setVisibility(View.GONE);
-                                rvTransactions.setVisibility(View.VISIBLE);
-                                adapter.setBookings(fallbackList);
-                            }
-                        });
-            }
-
-            @Override
-            public void onError(String message) {
-                // If movie bookings fetch fails, try loading CineShop orders as fallback
-                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("cine_shop_orders")
-                        .whereEqualTo("userId", currentUid)
-                        .get()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            List<Booking> allTransactions = new ArrayList<>();
-                            for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                                Booking orderBooking = new Booking();
-                                orderBooking.bookingId = doc.getId();
-                                orderBooking.userId = doc.getString("userId");
-                                orderBooking.showtimeId = null;
-                                orderBooking.movieTitleSnapshot = doc.getString("itemName");
-                                orderBooking.movieImageUrlSnapshot = doc.getString("itemImageUrl");
-                                
-                                String paymentMethod = doc.getString("paymentMethod");
-                                orderBooking.cinemaNameSnapshot = "CineShop - Nhận tại rạp (" + (paymentMethod != null ? paymentMethod : "ZALOPAY") + ")";
-                                
-                                Long qtyObj = doc.getLong("quantity");
-                                int qty = qtyObj != null ? qtyObj.intValue() : 1;
-                                orderBooking.roomNameSnapshot = "Số lượng: " + qty;
-                                orderBooking.showtimeStartAtSnapshot = 0;
-                                
-                                Double priceObj = doc.getDouble("totalPrice");
-                                double price = priceObj != null ? priceObj : 0.0;
-                                orderBooking.total = price;
-                                orderBooking.subtotal = price;
-                                
-                                orderBooking.bookingStatus = doc.getString("status");
-                                orderBooking.paymentStatus = doc.getString("status");
-                                
-                                Long createdAtObj = doc.getLong("createdAt");
-                                orderBooking.createdAt = createdAtObj != null ? createdAtObj : 0;
-
-                                allTransactions.add(orderBooking);
-                            }
+        // 2. Listen to CineShop orders collection in real-time
+        shopOrdersListener = com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("cine_shop_orders")
+                .whereEqualTo("userId", currentUid)
+                .addSnapshotListener((querySnapshot, error) -> {
+                    if (error != null) {
+                        android.util.Log.e("TransactionHistory", "CineShop listen error: " + error.getMessage());
+                        return;
+                    }
+                    if (querySnapshot != null) {
+                        List<Booking> list = new ArrayList<>();
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            Booking orderBooking = new Booking();
+                            orderBooking.bookingId = doc.getId();
+                            orderBooking.userId = doc.getString("userId");
+                            orderBooking.showtimeId = null; // Mark as CineShop order
+                            orderBooking.movieTitleSnapshot = doc.getString("itemName");
+                            orderBooking.movieImageUrlSnapshot = doc.getString("itemImageUrl");
                             
-                            allTransactions.sort((t1, t2) -> Long.compare(t2.createdAt, t1.createdAt));
-                            showLoading(false);
-                            if (allTransactions.isEmpty()) {
-                                layoutEmpty.setVisibility(View.VISIBLE);
-                                rvTransactions.setVisibility(View.GONE);
-                            } else {
-                                layoutEmpty.setVisibility(View.GONE);
-                                rvTransactions.setVisibility(View.VISIBLE);
-                                adapter.setBookings(allTransactions);
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            showLoading(false);
-                            Toast.makeText(TransactionHistoryActivity.this, "Lỗi: " + message, Toast.LENGTH_LONG).show();
-                            layoutEmpty.setVisibility(View.VISIBLE);
-                        });
-            }
-        });
+                            String paymentMethod = doc.getString("paymentMethod");
+                            orderBooking.cinemaNameSnapshot = "CineShop - Nhận tại rạp (" + (paymentMethod != null ? paymentMethod : "ZALOPAY") + ")";
+                            
+                            Long qtyObj = doc.getLong("quantity");
+                            int qty = qtyObj != null ? qtyObj.intValue() : 1;
+                            orderBooking.roomNameSnapshot = "Số lượng: " + qty;
+                            orderBooking.showtimeStartAtSnapshot = 0;
+                            
+                            Double priceObj = doc.getDouble("totalPrice");
+                            double price = priceObj != null ? priceObj : 0.0;
+                            orderBooking.total = price;
+                            orderBooking.subtotal = price;
+                            
+                            orderBooking.bookingStatus = doc.getString("status");
+                            orderBooking.paymentStatus = doc.getString("status");
+                            
+                            Long createdAtObj = doc.getLong("createdAt");
+                            orderBooking.createdAt = createdAtObj != null ? createdAtObj : 0;
+
+                            list.add(orderBooking);
+                        }
+                        cineShopBookings.clear();
+                        cineShopBookings.addAll(list);
+                        combineAndDisplay();
+                    }
+                });
+    }
+
+    private void combineAndDisplay() {
+        List<Booking> allTransactions = new ArrayList<>();
+        allTransactions.addAll(movieBookings);
+        allTransactions.addAll(cineShopBookings);
+
+        // Sort combined list by createdAt descending
+        allTransactions.sort((t1, t2) -> Long.compare(t2.createdAt, t1.createdAt));
+
+        showLoading(false);
+        if (allTransactions.isEmpty()) {
+            layoutEmpty.setVisibility(View.VISIBLE);
+            rvTransactions.setVisibility(View.GONE);
+        } else {
+            layoutEmpty.setVisibility(View.GONE);
+            rvTransactions.setVisibility(View.VISIBLE);
+            adapter.setBookings(allTransactions);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bookingsListener != null) {
+            bookingsListener.remove();
+        }
+        if (shopOrdersListener != null) {
+            shopOrdersListener.remove();
+        }
     }
 
     private void showLoading(boolean isLoading) {

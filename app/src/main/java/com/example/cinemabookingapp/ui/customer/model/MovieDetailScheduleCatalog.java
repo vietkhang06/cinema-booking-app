@@ -58,6 +58,10 @@ public class MovieDetailScheduleCatalog {
             if (s.deleted || s.startAt < startOfToday || !isBookableStatus(s.status)) {
                 continue;
             }
+            // Nghiệp vụ Lên lịch: Chỉ cho phép hiển thị nếu đã đến giờ chiếu
+            if (s.isScheduled && now < s.startAt) {
+                continue;
+            }
             Date showDate = new Date(s.startAt);
             String dateKey = dateKeyFormat.format(showDate);
 

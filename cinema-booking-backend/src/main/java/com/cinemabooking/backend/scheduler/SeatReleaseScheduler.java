@@ -19,42 +19,42 @@ public class SeatReleaseScheduler {
     @Autowired
     private Firestore firestore;
 
-    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
-    public void releaseExpiredSeats() {
-        logger.info("Scanning for expired seat holds...");
-        long now = System.currentTimeMillis();
-
-        try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
-                    .whereEqualTo("status", "held")
-                    .get();
-
-            List<QueryDocumentSnapshot> heldSeats = future.get().getDocuments();
-            WriteBatch batch = firestore.batch();
-            int count = 0;
-
-            for (DocumentSnapshot doc : heldSeats) {
-                Long heldUntilVal = doc.getLong("heldUntil");
-                long heldUntil = heldUntilVal != null ? heldUntilVal : 0L;
-
-                if (heldUntil > 0 && heldUntil < now) {
-                    logger.info("[BOOKING_EXPIRED] Seat hold expired for seatId={}. heldUntil={}, now={}. Releasing seat...",
-                            doc.getId(), heldUntil, now);
-                    batch.update(doc.getReference(),
-                            "status", "available",
-                            "heldBy", null,
-                            "heldUntil", 0L
-                    );
-                    count++;
-                }
-            }
-
-            if (count > 0) {
-                batch.commit().get();
-                logger.info("[SEAT_RELEASE] Batch released {} expired seats", count);
-            }
-        } catch (Exception e) {
-            logger.error("Error during scanning/releasing expired seats: {}", e.getMessage(), e);
-        }
-    }
+//    @Scheduled(fixedRate = 60000) // Runs every 60 seconds
+//    public void releaseExpiredSeats() {
+//        logger.info("Scanning for expired seat holds...");
+//        long now = System.currentTimeMillis();
+//
+//        try {
+//            ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
+//                    .whereEqualTo("status", "held")
+//                    .get();
+//
+//            List<QueryDocumentSnapshot> heldSeats = future.get().getDocuments();
+//            WriteBatch batch = firestore.batch();
+//            int count = 0;
+//
+//            for (DocumentSnapshot doc : heldSeats) {
+//                Long heldUntilVal = doc.getLong("heldUntil");
+//                long heldUntil = heldUntilVal != null ? heldUntilVal : 0L;
+//
+//                if (heldUntil > 0 && heldUntil < now) {
+//                    logger.info("[BOOKING_EXPIRED] Seat hold expired for seatId={}. heldUntil={}, now={}. Releasing seat...",
+//                            doc.getId(), heldUntil, now);
+//                    batch.update(doc.getReference(),
+//                            "status", "available",
+//                            "heldBy", null,
+//                            "heldUntil", 0L
+//                    );
+//                    count++;
+//                }
+//            }
+//
+//            if (count > 0) {
+//                batch.commit().get();
+//                logger.info("[SEAT_RELEASE] Batch released {} expired seats", count);
+//            }
+//        } catch (Exception e) {
+//            logger.error("Error during scanning/releasing expired seats: {}", e.getMessage(), e);
+//        }
+//    }
 }
