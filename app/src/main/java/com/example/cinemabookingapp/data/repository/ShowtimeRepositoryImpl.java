@@ -239,16 +239,32 @@ public class ShowtimeRepositoryImpl implements ShowtimeRepository {
 
     @Override
     public void updateShowtime(Showtime showtime, ResultCallback<Showtime> callback) {
-        showtime.updatedAt = System.currentTimeMillis();
-        firestore.collection(FirestoreCollections.SHOWTIMES)
-                .document(showtime.showtimeId)
-                .set(showtime)
-                .addOnSuccessListener(aVoid -> {
-                    if (callback != null) callback.onSuccess(showtime);
-                })
-                .addOnFailureListener(e -> {
-                    if (callback != null) callback.onError(e.getMessage());
-                });
+//        showtime.updatedAt = System.currentTimeMillis();
+//        firestore.collection(FirestoreCollections.SHOWTIMES)
+//                .document(showtime.showtimeId)
+//                .set(showtime)
+//                .addOnSuccessListener(aVoid -> {
+//                    if (callback != null) callback.onSuccess(showtime);
+//                })
+//                .addOnFailureListener(e -> {
+//                    if (callback != null) callback.onError(e.getMessage());
+//                });
+
+        showtimeApi.updateShowtime(showtime).enqueue(new Callback<ApiResponse<Showtime>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Showtime>> call, Response<ApiResponse<Showtime>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    callback.onSuccess(response.body().getData());
+                }else{
+                    callback.onError("Lỗi cập nhật suất chiếu.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Showtime>> call, Throwable t) {
+                callback.onError("Lỗi mạng khi cập nhật suất chiếu.");
+            }
+        });
     }
 
     @Override

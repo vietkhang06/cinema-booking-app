@@ -671,7 +671,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_margin="14dp"
-                                    android:src="@drawable/chart_line_solid_full"
+                                    android:src="@drawable/ic_message"
                                     app:tint="#A13345" />
                             </com.google.android.material.card.MaterialCardView>
 

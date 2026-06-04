@@ -7,6 +7,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface ShowtimeApiService {
@@ -22,4 +23,7 @@ public interface ShowtimeApiService {
 
     @GET("showtimes/cinema/{cinemaId}")
     Call<ApiResponse<List<Showtime>>> getShowtimesByCinemaId(@Path("cinemaId") String cinemaId);
+
+    @POST("showtimes")
+    Call<ApiResponse<Showtime>> updateShowtime(Showtime showtime);
 }

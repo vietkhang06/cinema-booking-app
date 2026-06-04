@@ -2,10 +2,7 @@ package com.cinemabooking.backend.service;
 
 import com.cinemabooking.backend.dto.ShowtimeDTO;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,9 @@ public class ShowtimeService {
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION)
                 .orderBy("startAt", Query.Direction.ASCENDING)
                 .get();
-        List<ShowtimeDTO> showtimes = processQuerySnapshot(future.get());
+        List<ShowtimeDTO> showtimes = future.get().toObjects(ShowtimeDTO.class).stream()
+                .filter(dto -> !Boolean.TRUE.equals(dto.isDeleted()))
+                .collect(Collectors.toList());
         logger.info("Loaded {} showtimes", showtimes.size());
         return showtimes;
     }
@@ -39,7 +38,7 @@ public class ShowtimeService {
         logger.info("Fetching showtime by ID: {}", id);
         DocumentSnapshot doc = firestore.collection(COLLECTION).document(id).get().get();
         if (doc.exists()) {
-            ShowtimeDTO dto = mapToDTO(doc);
+            ShowtimeDTO dto = doc.toObject(ShowtimeDTO.class);
             if (dto != null && !Boolean.TRUE.equals(dto.isDeleted())) {
                 return dto;
             }
@@ -248,6 +247,34 @@ public class ShowtimeService {
         }
         logger.info("Successfully seeded {} showtimes", seedCount);
         return seedCount;
+    }
+
+    public ShowtimeDTO updateShowtime(ShowtimeDTO showtime) throws ExecutionException, InterruptedException {
+        DocumentReference documentReference = firestore.collection(ShowtimeDTO.COLLECTION_NAME).document(showtime.getShowtimeId());
+        return firestore.runTransaction(transaction -> {
+            ShowtimeDTO t_showtime = transaction.get(documentReference).get().toObject(ShowtimeDTO.class);
+            if (t_showtime == null) {
+                throw new RuntimeException("Showtime not found with ID: " + t_showtime.getShowtimeId());
+            }
+
+            t_showtime.setBasePrice(showtime.getBasePrice());
+            t_showtime.setLanguage(showtime.getLanguage());
+            t_showtime.setFormat(showtime.getFormat());
+            t_showtime.setUpdatedAt(System.currentTimeMillis());
+
+            if(t_showtime.getBookedSeatsCount() <= 0){
+                t_showtime.setStartAt(showtime.getStartAt());
+                t_showtime.setEndAt(showtime.getEndAt());
+                t_showtime.setRoomId(showtime.getRoomId());
+                t_showtime.setCinemaId(showtime.getCinemaId());
+
+                transaction.set(documentReference, t_showtime, SetOptions.mergeFields("startAt", "endAt", "roomId", "cinemaId", "basePrice", "language", "format", "updatedAt"));;
+            }else{
+                transaction.set(documentReference, t_showtime, SetOptions.mergeFields("basePrice", "language", "format", "updatedAt"));
+            }
+
+            return t_showtime;
+        }).get();
     }
 }
 

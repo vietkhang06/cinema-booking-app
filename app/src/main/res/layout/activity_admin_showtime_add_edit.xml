@@ -79,9 +79,10 @@
                         android:textColor="#7A757F"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginBottom="8dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/p_actvMovie"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -178,6 +179,7 @@
 
                     <!-- Cinema selection -->
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/p_actvCinema"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -194,6 +196,7 @@
 
                     <!-- Room selection -->
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/p_actvRoom"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

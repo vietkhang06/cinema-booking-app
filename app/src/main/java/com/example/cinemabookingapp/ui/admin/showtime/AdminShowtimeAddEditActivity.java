@@ -5,6 +5,9 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.example.cinemabookingapp.domain.model.SeatTemplate;
 import com.example.cinemabookingapp.domain.model.Showtime;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -352,6 +356,8 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
                 actvFormat.setText(showtime.format, false);
                 actvLanguage.setText(showtime.language, false);
                 tietBasePrice.setText(String.valueOf((int) showtime.basePrice));
+
+                disableEditIfExistBooking();
             }
 
             @Override
@@ -695,6 +701,23 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
         } else {
             tvPreviewPrice.setText("0 đ");
         }
+    }
+
+    void disableEditIfExistBooking(){
+        if(currentShowtime.bookedSeatsCount > 0){
+            disableFullEdit();
+        }
+    }
+
+    void disableFullEdit(){
+        findViewById(R.id.p_actvMovie).setEnabled(false);
+        findViewById(R.id.p_actvCinema).setEnabled(false);
+        findViewById(R.id.p_actvRoom).setEnabled(false);
+        tietDate.setEnabled(false);
+        tietStartTime.setEnabled(false);
+        tietEndTime.setEnabled(false);
+
+        showToast("Suất chiếu này đã có khách đặt vé.\n Không thể thay đổi thời gian và phòng chiếu.");
     }
 
     private void showToast(String message) {

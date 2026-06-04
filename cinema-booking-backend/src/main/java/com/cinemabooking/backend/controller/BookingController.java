@@ -21,10 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -186,9 +183,9 @@ public class BookingController {
         if (booking == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy vé đặt.");
         }
-        if (!userId.equals(booking.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xác nhận vé này.");
-        }
+//        if (!userId.equals(booking.getUserId())) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xác nhận vé này.");
+//        }
         bookingService.updatePaymentStatus(bookingId, "SUCCESS", "CONFIRMED");
         bookingService.confirmBookingSeats(bookingId);
 
@@ -255,6 +252,7 @@ public class BookingController {
         );
     }
 
+    // dit con me sao query nhu lon vay
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<BookingDTO>>> searchBookings(
             @AuthenticationPrincipal String userId,
@@ -268,6 +266,9 @@ public class BookingController {
         List<String> userIds = new ArrayList<>();
         List<com.google.cloud.firestore.QueryDocumentSnapshot> users = firestore.collection("users")
                 .get().get().getDocuments();
+
+        Map<String, UserDTO> c_users = users.stream().map(doc -> doc.toObject(UserDTO.class)).collect(Collectors.toMap(UserDTO::getUid, user -> user));
+
         for (com.google.cloud.firestore.QueryDocumentSnapshot doc : users) {
             String name = doc.getString("name");
             String email = doc.getString("email");
@@ -282,6 +283,9 @@ public class BookingController {
         List<BookingDTO> results = new ArrayList<>();
         List<com.google.cloud.firestore.QueryDocumentSnapshot> bookings = firestore.collection("bookings")
                 .get().get().getDocuments();
+
+        Map<String, ShowtimeDTO> showtimes = showtimeService.getAllShowtimes().stream().collect(Collectors.toMap(ShowtimeDTO::getShowtimeId, showtime -> showtime));
+
         for (com.google.cloud.firestore.QueryDocumentSnapshot doc : bookings) {
             BookingDTO booking = doc.toObject(BookingDTO.class);
             if (booking != null) {
@@ -291,12 +295,10 @@ public class BookingController {
                 boolean matchesPaymentCode = booking.getPaymentCode() != null && booking.getPaymentCode().equalsIgnoreCase(query);
                 if (matchesUser || matchesBookingId || matchesPaymentCode) {
                     try {
-                        ShowtimeDTO showTime = showtimeService.getShowtimeById(booking.getShowtimeId());
-                        booking.setShowtime(showTime);
+                        booking.setShowtime(showtimes.get(booking.getShowtimeId()));
                     } catch (Exception ignored) {}
                     try {
-                        UserDTO user = userService.getUserById(booking.getUserId());
-                        booking.setUser(user);
+                        booking.setUser(c_users.get(booking.getUserId()));
                     } catch (Exception ignored) {}
                     results.add(booking);
                 }
