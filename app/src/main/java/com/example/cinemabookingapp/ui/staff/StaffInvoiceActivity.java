@@ -132,6 +132,17 @@ public class StaffInvoiceActivity extends AuthActivity {
                     if (response.isSuccessful()) {
                         writeAuditLog("CHECKIN", "Successfully check-in customer");
                         showToast("Check-in thành công");
+                        
+                        // Gửi thông báo Check-in thành công cho khách hàng
+                        com.example.cinemabookingapp.domain.model.Notification notif = new com.example.cinemabookingapp.domain.model.Notification();
+                        notif.userId = booking.userId;
+                        notif.title = "Soát vé thành công";
+                        notif.message = "Chào mừng bạn đến rạp chiếu phim. Chúc bạn xem phim vui vẻ!";
+                        notif.type = com.example.cinemabookingapp.domain.model.NotificationType.CHECK_IN_SUCCESS.name();
+                        notif.refId = booking.bookingId;
+                        notif.isRead = false;
+                        new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl().sendNotification(notif, null);
+
                         retrieveDataFromNavigator();
                     } else {
                         showLoading(false);

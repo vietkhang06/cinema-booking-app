@@ -23,6 +23,12 @@ public final class UserMapper {
         model.createdAt = dto.createdAt;
         model.updatedAt = dto.updatedAt;
         model.deleted = dto.deleted;
+        model.birthDate = dto.birthDate;
+        model.gender = dto.gender;
+        model.cinemaId = dto.cinemaId;
+        model.cinemaName = dto.cinemaName;
+        model.internalNotes = dto.internalNotes;
+        model.loginCount = dto.loginCount;
         return model;
     }
 
@@ -42,6 +48,12 @@ public final class UserMapper {
         dto.createdAt = model.createdAt;
         dto.updatedAt = model.updatedAt;
         dto.deleted = model.deleted;
+        dto.birthDate = model.birthDate;
+        dto.gender = model.gender;
+        dto.cinemaId = model.cinemaId;
+        dto.cinemaName = model.cinemaName;
+        dto.internalNotes = model.internalNotes;
+        dto.loginCount = model.loginCount;
         return dto;
     }
 }

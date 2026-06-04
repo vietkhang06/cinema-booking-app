@@ -326,23 +326,34 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
 
     @Override
     public void onDelete(Showtime showtime) {
-        // Business Rule validation: Check if showtime has active bookings
+        // Lọc các booking chưa bị hủy
         FirebaseFirestore.getInstance().collection(FirestoreCollections.BOOKINGS)
                 .whereEqualTo("showtimeId", showtime.showtimeId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                    int bookingCount = 0;
+                    if (queryDocumentSnapshots != null) {
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            String status = doc.getString("status");
+                            if (!com.example.cinemabookingapp.core.constants.BookingStatus.CANCELLED.equals(status)) {
+                                bookingCount++;
+                            }
+                        }
+                    }
+
+                    if (bookingCount > 0) {
                         new AlertDialog.Builder(this)
-                                .setTitle("Không thể xóa")
-                                .setMessage("Suất chiếu này đã có vé được đặt. Vui lòng không xóa để tránh lỗi dữ liệu.")
-                                .setPositiveButton("Đã hiểu", null)
+                                .setTitle("Cảnh báo Hủy Suất Chiếu")
+                                .setMessage("Suất chiếu này đã có khách đặt vé. Bạn có chắc chắn muốn HỦY suất chiếu này? Các vé liên quan sẽ bị chuyển sang trạng thái chờ hoàn tiền, khách hàng sẽ nhận được thông báo và Voucher đền bù.")
+                                .setPositiveButton("Đồng ý", (dialog, which) -> executeCancelShowtime(showtime))
+                                .setNegativeButton("Hủy", null)
                                 .show();
                     } else {
                         // Confirm deletion
                         new AlertDialog.Builder(this)
                                 .setTitle("Xác nhận xóa")
                                 .setMessage("Bạn có chắc chắn muốn xóa suất chiếu này không?")
-                                .setPositiveButton("Xóa", (dialog, which) -> deleteShowtime(showtime))
+                                .setPositiveButton("Xóa", (dialog, which) -> executeCancelShowtime(showtime))
                                 .setNegativeButton("Hủy", null)
                                 .show();
                     }
@@ -352,7 +363,7 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
                 });
     }
 
-    private void deleteShowtime(Showtime showtime) {
+    private void executeCancelShowtime(Showtime showtime) {
         if (showtime.isScheduled && !showtime.executed) {
             showtimeRepository.deleteShowtimeSchedule(showtime.showtimeId, new ResultCallback<Void>() {
                 @Override
@@ -366,20 +377,33 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
                     showToast("Xóa lịch trình thất bại: " + message);
                 }
             });
-        } else {
-            showtimeRepository.softDeleteShowtime(showtime.showtimeId, new ResultCallback<Void>() {
-                @Override
-                public void onSuccess(Void result) {
-                    showToast("Đã xóa suất chiếu thành công");
-                    loadShowtimes();
-                }
-
-                @Override
-                public void onError(String message) {
-                    showToast("Xóa suất chiếu thất bại: " + message);
-                }
-            });
+            return;
         }
+
+        android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(this);
+        progressDialog.setMessage("Đang xử lý hủy và đền bù...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        // Sử dụng tài khoản admin tạm thời
+        showtimeRepository.cancelShowtime(showtime.showtimeId, "admin_1", new ResultCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                progressDialog.dismiss();
+                if ("DELETED".equals(result)) {
+                    showToast("Đã xóa hoàn toàn suất chiếu (chưa có vé).");
+                } else if ("CANCELLED".equals(result)) {
+                    showToast("Đã hủy suất chiếu và phát Voucher đền bù cho khách.");
+                }
+                loadShowtimes(); // Tải lại danh sách để cập nhật UI tự động
+            }
+
+            @Override
+            public void onError(String message) {
+                progressDialog.dismiss();
+                showToast("Lỗi: " + message);
+            }
+        });
     }
 
     @Override

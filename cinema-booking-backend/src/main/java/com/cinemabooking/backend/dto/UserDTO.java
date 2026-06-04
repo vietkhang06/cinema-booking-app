@@ -25,4 +25,8 @@ public class UserDTO {
     private Long createdAt;
     private Long updatedAt;
     private Boolean deleted;
+    private String cinemaId;
+    private String cinemaName;
+    private String internalNotes;
+    private Integer loginCount;
 }

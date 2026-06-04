@@ -14,6 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.Notification;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -34,6 +42,8 @@ public class NotificationActivity extends AppCompatActivity {
     private RecyclerView rvNotification;
     private ProgressBar progressBar;
     private View layoutEmpty;
+    private NotificationAdapter adapter;
+    private ListenerRegistration listenerRegistration;
 
     private void initViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -48,9 +58,50 @@ public class NotificationActivity extends AppCompatActivity {
         layoutEmpty = findViewById(R.id.layout_empty);
 
         rvNotification.setLayoutManager(new LinearLayoutManager(this));
-        rvNotification.setAdapter(new NotificationAdapter(null));
+        
+        adapter = new NotificationAdapter(new ArrayList<>(), notification -> {
+            if (!notification.isRead) {
+                // Gọi API cập nhật isRead = true trên Firestore
+                // Giao diện sẽ tự nhận realtime và đổi màu nền về Trắng
+                new NotificationRepositoryImpl().markAsRead(notification.notificationId, null);
+            }
+        });
+        rvNotification.setAdapter(adapter);
     }
 
     private void bindActions() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        
+        progressBar.setVisibility(View.VISIBLE);
+        
+        listenerRegistration = new NotificationRepositoryImpl().listenToUserNotifications(userId, new ResultCallback<List<Notification>>() {
+            @Override
+            public void onSuccess(List<Notification> result) {
+                progressBar.setVisibility(View.GONE);
+                if (result == null || result.isEmpty()) {
+                    layoutEmpty.setVisibility(View.VISIBLE);
+                    rvNotification.setVisibility(View.GONE);
+                } else {
+                    layoutEmpty.setVisibility(View.GONE);
+                    rvNotification.setVisibility(View.VISIBLE);
+                    adapter.setNotifications(result);
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // CỰC KỲ QUAN TRỌNG: Gỡ bỏ Listener để chống rò rỉ bộ nhớ (Memory Leak)
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
+        }
     }
 }
