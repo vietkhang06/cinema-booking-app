@@ -2,6 +2,7 @@ package com.example.cinemabookingapp.ui.customer.transaction;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,16 +15,18 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.core.navigation.DataNavigator;
 import com.example.cinemabookingapp.core.utils.QRCodeUtils;
 import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.domain.model.CineShopOrder;
 import com.example.cinemabookingapp.service.BookingService;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import android.view.View;
 import android.graphics.Canvas;
@@ -31,6 +34,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.MediaStore;
 import java.io.OutputStream;
+import java.util.Objects;
+
 import android.os.Build;
 import android.os.Environment;
 import com.google.android.material.button.MaterialButton;
@@ -50,6 +55,9 @@ public class TicketDetailActivity extends AppCompatActivity {
 
     private View layoutHeaderInfo, dividerLine, gridDetails;
 
+    TransactionHistoryActivity.Observable realtimeObservable;
+    TransactionHistoryActivity.Observable.OnBookingRealtimeListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +69,29 @@ public class TicketDetailActivity extends AppCompatActivity {
         });
 
         String bookingId = getIntent().getStringExtra(EXTRA_BOOKING_ID);
+
         if (bookingId == null) {
             Toast.makeText(this, "Không tìm thấy mã vé", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        realtimeObservable = DataNavigator.getInstance().popData(getIntent().getIntExtra("observerResourceId", 0));
+
+        listener = new TransactionHistoryActivity.Observable.OnBookingRealtimeListener() {
+            @Override
+            public void onBookingUpdate(List<Booking> bookings) {
+                Booking bookingDetail = bookings.stream().filter(b -> b.bookingId.equals(bookingId)).findFirst().orElse(null);
+                Log.i("TicketDetailActivity", "Received booking update, booking detail: " + bookingDetail);
+                if(bookingDetail != null){
+                    bindViewData(bookingDetail);
+                } else {
+                    loadBookingDetails(bookingId);
+                }
+            }
+        };
+
+        realtimeObservable.addListener(listener);
         bookingService = ServiceProvider.getInstance().getBookingService();
 
         initViews();
@@ -108,7 +133,7 @@ public class TicketDetailActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
-                        bindCineShopData(doc);
+                        bindCineShopData(Objects.requireNonNull(doc.toObject(CineShopOrder.class)));
                     } else {
                         loadMovieBookingDetails(bookingId);
                     }
@@ -141,8 +166,8 @@ public class TicketDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void bindCineShopData(DocumentSnapshot doc) {
-        String status = doc.getString("status");
+    private void bindCineShopData(CineShopOrder order) {
+        String status = order.status;
         boolean isPaid = "paid".equalsIgnoreCase(status)
                 || "confirmed".equalsIgnoreCase(status)
                 || "success".equalsIgnoreCase(status);
@@ -152,14 +177,14 @@ public class TicketDetailActivity extends AppCompatActivity {
             return;
         }
 
-        String orderId = doc.getId();
-        String itemName = doc.getString("itemName");
-        String itemImageUrl = doc.getString("itemImageUrl");
-        String paymentMethod = doc.getString("paymentMethod");
-        Long quantity = doc.getLong("quantity");
-        Double totalPrice = doc.getDouble("totalPrice");
-        Long createdAt = doc.getLong("createdAt");
-        String userId = doc.getString("userId");
+        String orderId = order.orderId;
+        String itemName = order.itemName;
+        String itemImageUrl = order.itemImageUrl;
+        String paymentMethod = order.paymentMethod;
+        Long quantity = order.quantity;
+        Double totalPrice = order.totalPrice;;
+        Long createdAt = order.createdAt;
+        String userId = order.userId;
 
         // Keep header info visible, hide grid details and divider line
         if (layoutHeaderInfo != null) layoutHeaderInfo.setVisibility(View.VISIBLE);
@@ -361,5 +386,31 @@ public class TicketDetailActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void bindViewData(Booking booking) {
+        boolean isPaid = "paid".equalsIgnoreCase(booking.paymentStatus)
+                || "confirmed".equalsIgnoreCase(booking.bookingStatus)
+                || "success".equalsIgnoreCase(booking.bookingStatus);
+        if (!isPaid) {
+            Toast.makeText(TicketDetailActivity.this, "Vé chưa được thanh toán!", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        if(booking == null)
+            finish();
+
+        if(booking.showtimeId != null){
+            bindData(booking);
+        }else{
+            loadBookingDetails(booking.bookingId);
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realtimeObservable.removeListener(listener);
     }
 }

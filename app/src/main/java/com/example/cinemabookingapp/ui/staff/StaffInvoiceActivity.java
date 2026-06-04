@@ -101,7 +101,13 @@ public class StaffInvoiceActivity extends AuthActivity {
                     if (response.isSuccessful()) {
                         writeAuditLog("CONFIRM_PAYMENT", "Confirmed payment at counter");
                         showToast("Đã xác nhận thanh toán");
+
+//                        booking.paymentAt = System.currentTimeMillis();
+//                        booking.paymentStatus = "confirmed";
+
+//                        bindDataView(booking);
                         retrieveDataFromNavigator();
+//                        showLoading(false);
                     } else {
                         showLoading(false);
                         showToast("Không thể cập nhật thanh toán: " + response.message());
@@ -191,9 +197,10 @@ public class StaffInvoiceActivity extends AuthActivity {
         transactionDateTV.setText("Ngày tạo: " + sdf.format(new Date(detail.createdAt)));
 
         String payStatus = detail.paymentStatus;
-        if ("confirmed".equalsIgnoreCase(payStatus) || "paid".equalsIgnoreCase(payStatus)) {
+        if ("success".equalsIgnoreCase(payStatus) || "paid".equalsIgnoreCase(payStatus)) {
             paymentStatusTV.setText("ĐÃ THANH TOÁN");
             paymentStatusTV.setTextColor(0xFF4CAF50);
+            transactionDateTV.setText("Ngày thanh toán: " + sdf.format(new Date(detail.paymentAt)));
             updatePaymentButton.setVisibility(View.GONE);
             checkinButton.setVisibility(View.VISIBLE);
             Glide.with(this).load(R.drawable.ic_confirm).into(paymentStatusImg);

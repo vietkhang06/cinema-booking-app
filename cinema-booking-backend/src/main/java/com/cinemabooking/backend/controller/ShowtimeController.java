@@ -6,11 +6,10 @@ import com.cinemabooking.backend.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -82,5 +81,21 @@ public class ShowtimeController {
                 .message("Mock showtimes successfully seeded to Firestore")
                 .data(count)
                 .build();
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<ShowtimeDTO>> updateShowtime(@RequestBody ShowtimeDTO showtime) throws ExecutionException, InterruptedException {
+        if(showtime == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Showtime data is required");
+        }
+
+        ShowtimeDTO updatedShowtime = showtimeService.updateShowtime(showtime);
+        return ResponseEntity.ok(
+                ApiResponse.<ShowtimeDTO>builder()
+                    .success(true)
+                    .data(updatedShowtime)
+                    .message("Showtime updated successfully")
+                    .build()
+        );
     }
 }

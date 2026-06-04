@@ -68,7 +68,7 @@ public class ShowtimeScheduler {
                     showtimeData.put("language", doc.getString("language"));
                     showtimeData.put("status", "active");
                     showtimeData.put("isScheduled", false);
-                    
+
                     Long totalSeatsVal = doc.getLong("totalSeats");
                     showtimeData.put("totalSeats", totalSeatsVal != null ? totalSeatsVal.intValue() : 64);
                     showtimeData.put("bookedSeatsCount", 0);
@@ -81,8 +81,8 @@ public class ShowtimeScheduler {
                     batch.set(showtimeRef, showtimeData);
 
                     // Update schedule
-                    batch.update(doc.getReference(), 
-                            "executed", true, 
+                    batch.update(doc.getReference(),
+                            "executed", true,
                             "executedAt", now,
                             "updatedAt", now
                     );

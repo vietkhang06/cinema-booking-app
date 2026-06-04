@@ -1,6 +1,8 @@
 package com.example.cinemabookingapp.ui.customer.transaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -14,20 +16,38 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.core.navigation.AppNavigator;
+import com.example.cinemabookingapp.core.navigation.DataNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
-import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.domain.model.CineShopOrder;
 import com.example.cinemabookingapp.service.BookingService;
-import com.bumptech.glide.Glide;
 
-import android.widget.ImageView;
-import android.widget.TextView;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionHistoryActivity extends AppCompatActivity {
+
+    public static class Observable {
+        public interface OnBookingRealtimeListener {
+            void onBookingUpdate(List<Booking> booking);
+        }
+
+        List<OnBookingRealtimeListener> listeners = new ArrayList<>();
+        public void addListener(OnBookingRealtimeListener listener) {
+            listeners.add(listener);
+        }
+        public void removeListener(OnBookingRealtimeListener listener) {
+            listeners.remove(listener);
+        }
+        public void notify(List<Booking> booking) {
+            for (OnBookingRealtimeListener listener : listeners) {
+                listener.onBookingUpdate(booking);
+            }
+        }
+
+    }
+    Observable realtimeObservable;
+
 
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
@@ -54,6 +74,8 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         initViews();
         loadData();
+
+        realtimeObservable = new Observable();
     }
 
     private void initViews() {
@@ -73,8 +95,21 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             String bStatus = booking.bookingStatus != null ? booking.bookingStatus.toUpperCase() : "PENDING";
             boolean isPaid = "SUCCESS".equals(pStatus) || "PAID".equals(pStatus) ||
                              "CONFIRMED".equals(bStatus) || "SUCCESS".equals(bStatus);
+
+            boolean isCancalled = "CANCELLED".equalsIgnoreCase(booking.bookingStatus);
+            if (isCancalled) {
+                Toast.makeText(this, "Chỉ vé đã thanh toán mới xem được chi tiết và mã QR!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             if (isPaid) {
-                AppNavigator.goToTicketDetail(this, booking.bookingId);
+//                AppNavigator.goToTicketDetail(this, booking.bookingId);
+                Intent intent = new Intent(this, TicketDetailActivity.class);
+                intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                intent.putExtra("observerResourceId", DataNavigator.getInstance().pushData(realtimeObservable));
+                startActivity(intent);
+
+                combineAndDisplay();
             } else {
                 Toast.makeText(this, "Chỉ vé đã thanh toán mới xem được chi tiết và mã QR!", Toast.LENGTH_LONG).show();
             }
@@ -126,6 +161,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                         movieBookings.clear();
                         movieBookings.addAll(list);
                         combineAndDisplay();
+
                     }
                 });
 
@@ -137,8 +173,10 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                         android.util.Log.e("TransactionHistory", "CineShop listen error: " + error.getMessage());
                         return;
                     }
-                    if (querySnapshot != null) {
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        List<CineShopOrder> cineShopOrders = querySnapshot.toObjects(CineShopOrder.class);
                         List<Booking> list = new ArrayList<>();
+
                         for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             Booking orderBooking = new Booking();
                             orderBooking.bookingId = doc.getId();
@@ -182,6 +220,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         // Sort combined list by createdAt descending
         allTransactions.sort((t1, t2) -> Long.compare(t2.createdAt, t1.createdAt));
+
+        if(realtimeObservable != null)
+            realtimeObservable.notify(allTransactions);
 
         showLoading(false);
         if (allTransactions.isEmpty()) {
