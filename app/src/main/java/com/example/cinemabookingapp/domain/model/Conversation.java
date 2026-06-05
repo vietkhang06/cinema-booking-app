@@ -13,6 +13,10 @@ public class Conversation {
 
     public List<UserSnapShot> participants;
 
+    public String status;
+    public String assignedStaffId;
+    public Boolean hadStaff;
+
     public long createdAt;
     public long updatedAt;
 

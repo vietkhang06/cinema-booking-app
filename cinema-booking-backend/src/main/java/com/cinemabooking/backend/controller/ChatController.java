@@ -1,5 +1,7 @@
 package com.cinemabooking.backend.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.cinemabooking.backend.dto.ApiResponse;
 import com.cinemabooking.backend.dto.ChatMessage;
 import com.cinemabooking.backend.dto.Conversation;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/chat")
 public class ChatController {
@@ -23,6 +26,7 @@ public class ChatController {
     @Autowired private ChatService chatService;
     @Autowired private ConversationService conversationService;
     @Autowired private UserService userService;
+    @Autowired private com.google.cloud.firestore.Firestore firestore;
 
     /**
      * POST /api/chat/messages
@@ -146,5 +150,189 @@ public class ChatController {
                 .success(true)
                 .message("All conversations and messages deleted")
                 .build());
+    }
+
+    @PostMapping("/support/init")
+    public ResponseEntity<ApiResponse<Conversation>> initSupportConversation(
+            @AuthenticationPrincipal String userId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = conversationService.getConversationByUserIds(userId, "SUPPORT_BOT");
+        if (convo == null) {
+            convo = conversationService.createSupportConversation(userId, System.currentTimeMillis());
+        } else {
+            if (convo.getStatus() == null) {
+                convo.setStatus("BOT_ONLY");
+                firestore.collection(Conversation.COLLECTION_NAME).document(convo.getConvoId()).update("status", "BOT_ONLY").get();
+            }
+            if ("RESOLVED".equals(convo.getStatus()) || "CLOSED".equals(convo.getStatus())) {
+                convo = chatService.returnToBot(convo.getConvoId());
+            }
+        }
+
+        if (convo != null) {
+            log.info("SUPPORT_INIT_STATUS={}", convo.getStatus());
+            log.info("SUPPORT_INIT_STAFF={}", convo.getAssignedStaffId());
+            log.info("SUPPORT_INIT_CONVO={}", convo.getConvoId());
+            log.info("SUPPORT_INIT_PARTICIPANTS={}", convo.getParticipantIds());
+            log.info("SUPPORT_INIT_USER_SNAPSHOTS={}", convo.getParticipants());
+            log.info("SUPPORT_INIT_CREATED={}", convo.getCreatedAt());
+            log.info("SUPPORT_INIT_UPDATED={}", convo.getUpdatedAt());
+            try {
+                com.google.cloud.firestore.DocumentSnapshot doc = firestore.collection(Conversation.COLLECTION_NAME).document(convo.getConvoId()).get().get();
+                if (doc.exists()) {
+                    log.info("FIRESTORE_RAW_DOCUMENT={}", doc.getData());
+                } else {
+                    log.info("FIRESTORE_RAW_DOCUMENT_NOT_FOUND={}", convo.getConvoId());
+                }
+            } catch (Exception e) {
+                log.error("FIRESTORE_RAW_DOCUMENT_ERROR={}", e.getMessage());
+            }
+        }
+
+        return ResponseEntity.ok(
+                ApiResponse.<Conversation>builder()
+                        .success(true)
+                        .data(convo)
+                        .build()
+        );
+    }
+
+    @PostMapping("/support/conversations/{convoId}/escalate")
+    public ResponseEntity<ApiResponse<Conversation>> escalateSupport(
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = chatService.escalateConversationToStaff(convoId);
+        return ResponseEntity.ok(
+                ApiResponse.<Conversation>builder()
+                        .success(true)
+                        .data(convo)
+                        .build()
+        );
+    }
+
+    @PostMapping("/support/conversations/{convoId}/resolve")
+    public ResponseEntity<ApiResponse<Void>> resolveSupport(
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        chatService.resolveConversation(convoId);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Support conversation resolved")
+                        .build()
+        );
+    }
+
+    @GetMapping("/support/waiting")
+    public ResponseEntity<ApiResponse<List<Conversation>>> getWaitingConversations() throws ExecutionException, InterruptedException {
+        List<Conversation> convos = chatService.getWaitingConversations();
+        return ResponseEntity.ok(
+                ApiResponse.<List<Conversation>>builder()
+                        .success(true)
+                        .data(convos)
+                        .build()
+        );
+    }
+
+    @PostMapping("/support/conversations/{convoId}/claim")
+    public ResponseEntity<ApiResponse<Conversation>> claimSupport(
+            @AuthenticationPrincipal String staffId,
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = chatService.claimConversation(convoId, staffId);
+        return ResponseEntity.ok(
+                ApiResponse.<Conversation>builder()
+                        .success(true)
+                        .data(convo)
+                        .build()
+        );
+    }
+
+    private boolean isUserActiveStaffOrAdmin(String userId) throws ExecutionException, InterruptedException {
+        UserDTO user = userService.getUserById(userId);
+        if (user == null) return false;
+        return ("staff".equalsIgnoreCase(user.getRole()) || "admin".equalsIgnoreCase(user.getRole()))
+                && !"inactive".equalsIgnoreCase(user.getStatus())
+                && !Boolean.TRUE.equals(user.getDeleted());
+    }
+
+    @DeleteMapping("/conversations/{convoId}/messages")
+    public ResponseEntity<ApiResponse<Void>> clearConversationMessages(
+            @AuthenticationPrincipal String userId,
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = conversationService.getConversationById(convoId);
+        if (convo == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        boolean isParticipant = convo.getParticipantIds().contains(userId);
+        boolean isStaffOrAdmin = isUserActiveStaffOrAdmin(userId);
+
+        if (!isParticipant && !isStaffOrAdmin) {
+            return ResponseEntity.status(403).body(
+                    ApiResponse.<Void>builder()
+                            .success(false)
+                            .message("Bạn không có quyền xóa hội thoại này.")
+                            .build()
+            );
+        }
+
+        UserDTO user = userService.getUserById(userId);
+        if (user != null && ("staff".equalsIgnoreCase(user.getRole()) || "admin".equalsIgnoreCase(user.getRole()))) {
+            if ("inactive".equalsIgnoreCase(user.getStatus()) || Boolean.TRUE.equals(user.getDeleted())) {
+                return ResponseEntity.status(403).body(
+                        ApiResponse.<Void>builder()
+                                .success(false)
+                                .message("Tài khoản của bạn đã bị khóa hoặc không còn hoạt động.")
+                                .build()
+                );
+            }
+        }
+
+        chatService.clearConversationMessages(convoId);
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .message("Đã xóa toàn bộ tin nhắn thành công.")
+                .build());
+    }
+
+    @PostMapping("/support/conversations/{convoId}/return-to-bot")
+    public ResponseEntity<ApiResponse<Conversation>> returnToBot(
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = chatService.returnToBot(convoId);
+        return ResponseEntity.ok(
+                ApiResponse.<Conversation>builder()
+                        .success(true)
+                        .data(convo)
+                        .build()
+        );
+    }
+
+    @PostMapping("/support/conversations/{convoId}/close")
+    public ResponseEntity<ApiResponse<Void>> closeConversation(
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        chatService.closeConversation(convoId);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Support conversation closed")
+                        .build()
+        );
+    }
+
+    @PostMapping("/support/conversations/{convoId}/reopen")
+    public ResponseEntity<ApiResponse<Conversation>> reopenConversation(
+            @PathVariable String convoId
+    ) throws ExecutionException, InterruptedException {
+        Conversation convo = chatService.reopenConversation(convoId);
+        return ResponseEntity.ok(
+                ApiResponse.<Conversation>builder()
+                        .success(true)
+                        .data(convo)
+                        .build()
+        );
     }
 }

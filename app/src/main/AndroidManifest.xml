@@ -21,10 +21,16 @@
             android:name=".ui.staff.StaffCustomerChatActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.staff.StaffSupportChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.customer.chat.MessageActivity"
             android:exported="false" />
         <activity
             android:name=".ui.customer.chat.CustomerChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.chat.CustomerSupportActivity"
             android:exported="false" />
         <activity
             android:name=".ui.customer.notification.NotificationActivity"

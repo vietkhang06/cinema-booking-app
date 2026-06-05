@@ -531,9 +531,9 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- Chăm sóc khách hàng -->
+                <!-- Trung tâm hỗ trợ -->
                 <LinearLayout
-                    android:id="@+id/staffChat"
+                    android:id="@+id/menuSupportCenter"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:orientation="horizontal"
@@ -545,7 +545,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Chăm sóc khách hàng"
+                        android:text="Trung tâm hỗ trợ"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 

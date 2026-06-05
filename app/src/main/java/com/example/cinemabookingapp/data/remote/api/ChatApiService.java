@@ -15,6 +15,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
+import retrofit2.http.DELETE;
+
 public interface ChatApiService {
     @POST("chat/messages")
     Call<ApiResponse<ChatMessage>> sendMessage(@Body SendMessageRequest message);
@@ -39,7 +41,27 @@ public interface ChatApiService {
     @GET("chat/conversations/{convoId}/messages")
     Call<ApiResponse<List<ChatMessage>>> getMessagesByConvoId(@Path("convoId") String convoId);
 
+    @POST("chat/support/init")
+    Call<ApiResponse<Conversation>> initSupportConversation();
 
+    @POST("chat/support/conversations/{convoId}/escalate")
+    Call<ApiResponse<Conversation>> escalateToStaff(@Path("convoId") String convoId);
 
+    @POST("chat/support/conversations/{convoId}/resolve")
+    Call<ApiResponse<Void>> resolveConversation(@Path("convoId") String convoId);
 
+    @POST("chat/support/conversations/{convoId}/claim")
+    Call<ApiResponse<Conversation>> claimConversation(@Path("convoId") String convoId);
+
+    @DELETE("chat/conversations/{convoId}/messages")
+    Call<ApiResponse<Void>> clearConversationMessages(@Path("convoId") String convoId);
+
+    @POST("chat/support/conversations/{convoId}/return-to-bot")
+    Call<ApiResponse<Conversation>> returnToBot(@Path("convoId") String convoId);
+
+    @POST("chat/support/conversations/{convoId}/close")
+    Call<ApiResponse<Void>> closeConversation(@Path("convoId") String convoId);
+
+    @POST("chat/support/conversations/{convoId}/reopen")
+    Call<ApiResponse<Conversation>> reopenConversation(@Path("convoId") String convoId);
 }

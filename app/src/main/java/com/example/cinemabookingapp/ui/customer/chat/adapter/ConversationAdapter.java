@@ -97,14 +97,47 @@ public class ConversationAdapter extends ListAdapter<ConversationItem, Conversat
             onlineDot.setVisibility(conversation.isOnline ? View.VISIBLE : View.GONE);
             Log.i("ConversationAdapter", "Binding convo " + conversation.conversation.participants + " - online: " + conversation.isOnline);
 
-            Conversation.UserSnapShot otherUser = conversation.conversation.participants.get(0);
+            // Resolve the other user (prefer the customer who is neither SUPPORT_BOT nor the current user)
+            Conversation.UserSnapShot customerUser = null;
+            if (conversation.conversation.participants != null) {
+                for (Conversation.UserSnapShot p : conversation.conversation.participants) {
+                    if (!"SUPPORT_BOT".equals(p.userId) && !p.userId.equals(authUserId)) {
+                        customerUser = p;
+                        break;
+                    }
+                }
+                if (customerUser == null) {
+                    customerUser = conversation.conversation.participants.stream()
+                            .filter(p -> !p.userId.equals(authUserId))
+                            .findFirst().orElse(null);
+                }
+            }
+            if (customerUser == null) {
+                customerUser = new Conversation.UserSnapShot();
+                customerUser.name = "Khách hàng";
+            }
+
             // Name, timestamp, preview
-            tvContactName.setText(otherUser.name);
-            tvTimestamp.setText(DateTimeConverter.convertToDateTimeString(conversation.conversation.lastMessageAt));
-            tvPreview.setText(conversation.conversation.lastMessage.content);
+            tvContactName.setText(customerUser.name);
+
+            // Preview and timestamp with safety null check
+            String previewText = "";
+            String timestampText = "";
+            if (conversation.conversation.lastMessage != null) {
+                previewText = conversation.conversation.lastMessage.content;
+                timestampText = DateTimeConverter.convertToDateTimeString(conversation.conversation.lastMessageAt);
+            } else {
+                previewText = "Chưa có tin nhắn hoặc đã xóa";
+            }
+            tvPreview.setText(previewText);
+            tvTimestamp.setText(timestampText);
 
             // Unread badge
-            int unread = conversation.conversation.unreadCounts.get(authUserId);
+            int unread = 0;
+            if (conversation.conversation.unreadCounts != null && conversation.conversation.unreadCounts.containsKey(authUserId)) {
+                Integer count = conversation.conversation.unreadCounts.get(authUserId);
+                unread = count != null ? count : 0;
+            }
             if (unread > 0) {
                 badgeUnread.setVisibility(View.VISIBLE);
                 tvUnreadCount.setText(String.valueOf(unread));

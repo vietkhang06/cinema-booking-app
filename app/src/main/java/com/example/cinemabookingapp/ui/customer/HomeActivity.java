@@ -60,9 +60,12 @@ import java.util.LinkedHashSet;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.example.cinemabookingapp.ui.customer.chat.CustomerSupportActivity;
 
 
 public class HomeActivity extends BaseActivity {
+
+    private com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton fabSupportChat;
 
     private static final String FILTER_NOW_SHOWING = HomeMovieItem.NOW_SHOWING;
     private static final String FILTER_COMING_SOON = HomeMovieItem.COMING_SOON;
@@ -222,7 +225,11 @@ public class HomeActivity extends BaseActivity {
             sheet.show(getSupportFragmentManager(), "location_picker");
         });
         chipGroupGenre = findViewById(R.id.chipGroupGenre);
-
+        fabSupportChat = findViewById(R.id.fabSupportChat);
+        fabSupportChat.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CustomerSupportActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initMovieUseCase() {
