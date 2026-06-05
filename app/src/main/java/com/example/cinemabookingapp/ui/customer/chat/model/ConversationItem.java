@@ -13,8 +13,14 @@ public class ConversationItem {
         this.isOnline = isOnline;
 
         this.authUserId = authUserId;
-        Integer unreadCounts = conversation.unreadCounts.get(conversation.participantIds.stream().filter(id -> !id.equals(authUserId)).findFirst().orElse(""));
-        this.myUnreadCounts = unreadCounts != null ? unreadCounts : 0;
+        Integer unread = 0;
+        if (conversation.unreadCounts != null && conversation.participantIds != null) {
+            String peerId = conversation.participantIds.stream()
+                    .filter(id -> !id.equals(authUserId))
+                    .findFirst().orElse("");
+            unread = conversation.unreadCounts.get(peerId);
+        }
+        this.myUnreadCounts = unread != null ? unread : 0;
     }
 
     public int getUnreadCounts() {
@@ -22,8 +28,22 @@ public class ConversationItem {
     }
 
     public String getQueryString() {
-        return conversation.participants.stream().filter(p -> !p.userId.equals(authUserId)).findFirst().orElseThrow().name + " "
-                + conversation.lastMessage.content;
+        String name = "Khách hàng";
+        if (conversation.participants != null) {
+            Conversation.UserSnapShot other = conversation.participants.stream()
+                    .filter(p -> !p.userId.equals(authUserId) && !"SUPPORT_BOT".equals(p.userId))
+                    .findFirst().orElse(null);
+            if (other == null) {
+                other = conversation.participants.stream()
+                        .filter(p -> !p.userId.equals(authUserId))
+                        .findFirst().orElse(null);
+            }
+            if (other != null) {
+                name = other.name;
+            }
+        }
+        String lastContent = conversation.lastMessage != null ? conversation.lastMessage.content : "";
+        return name + " " + lastContent;
     }
 
 

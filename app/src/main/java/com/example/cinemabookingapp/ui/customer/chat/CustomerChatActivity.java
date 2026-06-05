@@ -30,6 +30,8 @@ import com.example.cinemabookingapp.ui.customer.chat.adapter.ConversationAdapter
 import com.example.cinemabookingapp.ui.customer.chat.model.ConversationItem;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -66,6 +68,7 @@ public class CustomerChatActivity extends AppCompatActivity {
     // Active state
     private String activeFilter = "all";
     private String searchQuery  = "";
+    private String authUserId;
 
 
     @Override
@@ -78,6 +81,20 @@ public class CustomerChatActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        User profile = profileService.getCachedProfile();
+        if (profile != null) {
+            authUserId = profile.uid;
+        } else {
+            FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fUser != null) {
+                authUserId = fUser.getUid();
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+        }
 
         bindViews();
         setupRecyclerView();
@@ -98,7 +115,7 @@ public class CustomerChatActivity extends AppCompatActivity {
 
 
     private void setupRecyclerView() {
-        conversationAdapter = new ConversationAdapter(profileService.getCachedProfile().uid, conversation -> {
+        conversationAdapter = new ConversationAdapter(authUserId, conversation -> {
             Intent intent = new Intent(CustomerChatActivity.this, MessageActivity.class);
             intent.putExtra("convoResourceId", navigator.pushData(conversation.conversation));
             startActivity(intent);
@@ -174,7 +191,7 @@ public class CustomerChatActivity extends AppCompatActivity {
 
     private void applyFilters() {
         List<ConversationItem> conversationItems = allConversations.stream()
-                .map(conversation -> new ConversationItem(conversation, true, profileService.getCachedProfile().uid))
+                .map(conversation -> new ConversationItem(conversation, true, authUserId))
                 .filter(c -> matchesFilter(c) && matchesSearch(c))
                 .collect(Collectors.toList());
         conversationAdapter.submitList(conversationItems);
@@ -197,7 +214,7 @@ public class CustomerChatActivity extends AppCompatActivity {
     ListenerRegistration listener;
     private void addRealtimeConversationListener(){
         listener = FirebaseFirestore.getInstance().collection("conversations")
-                .whereArrayContains("participantIds", profileService.getCachedProfile().uid)
+                .whereArrayContains("participantIds", authUserId)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
                         Toast.makeText(this, "Error listening for messages: " + error.getMessage(), Toast.LENGTH_SHORT).show();

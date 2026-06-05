@@ -33,6 +33,8 @@ import com.example.cinemabookingapp.domain.model.ChatMessage;
 import com.example.cinemabookingapp.domain.model.Conversation;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.ui.customer.chat.adapter.MessageAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -80,7 +82,21 @@ public class MessageActivity extends AppCompatActivity {
 
         conversation = DataNavigator.getInstance().<Conversation>popData(getIntent().getIntExtra("convoResourceId", 0));
         User t_receiver = DataNavigator.getInstance().<User>popData(getIntent().getIntExtra("userResourceId", 0));
-        authUserId = ServiceProvider.getInstance().getProfileService().getCachedProfile().uid;
+
+        User profile = ServiceProvider.getInstance().getProfileService().getCachedProfile();
+        if (profile != null) {
+            authUserId = profile.uid;
+        } else {
+            FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fUser != null) {
+                authUserId = fUser.getUid();
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+        }
+
         if(conversation != null){
             onDataLoaded();
         }else{
@@ -94,7 +110,15 @@ public class MessageActivity extends AppCompatActivity {
                 @Override
                 public void onError(String message) {
                     receiver = new Conversation.UserSnapShot(t_receiver);
-                    sender = new Conversation.UserSnapShot(ServiceProvider.getInstance().getProfileService().getCachedProfile());
+                    User currentProfile = ServiceProvider.getInstance().getProfileService().getCachedProfile();
+                    if (currentProfile != null) {
+                        sender = new Conversation.UserSnapShot(currentProfile);
+                    } else {
+                        // Create a skeleton sender from authUserId
+                        sender = new Conversation.UserSnapShot();
+                        sender.userId = authUserId;
+                        sender.name = "Tôi"; 
+                    }
 
                     bindViews();
                     setupToolbar();
