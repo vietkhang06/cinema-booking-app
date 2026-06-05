@@ -26,6 +26,10 @@ public class Conversation {
     Map<String, Integer> unreadCounts;
     Map<String, Long> lastSeenAt;
 
+    String status; // "BOT_ONLY", "WAITING_STAFF", "ASSIGNED_TO_STAFF", "IN_PROGRESS", "RESOLVED", "CLOSED"
+    String assignedStaffId;
+    Boolean hadStaff;
+
     Long createdAt;
     Long updatedAt;
 
