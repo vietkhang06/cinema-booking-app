@@ -153,6 +153,13 @@ public class EditProfileActivity extends AuthActivity {
         executorService.execute(() -> {
             // Use a copy to avoid immediate local state change before server confirms
             User user = profileService.getCachedProfile();
+            if (user == null) {
+                runOnUiThread(() -> {
+                    loadingOverlay.setVisibility(View.GONE);
+                    showToast("Không tìm thấy thông tin người dùng. Vui lòng thử lại sau.");
+                });
+                return;
+            }
             user.name = name;
             user.phone = phone;
             user.birthDate = birthDate;
