@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,8 @@ import com.example.cinemabookingapp.ui.customer.chat.adapter.ConversationAdapter
 import com.example.cinemabookingapp.ui.customer.chat.model.ConversationItem;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -48,21 +51,19 @@ import retrofit2.Response;
 
 public class StaffCustomerChatActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewConversations, recyclerViewActiveUsers;
+    private RecyclerView recyclerViewWaiting, recyclerViewAssigned;
+    private android.view.View tvEmptyWaiting, tvEmptyAssigned;
     private TextInputEditText etSearch;
-    private ChipGroup chipGroupFilters;
     private ImageView backBtn;
 
     // Data
-    private ConversationAdapter conversationAdapter;
+    private ConversationAdapter waitingAdapter, assignedAdapter;
     private final List<Conversation> allConversations = new ArrayList<>();
-    private final Map<String, Conversation> conversationMap = new HashMap<>();
 
     ProfileService profileService = ServiceProvider.getInstance().getProfileService();
-    DataNavigator navigator = DataNavigator.getInstance();
-    ChatApiService chatApiService = RetrofitClient.getInstance().create(ChatApiService.class);
-
     String searchQuery = "";
+    private String authUserId;
+    private ListenerRegistration listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,20 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
             return insets;
         });
 
+        User profile = profileService.getCachedProfile();
+        if (profile != null) {
+            authUserId = profile.uid;
+        } else {
+            FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fUser != null) {
+                authUserId = fUser.getUid();
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+        }
+
         bindViews();
         setupRecyclerView();
         setupSearch();
@@ -82,24 +97,31 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        recyclerViewConversations = findViewById(R.id.recyclerViewConversations);
+        recyclerViewWaiting = findViewById(R.id.recyclerViewWaiting);
+        recyclerViewAssigned = findViewById(R.id.recyclerViewAssigned);
+        tvEmptyWaiting = findViewById(R.id.tvEmptyWaiting);
+        tvEmptyAssigned = findViewById(R.id.tvEmptyAssigned);
         etSearch = findViewById(R.id.etSearch);
-        chipGroupFilters = findViewById(R.id.chipGroupFilters);
-
         backBtn = findViewById(R.id.back_btn);
         backBtn.setOnClickListener(v -> finish());
     }
 
-
     private void setupRecyclerView() {
-        conversationAdapter = new ConversationAdapter(profileService.getCachedProfile().uid, conversation -> {
-            Intent intent = new Intent(StaffCustomerChatActivity.this, MessageActivity.class);
-            intent.putExtra("convoResourceId", navigator.pushData(conversation.conversation));
+        waitingAdapter = new ConversationAdapter(authUserId, conversation -> {
+            Intent intent = new Intent(StaffCustomerChatActivity.this, StaffSupportChatActivity.class);
+            intent.putExtra("convoId", conversation.conversation.convoId);
             startActivity(intent);
         });
-        recyclerViewConversations.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewConversations.setAdapter(conversationAdapter);
-        recyclerViewConversations.setNestedScrollingEnabled(false);
+        recyclerViewWaiting.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewWaiting.setAdapter(waitingAdapter);
+
+        assignedAdapter = new ConversationAdapter(authUserId, conversation -> {
+            Intent intent = new Intent(StaffCustomerChatActivity.this, StaffSupportChatActivity.class);
+            intent.putExtra("convoId", conversation.conversation.convoId);
+            startActivity(intent);
+        });
+        recyclerViewAssigned.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewAssigned.setAdapter(assignedAdapter);
     }
 
     private void setupSearch() {
@@ -115,47 +137,24 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
         });
     }
 
-    // -------------------------------------------------------------------------
-    // Data
-    // -------------------------------------------------------------------------
-
-    private void loadData() {
-        chatApiService.getMyConversations().enqueue(new Callback<ApiResponse<List<Conversation>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<Conversation>>> call, Response<ApiResponse<List<Conversation>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Conversation> conversations = response.body().getData();
-                    allConversations.clear();
-                    allConversations.addAll(conversations);
-
-                    List<ConversationItem> conversationItems = allConversations.stream()
-                            .map(conversation -> new ConversationItem(conversation, false, profileService.getCachedProfile().uid))
-                            .collect(Collectors.toList());
-                    conversationAdapter.submitList(conversationItems);
-
-                } else {
-                    Toast.makeText(StaffCustomerChatActivity.this, "Failed to load conversations", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<List<Conversation>>> call, Throwable t) {
-                Toast.makeText(StaffCustomerChatActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // -------------------------------------------------------------------------
-    // Filter + search logic
-    // -------------------------------------------------------------------------
-
     private void applyFilters() {
-        List<ConversationItem> conversationItems = allConversations.stream()
-                .map(conversation -> new ConversationItem(conversation, false, profileService.getCachedProfile().uid))
-                .filter(c -> matchesSearch(c))
+        List<ConversationItem> waitingItems = allConversations.stream()
+                .filter(c -> "WAITING_STAFF".equals(c.status) || "REOPENED".equals(c.status))
+                .map(conversation -> new ConversationItem(conversation, false, authUserId))
+                .filter(this::matchesSearch)
                 .collect(Collectors.toList());
 
-        conversationAdapter.submitList(conversationItems);
+        List<ConversationItem> assignedItems = allConversations.stream()
+                .filter(c -> authUserId.equals(c.assignedStaffId))
+                .map(conversation -> new ConversationItem(conversation, false, authUserId))
+                .filter(this::matchesSearch)
+                .collect(Collectors.toList());
+
+        waitingAdapter.submitList(waitingItems);
+        assignedAdapter.submitList(assignedItems);
+
+        tvEmptyWaiting.setVisibility(waitingItems.isEmpty() ? View.VISIBLE : View.GONE);
+        tvEmptyAssigned.setVisibility(assignedItems.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private boolean matchesSearch(ConversationItem c) {
@@ -164,20 +163,17 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
         return c.getQueryString().toLowerCase().contains(q);
     }
 
-    ListenerRegistration listener;
     private void addRealtimeConversationListener(){
         listener = FirebaseFirestore.getInstance().collection("conversations")
-                .whereArrayContains("participantIds", profileService.getCachedProfile().uid)
+                .whereArrayContains("participantIds", "SUPPORT_BOT")
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
-                        Toast.makeText(this, "Error listening for messages: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Lỗi lắng nghe: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (snapshot != null && !snapshot.isEmpty()) {
-                        Log.i("StaffCustomerChatActivity", "Realtime convo listener: " + snapshot.size() + " docs");
-                        snapshot.getDocuments().forEach(doc -> Log.i("StaffCustomerChatActivity", " - " + doc.getId() + ": " + doc.getData()));
+                    if (snapshot != null) {
                         List<Conversation> conversations = snapshot.toObjects(Conversation.class).stream()
-                                .filter(conversation -> conversation != null && conversation.lastMessage != null)
+                                .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
 
                         allConversations.clear();
