@@ -4,6 +4,7 @@ import com.cinemabooking.backend.dto.ChatMessage;
 import com.cinemabooking.backend.dto.Conversation;
 import com.cinemabooking.backend.dto.UserDTO;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FieldValue;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteBatch;
@@ -137,5 +138,74 @@ public class ConversationService {
         firestore.collection(Conversation.COLLECTION_NAME).listDocuments()
                 .forEach(doc -> batch.delete(doc));
         batch.commit();
+    }
+
+    public Conversation createSupportConversation(String customerId, long now) throws ExecutionException, InterruptedException {
+        DocumentReference documentReference = firestore.collection(Conversation.COLLECTION_NAME).document();
+        
+        List<String> users = Arrays.asList(customerId, "SUPPORT_BOT");
+        
+        Map<String, Integer> unreadCounts = new HashMap<>();
+        unreadCounts.put(customerId, 0);
+        unreadCounts.put("SUPPORT_BOT", 0);
+
+        Map<String, Long> lastSeenAt = new HashMap<>();
+        lastSeenAt.put(customerId, now);
+        lastSeenAt.put("SUPPORT_BOT", now);
+
+        List<Conversation.UserSnapShot> userSnapshots = new ArrayList<>();
+        DocumentSnapshot customerDoc = firestore.collection(UserDTO.COLLECTION_NAME).document(customerId).get().get();
+        if (customerDoc.exists()) {
+            UserDTO customerDTO = customerDoc.toObject(UserDTO.class);
+            if (customerDTO != null) {
+                userSnapshots.add(Conversation.UserSnapShot.mapper(customerDTO));
+            }
+        }
+        
+        userSnapshots.add(Conversation.UserSnapShot.builder()
+                .userId("SUPPORT_BOT")
+                .name("Trợ lý ảo (Bot)")
+                .email("bot@cinemabooking.com")
+                .avatarUrl("bot_avatar")
+                .build());
+
+        Conversation conversation = Conversation.builder()
+                .convoId(documentReference.getId())
+                .participantIds(users)
+                .unreadCounts(unreadCounts)
+                .lastSeenAt(lastSeenAt)
+                .participants(userSnapshots)
+                .status("BOT_ONLY")
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        documentReference.set(conversation).get();
+
+        ChatMessage welcomeMessage = ChatMessage.builder()
+                .convoId(conversation.getConvoId())
+                .senderId("SUPPORT_BOT")
+                .receiverId(customerId)
+                .content("Xin chào! Tôi là Trợ lý ảo của CinemaBookingApp. Tôi có thể giúp gì cho bạn hôm nay? Bạn có thể chọn các câu hỏi thường gặp bên dưới hoặc nhập câu hỏi trực tiếp.")
+                .sentAt(now)
+                .build();
+        
+        DocumentReference msgRef = firestore.collection(ChatMessage.COLLECTION_NAME).document();
+        welcomeMessage.setMessageId(msgRef.getId());
+        msgRef.set(welcomeMessage).get();
+        
+        conversation.setLastMessage(welcomeMessage);
+        conversation.setLastMessageAt(now);
+        documentReference.set(conversation).get();
+
+        return conversation;
+    }
+
+    public Conversation getConversationById(String convoId) throws ExecutionException, InterruptedException {
+        DocumentSnapshot doc = firestore.collection(Conversation.COLLECTION_NAME).document(convoId).get().get();
+        if (doc.exists()) {
+            return doc.toObject(Conversation.class);
+        }
+        return null;
     }
 }
