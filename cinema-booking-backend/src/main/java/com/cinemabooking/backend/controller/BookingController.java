@@ -39,6 +39,7 @@ public class BookingController {
     @Autowired private UserService userService;
     @Autowired private MovieService movieService;
     @Autowired private PaymentService paymentService;
+    @Autowired private com.cinemabooking.backend.service.VoucherService voucherService;
 
     @GetMapping("{id}")
     @Operation(summary = "Get booking detail by id")
@@ -121,6 +122,25 @@ public class BookingController {
         double subTotal = showtime.getBasePrice() * seats.size() + orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
         double discount = 0;
 
+        if (data.getAppliedVoucherCode() != null && !data.getAppliedVoucherCode().isEmpty()) {
+            try {
+                VoucherDTO voucher = voucherService.validateVoucher(data.getAppliedVoucherCode(), userId);
+                discount = subTotal * voucher.getDiscountPercent() / 100.0;
+            } catch (Exception e) {
+                log.warn("Failed to validate voucher during booking creation: {}", e.getMessage());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã voucher không hợp lệ hoặc đã hết hạn.");
+            }
+        }
+        
+        double finalTotal = subTotal - discount;
+        if (finalTotal < 0) finalTotal = 0;
+        
+        // Prevent client-side manipulation by strictly using our calculated finalTotal
+        if (Math.abs(finalTotal - bookingRequest.getTotalPrice()) > 1.0) {
+            log.warn("Price mismatch: client sent {}, server calculated {}", bookingRequest.getTotalPrice(), finalTotal);
+            // We proceed with the server's calculated price for safety
+        }
+
         String suffix = uniqueID.contains("_") ? uniqueID.substring(uniqueID.indexOf("_") + 1) : uniqueID;
         if (suffix.length() > 8) {
             suffix = suffix.substring(0, 8);
@@ -143,7 +163,8 @@ public class BookingController {
                 .snackOrder(orders)
                 .subtotal(subTotal)
                 .discount(discount)
-                .total(subTotal - discount)
+                .total(finalTotal)
+                .appliedVoucherCode(data.getAppliedVoucherCode())
                 // cap nhat payment
                 .paymentMethod(bookingRequest.getPaymentMethod().name())
                 .paymentStatus("PENDING")
@@ -153,7 +174,7 @@ public class BookingController {
                 .build();
 
         log.info("[BOOKING_FLOW] Creating booking record: bookingId={}, userId={}, total={}, status=PENDING",
-                uniqueID, userId, subTotal - discount);
+                uniqueID, userId, finalTotal);
 
         BookingDTO bookingDTO = bookingService.createBooking(booking);
 

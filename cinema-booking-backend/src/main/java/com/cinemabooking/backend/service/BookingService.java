@@ -45,6 +45,9 @@ public class BookingService {
         .get();
     }
 
+    @Autowired
+    private VoucherService voucherService;
+
     public void confirmBookingSeats(String bookingId) throws ExecutionException, InterruptedException {
         BookingDTO booking = getBookingById(bookingId);
         if (booking == null) {
@@ -69,6 +72,10 @@ public class BookingService {
             );
         }
         batch.commit().get();
+
+        if (booking.getAppliedVoucherCode() != null && !booking.getAppliedVoucherCode().isEmpty()) {
+            voucherService.markVoucherAsUsed(booking.getAppliedVoucherCode());
+        }
     }
 
     public void releaseBookingSeats(String bookingId) throws ExecutionException, InterruptedException {

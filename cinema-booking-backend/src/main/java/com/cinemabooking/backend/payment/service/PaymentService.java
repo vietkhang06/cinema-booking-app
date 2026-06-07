@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import com.cinemabooking.backend.service.VoucherService;
 
 @Service
 public class PaymentService {
@@ -18,6 +19,9 @@ public class PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private VoucherService voucherService;
 
     public Payment createPendingPayment(String bookingId, String userId, String provider, double amount) throws ExecutionException, InterruptedException {
         String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
@@ -47,5 +51,24 @@ public class PaymentService {
                 paymentId, bookingId, paymentCode, amount);
 
         return paymentRepository.save(payment);
+    }
+
+    public void handleFailedPayment(String paymentId) {
+        log.info("[PAYMENT_FLOW] Handling failed payment: {}", paymentId);
+        // TODO: Hook this up to actual payment webhook later.
+        // Assuming we look up the bookingId and userId from the payment record
+        try {
+            Payment payment = paymentRepository.findById(paymentId);
+            if (payment != null) {
+                payment.setStatus(PaymentStatus.FAILED.name());
+                payment.setUpdatedAt(System.currentTimeMillis());
+                paymentRepository.save(payment);
+
+                // Generate compensation voucher
+                voucherService.generateVoucherForPaymentError(payment.getUserId(), payment.getBookingId());
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            log.error("Error handling failed payment {}", paymentId, e);
+        }
     }
 }

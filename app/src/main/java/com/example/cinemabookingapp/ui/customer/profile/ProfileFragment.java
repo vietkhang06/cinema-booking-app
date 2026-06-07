@@ -262,11 +262,34 @@ public class ProfileFragment extends Fragment {
 
         // Feature cards (tạm thời)
         if (btnDoiQua != null)
-            btnDoiQua.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Đổi quà sắp ra mắt!", Toast.LENGTH_SHORT).show());
+            btnDoiQua.setOnClickListener(v -> {
+                Toast.makeText(getContext(), "Đang tạo Voucher test...", Toast.LENGTH_SHORT).show();
+                authService.getCurrentAuthUser(new ResultCallback<User>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        if (user == null) return;
+                        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+                        com.google.firebase.firestore.DocumentReference ref = db.collection("vouchers").document();
+                        com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
+                        voucher.voucherId = ref.getId();
+                        voucher.userId = user.uid;
+                        voucher.code = "TEST-" + java.util.UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+                        voucher.discountPercent = 50;
+                        voucher.status = "ACTIVE";
+                        voucher.createdAt = System.currentTimeMillis();
+                        voucher.expiredAt = System.currentTimeMillis() + (7L * 24L * 60L * 60L * 1000L); // 7 days
+                        voucher.updatedAt = System.currentTimeMillis();
+                        ref.set(voucher).addOnSuccessListener(aVoid -> {
+                            Toast.makeText(getContext(), "Tạo Voucher thành công! Vui lòng vào My Vouchers kiểm tra.", Toast.LENGTH_LONG).show();
+                        });
+                    }
+                    @Override
+                    public void onError(String message) {}
+                });
+            });
         if (btnMyRewards != null)
             btnMyRewards.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "My Rewards sắp ra mắt!", Toast.LENGTH_SHORT).show());
+                    startActivity(new Intent(getContext(), com.example.cinemabookingapp.ui.customer.voucher.CustomerVoucherActivity.class)));
         if (btnTinhNangMoi != null)
             btnTinhNangMoi.setOnClickListener(v ->
                     Toast.makeText(getContext(), "Tính năng mới sắp ra mắt!", Toast.LENGTH_SHORT).show());
