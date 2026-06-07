@@ -21,6 +21,9 @@ public class ShowtimeService {
 
     @Autowired
     private Firestore firestore;
+    
+    @Autowired
+    private VoucherService voucherService;
 
     public List<ShowtimeDTO> getAllShowtimes() throws ExecutionException, InterruptedException {
         logger.info("Fetching all showtimes from Firestore");
@@ -247,6 +250,15 @@ public class ShowtimeService {
         }
         logger.info("Successfully seeded {} showtimes", seedCount);
         return seedCount;
+    }
+
+    public void cancelShowtime(String showtimeId) throws ExecutionException, InterruptedException {
+        logger.info("Cancelling showtime: {}", showtimeId);
+        firestore.collection(COLLECTION).document(showtimeId)
+                .update("status", "CANCELLED", "updatedAt", System.currentTimeMillis())
+                .get();
+        // Generate compensation vouchers automatically
+        voucherService.generateVouchersForCancelledShowtime(showtimeId, 100, 30);
     }
 
     public ShowtimeDTO updateShowtime(ShowtimeDTO showtime) throws ExecutionException, InterruptedException {

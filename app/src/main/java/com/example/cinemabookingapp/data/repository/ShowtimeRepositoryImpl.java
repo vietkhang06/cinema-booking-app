@@ -408,10 +408,12 @@ public class ShowtimeRepositoryImpl implements ShowtimeRepository {
                                 com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
                                 voucher.voucherId = voucherRef.getId();
                                 voucher.userId = userId;
-                                voucher.voucherType = "SHOWTIME_CANCELLED";
-                                voucher.discountValue = 10.0;
-                                voucher.isUsed = false;
+                                voucher.code = "COMP-" + showtimeId.substring(Math.max(0, showtimeId.length() - 5));
+                                voucher.discountPercent = 100;
+                                voucher.status = "ACTIVE";
+                                voucher.expiredAt = currentTime + (30L * 24L * 60L * 60L * 1000L); // 30 days
                                 voucher.createdAt = currentTime;
+                                voucher.updatedAt = currentTime;
                                 batch.set(voucherRef, voucher);
                             }
                         }

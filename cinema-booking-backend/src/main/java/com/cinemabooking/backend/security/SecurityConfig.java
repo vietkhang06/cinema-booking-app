@@ -97,7 +97,11 @@ public class SecurityConfig {
 
                                 // Payment
                                 "/api/v1/payment",
-                                "/api/v1/payment/**"
+                                "/api/v1/payment/**",
+
+                                // Vouchers
+                                "/api/v1/vouchers",
+                                "/api/v1/vouchers/**"
 
                         ).authenticated()
 

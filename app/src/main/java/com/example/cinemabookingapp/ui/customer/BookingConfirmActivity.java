@@ -12,8 +12,10 @@ import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.BookingDTO;
 import com.example.cinemabookingapp.data.dto.SeatBookingRequestDTO;
+import com.example.cinemabookingapp.data.dto.ValidateVoucherRequest;
 import com.example.cinemabookingapp.data.remote.api.BookingApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.data.remote.api.VoucherApiService;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -394,6 +396,38 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     voucherValue = 20000;
                     promoMsg = "Đã áp dụng mã FREESHOP (-20k)";
                     isValid = true;
+                } else {
+                    // Validate from Backend
+                    VoucherApiService voucherApi = RetrofitClient.getInstance().create(VoucherApiService.class);
+                    voucherApi.validateVoucher(new ValidateVoucherRequest(code)).enqueue(new retrofit2.Callback<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, retrofit2.Response<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> response) {
+                            if (response.isSuccessful() && response.body() != null && response.body().isSuccess() && response.body().getData() != null) {
+                                int discountPercent = response.body().getData().discountPercent;
+                                discountVoucher = total * discountPercent / 100.0;
+                                appliedPromoCode = code;
+                                if (tvAppliedPromo != null) {
+                                    tvAppliedPromo.setText("Đã áp dụng Voucher (-" + discountPercent + "%)");
+                                    tvAppliedPromo.setTextColor(0xFF4CAF50);
+                                }
+                                updateTotalPrice();
+                                dialog.dismiss();
+                                Toast.makeText(BookingConfirmActivity.this, "Áp dụng Voucher giảm " + discountPercent + "% thành công!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String msg = response.body() != null ? response.body().getMessage() : "Mã voucher không hợp lệ!";
+                                if (tvPromoStatus != null) {
+                                    tvPromoStatus.setText(msg);
+                                    tvPromoStatus.setVisibility(android.view.View.VISIBLE);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(retrofit2.Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, Throwable t) {
+                            Toast.makeText(BookingConfirmActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return; // Return early, async handles the rest
                 }
 
                 if (isValid) {
@@ -432,11 +466,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
         List<SeatBookingRequestDTO.SnackOrder> snackOrders = new ArrayList<>();
 
+        double finalTotal = total - discountVoucher - discountRank - discountStars;
+        if (finalTotal < 0) finalTotal = 0;
+
         SeatBookingRequestDTO request = new SeatBookingRequestDTO(
                 showtimeId,
                 seatIds != null ? seatIds : new ArrayList<>(),
                 snackOrders,
-                paymentMethod
+                paymentMethod,
+                appliedPromoCode.isEmpty() ? null : appliedPromoCode,
+                finalTotal
         );
 
         BookingApiService bookingApi = RetrofitClient.getInstance()

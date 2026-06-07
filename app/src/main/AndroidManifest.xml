@@ -216,6 +216,9 @@
         <activity
             android:name=".ui.customer.profile.SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.customer.voucher.CustomerVoucherActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
