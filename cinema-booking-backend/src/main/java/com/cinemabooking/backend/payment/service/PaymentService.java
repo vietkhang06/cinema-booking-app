@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import com.cinemabooking.backend.service.VoucherService;
+import com.cinemabooking.backend.service.BookingService;
 
 @Service
 public class PaymentService {
@@ -22,6 +23,9 @@ public class PaymentService {
 
     @Autowired
     private VoucherService voucherService;
+
+    @Autowired
+    private BookingService bookingService;
 
     public Payment createPendingPayment(String bookingId, String userId, String provider, double amount) throws ExecutionException, InterruptedException {
         String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
@@ -69,6 +73,27 @@ public class PaymentService {
             }
         } catch (ExecutionException | InterruptedException e) {
             log.error("Error handling failed payment {}", paymentId, e);
+        }
+    }
+
+    public void handleSuccessPayment(String paymentId, String transactionId) {
+        log.info("[PAYMENT_FLOW] Handling success payment: {}, transactionId: {}", paymentId, transactionId);
+        try {
+            Payment payment = paymentRepository.findById(paymentId);
+            if (payment != null) {
+                payment.setStatus(PaymentStatus.PAID.name());
+                payment.setTransactionId(transactionId);
+                payment.setUpdatedAt(System.currentTimeMillis());
+                paymentRepository.save(payment);
+
+                // Update booking status in Firestore to SUCCESS & CONFIRMED, and confirm seats
+                bookingService.updatePaymentStatus(payment.getBookingId(), "SUCCESS", "CONFIRMED");
+                bookingService.confirmBookingSeats(payment.getBookingId());
+            } else {
+                log.warn("[PAYMENT_FLOW] Payment record not found for ID: {}", paymentId);
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            log.error("Error handling success payment {}", paymentId, e);
         }
     }
 }
