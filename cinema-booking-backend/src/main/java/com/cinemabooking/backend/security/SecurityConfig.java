@@ -69,7 +69,10 @@ public class SecurityConfig {
                                 "/api/v1/showtimes/**",
 
                                 // Seats (TEMP DEBUG MODE)
-                                "/api/v1/seats/**"
+                                "/api/v1/seats/**",
+
+                                // Webhooks
+                                "/api/webhooks/**"
 
                         ).permitAll()
 
