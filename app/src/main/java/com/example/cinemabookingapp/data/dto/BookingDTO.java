@@ -31,6 +31,17 @@ public class BookingDTO {
     public long updatedAt;
     public boolean deleted;
 
+    public String appliedVoucherCode;
+    public List<SnackOrderSnapshotDTO> snackOrder;
+
+    public static class SnackOrderSnapshotDTO {
+        public String snackId;
+        public String snackName;
+        public String snackImgURL;
+        public double price;
+        public int quantity;
+    }
+
     public BookingDTO() {
     }
 }

@@ -18,19 +18,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.staff.StaffCustomerChatActivity"
+            android:name=".ui.features.staff.chat.StaffCustomerChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffSupportChatActivity"
+            android:name=".ui.features.staff.chat.StaffSupportChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.chat.MessageActivity"
+            android:name=".ui.features.chat.MessageActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.chat.CustomerChatActivity"
+            android:name=".ui.features.chat.CustomerChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.chat.CustomerSupportActivity"
+            android:name=".ui.features.chat.CustomerSupportActivity"
             android:exported="false" />
         <activity
             android:name=".ui.customer.notification.NotificationActivity"
@@ -59,7 +59,7 @@
             </intent-filter>
         </activity> <!-- AUTH -->
         <activity
-            android:name=".ui.auth.SplashActivity"
+            android:name=".ui.features.auth.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,80 +68,80 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.auth.ForgotPasswordActivity"
+            android:name=".ui.features.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".ui.features.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.RegisterActivity"
+            android:name=".ui.features.auth.RegisterActivity"
             android:exported="false" /> <!-- CUSTOMER -->
         <activity
-            android:name=".ui.customer.HomeActivity"
+            android:name=".ui.features.home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.MovieDetailActivity"
+            android:name=".ui.features.movie.MovieDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.cinema.CinemaDetailActivity"
+            android:name=".ui.features.cinema.CinemaDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.SeatSelectionActivity"
+            android:name=".ui.features.booking.SeatSelectionActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
-            android:name=".ui.customer.BookingConfirmActivity"
+            android:name=".ui.features.booking.BookingConfirmActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
-            android:name=".ui.customer.PaymentInstructionActivity"
+            android:name=".ui.features.booking.PaymentInstructionActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
-            android:name=".ui.customer.cine_shop.CineCartActivity"
+            android:name=".ui.features.cineshop.CineCartActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.cine_shop.CineCheckoutActivity"
+            android:name=".ui.features.cineshop.CineCheckoutActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.transaction.TransactionHistoryActivity"
+            android:name=".ui.features.transaction.TransactionHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.transaction.TicketDetailActivity"
+            android:name=".ui.features.transaction.TicketDetailActivity"
             android:exported="false" /> <!-- STAFF -->
         <activity
-            android:name=".ui.staff.StaffDashboardActivity"
+            android:name=".ui.features.staff.dashboard.StaffDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffScanQRActivity"
+            android:name=".ui.features.staff.scanqr.StaffScanQRActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffInvoiceActivity"
+            android:name=".ui.features.staff.scanqr.StaffInvoiceActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffCheckOrder"
+            android:name=".ui.features.staff.scanqr.StaffCheckOrder"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffCheckSeat"
+            android:name=".ui.features.staff.checkseat.StaffCheckSeat"
             android:exported="false" /> <!-- ADMIN -->
         <activity
-            android:name=".ui.staff.StaffSearchBookingActivity"
+            android:name=".ui.features.staff.booking.StaffSearchBookingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffShowtimesActivity"
+            android:name=".ui.features.staff.showtimes.StaffShowtimesActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffPaymentSupportActivity"
+            android:name=".ui.features.staff.payment.StaffPaymentSupportActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffAuditLogActivity"
+            android:name=".ui.features.staff.log.StaffAuditLogActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffProfileActivity"
+            android:name=".ui.features.staff.profile.StaffProfileActivity"
             android:exported="false" /> <!-- ADMIN -->
         <activity
-            android:name=".ui.admin.AdminDashboardActivity"
+            android:name=".ui.features.admin.dashboard.AdminDashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.AdminPaymentListActivity"
+            android:name=".ui.features.admin.payment.AdminPaymentListActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
@@ -196,7 +196,7 @@
             android:name=".ui.admin.log.AdminAuditLogActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.staff.StaffAttendanceActivity"
+            android:name=".ui.features.staff.attendance.StaffAttendanceActivity"
             android:exported="false" />
         <activity
             android:name=".ui.admin.report.AdminReportActivity"
@@ -205,19 +205,19 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.cinema_contents.CinemaContentDetailActivity"
+            android:name=".ui.features.cinema_contents.CinemaContentDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.cinema_contents.CinemaSearchActivity"
+            android:name=".ui.features.cinema_contents.CinemaSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.profile.EditProfileActivity"
+            android:name=".ui.features.profile.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.profile.SettingsActivity"
+            android:name=".ui.features.profile.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.voucher.CustomerVoucherActivity"
+            android:name=".ui.features.voucher.CustomerVoucherActivity"
             android:exported="false" />
     </application>
 

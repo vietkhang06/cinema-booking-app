@@ -7,6 +7,7 @@ import com.example.cinemabookingapp.domain.model.Cinema;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.cinemabookingapp.core.utils.DataParser;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -188,35 +189,15 @@ public class CinemaRemoteDataSource {
         c.phone = doc.getString("phone");
         c.status = doc.getString("status");
 
-        c.latitude = getDouble(doc.get("latitude"));
-        c.longitude = getDouble(doc.get("longitude"));
+        c.latitude = DataParser.getDouble(doc.get("latitude"));
+        c.longitude = DataParser.getDouble(doc.get("longitude"));
 
-        c.createdAt = getLong(doc.get("createdAt"));
-        c.updatedAt = getLong(doc.get("updatedAt"));
+        c.createdAt = DataParser.getLong(doc.get("createdAt"));
+        c.updatedAt = DataParser.getLong(doc.get("updatedAt"));
 
         Boolean deleted = doc.getBoolean("deleted");
         c.deleted = deleted != null && deleted;
 
         return c;
-    }
-
-    // =========================
-    // TYPE SAFE
-    // =========================
-    private long getLong(Object o) {
-        try {
-            if (o instanceof Long) return (Long) o;
-            if (o instanceof String) return Long.parseLong((String) o);
-        } catch (Exception ignored) {}
-        return 0;
-    }
-
-    private double getDouble(Object o) {
-        try {
-            if (o instanceof Double) return (Double) o;
-            if (o instanceof Long) return ((Long) o).doubleValue();
-            if (o instanceof String) return Double.parseDouble((String) o);
-        } catch (Exception ignored) {}
-        return 0;
     }
 }

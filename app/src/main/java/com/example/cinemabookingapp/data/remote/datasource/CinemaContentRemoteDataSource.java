@@ -2,8 +2,8 @@ package com.example.cinemabookingapp.data.remote.datasource;
 
 import com.example.cinemabookingapp.core.constants.FirestoreCollections;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContent;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContentType;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
