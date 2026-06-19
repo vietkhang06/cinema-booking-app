@@ -1,10 +1,10 @@
 package com.example.cinemabookingapp.data.repository;
 
-import com.example.cinemabookingapp.data.local.Cinema_DienAnh.CinemaContentMockDataSource;
+import com.example.cinemabookingapp.data.local.cinema.CinemaContentMockDataSource;
 import com.example.cinemabookingapp.data.remote.datasource.CinemaContentRemoteDataSource;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContent;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContentType;
 import com.example.cinemabookingapp.domain.repository.CinemaContentRepository;
 
 import java.util.ArrayList;

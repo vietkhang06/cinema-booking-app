@@ -1,8 +1,8 @@
 package com.example.cinemabookingapp.domain.repository;
 
 import com.example.cinemabookingapp.domain.common.ResultCallback;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContent;
-import com.example.cinemabookingapp.domain.model.Cinema_DienAnh.CinemaContentType;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContent;
+import com.example.cinemabookingapp.domain.model.cinema.CinemaContentType;
 
 import java.util.List;
 public interface CinemaContentRepository {

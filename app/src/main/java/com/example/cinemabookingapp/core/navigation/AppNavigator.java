@@ -5,15 +5,15 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
-import com.example.cinemabookingapp.ui.admin.AdminDashboardActivity;
-import com.example.cinemabookingapp.ui.auth.ForgotPasswordActivity;
-import com.example.cinemabookingapp.ui.auth.LoginActivity;
-import com.example.cinemabookingapp.ui.auth.RegisterActivity;
-import com.example.cinemabookingapp.ui.customer.HomeActivity;
-import com.example.cinemabookingapp.ui.customer.notification.NotificationActivity;
-import com.example.cinemabookingapp.ui.customer.transaction.TicketDetailActivity;
-import com.example.cinemabookingapp.ui.customer.transaction.TransactionHistoryActivity;
-import com.example.cinemabookingapp.ui.staff.StaffDashboardActivity;
+import com.example.cinemabookingapp.ui.features.admin.dashboard.AdminDashboardActivity;
+import com.example.cinemabookingapp.ui.features.auth.ForgotPasswordActivity;
+import com.example.cinemabookingapp.ui.features.auth.LoginActivity;
+import com.example.cinemabookingapp.ui.features.auth.RegisterActivity;
+import com.example.cinemabookingapp.ui.features.home.HomeActivity;
+import com.example.cinemabookingapp.ui.features.notification.NotificationActivity;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.example.cinemabookingapp.ui.features.transaction.TransactionHistoryActivity;
+import com.example.cinemabookingapp.ui.features.staff.dashboard.StaffDashboardActivity;
 
 import java.util.Map;
 

@@ -37,6 +37,8 @@ public final class BookingMapper {
         model.createdAt = dto.createdAt;
         model.updatedAt = dto.updatedAt;
         model.deleted = dto.deleted;
+        model.appliedVoucherCode = dto.appliedVoucherCode;
+        model.snackOrder = toSnackDomain(dto.snackOrder);
         return model;
     }
 
@@ -70,6 +72,40 @@ public final class BookingMapper {
         dto.createdAt = model.createdAt;
         dto.updatedAt = model.updatedAt;
         dto.deleted = model.deleted;
+        dto.appliedVoucherCode = model.appliedVoucherCode;
+        dto.snackOrder = toSnackDTO(model.snackOrder);
         return dto;
+    }
+
+    private static java.util.List<Booking.SnackOrderSnapshot> toSnackDomain(java.util.List<BookingDTO.SnackOrderSnapshotDTO> list) {
+        if (list == null) return null;
+        java.util.List<Booking.SnackOrderSnapshot> res = new java.util.ArrayList<>();
+        for (BookingDTO.SnackOrderSnapshotDTO item : list) {
+            if (item == null) continue;
+            Booking.SnackOrderSnapshot d = new Booking.SnackOrderSnapshot();
+            d.snackId = item.snackId;
+            d.snackName = item.snackName;
+            d.snackImgURL = item.snackImgURL;
+            d.price = item.price;
+            d.quantity = item.quantity;
+            res.add(d);
+        }
+        return res;
+    }
+
+    private static java.util.List<BookingDTO.SnackOrderSnapshotDTO> toSnackDTO(java.util.List<Booking.SnackOrderSnapshot> list) {
+        if (list == null) return null;
+        java.util.List<BookingDTO.SnackOrderSnapshotDTO> res = new java.util.ArrayList<>();
+        for (Booking.SnackOrderSnapshot item : list) {
+            if (item == null) continue;
+            BookingDTO.SnackOrderSnapshotDTO d = new BookingDTO.SnackOrderSnapshotDTO();
+            d.snackId = item.snackId;
+            d.snackName = item.snackName;
+            d.snackImgURL = item.snackImgURL;
+            d.price = item.price;
+            d.quantity = item.quantity;
+            res.add(d);
+        }
+        return res;
     }
 }

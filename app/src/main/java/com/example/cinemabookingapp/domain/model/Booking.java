@@ -31,6 +31,7 @@ public class Booking {
     public long updatedAt;
     public boolean deleted;
 
+    public String appliedVoucherCode;
     public List<SnackOrderSnapshot> snackOrder;
 
     public Showtime showtime;
