@@ -275,21 +275,21 @@ public class UserService {
         }).get();
     }
 
-    public List<UserDTO> getAllStaffs() throws ExecutionException, InterruptedException {
-        logger.info("Fetching all staff/admin users from Firestore (optimized query)");
+    public List<UserDTO> getAllAdmins() throws ExecutionException, InterruptedException {
+        logger.info("Fetching all admin users from Firestore (optimized query)");
         List<UserDTO> list = new ArrayList<>();
         try {
-            // Optimized query: only fetch users with role 'staff' or 'admin'
-            Query query = firestore.collection(COLLECTION).whereIn("role", List.of("staff", "admin"));
+            // Optimized query: only fetch users with role 'admin'
+            Query query = firestore.collection(COLLECTION).whereEqualTo("role", "admin");
             List<QueryDocumentSnapshot> documents = query.get().get().getDocuments();
-            logger.info("Found {} staff/admin documents in Firestore", documents.size());
+            logger.info("Found {} admin documents in Firestore", documents.size());
             for (DocumentSnapshot doc : documents) {
                 Boolean deleted = getSafeBoolean(doc, "deleted", false);
                 if (deleted) continue;
                 list.add(mapToDTO(doc));
             }
         } catch (Exception e) {
-            logger.error("Error fetching staff list from Firestore: {}", e.getMessage(), e);
+            logger.error("Error fetching admin list from Firestore: {}", e.getMessage(), e);
             throw e;
         }
         return list;

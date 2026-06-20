@@ -48,13 +48,13 @@ public class ChatController {
         );
     }
 
-    @GetMapping("/users/staff")
-    public ResponseEntity<ApiResponse<List<UserDTO>>> getStaffUsers() throws ExecutionException, InterruptedException {
-        List<UserDTO> staffUserIds = userService.getAllStaffs();
+    @GetMapping("/users/admin")
+    public ResponseEntity<ApiResponse<List<UserDTO>>> getAdminUsers() throws ExecutionException, InterruptedException {
+        List<UserDTO> adminUserIds = userService.getAllAdmins();
         return ResponseEntity.ok(
                 ApiResponse.<List<UserDTO>>builder()
                     .success(true)
-                    .data(staffUserIds)
+                    .data(adminUserIds)
                     .build());
     }
 
@@ -236,10 +236,10 @@ public class ChatController {
 
     @PostMapping("/support/conversations/{convoId}/claim")
     public ResponseEntity<ApiResponse<Conversation>> claimSupport(
-            @AuthenticationPrincipal String staffId,
+            @AuthenticationPrincipal String adminId,
             @PathVariable String convoId
     ) throws ExecutionException, InterruptedException {
-        Conversation convo = chatService.claimConversation(convoId, staffId);
+        Conversation convo = chatService.claimConversation(convoId, adminId);
         return ResponseEntity.ok(
                 ApiResponse.<Conversation>builder()
                         .success(true)
@@ -248,10 +248,10 @@ public class ChatController {
         );
     }
 
-    private boolean isUserActiveStaffOrAdmin(String userId) throws ExecutionException, InterruptedException {
+    private boolean isUserActiveAdmin(String userId) throws ExecutionException, InterruptedException {
         UserDTO user = userService.getUserById(userId);
         if (user == null) return false;
-        return ("staff".equalsIgnoreCase(user.getRole()) || "admin".equalsIgnoreCase(user.getRole()))
+        return "admin".equalsIgnoreCase(user.getRole())
                 && !"inactive".equalsIgnoreCase(user.getStatus())
                 && !Boolean.TRUE.equals(user.getDeleted());
     }
@@ -267,9 +267,9 @@ public class ChatController {
         }
 
         boolean isParticipant = convo.getParticipantIds().contains(userId);
-        boolean isStaffOrAdmin = isUserActiveStaffOrAdmin(userId);
+        boolean isAdmin = isUserActiveAdmin(userId);
 
-        if (!isParticipant && !isStaffOrAdmin) {
+        if (!isParticipant && !isAdmin) {
             return ResponseEntity.status(403).body(
                     ApiResponse.<Void>builder()
                             .success(false)
@@ -279,7 +279,7 @@ public class ChatController {
         }
 
         UserDTO user = userService.getUserById(userId);
-        if (user != null && ("staff".equalsIgnoreCase(user.getRole()) || "admin".equalsIgnoreCase(user.getRole()))) {
+        if (user != null && "admin".equalsIgnoreCase(user.getRole())) {
             if ("inactive".equalsIgnoreCase(user.getStatus()) || Boolean.TRUE.equals(user.getDeleted())) {
                 return ResponseEntity.status(403).body(
                         ApiResponse.<Void>builder()

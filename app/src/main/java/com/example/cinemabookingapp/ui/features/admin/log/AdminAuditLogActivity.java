@@ -15,10 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.data.dto.AuditLogDTO;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.AuditLog;
+import com.example.cinemabookingapp.domain.repository.AuditLogRepository;
+import com.example.cinemabookingapp.data.repository.AuditLogRepositoryImpl;
 import com.example.cinemabookingapp.ui.features.admin.dashboard.AdminBottomNavHelper;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ public class AdminAuditLogActivity extends AppCompatActivity {
     private RecyclerView auditLogsRv;
     private TextView tvNoLogs;
     private LogAdapter adapter;
-    private final List<AuditLogDTO> logList = new ArrayList<>();
+    private final List<AuditLog> logList = new ArrayList<>();
+    private AuditLogRepository auditLogRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class AdminAuditLogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_audit_log);
 
         AdminBottomNavHelper.setupAdminBottomNavigation(this, 3);
+        auditLogRepository = new AuditLogRepositoryImpl();
 
         initViews();
         loadLogs();
@@ -59,35 +62,36 @@ public class AdminAuditLogActivity extends AppCompatActivity {
     }
 
     private void loadLogs() {
-        FirebaseFirestore.getInstance().collection("audit_logs")
-                .orderBy("createdAt", Query.Direction.DESCENDING)
-                .limit(150)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    logList.clear();
-                    if (queryDocumentSnapshots != null) {
-                        logList.addAll(queryDocumentSnapshots.toObjects(AuditLogDTO.class));
-                    }
-                    adapter.notifyDataSetChanged();
+        auditLogRepository.getAllLogs(new ResultCallback<List<AuditLog>>() {
+            @Override
+            public void onSuccess(List<AuditLog> logs) {
+                logList.clear();
+                if (logs != null) {
+                    logList.addAll(logs);
+                }
+                adapter.notifyDataSetChanged();
 
-                    if (logList.isEmpty()) {
-                        tvNoLogs.setVisibility(View.VISIBLE);
-                        auditLogsRv.setVisibility(View.GONE);
-                    } else {
-                        tvNoLogs.setVisibility(View.GONE);
-                        auditLogsRv.setVisibility(View.VISIBLE);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Lỗi tải nhật ký: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                if (logList.isEmpty()) {
+                    tvNoLogs.setVisibility(View.VISIBLE);
+                    auditLogsRv.setVisibility(View.GONE);
+                } else {
+                    tvNoLogs.setVisibility(View.GONE);
+                    auditLogsRv.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(AdminAuditLogActivity.this, "Lỗi tải nhật ký: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
-        private final List<AuditLogDTO> items;
+        private final List<AuditLog> items;
         private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
-        public LogAdapter(List<AuditLogDTO> items) {
+        public LogAdapter(List<AuditLog> items) {
             this.items = items;
         }
 
@@ -100,7 +104,7 @@ public class AdminAuditLogActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            AuditLogDTO log = items.get(position);
+            AuditLog log = items.get(position);
 
             String actionStr = log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "ACTION";
             holder.tvActionBadge.setText(actionStr);

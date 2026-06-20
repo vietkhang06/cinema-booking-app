@@ -15,7 +15,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.example.cinemabookingapp.ui.features.admin.cinema.AdminCinemaListActivity;
 import com.example.cinemabookingapp.ui.features.admin.movie.AdminMovieListActivity;
 import com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogActivity;
-import com.example.cinemabookingapp.ui.features.staff.profile.StaffProfileActivity;
+import com.example.cinemabookingapp.ui.features.admin.profile.AdminProfileActivity;
 
 public class AdminBottomNavHelper {
 
@@ -80,7 +80,7 @@ public class AdminBottomNavHelper {
 
         navAdminProfileCard.setOnClickListener(v -> {
             if (selectedIndex != 4) {
-                Intent intent = new Intent(activity, StaffProfileActivity.class);
+                Intent intent = new Intent(activity, AdminProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 activity.startActivity(intent);
                 if (selectedIndex != 0) activity.finish();

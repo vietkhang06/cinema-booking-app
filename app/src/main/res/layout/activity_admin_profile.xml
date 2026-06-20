@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAFAFC"
-    tools:context=".ui.staff.StaffProfileActivity">
+    tools:context=".ui.features.admin.profile.AdminProfileActivity">
 
     <!-- Elegant Toolbar with Back Card & Title -->
     <LinearLayout
@@ -30,6 +30,7 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:visibility="gone"
             app:cardCornerRadius="20dp"
             app:cardBackgroundColor="#FFFFFF"
             app:strokeColor="#ECE8F0"
@@ -46,8 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Hồ Sơ Nhân Viên"
+            android:text="Hồ Sơ Quản Trị"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -127,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
-                        android:text="Nhân viên"
+                        android:text="Quản trị viên"
                         android:textColor="#A13345"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -171,7 +171,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Mã nhân viên"
+                            android:text="Mã quản trị"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
@@ -339,6 +339,20 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Actions card -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_customer_support"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Chăm sóc khách hàng"
+                android:textColor="#A13345"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FFFFFF"
+                app:strokeColor="#A13345"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="16dp"
+                android:layout_marginBottom="12dp"/>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_change_password"
                 android:layout_width="match_parent"

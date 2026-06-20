@@ -481,7 +481,7 @@ public class ChatService {
                 DocumentSnapshot userDoc = firestore.collection("users").document(staffId).get().get();
                 if (userDoc.exists()) {
                     UserDTO user = userDoc.toObject(UserDTO.class);
-                    if (user != null && "staff".equalsIgnoreCase(user.getRole()) && !"inactive".equalsIgnoreCase(user.getStatus())) {
+                    if (user != null && "admin".equalsIgnoreCase(user.getRole()) && !"inactive".equalsIgnoreCase(user.getStatus())) {
                         candidates.add(user);
                     }
                 }
@@ -490,7 +490,7 @@ public class ChatService {
 
         if (candidates.isEmpty()) {
             List<QueryDocumentSnapshot> allStaffDocs = firestore.collection("users")
-                    .whereEqualTo("role", "staff")
+                    .whereEqualTo("role", "admin")
                     .get().get().getDocuments();
             for (DocumentSnapshot doc : allStaffDocs) {
                 UserDTO user = doc.toObject(UserDTO.class);
@@ -544,7 +544,7 @@ public class ChatService {
                     .convoId(convoId)
                     .senderId("SYSTEM")
                     .receiverId(customerId)
-                    .content("Hệ thống đã kết nối bạn với nhân viên hỗ trợ: " + selectedStaff.getName() + ".")
+                    .content("Hệ thống đã kết nối bạn với quản trị viên: " + selectedStaff.getName() + ".")
                     .sentAt(now)
                     .build();
 
@@ -568,7 +568,7 @@ public class ChatService {
                     .convoId(convoId)
                     .senderId("SYSTEM")
                     .receiverId(customerId)
-                    .content("Hiện tại tất cả nhân viên đều đang bận hoặc offline. Yêu cầu của bạn đã được ghi nhận, vui lòng đợi trong giây lát.")
+                    .content("Hiện tại tất cả quản trị viên đều đang bận hoặc offline. Yêu cầu của bạn đã được ghi nhận, vui lòng đợi trong giây lát.")
                     .sentAt(now)
                     .build();
 
@@ -633,7 +633,7 @@ public class ChatService {
                 .convoId(convoId)
                 .senderId("SYSTEM")
                 .receiverId(customerId)
-                .content("Nhân viên " + staffDTO.getName() + " đã tiếp nhận hỗ trợ cuộc trò chuyện này.")
+                .content("Quản trị viên " + staffDTO.getName() + " đã tiếp nhận hỗ trợ cuộc trò chuyện này.")
                 .sentAt(now)
                 .build();
 
@@ -702,7 +702,7 @@ public class ChatService {
                 .convoId(convoId)
                 .senderId("SYSTEM")
                 .receiverId(customerId)
-                .content("Hỗ trợ viên đã kết thúc phiên làm việc. Trợ lý ảo sẽ tiếp tục hỗ trợ bạn.")
+                .content("Quản trị viên đã kết thúc phiên làm việc. Trợ lý ảo sẽ tiếp tục hỗ trợ bạn.")
                 .sentAt(now)
                 .build();
 
@@ -745,7 +745,7 @@ public class ChatService {
                 .convoId(convoId)
                 .senderId("SYSTEM")
                 .receiverId(customerId)
-                .content("Hỗ trợ viên đã đóng cuộc trò chuyện hỗ trợ này.")
+                .content("Quản trị viên đã đóng cuộc trò chuyện hỗ trợ này.")
                 .sentAt(now)
                 .build();
 
@@ -795,7 +795,7 @@ public class ChatService {
                 DocumentSnapshot userDoc = firestore.collection("users").document(staffId).get().get();
                 if (userDoc.exists()) {
                     UserDTO user = userDoc.toObject(UserDTO.class);
-                    if (user != null && "staff".equalsIgnoreCase(user.getRole()) && !"inactive".equalsIgnoreCase(user.getStatus())) {
+                    if (user != null && "admin".equalsIgnoreCase(user.getRole()) && !"inactive".equalsIgnoreCase(user.getStatus())) {
                         candidates.add(user);
                     }
                 }
@@ -804,7 +804,7 @@ public class ChatService {
 
         if (candidates.isEmpty()) {
             List<QueryDocumentSnapshot> allStaffDocs = firestore.collection("users")
-                    .whereEqualTo("role", "staff")
+                    .whereEqualTo("role", "admin")
                     .get().get().getDocuments();
             for (DocumentSnapshot doc : allStaffDocs) {
                 UserDTO user = doc.toObject(UserDTO.class);
@@ -857,7 +857,7 @@ public class ChatService {
                     .convoId(convoId)
                     .senderId("SYSTEM")
                     .receiverId(customerId)
-                    .content("Ticket được mở lại. Hệ thống đã kết nối bạn với nhân viên hỗ trợ: " + selectedStaff.getName() + ".")
+                    .content("Ticket được mở lại. Hệ thống đã kết nối bạn với quản trị viên: " + selectedStaff.getName() + ".")
                     .sentAt(now)
                     .build();
 
@@ -877,7 +877,7 @@ public class ChatService {
                     .convoId(convoId)
                     .senderId("SYSTEM")
                     .receiverId(customerId)
-                    .content("Ticket được mở lại. Hiện tại tất cả nhân viên đều đang bận. Vui lòng chờ nhân viên tiếp nhận.")
+                    .content("Ticket được mở lại. Hiện tại tất cả quản trị viên đều đang bận. Vui lòng chờ quản trị viên tiếp nhận.")
                     .sentAt(now)
                     .build();
 

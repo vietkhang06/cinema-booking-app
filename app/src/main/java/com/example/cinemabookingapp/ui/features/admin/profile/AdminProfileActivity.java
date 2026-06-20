@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.features.staff.profile;
+package com.example.cinemabookingapp.ui.features.admin.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +23,7 @@ import com.example.cinemabookingapp.data.remote.api.ProfileApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.model.User;
+import com.example.cinemabookingapp.ui.features.admin.chat.AdminCustomerChatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,17 +31,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StaffProfileActivity extends AuthActivity {
+public class AdminProfileActivity extends AuthActivity {
 
     private View backBtn;
     private ImageView ivAvatar;
     private TextView tvName, tvRoleBadge, tvUid, tvEmail, tvPhone, tvGender, tvBirthdate, tvStatus;
-    private MaterialButton btnChangePassword, btnLogout;
+    private MaterialButton btnCustomerSupport, btnChangePassword, btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_staff_profile);
+        setContentView(R.layout.activity_admin_profile);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -64,12 +65,19 @@ public class StaffProfileActivity extends AuthActivity {
         tvGender = findViewById(R.id.tv_gender);
         tvBirthdate = findViewById(R.id.tv_birthdate);
         tvStatus = findViewById(R.id.tv_status);
+        btnCustomerSupport = findViewById(R.id.btn_customer_support);
         btnChangePassword = findViewById(R.id.btn_change_password);
         btnLogout = findViewById(R.id.btn_logout);
     }
 
     private void bindActions() {
-        backBtn.setOnClickListener(v -> finish());
+        if (backBtn != null) {
+            backBtn.setVisibility(View.GONE); // Admin profile has bottom nav, no back button needed
+        }
+        btnCustomerSupport.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminCustomerChatActivity.class);
+            startActivity(intent);
+        });
         btnLogout.setOnClickListener(v -> performLogout());
         btnChangePassword.setOnClickListener(v -> showChangePasswordDialog());
     }
@@ -85,7 +93,7 @@ public class StaffProfileActivity extends AuthActivity {
                     User user = response.body().getData();
                     displayProfile(user);
                 } else {
-                    showToast("Không thể tải hồ sơ nhân viên");
+                    showToast("Không thể tải hồ sơ quản trị");
                 }
             }
 
@@ -106,20 +114,12 @@ public class StaffProfileActivity extends AuthActivity {
         tvBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "Chưa cập nhật");
         tvStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoạt động");
 
-        if ("admin".equalsIgnoreCase(user.role)) {
-            tvRoleBadge.setText("Quản trị viên");
-            View adminBottomNav = findViewById(R.id.adminBottomNav);
-            if (adminBottomNav != null) {
-                adminBottomNav.setVisibility(View.VISIBLE);
-                com.example.cinemabookingapp.ui.features.admin.dashboard.AdminBottomNavHelper.setupAdminBottomNavigation(this, 4);
-            }
-            if (backBtn != null) {
-                backBtn.setVisibility(View.GONE);
-            }
-        } else if ("staff".equalsIgnoreCase(user.role)) {
-            tvRoleBadge.setText("Nhân viên");
-        } else {
-            tvRoleBadge.setText(user.role);
+        tvRoleBadge.setText("Quản trị viên");
+
+        View adminBottomNav = findViewById(R.id.adminBottomNav);
+        if (adminBottomNav != null) {
+            adminBottomNav.setVisibility(View.VISIBLE);
+            com.example.cinemabookingapp.ui.features.admin.dashboard.AdminBottomNavHelper.setupAdminBottomNavigation(this, 4);
         }
 
         if (user.avatarUrl != null && !user.avatarUrl.isEmpty()) {

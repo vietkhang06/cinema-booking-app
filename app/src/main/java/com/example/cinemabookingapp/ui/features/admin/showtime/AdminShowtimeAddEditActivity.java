@@ -456,7 +456,7 @@ public class AdminShowtimeAddEditActivity extends AppCompatActivity {
 
                                 // Overlap condition: (startAt < s.endAt) && (endAt > s.startAt)
                                 if (startAt < s.endAt && endAt > s.startAt) {
-                                    String msg = s.isScheduled ? 
+                                    String msg = Boolean.TRUE.equals(s.isScheduled) ? 
                                             "Phòng chiếu này đã có lịch trình suất chiếu từ " : 
                                             "Phòng chiếu này đã được lên lịch suất chiếu khác từ ";
                                     new AlertDialog.Builder(AdminShowtimeAddEditActivity.this)

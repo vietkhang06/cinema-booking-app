@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.staff.StaffCustomerChatActivity">
+    tools:context=".ui.features.admin.chat.AdminCustomerChatActivity">
     <!-- Top bar -->
     <LinearLayout
         android:id="@+id/topBar"
@@ -36,18 +36,11 @@
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
-    <!--
-    activity_messages.xml
-    Root layout for the Messages screen.
-    Uses CoordinatorLayout + AppBarLayout for proper toolbar elevation behavior.
-    Requires:  com.google.android.material:material
-               androidx.constraintlayout:constraintlayout
--->
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorSurface">
-
 
         <!-- ── Main content below AppBar ──────────────────────────────── -->
         <androidx.core.widget.NestedScrollView
@@ -98,67 +91,6 @@
                         android:textSize="18sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- ── Filter chips ────────────────────────────────────── -->
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="10dp"
-                    android:scrollbars="none"
-                    android:visibility="gone">
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chipGroupFilters"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:selectionRequired="true"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chipAll"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="All"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chipUnread"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Unread"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chipOnline"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Online"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chipGroups"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Groups"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chipArchived"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Archived"
-                            android:textSize="13sp" />
-
-                    </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
 
                 <!-- ── Waiting Queue Section ── -->
                 <LinearLayout
@@ -242,18 +174,6 @@
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
-        <!--        &lt;!&ndash; ── FAB (Compose) ──────────────────────────────────────────── &ndash;&gt;-->
-        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--            android:id="@+id/fabCompose"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="bottom|end"-->
-        <!--            android:layout_margin="20dp"-->
-        <!--            android:contentDescription="New message"-->
-        <!--            app:srcCompat="@drawable/ic_arrow_back"-->
-        <!--            app:tint="?attr/colorOnPrimaryContainer"-->
-        <!--            app:backgroundTint="?attr/colorPrimaryContainer" />-->
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

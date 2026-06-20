@@ -252,7 +252,7 @@ public class AdminStaffDetailActivity extends BaseActivity {
             tvAdminCreatedDate.setText("Ngày tạo tài khoản: " + (user.createdAt > 0 
                     ? new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault()).format(new java.util.Date(user.createdAt)) 
                     : "N/A"));
-            tvAdminLoginCount.setText("Số lần đăng nhập: " + user.loginCount);
+            tvAdminLoginCount.setText("Số lần đăng nhập: " + (user.loginCount != null ? user.loginCount : 0));
             tvAdminStatus.setText("Trạng thái: " + ("active".equalsIgnoreCase(user.status) ? "Hoạt động" : "Tạm khóa"));
 
 

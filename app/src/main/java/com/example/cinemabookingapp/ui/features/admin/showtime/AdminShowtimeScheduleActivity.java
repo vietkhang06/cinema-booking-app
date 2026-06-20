@@ -509,7 +509,7 @@ public class AdminShowtimeScheduleActivity extends AppCompatActivity {
                         List<Showtime> combinedList = new ArrayList<>(existingShowtimes);
                         if (existingSchedules != null) {
                             for (Showtime s : existingSchedules) {
-                                if (!s.executed) {
+                                if (!Boolean.TRUE.equals(s.executed)) {
                                     combinedList.add(s);
                                 }
                             }

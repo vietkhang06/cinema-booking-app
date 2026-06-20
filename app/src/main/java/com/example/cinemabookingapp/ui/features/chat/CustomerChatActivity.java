@@ -59,7 +59,7 @@ public class CustomerChatActivity extends AppCompatActivity {
     private ConversationAdapter conversationAdapter;
     private ActiveUserAdapter activeUserAdapter;
     private final List<Conversation> allConversations = new ArrayList<>();
-    private final List<User> activeStaffs = new ArrayList<>();
+    private final List<User> activeAdmins = new ArrayList<>();
 
     ProfileService profileService = ServiceProvider.getInstance().getProfileService();
     DataNavigator navigator = DataNavigator.getInstance();
@@ -124,7 +124,7 @@ public class CustomerChatActivity extends AppCompatActivity {
         recyclerViewConversations.setAdapter(conversationAdapter);
         recyclerViewConversations.setNestedScrollingEnabled(false);
 
-        activeUserAdapter = new ActiveUserAdapter(activeStaffs);
+        activeUserAdapter = new ActiveUserAdapter(activeAdmins);
         recyclerViewActiveUsers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewActiveUsers.setAdapter(activeUserAdapter);
         recyclerViewActiveUsers.setNestedScrollingEnabled(false);
@@ -164,16 +164,16 @@ public class CustomerChatActivity extends AppCompatActivity {
     // -------------------------------------------------------------------------
 
     private void loadData() {
-        chatApiService.getAllStaffs().enqueue(new Callback<ApiResponse<List<User>>>() {
+        chatApiService.getAllAdmins().enqueue(new Callback<ApiResponse<List<User>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<User>>> call, Response<ApiResponse<List<User>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    activeStaffs.clear();
-                    activeStaffs.addAll(response.body().getData());
+                    activeAdmins.clear();
+                    activeAdmins.addAll(response.body().getData());
 
                     activeUserAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(CustomerChatActivity.this, "Failed to load staff data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomerChatActivity.this, "Failed to load admin data", Toast.LENGTH_SHORT).show();
                 }
             }
 

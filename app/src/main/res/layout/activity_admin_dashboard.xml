@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAFAFC"
-    tools:context=".ui.admin.AdminDashboardActivity">
+    tools:context=".ui.features.admin.dashboard.AdminDashboardActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
@@ -284,7 +284,7 @@
                         android:textSize="15sp"
                         android:layout_marginBottom="8dp" />
 
-                    <com.example.cinemabookingapp.ui.admin.widget.AdminLineChartView
+                    <com.example.cinemabookingapp.ui.features.admin.widget.AdminLineChartView
                         android:id="@+id/lineChartUsers"
                         android:layout_width="match_parent"
                         android:layout_height="200dp" />
@@ -316,7 +316,7 @@
                         android:textSize="15sp"
                         android:layout_marginBottom="8dp" />
 
-                    <com.example.cinemabookingapp.ui.admin.widget.AdminHorizontalBarChartView
+                    <com.example.cinemabookingapp.ui.features.admin.widget.AdminHorizontalBarChartView
                         android:id="@+id/barChartMovies"
                         android:layout_width="match_parent"
                         android:layout_height="250dp" />
