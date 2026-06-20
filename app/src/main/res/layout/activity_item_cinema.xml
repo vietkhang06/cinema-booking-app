@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
-    tools:context=".ui.customer.cinema.CinemaDetailActivity">
+    tools:context=".ui.features.cinema.CinemaDetailActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollCinemaDetail"
@@ -102,7 +102,7 @@
                         android:layout_marginTop="6dp"
                         android:textColor="#E5E7EB"
                         android:textSize="14sp"
-                        tools:text="Quan 1, TP Ho Chi Minh" />
+                        tools:text="Quáº­n 1, TP Há»“ ChÃ­ Minh" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -141,8 +141,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:contentDescription="@null"
-                                android:padding="12dp"
-                                android:scaleType="centerInside"
+                                android:scaleType="fitCenter"
                                 tools:src="@drawable/ic_cinemax_logo" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -163,7 +162,7 @@
                                 android:textColor="#1E1A23"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                tools:text="Dang hoat dong" />
+                                tools:text="Äang hoáº¡t Ä‘á»™ng" />
 
                             <TextView
                                 android:id="@+id/tvCityDistrict"
@@ -173,7 +172,7 @@
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                tools:text="Quan 1, TP Ho Chi Minh" />
+                                tools:text="Quáº­n 1, TP Há»“ ChÃ­ Minh" />
 
                             <TextView
                                 android:id="@+id/tvPhone"
@@ -196,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Dia chi"
+                        android:text="Äá»‹a chá»‰"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -215,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Thong tin rap"
+                        android:text="ThÃ´ng tin ráº¡p"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -248,7 +247,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Ban do"
+                                android:text="Báº£n Ä‘á»“"
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -276,7 +275,7 @@
                             android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="Mo ban do"
+                            android:text="Má»Ÿ báº£n Ä‘á»“"
                             android:textAllCaps="false"
                             android:textColor="#FFFFFF"
                             android:textSize="14sp"
@@ -290,7 +289,7 @@
                             android:layout_height="52dp"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Goi dien"
+                            android:text="Gá»i Ä‘iá»‡n"
                             android:textAllCaps="false"
                             android:textColor="#1E1A23"
                             android:textSize="14sp"
@@ -311,7 +310,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Dang chieu tai rap"
+                        android:text="Äang chiáº¿u táº¡i ráº¡p"
                         android:textColor="#111111"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -320,9 +319,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Chon phim va khung gio phu hop"
+                        android:text="Chá»n phim vÃ  khung giá» phÃ¹ há»£p"
                         android:textColor="#666666"
                         android:textSize="13sp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:scrollbars="none">
+                        <LinearLayout
+                            android:id="@+id/layoutDateChips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
 
                     <LinearLayout
                         android:id="@+id/layoutNowShowing"
@@ -331,29 +342,7 @@
                         android:layout_marginTop="14dp"
                         android:orientation="vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Phim sap chieu"
-                        android:textColor="#111111"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Cac phim se co lich tai rap trong thoi gian toi"
-                        android:textColor="#666666"
-                        android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:id="@+id/layoutComingSoon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:orientation="vertical" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -394,7 +383,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Không thể tải thông tin rạp"
+            android:text="KhÃ´ng thá»ƒ táº£i thÃ´ng tin ráº¡p"
             android:textColor="#111111"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -404,7 +393,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Vui lòng kiểm tra kết nối và thử lại."
+            android:text="Vui lÃ²ng kiá»ƒm tra káº¿t ná»‘i vÃ  thá»­ láº¡i."
             android:textColor="#666666"
             android:textSize="14sp"
             android:gravity="center" />
@@ -414,7 +403,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
-            android:text="Thử lại"
+            android:text="Thá»­ láº¡i"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             app:backgroundTint="#1E1A23"
