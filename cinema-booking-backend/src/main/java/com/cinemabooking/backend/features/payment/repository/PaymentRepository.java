@@ -1,6 +1,4 @@
 package com.cinemabooking.backend.features.payment.repository;
-import com.cinemabooking.backend.features.payment.model.PaymentMethod;
-import com.cinemabooking.backend.features.payment.model.PaymentStatus;
 
 import com.cinemabooking.backend.features.payment.model.Payment;
 import com.google.cloud.firestore.Firestore;
@@ -24,5 +22,16 @@ public class PaymentRepository {
 
     public Payment findById(String paymentId) throws ExecutionException, InterruptedException {
         return firestore.collection(COLLECTION).document(paymentId).get().get().toObject(Payment.class);
+    }
+
+    public void updateStatusByBookingId(String bookingId, String status) throws ExecutionException, InterruptedException {
+        firestore.collection(COLLECTION)
+                .whereEqualTo("bookingId", bookingId)
+                .get()
+                .get()
+                .getDocuments()
+                .forEach(doc -> {
+                    doc.getReference().update("status", status, "updatedAt", System.currentTimeMillis());
+                });
     }
 }

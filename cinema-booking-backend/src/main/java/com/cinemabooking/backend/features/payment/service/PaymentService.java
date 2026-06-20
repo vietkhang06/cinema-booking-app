@@ -1,9 +1,10 @@
 package com.cinemabooking.backend.features.payment.service;
-import com.cinemabooking.backend.features.payment.model.PaymentMethod;
 
 import com.cinemabooking.backend.features.payment.model.Payment;
 import com.cinemabooking.backend.features.payment.model.PaymentStatus;
 import com.cinemabooking.backend.features.payment.repository.PaymentRepository;
+import com.cinemabooking.backend.features.voucher.service.VoucherService;
+import com.cinemabooking.backend.features.booking.service.BookingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import com.cinemabooking.backend.features.voucher.VoucherService;
-import com.cinemabooking.backend.features.booking.BookingService;
 
 @Service
 public class PaymentService {
@@ -60,8 +59,6 @@ public class PaymentService {
 
     public void handleFailedPayment(String paymentId) {
         log.info("[PAYMENT_FLOW] Handling failed payment: {}", paymentId);
-        // TODO: Hook this up to actual payment webhook later.
-        // Assuming we look up the bookingId and userId from the payment record
         try {
             Payment payment = paymentRepository.findById(paymentId);
             if (payment != null) {
@@ -96,5 +93,9 @@ public class PaymentService {
         } catch (ExecutionException | InterruptedException e) {
             log.error("Error handling success payment {}", paymentId, e);
         }
+    }
+
+    public void updateStatusByBookingId(String bookingId, String status) throws ExecutionException, InterruptedException {
+        paymentRepository.updateStatusByBookingId(bookingId, status);
     }
 }
