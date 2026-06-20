@@ -108,7 +108,7 @@ public class AdminAuditLogActivity extends AppCompatActivity {
 
             String actionStr = log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "ACTION";
             holder.tvActionBadge.setText(actionStr);
-            holder.tvTimestamp.setText(dateFormat.format(new Date(log.createdAt)));
+            holder.tvTimestamp.setText(log.createdAt != null ? dateFormat.format(new Date(log.createdAt)) : "");
             holder.tvNote.setText(log.note);
             holder.tvActor.setText("Thực hiện bởi: " + log.actorId + " (" + log.actorRole + ")");
 

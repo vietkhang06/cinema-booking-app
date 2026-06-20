@@ -12,9 +12,9 @@ public class AuditLogDTO {
     // New fields requested for Cancel Showtime
     public String adminId;
     public String showtimeId;
-    public int bookingCount;
+    public Integer bookingCount;
 
-    public long createdAt;
+    public Long createdAt;
 
     public AuditLogDTO() {
     }
