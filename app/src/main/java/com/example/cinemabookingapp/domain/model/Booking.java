@@ -21,6 +21,8 @@ public class Booking {
     public double discount;
     public double total;
     public String paymentMethod;
+    public String promoCode;
+    public double discountVoucher;
     public String paymentStatus;
     public String bookingStatus;
     public String paymentCode;
