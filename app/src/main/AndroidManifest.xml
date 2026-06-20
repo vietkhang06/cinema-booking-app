@@ -179,8 +179,9 @@
         <activity
             android:name=".ui.features.cinema_contents.CinemaSearchActivity"
             android:exported="false" />
+        <activity android:name=".ui.features.profile.EditProfileActivity" android:exported="false" />
         <activity
-            android:name=".ui.features.profile.EditProfileActivity"
+            android:name=".ui.features.profile.MyPromotionListActivity"
             android:exported="false" />
         <activity
             android:name=".ui.features.profile.SettingsActivity"
