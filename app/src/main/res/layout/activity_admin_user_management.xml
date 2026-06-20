@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="24dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/btnAdminBack"
@@ -39,142 +39,133 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Quản lý người dùng"
+            android:text="Quản lý tài khoản"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Search & Filters Container -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- Search bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:strokeColor="#ECE8F0"
-        app:strokeWidth="1dp"
-        app:cardElevation="1dp">
-
-        <LinearLayout
+        android:layout_marginBottom="12dp"
+        app:boxBackgroundColor="#FFFFFF"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxStrokeColor="#ECE8F0"
+        app:boxStrokeWidth="1.5dp"
+        app:hintTextColor="#7B39F0"
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        app:startIconTint="#7A757F">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearchUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:hint="Tìm kiếm tên, SĐT hoặc email..."
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="#1E1A23"
+            android:textSize="14sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Search Field -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_search_location"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="12dp"
-                android:layout_marginBottom="12dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="#7A757F" />
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:background="@android:color/transparent"
-                    android:hint="Tìm theo họ tên, email, SĐT..."
-                    android:textColor="#1E1A23"
-                    android:textColorHint="#A5A1AA"
-                    android:textSize="14sp"
-                    android:singleLine="true"
-                    android:imeOptions="actionSearch" />
-            </LinearLayout>
-
-            <!-- Filter Dropdowns Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Status Filter -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:background="@drawable/bg_bottom_line"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="8dp">
-
-                    <Spinner
-                        android:id="@+id/spinnerStatus"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null" />
-                </LinearLayout>
-
-                <!-- Cinema Filter -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1.2"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/bg_bottom_line"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="8dp">
-
-                    <Spinner
-                        android:id="@+id/spinnerCinema"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null" />
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Add User Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddUser"
+    <!-- Filters (Horizontal scroll chip group) -->
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="+ Thêm người dùng mới"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#7952B3"
-        app:cornerRadius="14dp"
-        android:layout_marginBottom="16dp"
-        app:elevation="2dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:scrollbars="none">
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            app:chipSpacing="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
 
-    <!-- User List -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAll"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tất cả"
+                android:checked="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipStandard"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hạng Standard" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipVip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hạng VIP" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipGold"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hạng Gold" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPlatinum"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hạng Platinum" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipLocked"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã khóa" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <!-- RecyclerView and Empty State in FrameLayout -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvUsers"
+            android:id="@+id/rvCustomers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="16dp" />
+            android:paddingBottom="24dp" />
 
-        <!-- Empty State -->
-        <TextView
-            android:id="@+id/tvEmpty"
+        <LinearLayout
+            android:id="@+id/layoutEmptyState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Không tìm thấy người dùng nào phù hợp"
-            android:textColor="#7A757F"
-            android:textSize="15sp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/user_solid_full"
+                app:tint="#D0C9D6" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Không tìm thấy khách hàng nào"
+                android:textColor="#7A757F"
+                android:textSize="14sp" />
+        </LinearLayout>
     </FrameLayout>
-
 </LinearLayout>
