@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Thêm nhân viên mới"
+            android:text="Thêm người dùng mới"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -59,7 +59,7 @@
 
             <!-- Họ tên -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStaffName"
+                android:id="@+id/tilUserName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 app:boxStrokeColor="#1E1A23"
                 app:hintTextColor="#1E1A23">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtStaffName"
+                    android:id="@+id/edtUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
@@ -81,7 +81,7 @@
 
             <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStaffEmail"
+                android:id="@+id/tilUserEmail"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                 app:boxStrokeColor="#1E1A23"
                 app:hintTextColor="#1E1A23">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtStaffEmail"
+                    android:id="@+id/edtUserEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
@@ -103,7 +103,7 @@
 
             <!-- Số điện thoại -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStaffPhone"
+                android:id="@+id/tilUserPhone"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 app:boxStrokeColor="#1E1A23"
                 app:hintTextColor="#1E1A23">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtStaffPhone"
+                    android:id="@+id/edtUserPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="phone"
@@ -125,7 +125,7 @@
 
             <!-- Mật khẩu khởi tạo (Only Create Mode) -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStaffPassword"
+                android:id="@+id/tilUserPassword"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 app:boxStrokeColor="#1E1A23"
                 app:hintTextColor="#1E1A23">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtStaffPassword"
+                    android:id="@+id/edtUserPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -166,7 +166,7 @@
                 app:strokeColor="#ECE8F0"
                 app:strokeWidth="1.5dp">
                 <Spinner
-                    android:id="@+id/spinnerStaffRole"
+                    android:id="@+id/spinnerUserRole"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="8dp"
@@ -193,7 +193,7 @@
                 app:strokeColor="#ECE8F0"
                 app:strokeWidth="1.5dp">
                 <Spinner
-                    android:id="@+id/spinnerStaffCinema"
+                    android:id="@+id/spinnerUserCinema"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="8dp"
@@ -220,7 +220,7 @@
                 app:strokeColor="#ECE8F0"
                 app:strokeWidth="1.5dp">
                 <Spinner
-                    android:id="@+id/spinnerStaffStatus"
+                    android:id="@+id/spinnerUserStatus"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="8dp"
@@ -229,7 +229,7 @@
 
             <!-- Ghi chú nội bộ -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStaffNotes"
+                android:id="@+id/tilUserNotes"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
                 app:boxStrokeColor="#1E1A23"
                 app:hintTextColor="#1E1A23">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtStaffNotes"
+                    android:id="@+id/edtUserNotes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
@@ -257,7 +257,7 @@
 
     <!-- Save Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSaveStaff"
+        android:id="@+id/btnSaveUser"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginTop="8dp"

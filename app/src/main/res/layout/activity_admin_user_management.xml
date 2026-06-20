@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Quản lý nhân viên"
+            android:text="Quản lý người dùng"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -138,12 +138,12 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Add Staff Button -->
+    <!-- Add User Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddStaff"
+        android:id="@+id/btnAddUser"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="+ Thêm nhân viên mới"
+        android:text="+ Thêm người dùng mới"
         android:textSize="15sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
@@ -152,14 +152,14 @@
         android:layout_marginBottom="16dp"
         app:elevation="2dp" />
 
-    <!-- Staff List -->
+    <!-- User List -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvStaff"
+            android:id="@+id/rvUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -171,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Không tìm thấy nhân viên nào phù hợp"
+            android:text="Không tìm thấy người dùng nào phù hợp"
             android:textColor="#7A757F"
             android:textSize="15sp"
             android:visibility="gone" />

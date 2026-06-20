@@ -3,7 +3,7 @@ package com.example.cinemabookingapp.data.remote.api;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.BookingDTO;
 import com.example.cinemabookingapp.data.dto.SeatBookingRequestDTO;
-import com.example.cinemabookingapp.data.dto.StaffStatsDTO;
+import com.example.cinemabookingapp.data.dto.AdminStatsDTO;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface BookingApiService {
     Call<ApiResponse<List<BookingDTO>>> searchBookings(@retrofit2.http.Query("query") String query);
 
     @GET("bookings/stats")
-    Call<ApiResponse<StaffStatsDTO>> getStaffStats();
+    Call<ApiResponse<AdminStatsDTO>> getStaffStats();
 
     @retrofit2.http.PUT("bookings/{id}/checkin")
     Call<ApiResponse<Void>> checkInBooking(@Path("id") String id);

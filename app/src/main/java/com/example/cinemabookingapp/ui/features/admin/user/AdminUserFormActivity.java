@@ -10,14 +10,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.UserDTO;
-import com.example.cinemabookingapp.data.remote.api.AdminStaffApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.data.remote.api.AdminUserApiService;
 import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Cinema;
+import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AdminStaffFormActivity extends BaseActivity {
+public class AdminUserFormActivity extends BaseActivity {
 
     private TextInputLayout tilName, tilEmail, tilPhone, tilPassword, tilNotes;
     private EditText edtName, edtEmail, edtPhone, edtPassword, edtNotes;
@@ -36,24 +36,24 @@ public class AdminStaffFormActivity extends BaseActivity {
     private MaterialButton btnSave;
     private TextView tvTitle;
 
-    private AdminStaffApiService adminStaffApi;
+    private AdminUserApiService adminUserApi;
     private CinemaRepositoryImpl cinemaRepository;
 
     private boolean isEditMode = false;
-    private String staffId;
-    private UserDTO currentStaff;
+    private String userId;
+    private UserDTO currentUser;
     private final List<Cinema> cinemaList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_staff_form);
+        setContentView(R.layout.activity_admin_user_form);
 
-        adminStaffApi = RetrofitClient.getInstance().create(AdminStaffApiService.class);
+        adminUserApi = RetrofitClient.getInstance().create(AdminUserApiService.class);
         cinemaRepository = new CinemaRepositoryImpl();
 
-        staffId = getIntent().getStringExtra("staff_id");
-        isEditMode = !TextUtils.isEmpty(staffId);
+        userId = getIntent().getStringExtra("user_id");
+        isEditMode = !TextUtils.isEmpty(userId);
 
         initViews();
         setupSpinners();
@@ -62,31 +62,31 @@ public class AdminStaffFormActivity extends BaseActivity {
     }
 
     private void initViews() {
-        tilName = findViewById(R.id.tilStaffName);
-        tilEmail = findViewById(R.id.tilStaffEmail);
-        tilPhone = findViewById(R.id.tilStaffPhone);
-        tilPassword = findViewById(R.id.tilStaffPassword);
-        tilNotes = findViewById(R.id.tilStaffNotes);
+        tilName = findViewById(R.id.tilUserName);
+        tilEmail = findViewById(R.id.tilUserEmail);
+        tilPhone = findViewById(R.id.tilUserPhone);
+        tilPassword = findViewById(R.id.tilUserPassword);
+        tilNotes = findViewById(R.id.tilUserNotes);
 
-        edtName = findViewById(R.id.edtStaffName);
-        edtEmail = findViewById(R.id.edtStaffEmail);
-        edtPhone = findViewById(R.id.edtStaffPhone);
-        edtPassword = findViewById(R.id.edtStaffPassword);
-        edtNotes = findViewById(R.id.edtStaffNotes);
+        edtName = findViewById(R.id.edtUserName);
+        edtEmail = findViewById(R.id.edtUserEmail);
+        edtPhone = findViewById(R.id.edtUserPhone);
+        edtPassword = findViewById(R.id.edtUserPassword);
+        edtNotes = findViewById(R.id.edtUserNotes);
 
-        spinnerRole = findViewById(R.id.spinnerStaffRole);
-        spinnerCinema = findViewById(R.id.spinnerStaffCinema);
-        spinnerStatus = findViewById(R.id.spinnerStaffStatus);
+        spinnerRole = findViewById(R.id.spinnerUserRole);
+        spinnerCinema = findViewById(R.id.spinnerUserCinema);
+        spinnerStatus = findViewById(R.id.spinnerUserStatus);
 
-        btnSave = findViewById(R.id.btnSaveStaff);
+        btnSave = findViewById(R.id.btnSaveUser);
         tvTitle = findViewById(R.id.tvFormTitle);
 
         if (isEditMode) {
-            tvTitle.setText("Cập nhật nhân viên");
+            tvTitle.setText("Cập nhật người dùng");
             tilPassword.setVisibility(View.GONE);
             edtEmail.setEnabled(false); // Do not allow email change
         } else {
-            tvTitle.setText("Thêm nhân viên mới");
+            tvTitle.setText("Thêm người dùng mới");
             tilPassword.setVisibility(View.VISIBLE);
         }
 
@@ -97,8 +97,8 @@ public class AdminStaffFormActivity extends BaseActivity {
     }
 
     private void setupSpinners() {
-        // Roles spinner
-        String[] roles = {"staff", "admin"};
+        // Roles spinner (customer and admin)
+        String[] roles = {"customer", "admin"};
         ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -130,7 +130,7 @@ public class AdminStaffFormActivity extends BaseActivity {
     }
 
     private void bindActions() {
-        btnSave.setOnClickListener(v -> saveStaff());
+        btnSave.setOnClickListener(v -> saveUser());
     }
 
     private void loadCinemas() {
@@ -148,16 +148,16 @@ public class AdminStaffFormActivity extends BaseActivity {
                     }
 
                     ArrayAdapter<String> cinemaAdapter = new ArrayAdapter<>(
-                            AdminStaffFormActivity.this,
+                            AdminUserFormActivity.this,
                             android.R.layout.simple_spinner_item,
                             cinemaNames
                     );
                     cinemaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerCinema.setAdapter(cinemaAdapter);
 
-                    // If in edit mode, load staff details now after cinema spinner is ready
+                    // If in edit mode, load details now after cinema spinner is ready
                     if (isEditMode) {
-                        loadStaffDetails();
+                        loadUserDetails();
                     }
                 }
             }
@@ -169,51 +169,51 @@ public class AdminStaffFormActivity extends BaseActivity {
         });
     }
 
-    private void loadStaffDetails() {
-        adminStaffApi.getStaffDetail(staffId).enqueue(new Callback<ApiResponse<UserDTO>>() {
+    private void loadUserDetails() {
+        adminUserApi.getUserDetail(userId).enqueue(new Callback<ApiResponse<UserDTO>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserDTO>> call, Response<ApiResponse<UserDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    currentStaff = response.body().getData();
-                    bindStaffData(currentStaff);
+                    currentUser = response.body().getData();
+                    bindUserData(currentUser);
                 } else {
-                    showToast("Không tìm thấy thông tin nhân viên");
+                    showToast("Không tìm thấy thông tin người dùng");
                     finish();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<UserDTO>> call, Throwable t) {
-                showToast("Lỗi kết nối khi tải chi tiết nhân viên");
+                showToast("Lỗi kết nối khi tải chi tiết người dùng");
                 finish();
             }
         });
     }
 
-    private void bindStaffData(UserDTO staff) {
-        edtName.setText(staff.name);
-        edtEmail.setText(staff.email);
-        edtPhone.setText(staff.phone);
-        edtNotes.setText(staff.internalNotes);
+    private void bindUserData(UserDTO user) {
+        edtName.setText(user.name);
+        edtEmail.setText(user.email);
+        edtPhone.setText(user.phone);
+        edtNotes.setText(user.internalNotes);
 
         // Set Role
-        if ("admin".equalsIgnoreCase(staff.role)) {
+        if ("admin".equalsIgnoreCase(user.role)) {
             spinnerRole.setSelection(1);
         } else {
             spinnerRole.setSelection(0);
         }
 
         // Set Status
-        if ("inactive".equalsIgnoreCase(staff.status)) {
+        if ("inactive".equalsIgnoreCase(user.status)) {
             spinnerStatus.setSelection(1);
         } else {
             spinnerStatus.setSelection(0);
         }
 
         // Set Cinema selection
-        if (staff.cinemaId != null) {
+        if (user.cinemaId != null) {
             for (int i = 0; i < cinemaList.size(); i++) {
-                if (staff.cinemaId.equals(cinemaList.get(i).cinemaId)) {
+                if (user.cinemaId.equals(cinemaList.get(i).cinemaId)) {
                     spinnerCinema.setSelection(i + 1); // 0 is "Chưa gán rạp"
                     break;
                 }
@@ -221,7 +221,7 @@ public class AdminStaffFormActivity extends BaseActivity {
         }
     }
 
-    private void saveStaff() {
+    private void saveUser() {
         clearErrors();
 
         String name = edtName.getText().toString().trim();
@@ -272,18 +272,18 @@ public class AdminStaffFormActivity extends BaseActivity {
 
         btnSave.setEnabled(false);
 
-        UserDTO staff = new UserDTO();
-        staff.name = name;
-        staff.email = email;
-        staff.phone = phone;
-        staff.role = role;
-        staff.status = status;
-        staff.cinemaId = cinemaId;
-        staff.cinemaName = cinemaName;
-        staff.internalNotes = notes;
+        UserDTO user = new UserDTO();
+        user.name = name;
+        user.email = email;
+        user.phone = phone;
+        user.role = role;
+        user.status = status;
+        user.cinemaId = cinemaId;
+        user.cinemaName = cinemaName;
+        user.internalNotes = notes;
 
         if (isEditMode) {
-            adminStaffApi.updateStaff(staffId, staff).enqueue(new Callback<ApiResponse<UserDTO>>() {
+            adminUserApi.updateUser(userId, user).enqueue(new Callback<ApiResponse<UserDTO>>() {
                 @Override
                 public void onResponse(Call<ApiResponse<UserDTO>> call, Response<ApiResponse<UserDTO>> response) {
                     btnSave.setEnabled(true);
@@ -302,13 +302,13 @@ public class AdminStaffFormActivity extends BaseActivity {
                 }
             });
         } else {
-            AdminStaffApiService.CreateStaffRequest request = new AdminStaffApiService.CreateStaffRequest(staff, password);
-            adminStaffApi.createStaff(request).enqueue(new Callback<ApiResponse<UserDTO>>() {
+            AdminUserApiService.CreateUserRequest request = new AdminUserApiService.CreateUserRequest(user, password);
+            adminUserApi.createUser(request).enqueue(new Callback<ApiResponse<UserDTO>>() {
                 @Override
                 public void onResponse(Call<ApiResponse<UserDTO>> call, Response<ApiResponse<UserDTO>> response) {
                     btnSave.setEnabled(true);
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        showToast("Đã thêm tài khoản nhân viên thành công!");
+                        showToast("Đã thêm tài khoản người dùng thành công!");
                         finish();
                     } else {
                         showToast("Lỗi thêm tài khoản: " + getErrorMessage(response));
