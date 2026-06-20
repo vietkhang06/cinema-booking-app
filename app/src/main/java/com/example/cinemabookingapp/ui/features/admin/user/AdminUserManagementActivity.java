@@ -15,17 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
-import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.example.cinemabookingapp.data.dto.UserDTO;
 import com.example.cinemabookingapp.data.mapper.UserMapper;
-import com.example.cinemabookingapp.data.remote.api.AdminStaffApiService;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.data.remote.api.AdminUserApiService;
 import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
 import com.example.cinemabookingapp.domain.model.Cinema;
 import com.example.cinemabookingapp.domain.model.User;
-import com.example.cinemabookingapp.ui.features.admin.user.adapter.AdminStaffAdapter;
+import com.example.cinemabookingapp.ui.features.admin.user.adapter.AdminUserAdapter;
+import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -39,15 +39,15 @@ public class AdminUserManagementActivity extends BaseActivity {
 
     private EditText etSearch;
     private Spinner spinnerStatus, spinnerCinema;
-    private MaterialButton btnAddStaff;
-    private RecyclerView rvStaff;
+    private MaterialButton btnAddUser;
+    private RecyclerView rvUsers;
     private TextView tvEmpty;
 
-    private AdminStaffAdapter adapter;
-    private final List<User> staffList = new ArrayList<>();
+    private AdminUserAdapter adapter;
+    private final List<User> userList = new ArrayList<>();
     private final List<Cinema> cinemaList = new ArrayList<>();
 
-    private AdminStaffApiService adminStaffApi;
+    private AdminUserApiService adminUserApi;
     private CinemaRepositoryImpl cinemaRepository;
 
     private String currentSearch = "";
@@ -59,7 +59,7 @@ public class AdminUserManagementActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_user_management);
 
-        adminStaffApi = RetrofitClient.getInstance().create(AdminStaffApiService.class);
+        adminUserApi = RetrofitClient.getInstance().create(AdminUserApiService.class);
         cinemaRepository = new CinemaRepositoryImpl();
 
         initViews();
@@ -72,15 +72,15 @@ public class AdminUserManagementActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadStaffs();
+        loadUsers();
     }
 
     private void initViews() {
         etSearch = findViewById(R.id.etSearch);
         spinnerStatus = findViewById(R.id.spinnerStatus);
         spinnerCinema = findViewById(R.id.spinnerCinema);
-        btnAddStaff = findViewById(R.id.btnAddStaff);
-        rvStaff = findViewById(R.id.rvStaff);
+        btnAddUser = findViewById(R.id.btnAddUser);
+        rvUsers = findViewById(R.id.rvUsers);
         tvEmpty = findViewById(R.id.tvEmpty);
 
         View btnBack = findViewById(R.id.btnAdminBack);
@@ -113,20 +113,20 @@ public class AdminUserManagementActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new AdminStaffAdapter();
-        rvStaff.setLayoutManager(new LinearLayoutManager(this));
-        rvStaff.setAdapter(adapter);
+        adapter = new AdminUserAdapter();
+        rvUsers.setLayoutManager(new LinearLayoutManager(this));
+        rvUsers.setAdapter(adapter);
 
         adapter.setListener(user -> {
-            Intent intent = new Intent(this, AdminStaffDetailActivity.class);
-            intent.putExtra("staff_id", user.uid);
+            Intent intent = new Intent(this, AdminUserDetailActivity.class);
+            intent.putExtra("user_id", user.uid);
             startActivity(intent);
         });
     }
 
     private void bindActions() {
-        btnAddStaff.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AdminStaffFormActivity.class);
+        btnAddUser.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminUserFormActivity.class);
             startActivity(intent);
         });
 
@@ -208,23 +208,23 @@ public class AdminUserManagementActivity extends BaseActivity {
         });
     }
 
-    private void loadStaffs() {
+    private void loadUsers() {
         showLoading(true);
-        adminStaffApi.getAllStaffs(null, null, null).enqueue(new Callback<ApiResponse<List<UserDTO>>>() {
+        adminUserApi.getAllUsers(null, null, null).enqueue(new Callback<ApiResponse<List<UserDTO>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<UserDTO>>> call, Response<ApiResponse<List<UserDTO>>> response) {
                 showLoading(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    staffList.clear();
+                    userList.clear();
                     List<UserDTO> dtoList = response.body().getData();
                     if (dtoList != null) {
                         for (UserDTO dto : dtoList) {
-                            staffList.add(UserMapper.toDomain(dto));
+                            userList.add(UserMapper.toDomain(dto));
                         }
                     }
                     applyLocalFilters();
                 } else {
-                    showToast("Lỗi tải danh sách nhân viên: " + getErrorMessage(response));
+                    showToast("Lỗi tải danh sách người dùng: " + getErrorMessage(response));
                 }
             }
 
@@ -238,7 +238,7 @@ public class AdminUserManagementActivity extends BaseActivity {
 
     private void applyLocalFilters() {
         List<User> filtered = new ArrayList<>();
-        for (User u : staffList) {
+        for (User u : userList) {
             // Search
             if (!currentSearch.isEmpty()) {
                 String keyword = currentSearch.toLowerCase();

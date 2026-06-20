@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StaffStatsDTO {
+public class AdminStatsDTO {
     private int totalBookingsToday;
     private int paidBookingsToday;
     private int pendingBookingsToday;

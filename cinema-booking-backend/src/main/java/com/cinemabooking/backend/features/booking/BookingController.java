@@ -2,7 +2,7 @@ package com.cinemabooking.backend.features.booking;
 import com.cinemabooking.backend.features.booking.dto.SnackOrderSnapshot;
 import com.cinemabooking.backend.features.voucher.VoucherService;
 import com.cinemabooking.backend.features.cinema.ShowtimeDTO;
-import com.cinemabooking.backend.features.user.StaffStatsDTO;
+import com.cinemabooking.backend.features.user.AdminStatsDTO;
 import com.cinemabooking.backend.features.movie.MovieDTO;
 import com.cinemabooking.backend.shared.dto.ApiResponse;
 import com.cinemabooking.backend.shared.common.PaymentMethod;
@@ -293,8 +293,8 @@ public class BookingController {
             @AuthenticationPrincipal String userId,
             @RequestParam("query") String query
     ) throws ExecutionException, InterruptedException {
-        UserDTO staffUser = userService.getUserById(userId);
-        if (staffUser == null || (!"staff".equalsIgnoreCase(staffUser.getRole()) && !"admin".equalsIgnoreCase(staffUser.getRole()))) {
+        UserDTO adminUser = userService.getUserById(userId);
+        if (adminUser == null || !"admin".equalsIgnoreCase(adminUser.getRole())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền tìm kiếm vé.");
         }
 
@@ -350,11 +350,11 @@ public class BookingController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<ApiResponse<StaffStatsDTO>> getStaffStats(
+    public ResponseEntity<ApiResponse<AdminStatsDTO>> getStaffStats(
             @AuthenticationPrincipal String userId
     ) throws ExecutionException, InterruptedException {
-        UserDTO staffUser = userService.getUserById(userId);
-        if (staffUser == null || (!"staff".equalsIgnoreCase(staffUser.getRole()) && !"admin".equalsIgnoreCase(staffUser.getRole()))) {
+        UserDTO adminUser = userService.getUserById(userId);
+        if (adminUser == null || !"admin".equalsIgnoreCase(adminUser.getRole())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền truy cập thống kê.");
         }
 
@@ -385,7 +385,7 @@ public class BookingController {
             }
         }
 
-        StaffStatsDTO stats = StaffStatsDTO.builder()
+        AdminStatsDTO stats = AdminStatsDTO.builder()
                 .totalBookingsToday(total)
                 .paidBookingsToday(paid)
                 .pendingBookingsToday(pending)
@@ -394,7 +394,7 @@ public class BookingController {
                 .build();
 
         return ResponseEntity.ok(
-                ApiResponse.<StaffStatsDTO>builder()
+                ApiResponse.<AdminStatsDTO>builder()
                         .success(true)
                         .message("Stats fetched successfully")
                         .data(stats)
@@ -407,8 +407,8 @@ public class BookingController {
             @AuthenticationPrincipal String userId,
             @PathVariable("id") String bookingId
     ) throws ExecutionException, InterruptedException {
-        UserDTO staffUser = userService.getUserById(userId);
-        if (staffUser == null || (!"staff".equalsIgnoreCase(staffUser.getRole()) && !"admin".equalsIgnoreCase(staffUser.getRole()))) {
+        UserDTO adminUser = userService.getUserById(userId);
+        if (adminUser == null || !"admin".equalsIgnoreCase(adminUser.getRole())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền thực hiện check-in.");
         }
 

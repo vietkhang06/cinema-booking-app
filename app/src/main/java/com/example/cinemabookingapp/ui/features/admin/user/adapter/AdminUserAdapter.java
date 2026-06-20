@@ -16,16 +16,16 @@ import com.example.cinemabookingapp.domain.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminStaffAdapter extends RecyclerView.Adapter<AdminStaffAdapter.Holder> {
+public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.Holder> {
 
-    public interface OnStaffClickListener {
-        void onStaffClick(User user);
+    public interface OnUserClickListener {
+        void onUserClick(User user);
     }
 
     private List<User> list = new ArrayList<>();
-    private OnStaffClickListener listener;
+    private OnUserClickListener listener;
 
-    public void setListener(OnStaffClickListener listener) {
+    public void setListener(OnUserClickListener listener) {
         this.listener = listener;
     }
 
@@ -38,7 +38,7 @@ public class AdminStaffAdapter extends RecyclerView.Adapter<AdminStaffAdapter.Ho
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup p, int v) {
         return new Holder(LayoutInflater.from(p.getContext())
-                .inflate(R.layout.item_admin_staff, p, false));
+                .inflate(R.layout.item_admin_user, p, false));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AdminStaffAdapter extends RecyclerView.Adapter<AdminStaffAdapter.Ho
         h.email.setText(u.email != null ? u.email : "N/A");
         
         String cinema = u.cinemaName != null && !u.cinemaName.isEmpty() ? u.cinemaName : "Chưa phân rạp";
-        h.cinema.setText("Vai trò: " + (u.role != null ? u.role.toUpperCase() : "STAFF") + " • Rạp: " + cinema);
+        h.roleAndCinema.setText("Vai trò: " + (u.role != null ? u.role.toUpperCase() : "CUSTOMER") + " • Rạp: " + cinema);
 
         if ("active".equalsIgnoreCase(u.status)) {
             h.status.setText("HOẠT ĐỘNG");
@@ -73,7 +73,7 @@ public class AdminStaffAdapter extends RecyclerView.Adapter<AdminStaffAdapter.Ho
         }
 
         h.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onStaffClick(u);
+            if (listener != null) listener.onUserClick(u);
         });
     }
 
@@ -84,15 +84,15 @@ public class AdminStaffAdapter extends RecyclerView.Adapter<AdminStaffAdapter.Ho
 
     static class Holder extends RecyclerView.ViewHolder {
         ImageView avatar;
-        TextView name, email, cinema, status;
+        TextView name, email, roleAndCinema, status;
 
         Holder(View v) {
             super(v);
-            avatar = v.findViewById(R.id.ivStaffAvatar);
-            name = v.findViewById(R.id.tvStaffName);
-            email = v.findViewById(R.id.tvStaffEmail);
-            cinema = v.findViewById(R.id.tvStaffCinema);
-            status = v.findViewById(R.id.tvStaffStatus);
+            avatar = v.findViewById(R.id.ivUserAvatar);
+            name = v.findViewById(R.id.tvUserName);
+            email = v.findViewById(R.id.tvUserEmail);
+            roleAndCinema = v.findViewById(R.id.tvUserRoleAndCinema);
+            status = v.findViewById(R.id.tvUserStatus);
         }
     }
 }

@@ -69,28 +69,28 @@ public class UserService {
         return user;
     }
 
-    public UserDTO createStaff(UserDTO staff, String password) throws Exception {
-        logger.info("Starting staff creation for email: {}", staff.getEmail());
+    public UserDTO createUser(UserDTO user, String password) throws Exception {
+        logger.info("Starting user creation for email: {}", user.getEmail());
         
         // Sanitize & Format phone number to E.164
         String formattedPhone = null;
-        if (staff.getPhone() != null && !staff.getPhone().isBlank()) {
-            String rawPhone = staff.getPhone().trim();
+        if (user.getPhone() != null && !user.getPhone().isBlank()) {
+            String rawPhone = user.getPhone().trim();
             if (rawPhone.startsWith("0") && rawPhone.length() == 10) {
                 formattedPhone = "+84" + rawPhone.substring(1);
             } else if (rawPhone.startsWith("+")) {
                 formattedPhone = rawPhone;
             }
             if (formattedPhone != null) {
-                staff.setPhone(formattedPhone);
+                user.setPhone(formattedPhone);
             }
         }
 
         // 1. Create in Firebase Auth using Firebase Admin SDK
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest()
-                .setEmail(staff.getEmail())
+                .setEmail(user.getEmail())
                 .setPassword(password)
-                .setDisplayName(staff.getName());
+                .setDisplayName(user.getName());
         
         if (formattedPhone != null) {
             try {
@@ -107,20 +107,24 @@ public class UserService {
             logger.info("Firebase Auth user created successfully with UID: {}", uid);
             
             // 2. Set fields
-            staff.setUid(uid);
-            staff.setRole("staff");
-            staff.setStatus("active");
-            staff.setDeleted(false);
-            staff.setCreatedAt(System.currentTimeMillis());
-            staff.setUpdatedAt(System.currentTimeMillis());
+            user.setUid(uid);
+            String role = user.getRole();
+            if (role == null || role.isBlank()) {
+                role = "customer";
+            }
+            user.setRole(role);
+            user.setStatus("active");
+            user.setDeleted(false);
+            user.setCreatedAt(System.currentTimeMillis());
+            user.setUpdatedAt(System.currentTimeMillis());
             
             // 3. Save to Firestore
-            logger.info("Saving staff document to Firestore for UID: {}", uid);
-            firestore.collection(COLLECTION).document(uid).set(staff).get();
+            logger.info("Saving user document to Firestore for UID: {}", uid);
+            firestore.collection(COLLECTION).document(uid).set(user).get();
             logger.info("Firestore document saved successfully for UID: {}", uid);
-            return staff;
+            return user;
         } catch (Exception e) {
-            logger.error("Error occurred during staff creation flow: {}", e.getMessage(), e);
+            logger.error("Error occurred during user creation flow: {}", e.getMessage(), e);
             if (uid != null) {
                 try {
                     logger.info("Rolling back Firebase Auth user for UID: {}", uid);
@@ -134,24 +138,24 @@ public class UserService {
         }
     }
 
-    public UserDTO updateStaff(String uid, UserDTO staff) throws Exception {
-        logger.info("Updating staff info for UID: {}", uid);
+    public UserDTO updateUser(String uid, UserDTO user) throws Exception {
+        logger.info("Updating user info for UID: {}", uid);
         DocumentReference ref = firestore.collection(COLLECTION).document(uid);
         DocumentSnapshot doc = ref.get().get();
         if (!doc.exists()) {
-            throw new RuntimeException("Staff user not found");
+            throw new RuntimeException("User not found");
         }
 
-        String role = staff.getRole() != null ? staff.getRole().toLowerCase() : "staff";
-        String status = staff.getStatus() != null ? staff.getStatus().toLowerCase() : "active";
+        String role = user.getRole() != null ? user.getRole().toLowerCase() : "customer";
+        String status = user.getStatus() != null ? user.getStatus().toLowerCase() : "active";
 
         ref.update(
-                "name", staff.getName(),
-                "phone", staff.getPhone(),
+                "name", user.getName(),
+                "phone", user.getPhone(),
                 "status", status,
-                "cinemaId", staff.getCinemaId(),
-                "cinemaName", staff.getCinemaName(),
-                "internalNotes", staff.getInternalNotes(),
+                "cinemaId", user.getCinemaId(),
+                "cinemaName", user.getCinemaName(),
+                "internalNotes", user.getInternalNotes(),
                 "role", role,
                 "updatedAt", System.currentTimeMillis()
         ).get();
@@ -161,10 +165,10 @@ public class UserService {
         try {
             boolean disable = "inactive".equalsIgnoreCase(status);
             UserRecord.UpdateRequest authUpdate = new UserRecord.UpdateRequest(uid)
-                    .setDisplayName(staff.getName())
+                    .setDisplayName(user.getName())
                     .setDisabled(disable);
             FirebaseAuth.getInstance().updateUser(authUpdate);
-            logger.info("Firebase Auth user synced (Name: {}, Disabled: {})", staff.getName(), disable);
+            logger.info("Firebase Auth user synced (Name: {}, Disabled: {})", user.getName(), disable);
         } catch (Exception e) {
             logger.warn("Could not sync updated info with Firebase Auth: {}", e.getMessage());
         }
@@ -172,8 +176,8 @@ public class UserService {
         return getUserById(uid);
     }
 
-    public void deleteStaff(String uid) throws Exception {
-        logger.info("Soft deleting staff account for UID: {}", uid);
+    public void deleteUser(String uid) throws Exception {
+        logger.info("Soft deleting user account for UID: {}", uid);
         DocumentReference ref = firestore.collection(COLLECTION).document(uid);
         ref.update(
                 "deleted", true,
@@ -273,6 +277,25 @@ public class UserService {
             }
             return null;
         }).get();
+    }
+
+    public List<UserDTO> getAllUsers() throws ExecutionException, InterruptedException {
+        logger.info("Fetching all users from Firestore");
+        List<UserDTO> list = new ArrayList<>();
+        try {
+            CollectionReference coll = firestore.collection(COLLECTION);
+            List<QueryDocumentSnapshot> documents = coll.get().get().getDocuments();
+            logger.info("Found {} documents in Firestore", documents.size());
+            for (DocumentSnapshot doc : documents) {
+                Boolean deleted = getSafeBoolean(doc, "deleted", false);
+                if (deleted) continue;
+                list.add(mapToDTO(doc));
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching user list from Firestore: {}", e.getMessage(), e);
+            throw e;
+        }
+        return list;
     }
 
     public List<UserDTO> getAllAdmins() throws ExecutionException, InterruptedException {

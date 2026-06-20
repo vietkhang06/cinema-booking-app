@@ -153,16 +153,16 @@
             android:name=".ui.features.admin.user.AdminUserManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.features.admin.user.AdminStaffDetailActivity"
+            android:name=".ui.features.admin.user.AdminUserDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.features.admin.user.AdminStaffFormActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.admin.user.AdminViolationFormActivity"
+            android:name=".ui.features.admin.user.AdminUserFormActivity"
             android:exported="false" />
         <activity
             android:name=".ui.features.admin.promotion.AdminPromotionListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.features.admin.promotion.AdminPromotionAddEditActivity"
             android:exported="false" />
         <activity
             android:name=".ui.features.admin.log.AdminAuditLogActivity"
