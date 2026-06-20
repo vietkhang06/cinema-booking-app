@@ -12,6 +12,10 @@ import com.example.cinemabookingapp.data.remote.datasource.BannerRemoteDataSourc
 import com.example.cinemabookingapp.data.repository.BannerRepositoryImpl;
 import com.example.cinemabookingapp.domain.repository.BannerRepository;
 import com.example.cinemabookingapp.domain.usecase.banner.GetBannersUseCase;
+import com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl;
+import com.example.cinemabookingapp.domain.repository.ReviewRepository;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
 
 public class AppContainer {
 
@@ -23,6 +27,9 @@ public class AppContainer {
     private final BannerRepository bannerRepository;
     private final GetBannersUseCase getBannersUseCase;
 
+    private final ReviewRepository reviewRepository;
+    private final AddReviewUseCase addReviewUseCase;
+    private final GetReviewsByMovieUseCase getReviewsByMovieUseCase;
     public AppContainer(Context context) {
         sessionManager = new SessionManager(context);
         movieRemoteDataSource = new MovieRemoteDataSource();
@@ -31,6 +38,9 @@ public class AppContainer {
         bannerRemoteDataSource = new BannerRemoteDataSource();
         bannerRepository = new BannerRepositoryImpl(bannerRemoteDataSource);
         getBannersUseCase = new GetBannersUseCase(bannerRepository);
+        reviewRepository = new ReviewRepositoryImpl();
+        addReviewUseCase = new AddReviewUseCase(reviewRepository);
+        getReviewsByMovieUseCase = new GetReviewsByMovieUseCase(reviewRepository);
     }
 
     public SessionManager getSessionManager() {
@@ -48,4 +58,7 @@ public class AppContainer {
     public GetBannersUseCase getBannersUseCase() {
         return getBannersUseCase;
     }
+
+    public AddReviewUseCase getAddReviewUseCase() { return addReviewUseCase; }
+    public GetReviewsByMovieUseCase getGetReviewsByMovieUseCase() { return getReviewsByMovieUseCase; }
 }

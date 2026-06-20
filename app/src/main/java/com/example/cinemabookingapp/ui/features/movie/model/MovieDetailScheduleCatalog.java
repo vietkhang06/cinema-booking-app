@@ -45,7 +45,7 @@ public class MovieDetailScheduleCatalog {
         List<String> sortedDateKeys = new ArrayList<>();
         long now = System.currentTimeMillis();
 
-        // Tính đầu ngày hôm nay (để không bỏ lỡ showtime hôm nay đã qua giờ chiếu)
+        // TÃ­nh Ä‘áº§u ngÃ y hÃ´m nay (Ä‘á»ƒ khÃ´ng bá» lá»¡ showtime hÃ´m nay Ä‘Ã£ qua giá» chiáº¿u)
         Calendar startOfTodayCal = Calendar.getInstance();
         startOfTodayCal.set(Calendar.HOUR_OF_DAY, 0);
         startOfTodayCal.set(Calendar.MINUTE, 0);
@@ -54,12 +54,8 @@ public class MovieDetailScheduleCatalog {
         long startOfToday = startOfTodayCal.getTimeInMillis();
 
         for (Showtime s : showtimes) {
-            // Chỉ bỏ lỡ showtime đã qua ngày (không phải qua giờ — để show tất cả suất hôm nay)
+            // Chá»‰ bá» lá»¡ showtime Ä‘Ã£ qua ngÃ y (khÃ´ng pháº£i qua giá» â€” Ä‘á»ƒ show táº¥t cáº£ suáº¥t hÃ´m nay)
             if (s.deleted || s.startAt < startOfToday || !isBookableStatus(s.status)) {
-                continue;
-            }
-            // Nghiệp vụ Lên lịch: Chỉ cho phép hiển thị nếu đã đến giờ chiếu
-            if (Boolean.TRUE.equals(s.isScheduled) && now < s.startAt) {
                 continue;
             }
             Date showDate = new Date(s.startAt);
@@ -128,14 +124,14 @@ public class MovieDetailScheduleCatalog {
                         continue;
                     }
 
-                    String city = cinema.city != null ? cinema.city.trim() : "Khác";
-                    String name = cinema.name != null ? cinema.name : "Rạp không tên";
+                    String city = cinema.city != null ? cinema.city.trim() : "KhÃ¡c";
+                    String name = cinema.name != null ? cinema.name : "Ráº¡p khÃ´ng tÃªn";
 
                     // Group cinema showtimes by format and language (ShowtimeGroup)
                     Map<String, List<ShowtimeItem>> itemsByGroup = new HashMap<>();
                     for (Showtime s : cinemaShowtimes) {
                         String groupTitle = (s.format != null ? s.format : "2D") + " " +
-                                (s.language != null ? s.language : "Phụ đề").toUpperCase();
+                                (s.language != null ? s.language : "Phá»¥ Ä‘á»").toUpperCase();
                         
                         if (!itemsByGroup.containsKey(groupTitle)) {
                             itemsByGroup.put(groupTitle, new ArrayList<>());
@@ -179,11 +175,11 @@ public class MovieDetailScheduleCatalog {
     private String getDayLabel(Calendar targetCal) {
         Calendar today = Calendar.getInstance();
         if (isSameDay(targetCal, today)) {
-            return "Hôm nay";
+            return "HÃ´m nay";
         }
         today.add(Calendar.DAY_OF_YEAR, 1);
         if (isSameDay(targetCal, today)) {
-            return "Ngày mai";
+            return "NgÃ y mai";
         }
         return dayLabel(targetCal.get(Calendar.DAY_OF_WEEK));
     }
@@ -194,7 +190,7 @@ public class MovieDetailScheduleCatalog {
     }
 
     private boolean isBookableStatus(String status) {
-        // null hoặc rỗng → coi là bookable (Admin có thể chưa set)
+        // null hoáº·c rá»—ng â†’ coi lÃ  bookable (Admin cÃ³ thá»ƒ chÆ°a set)
         if (status == null || status.trim().isEmpty()) {
             return true;
         }
@@ -209,17 +205,17 @@ public class MovieDetailScheduleCatalog {
     private String dayLabel(int dayOfWeek) {
         switch (dayOfWeek) {
             case Calendar.MONDAY:
-                return "Thứ 2";
+                return "Thá»© 2";
             case Calendar.TUESDAY:
-                return "Thứ 3";
+                return "Thá»© 3";
             case Calendar.WEDNESDAY:
-                return "Thứ 4";
+                return "Thá»© 4";
             case Calendar.THURSDAY:
-                return "Thứ 5";
+                return "Thá»© 5";
             case Calendar.FRIDAY:
-                return "Thứ 6";
+                return "Thá»© 6";
             case Calendar.SATURDAY:
-                return "Thứ 7";
+                return "Thá»© 7";
             case Calendar.SUNDAY:
             default:
                 return "CN";
