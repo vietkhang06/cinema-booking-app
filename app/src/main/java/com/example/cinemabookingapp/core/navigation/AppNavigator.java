@@ -13,7 +13,6 @@ import com.example.cinemabookingapp.ui.features.home.HomeActivity;
 import com.example.cinemabookingapp.ui.features.notification.NotificationActivity;
 import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
 import com.example.cinemabookingapp.ui.features.transaction.TransactionHistoryActivity;
-import com.example.cinemabookingapp.ui.features.staff.dashboard.StaffDashboardActivity;
 
 import java.util.Map;
 
@@ -76,10 +75,6 @@ public final class AppNavigator {
         activity.startActivity(intent);
     }
 
-    public static void goToStaffDashboard(Activity activity) {
-        openAndClear(activity, StaffDashboardActivity.class);
-    }
-
     public static void goToAdminDashboard(Activity activity) {
         openAndClear(activity, AdminDashboardActivity.class);
     }
@@ -89,8 +84,6 @@ public final class AppNavigator {
 
         if ("admin".equals(safeRole)) {
             goToAdminDashboard(activity);
-        } else if ("staff".equals(safeRole)) {
-            goToStaffDashboard(activity);
         } else {
             goToCustomerHome(activity);
         }

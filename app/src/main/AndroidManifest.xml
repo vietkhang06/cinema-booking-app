@@ -18,12 +18,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.features.staff.chat.StaffCustomerChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.chat.StaffSupportChatActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.features.chat.MessageActivity"
             android:exported="false" />
         <activity
@@ -106,37 +100,15 @@
             android:exported="false" />
         <activity
             android:name=".ui.features.transaction.TicketDetailActivity"
-            android:exported="false" /> <!-- STAFF -->
-        <activity
-            android:name=".ui.features.staff.dashboard.StaffDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.scanqr.StaffScanQRActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.scanqr.StaffInvoiceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.scanqr.StaffCheckOrder"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.checkseat.StaffCheckSeat"
+            android:exported="false" />        <activity
+            android:name=".ui.features.admin.profile.AdminProfileActivity"
             android:exported="false" /> <!-- ADMIN -->
         <activity
-            android:name=".ui.features.staff.booking.StaffSearchBookingActivity"
+            android:name=".ui.features.admin.chat.AdminCustomerChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.features.staff.showtimes.StaffShowtimesActivity"
+            android:name=".ui.features.admin.chat.AdminSupportChatActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.payment.StaffPaymentSupportActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.log.StaffAuditLogActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.features.staff.profile.StaffProfileActivity"
-            android:exported="false" /> <!-- ADMIN -->
         <activity
             android:name=".ui.features.admin.dashboard.AdminDashboardActivity"
             android:exported="false" />
@@ -145,61 +117,58 @@
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity
-            android:name=".ui.admin.movie.AdminMovieListActivity"
+            android:name=".ui.features.admin.movie.AdminMovieListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.movie.AdminMovieFormActivity"
+            android:name=".ui.features.admin.movie.AdminMovieFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.movie.AdminMovieDetailActivity"
+            android:name=".ui.features.admin.movie.AdminMovieDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.cinema.AdminCinemaListActivity"
+            android:name=".ui.features.admin.cinema.AdminCinemaListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.cinema.AdminCinemaFormActivity"
+            android:name=".ui.features.admin.cinema.AdminCinemaFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.cinema.AdminCinemaDetailActivity"
+            android:name=".ui.features.admin.cinema.AdminCinemaDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.room.AdminRoomListActivity"
+            android:name=".ui.features.admin.room.AdminRoomListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.room.AdminSeatTemplateActivity"
+            android:name=".ui.features.admin.room.AdminSeatTemplateActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.showtime.AdminShowtimeListActivity"
+            android:name=".ui.features.admin.showtime.AdminShowtimeListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.showtime.AdminShowtimeAddEditActivity"
+            android:name=".ui.features.admin.showtime.AdminShowtimeAddEditActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.showtime.AdminShowtimeScheduleActivity"
+            android:name=".ui.features.admin.showtime.AdminShowtimeScheduleActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.user.AdminUserManagementActivity"
+            android:name=".ui.features.admin.user.AdminUserManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.user.AdminStaffDetailActivity"
+            android:name=".ui.features.admin.user.AdminStaffDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.user.AdminStaffFormActivity"
+            android:name=".ui.features.admin.user.AdminStaffFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.user.AdminViolationFormActivity"
+            android:name=".ui.features.admin.user.AdminViolationFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.promotion.AdminPromotionListActivity"
+            android:name=".ui.features.admin.promotion.AdminPromotionListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.log.AdminAuditLogActivity"
+            android:name=".ui.features.admin.log.AdminAuditLogActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.features.staff.attendance.StaffAttendanceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.report.AdminReportActivity"
+            android:name=".ui.features.admin.report.AdminReportActivity"
             android:exported="false" /> <!-- MAIN -->
         <activity
             android:name=".MainActivity"

@@ -22,20 +22,20 @@ public class SupportMessageAdapter extends ListAdapter<ChatMessage, RecyclerView
 
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_BOT = 2;
-    private static final int VIEW_TYPE_STAFF = 3;
+    private static final int VIEW_TYPE_ADMIN = 3;
     private static final int VIEW_TYPE_SYSTEM = 4;
 
     private final String authUserId;
-    private final boolean isStaffMode;
+    private final boolean isAdminMode;
 
     public SupportMessageAdapter(String authUserId) {
         this(authUserId, false);
     }
 
-    public SupportMessageAdapter(String authUserId, boolean isStaffMode) {
+    public SupportMessageAdapter(String authUserId, boolean isAdminMode) {
         super(DIFF_CALLBACK);
         this.authUserId = authUserId;
-        this.isStaffMode = isStaffMode;
+        this.isAdminMode = isAdminMode;
     }
 
     private static final DiffUtil.ItemCallback<ChatMessage> DIFF_CALLBACK =
@@ -62,7 +62,7 @@ public class SupportMessageAdapter extends ListAdapter<ChatMessage, RecyclerView
         } else if ("SYSTEM".equals(message.senderId)) {
             return VIEW_TYPE_SYSTEM;
         } else {
-            return VIEW_TYPE_STAFF;
+            return VIEW_TYPE_ADMIN;
         }
     }
 
@@ -86,7 +86,7 @@ public class SupportMessageAdapter extends ListAdapter<ChatMessage, RecyclerView
             ((SentViewHolder) holder).bind(message);
         } else if (holder instanceof ReceivedSupportViewHolder) {
             int viewType = getItemViewType(position);
-            ((ReceivedSupportViewHolder) holder).bind(message, viewType, isStaffMode);
+            ((ReceivedSupportViewHolder) holder).bind(message, viewType, isAdminMode);
         }
     }
 
@@ -122,7 +122,7 @@ public class SupportMessageAdapter extends ListAdapter<ChatMessage, RecyclerView
             cvMessageCard = itemView.findViewById(R.id.cvMessageCard);
         }
 
-        public void bind(ChatMessage message, int viewType, boolean isStaffMode) {
+        public void bind(ChatMessage message, int viewType, boolean isAdminMode) {
             tvMessageText.setText(message.content);
             tvTimestamp.setText(DateTimeConverter.convertToDateTimeString(message.sentAt));
 
@@ -141,11 +141,11 @@ public class SupportMessageAdapter extends ListAdapter<ChatMessage, RecyclerView
                     ivSenderAvatar.setImageResource(R.drawable.circle_info_solid_full); // Warning info icon
                     ivSenderAvatar.setImageTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#E65100")));
                     break;
-                case VIEW_TYPE_STAFF:
-                    if (isStaffMode) {
+                case VIEW_TYPE_ADMIN:
+                    if (isAdminMode) {
                         tvSenderName.setText("Khách hàng");
                     } else {
-                        tvSenderName.setText("Hỗ trợ viên");
+                        tvSenderName.setText("Quản trị viên");
                     }
                     cvMessageCard.setCardBackgroundColor(Color.parseColor("#F1F1F5")); // Light grey
                     tvMessageText.setTextColor(Color.parseColor("#111111"));

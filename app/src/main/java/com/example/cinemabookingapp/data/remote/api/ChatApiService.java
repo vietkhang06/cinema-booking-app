@@ -29,8 +29,8 @@ public interface ChatApiService {
     @GET("chat/conversations")
     Call<ApiResponse<List<Conversation>>> getMyConversations();
 
-    @GET("chat/users/staff")
-    Call<ApiResponse<List<User>>> getAllStaffs();
+    @GET("chat/users/admin")
+    Call<ApiResponse<List<User>>> getAllAdmins();
 
     @GET("chat/users/{userId}/messages")
     Call<ApiResponse<List<ChatMessage>>> getMessagesByReceiverId(@Path("userId") String userId);
@@ -45,7 +45,7 @@ public interface ChatApiService {
     Call<ApiResponse<Conversation>> initSupportConversation();
 
     @POST("chat/support/conversations/{convoId}/escalate")
-    Call<ApiResponse<Conversation>> escalateToStaff(@Path("convoId") String convoId);
+    Call<ApiResponse<Conversation>> escalateToAdmin(@Path("convoId") String convoId);
 
     @POST("chat/support/conversations/{convoId}/resolve")
     Call<ApiResponse<Void>> resolveConversation(@Path("convoId") String convoId);

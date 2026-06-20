@@ -155,7 +155,7 @@ public class CustomerSupportActivity extends AppCompatActivity {
         findViewById(R.id.chipShowtimes).setOnClickListener(v -> sendMessage("suất chiếu hôm nay"));
         findViewById(R.id.chipMyBooking).setOnClickListener(v -> sendMessage("vé của tôi"));
         findViewById(R.id.chipMyVouchers).setOnClickListener(v -> sendMessage("voucher của tôi"));
-        findViewById(R.id.chipContactStaff).setOnClickListener(v -> escalateToStaff());
+        findViewById(R.id.chipContactStaff).setOnClickListener(v -> escalateToAdmin());
     }
 
     private void loadSupportConversation() {
@@ -205,22 +205,22 @@ public class CustomerSupportActivity extends AppCompatActivity {
                 layoutResetBot.setVisibility(View.GONE);
                 break;
             case "WAITING_STAFF":
-                tvSupportName.setText("Hỗ trợ viên");
+                tvSupportName.setText("Quản trị viên");
                 tvOnlineStatus.setText("Đang kết nối...");
                 tvOnlineStatus.setTextColor(Color.parseColor("#FF9800"));
                 statusBanner.setBackgroundColor(Color.parseColor("#FFF9C4"));
-                tvStatusText.setText("⏳ Đang kết nối với nhân viên hỗ trợ...");
+                tvStatusText.setText("⏳ Đang kết nối với quản trị viên...");
                 tvStatusText.setTextColor(Color.parseColor("#F57F17"));
                 quickActionsScroll.setVisibility(View.GONE);
                 findViewById(R.id.inputBar).setVisibility(View.GONE);
                 layoutResetBot.setVisibility(View.GONE);
                 break;
             case "REOPENED":
-                tvSupportName.setText("Hỗ trợ viên");
+                tvSupportName.setText("Quản trị viên");
                 tvOnlineStatus.setText("Đang kết nối lại...");
                 tvOnlineStatus.setTextColor(Color.parseColor("#FF9800"));
                 statusBanner.setBackgroundColor(Color.parseColor("#FFF9C4"));
-                tvStatusText.setText("⏳ Đang kết nối lại với nhân viên hỗ trợ...");
+                tvStatusText.setText("⏳ Đang kết nối lại với quản trị viên...");
                 tvStatusText.setTextColor(Color.parseColor("#F57F17"));
                 quickActionsScroll.setVisibility(View.GONE);
                 findViewById(R.id.inputBar).setVisibility(View.GONE);
@@ -228,7 +228,7 @@ public class CustomerSupportActivity extends AppCompatActivity {
                 break;
             case "ASSIGNED_TO_STAFF":
             case "IN_PROGRESS":
-                String staffName = "Nhân viên hỗ trợ";
+                String staffName = "Quản trị viên";
                 String staffAvatar = null;
                 if (conversation.participants != null) {
                     for (Conversation.UserSnapShot p : conversation.participants) {
@@ -248,7 +248,7 @@ public class CustomerSupportActivity extends AppCompatActivity {
                     ivAvatar.setImageResource(R.drawable.user_solid_full);
                 }
                 statusBanner.setBackgroundColor(Color.parseColor("#E8F5E9"));
-                tvStatusText.setText("👥 Đang kết nối với nhân viên " + staffName);
+                tvStatusText.setText("👥 Đang kết nối với quản trị viên " + staffName);
                 tvStatusText.setTextColor(Color.parseColor("#2E7D32"));
                 quickActionsScroll.setVisibility(View.GONE);
                 findViewById(R.id.inputBar).setVisibility(View.VISIBLE);
@@ -304,20 +304,20 @@ public class CustomerSupportActivity extends AppCompatActivity {
         });
     }
 
-    private void escalateToStaff() {
+    private void escalateToAdmin() {
         if (conversation == null) return;
 
         conversation.status = "WAITING_STAFF";
         updateConversationUI();
 
-        chatApiService.escalateToStaff(conversation.convoId).enqueue(new Callback<ApiResponse<Conversation>>() {
+        chatApiService.escalateToAdmin(conversation.convoId).enqueue(new Callback<ApiResponse<Conversation>>() {
             @Override
             public void onResponse(Call<ApiResponse<Conversation>> call, Response<ApiResponse<Conversation>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     conversation = response.body().getData();
                     updateConversationUI();
                 } else {
-                    Toast.makeText(CustomerSupportActivity.this, "Gặp lỗi khi kết nối nhân viên", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomerSupportActivity.this, "Gặp lỗi khi kết nối quản trị viên", Toast.LENGTH_SHORT).show();
                     conversation.status = "BOT_ONLY";
                     updateConversationUI();
                 }

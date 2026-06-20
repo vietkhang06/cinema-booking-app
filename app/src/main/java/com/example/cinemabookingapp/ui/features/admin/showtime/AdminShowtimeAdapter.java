@@ -74,7 +74,7 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
             holder.tvShowtimeStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9CA3AF")));
             holder.itemView.setAlpha(0.6f);
             holder.cardRoot.setCardBackgroundColor(Color.parseColor("#F1F5F9"));
-        } else if (showtime.isScheduled && !showtime.executed) {
+        } else if (Boolean.TRUE.equals(showtime.isScheduled) && !Boolean.TRUE.equals(showtime.executed)) {
             holder.tvShowtimeStatus.setText("● Lên lịch");
             holder.tvShowtimeStatus.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1976D2")));
             holder.itemView.setAlpha(1.0f);
@@ -111,7 +111,7 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
         holder.tvPrice.setText(currencyFormat.format(showtime.basePrice));
 
         // Click listeners
-        if (showtime.isScheduled && !showtime.executed) {
+        if (Boolean.TRUE.equals(showtime.isScheduled) && !Boolean.TRUE.equals(showtime.executed)) {
             holder.btnEdit.setVisibility(View.GONE);
         } else {
             holder.btnEdit.setVisibility(View.VISIBLE);

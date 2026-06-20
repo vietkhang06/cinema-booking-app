@@ -9,7 +9,7 @@ public class User {
     public String role;
     public String status;
     public String memberLevel;
-    public int points;
+    public Integer points;
     public String fcmToken;
     public long createdAt;
     public long updatedAt;
@@ -20,7 +20,7 @@ public class User {
     public String cinemaId;
     public String cinemaName;
     public String internalNotes;
-    public int loginCount;
+    public Integer loginCount;
 
     public User() {
     }

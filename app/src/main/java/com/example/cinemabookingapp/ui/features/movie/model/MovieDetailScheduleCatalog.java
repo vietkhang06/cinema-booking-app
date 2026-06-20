@@ -59,7 +59,7 @@ public class MovieDetailScheduleCatalog {
                 continue;
             }
             // Nghiệp vụ Lên lịch: Chỉ cho phép hiển thị nếu đã đến giờ chiếu
-            if (s.isScheduled && now < s.startAt) {
+            if (Boolean.TRUE.equals(s.isScheduled) && now < s.startAt) {
                 continue;
             }
             Date showDate = new Date(s.startAt);

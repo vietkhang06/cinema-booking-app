@@ -1,12 +1,16 @@
 package com.example.cinemabookingapp.ui.features.admin.log;
 
 import android.util.Log;
-import com.example.cinemabookingapp.data.dto.AuditLogDTO;
+import com.example.cinemabookingapp.data.repository.AuditLogRepositoryImpl;
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.AuditLog;
+import com.example.cinemabookingapp.domain.repository.AuditLogRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminAuditLogger {
     private static final String TAG = "AdminAuditLogger";
+    private static final AuditLogRepository auditLogRepository = new AuditLogRepositoryImpl();
 
     public static void log(String action, String targetType, String targetId, String note) {
         String uid = FirebaseAuth.getInstance().getUid();
@@ -44,7 +48,7 @@ public class AdminAuditLogger {
     }
 
     private static void writeLog(String uid, String actorName, String role, String action, String targetType, String targetId, String note) {
-        AuditLogDTO log = new AuditLogDTO();
+        AuditLog log = new AuditLog();
         log.actorId = actorName;
         log.actorRole = role;
         log.action = action;
@@ -53,9 +57,16 @@ public class AdminAuditLogger {
         log.note = note;
         log.createdAt = System.currentTimeMillis();
 
-        FirebaseFirestore.getInstance().collection("audit_logs")
-                .add(log)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "Audit log added successfully: " + action))
-                .addOnFailureListener(e -> Log.e(TAG, "Error adding audit log", e));
+        auditLogRepository.createLog(log, new ResultCallback<AuditLog>() {
+            @Override
+            public void onSuccess(AuditLog result) {
+                Log.d(TAG, "Audit log added successfully: " + action);
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e(TAG, "Error adding audit log: " + message);
+            }
+        });
     }
 }

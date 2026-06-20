@@ -271,7 +271,7 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
         // Calculate scheduled counts from allSchedules (where executed = false)
         for (Showtime s : allSchedules) {
             if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
-                if (!s.executed) {
+                if (!Boolean.TRUE.equals(s.executed)) {
                     scheduledCount++;
                 }
             }
@@ -293,7 +293,7 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
         } else if (currentTab == 1) { // Scheduled
             for (Showtime s : allSchedules) {
                 if (selectedCinemaIdFilter == null || selectedCinemaIdFilter.equals(s.cinemaId)) {
-                    if (!s.executed) {
+                    if (!Boolean.TRUE.equals(s.executed)) {
                         displayedShowtimes.add(s);
                     }
                 }
@@ -364,7 +364,7 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
     }
 
     private void executeCancelShowtime(Showtime showtime) {
-        if (showtime.isScheduled && !showtime.executed) {
+        if (Boolean.TRUE.equals(showtime.isScheduled) && !Boolean.TRUE.equals(showtime.executed)) {
             showtimeRepository.deleteShowtimeSchedule(showtime.showtimeId, new ResultCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {

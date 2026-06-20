@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.features.staff.chat;
+package com.example.cinemabookingapp.ui.features.admin.chat;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -43,8 +43,6 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StaffSupportChatActivity extends AppCompatActivity {
+public class AdminSupportChatActivity extends AppCompatActivity {
 
     // Views
     private TextView tvCustomerName;
@@ -98,7 +96,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_staff_support_chat);
+        setContentView(R.layout.activity_admin_support_chat);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -130,7 +128,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
 
         bindViews();
         setupRecyclerView();
-        verifyStaffPermissions();
+        verifyAdminPermissions();
         setupListeners();
     }
 
@@ -172,14 +170,14 @@ public class StaffSupportChatActivity extends AppCompatActivity {
         recyclerViewMessages.setAdapter(supportMessageAdapter);
     }
 
-    private void verifyStaffPermissions() {
+    private void verifyAdminPermissions() {
         FirebaseFirestore.getInstance().collection("users").document(authUserId).get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         String role = doc.getString("role");
                         String status = doc.getString("status");
                         Boolean deleted = doc.getBoolean("deleted");
-                        if (!("staff".equalsIgnoreCase(role) || "admin".equalsIgnoreCase(role))
+                        if (!"admin".equalsIgnoreCase(role)
                                 || "inactive".equalsIgnoreCase(status)
                                 || Boolean.TRUE.equals(deleted)) {
                             Toast.makeText(this, "Tài khoản của bạn đã bị khóa hoặc không có quyền truy cập", Toast.LENGTH_LONG).show();
@@ -279,7 +277,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
         convoListener = FirebaseFirestore.getInstance().collection("conversations").document(convoId)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
-                        Log.e("StaffSupportChat", "Listener error: " + error.getMessage());
+                        Log.e("AdminSupportChat", "Listener error: " + error.getMessage());
                         return;
                     }
                     if (snapshot != null && snapshot.exists()) {
@@ -299,7 +297,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 .whereEqualTo("convoId", convoId)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
-                        Log.e("StaffSupportChat", "Message listener error: " + error.getMessage());
+                        Log.e("AdminSupportChat", "Message listener error: " + error.getMessage());
                         return;
                     }
 
@@ -355,7 +353,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 layoutClosedNotice.setVisibility(View.VISIBLE);
                 break;
             case "WAITING_STAFF":
-                tvStatusText.setText("⏳ Đang chờ nhân viên tiếp nhận");
+                tvStatusText.setText("⏳ Đang chờ quản trị viên tiếp nhận");
                 tvStatusText.setTextColor(Color.parseColor("#E65100"));
                 statusBanner.setBackgroundColor(Color.parseColor("#FFF3E0"));
 
@@ -460,7 +458,7 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     layoutBookingDetails.setVisibility(View.GONE);
                     tvNoBooking.setVisibility(View.VISIBLE);
-                    Log.e("StaffSupportChat", "Error loading booking", e);
+                    Log.e("AdminSupportChat", "Error loading booking", e);
                 });
     }
 
@@ -471,15 +469,15 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     conversation = response.body().getData();
                     updateUI();
-                    Toast.makeText(StaffSupportChatActivity.this, "Bạn đã tiếp nhận hỗ trợ cuộc trò chuyện này", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Bạn đã tiếp nhận hỗ trợ cuộc trò chuyện này", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể tiếp nhận hỗ trợ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể tiếp nhận hỗ trợ", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Conversation>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -489,15 +487,15 @@ public class StaffSupportChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(StaffSupportChatActivity.this, "Cuộc trò chuyện đã hoàn thành hỗ trợ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Cuộc trò chuyện đã hoàn thành hỗ trợ", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể giải quyết cuộc hỗ trợ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể giải quyết cuộc hỗ trợ", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -507,15 +505,15 @@ public class StaffSupportChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(StaffSupportChatActivity.this, "Ticket đã được đóng hoàn toàn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Ticket đã được đóng hoàn toàn", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể đóng ticket", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể đóng ticket", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -527,15 +525,15 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     conversation = response.body().getData();
                     updateUI();
-                    Toast.makeText(StaffSupportChatActivity.this, "Đã chuyển cuộc gọi về lại Chatbot", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Đã chuyển cuộc gọi về lại Chatbot", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể chuyển về Chatbot", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể chuyển về Chatbot", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Conversation>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -545,15 +543,15 @@ public class StaffSupportChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(StaffSupportChatActivity.this, "Đã xóa toàn bộ tin nhắn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Đã xóa toàn bộ tin nhắn", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể xóa tin nhắn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể xóa tin nhắn", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -577,13 +575,13 @@ public class StaffSupportChatActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     etMessage.setText(""); // Only clear on success!
                 } else {
-                    Toast.makeText(StaffSupportChatActivity.this, "Không thể gửi tin nhắn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminSupportChatActivity.this, "Không thể gửi tin nhắn", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<ChatMessage>> call, Throwable t) {
-                Toast.makeText(StaffSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminSupportChatActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

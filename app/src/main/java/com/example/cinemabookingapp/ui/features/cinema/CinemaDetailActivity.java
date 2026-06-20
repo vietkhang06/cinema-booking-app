@@ -378,7 +378,7 @@ public class CinemaDetailActivity extends BaseActivity {
                 if (st.startAt < now || !isBookableStatus(st.status)) {
                     continue;
                 }
-                if (st.isScheduled && now < st.startAt) {
+                if (Boolean.TRUE.equals(st.isScheduled) && now < st.startAt) {
                     continue;
                 }
                 if (TextUtils.isEmpty(st.movieId)) continue;

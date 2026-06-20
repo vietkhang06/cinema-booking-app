@@ -16,9 +16,9 @@ public class ShowtimeDTO {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
-    public boolean isScheduled;
-    public boolean executed;
-    public long executedAt;
+    public Boolean isScheduled;
+    public Boolean executed;
+    public Long executedAt;
 
     public ShowtimeDTO() {
     }

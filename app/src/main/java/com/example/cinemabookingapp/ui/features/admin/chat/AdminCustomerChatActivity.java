@@ -1,4 +1,4 @@
-package com.example.cinemabookingapp.ui.features.staff.chat;
+package com.example.cinemabookingapp.ui.features.admin.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,12 +26,8 @@ import com.example.cinemabookingapp.di.ServiceProvider;
 import com.example.cinemabookingapp.domain.model.Conversation;
 import com.example.cinemabookingapp.domain.model.User;
 import com.example.cinemabookingapp.service.ProfileService;
-import com.example.cinemabookingapp.ui.features.chat.CustomerChatActivity;
-import com.example.cinemabookingapp.ui.features.chat.MessageActivity;
-import com.example.cinemabookingapp.ui.features.chat.adapter.ActiveUserAdapter;
 import com.example.cinemabookingapp.ui.features.chat.adapter.ConversationAdapter;
 import com.example.cinemabookingapp.ui.features.chat.model.ConversationItem;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,17 +35,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class StaffCustomerChatActivity extends AppCompatActivity {
+public class AdminCustomerChatActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewWaiting, recyclerViewAssigned;
     private android.view.View tvEmptyWaiting, tvEmptyAssigned;
@@ -69,7 +59,7 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_staff_customer_chat);
+        setContentView(R.layout.activity_admin_customer_chat);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -108,7 +98,7 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         waitingAdapter = new ConversationAdapter(authUserId, conversation -> {
-            Intent intent = new Intent(StaffCustomerChatActivity.this, StaffSupportChatActivity.class);
+            Intent intent = new Intent(AdminCustomerChatActivity.this, AdminSupportChatActivity.class);
             intent.putExtra("convoId", conversation.conversation.convoId);
             startActivity(intent);
         });
@@ -116,7 +106,7 @@ public class StaffCustomerChatActivity extends AppCompatActivity {
         recyclerViewWaiting.setAdapter(waitingAdapter);
 
         assignedAdapter = new ConversationAdapter(authUserId, conversation -> {
-            Intent intent = new Intent(StaffCustomerChatActivity.this, StaffSupportChatActivity.class);
+            Intent intent = new Intent(AdminCustomerChatActivity.this, AdminSupportChatActivity.class);
             intent.putExtra("convoId", conversation.conversation.convoId);
             startActivity(intent);
         });

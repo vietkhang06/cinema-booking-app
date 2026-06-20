@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9F9FB"
-    tools:context=".ui.staff.StaffSupportChatActivity">
+    tools:context=".ui.features.admin.chat.AdminSupportChatActivity">
 
     <!-- Header / Toolbar -->
     <androidx.appcompat.widget.Toolbar
