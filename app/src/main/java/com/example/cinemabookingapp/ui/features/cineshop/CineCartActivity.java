@@ -17,10 +17,10 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * CineCartActivity — Màn hình Giỏ hàng.
+ * CineCartActivity â€” MÃ n hÃ¬nh Giá» hÃ ng.
  *
- * Luồng:
- *   CineShopFragment (icon cart) → CineCartActivity → CineCheckoutActivity
+ * Luá»“ng:
+ *   CineShopFragment (icon cart) â†’ CineCartActivity â†’ CineCheckoutActivity
  */
 public class CineCartActivity extends FragmentActivity {
 
@@ -45,7 +45,7 @@ public class CineCartActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh khi quay lại từ Checkout
+        // Refresh khi quay láº¡i tá»« Checkout
         refreshUI();
     }
 
@@ -78,6 +78,6 @@ public class CineCartActivity extends FragmentActivity {
         layoutEmptyCart.setVisibility(empty ? View.VISIBLE : View.GONE);
 
         double total = CineCartManager.getInstance().getTotalPrice();
-        tvCartTotal.setText(fmt.format(total) + "đ");
+        tvCartTotal.setText(fmt.format(total) + "Ä‘");
     }
 }

@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Tên sản phẩm"
+            android:text="TÃªn sáº£n pháº©m"
             android:textColor="#111111"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="0đ"
+            android:text="0Ä‘"
             android:textColor="#E8640C"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -73,7 +73,7 @@
             android:letterSpacing="0.05"
             android:fontFamily="sans-serif-medium" />
 
-        <!-- Button: THÊM VÀO GIỎ HÀNG -->
+        <!-- Button: THÃŠM VÃ€O GIá»Ž HÃ€NG -->
         <TextView
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_btn_orange_outline"
             android:gravity="center"
-            android:text="THÊM VÀO GIỎ HÀNG"
+            android:text="THÃŠM VÃ€O GIá»Ž HÃ€NG"
             android:textColor="#E8640C"
             android:textSize="13sp"
             android:textStyle="bold"

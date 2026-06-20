@@ -45,7 +45,7 @@
                 android:id="@+id/tvCartItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1x Sản phẩm"
+                android:text="1x Sáº£n pháº©m"
                 android:textColor="#111111"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -57,12 +57,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="0đ"
+                android:text="0Ä‘"
                 android:textColor="#E8640C"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <!-- Qty row: − / count / + -->
+            <!-- Qty row: âˆ’ / count / + -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:gravity="center"
-                    android:text="−"
+                    android:text="âˆ’"
                     android:textColor="#333333"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -110,7 +110,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:padding="6dp"
-            android:src="@drawable/clipboard_solid_full"
+            android:src="@drawable/ic_close_x"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="#AAAAAA" />
     </LinearLayout>

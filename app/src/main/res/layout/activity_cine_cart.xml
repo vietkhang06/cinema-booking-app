@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- ── HEADER ── -->
+    <!-- â”€â”€ HEADER â”€â”€ -->
     <LinearLayout
         android:id="@+id/cartHeader"
         android:layout_width="0dp"
@@ -32,14 +32,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Giỏ hàng"
+            android:text="Giá» hÃ ng"
             android:textColor="#111111"
             android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
-    <!-- ── HEADER DIVIDER ── -->
+    <!-- â”€â”€ HEADER DIVIDER â”€â”€ -->
     <View
         android:id="@+id/cartHeaderDivider"
         android:layout_width="0dp"
@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ── BOTTOM DIVIDER (above bottom bar) ── -->
+    <!-- â”€â”€ BOTTOM DIVIDER (above bottom bar) â”€â”€ -->
     <View
         android:id="@+id/cartBottomDivider"
         android:layout_width="0dp"
@@ -59,7 +59,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ── BOTTOM BAR ── -->
+    <!-- â”€â”€ BOTTOM BAR â”€â”€ -->
     <LinearLayout
         android:id="@+id/cartBottomBar"
         android:layout_width="0dp"
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tổng cộng:"
+                android:text="Tá»•ng cá»™ng:"
                 android:textColor="#888888"
                 android:textSize="12sp" />
 
@@ -89,7 +89,7 @@
                 android:id="@+id/tvCartTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0đ"
+                android:text="0Ä‘"
                 android:textColor="#E8640C"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -101,13 +101,13 @@
             android:layout_height="46dp"
             android:gravity="center"
             android:background="@drawable/bg_btn_orange_filled"
-            android:text="Thanh toán"
+            android:text="Thanh toÃ¡n"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- ── EMPTY STATE ── -->
+    <!-- â”€â”€ EMPTY STATE â”€â”€ -->
     <LinearLayout
         android:id="@+id/layoutEmptyCart"
         android:layout_width="0dp"
@@ -123,19 +123,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🛒"
+            android:text="ðŸ›’"
             android:textSize="48sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Giỏ hàng của bạn đang trống"
+            android:text="Giá» hÃ ng cá»§a báº¡n Ä‘ang trá»‘ng"
             android:textColor="#888888"
             android:textSize="15sp" />
     </LinearLayout>
 
-    <!-- ── CART RECYCLERVIEW ── -->
+    <!-- â”€â”€ CART RECYCLERVIEW â”€â”€ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCartItems"
         android:layout_width="0dp"
