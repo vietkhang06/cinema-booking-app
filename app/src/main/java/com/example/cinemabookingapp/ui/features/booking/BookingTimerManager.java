@@ -55,6 +55,25 @@ public class BookingTimerManager {
         startInternalTimer();
     }
 
+    public synchronized void startTimerWithEndTime(Context context, long targetEndTimeMillis) {
+        if (targetEndTimeMillis <= System.currentTimeMillis()) {
+            stopTimer(context);
+            notifyFinished();
+            return;
+        }
+
+        endTimeMillis = targetEndTimeMillis;
+        isRunning = true;
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putLong(KEY_END_TIME, endTimeMillis)
+                .putBoolean(KEY_IS_RUNNING, true)
+                .apply();
+
+        startInternalTimer();
+    }
+
     public synchronized void restoreTimer(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         endTimeMillis = prefs.getLong(KEY_END_TIME, 0);
@@ -68,27 +87,24 @@ public class BookingTimerManager {
     }
 
     public synchronized void stopTimer(Context context) {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
-        isRunning = false;
-        endTimeMillis = 0;
-
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit()
-                .remove(KEY_END_TIME)
-                .remove(KEY_IS_RUNNING)
-                .apply();
-
-        // Notify listeners on main thread
         mainHandler.post(() -> {
             synchronized (BookingTimerManager.this) {
-                for (TimerListener listener : new ArrayList<>(listeners)) {
-                    listener.onFinish();
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer = null;
                 }
             }
         });
+        isRunning = false;
+        endTimeMillis = 0;
+
+        if (context != null) {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            prefs.edit()
+                    .remove(KEY_END_TIME)
+                    .remove(KEY_IS_RUNNING)
+                    .apply();
+        }
     }
 
     public synchronized boolean isTimerActive(Context context) {
@@ -123,28 +139,32 @@ public class BookingTimerManager {
     }
 
     private synchronized void startInternalTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        mainHandler.post(() -> {
+            synchronized (BookingTimerManager.this) {
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
 
-        long remaining = getRemainingTimeMillis();
-        if (remaining <= 0) {
-            notifyFinished();
-            return;
-        }
+                long remaining = getRemainingTimeMillis();
+                if (remaining <= 0) {
+                    notifyFinished();
+                    return;
+                }
 
-        countDownTimer = new CountDownTimer(remaining, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                notifyTick(millisUntilFinished);
+                countDownTimer = new CountDownTimer(remaining, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        notifyTick(millisUntilFinished);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        notifyFinished();
+                    }
+                };
+                countDownTimer.start();
             }
-
-            @Override
-            public void onFinish() {
-                notifyFinished();
-            }
-        };
-        countDownTimer.start();
+        });
     }
 
     private synchronized void notifyTick(long millisUntilFinished) {

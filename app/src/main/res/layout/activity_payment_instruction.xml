@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Thông Tin Thanh Toán"
+            android:text="ThÃ´ng Tin Thanh ToÃ¡n"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold"/>
@@ -53,7 +53,7 @@
             android:id="@+id/tvStatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trạng thái: Đang chờ thanh toán..."
+            android:text="Tráº¡ng thÃ¡i: Äang chá» thanh toÃ¡n..."
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold"/>
@@ -70,7 +70,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Card Hướng dẫn chuyển khoản -->
+            <!-- Card HÆ°á»›ng dáº«n chuyá»ƒn khoáº£n -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="HƯỚNG DẪN CHUYỂN KHOẢN"
+                        android:text="HÆ¯á»šNG DáºªN CHUYá»‚N KHOáº¢N"
                         android:textColor="#A13345"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -98,20 +98,248 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Vui lòng thực hiện chuyển khoản theo thông tin bên dưới hoặc quét mã QR. Sau khi bạn chuyển khoản thành công, hệ thống sẽ tự động cập nhật và xuất vé."
+                        android:text="Vui lÃ²ng thá»±c hiá»‡n chuyá»ƒn khoáº£n theo thÃ´ng tin bÃªn dÆ°á»›i hoáº·c quÃ©t mÃ£ QR. Sau khi báº¡n chuyá»ƒn khoáº£n thÃ nh cÃ´ng, há»‡ thá»‘ng sáº½ tá»± Ä‘á»™ng cáº­p nháº­t vÃ  xuáº¥t vÃ©."
                         android:textColor="#555577"
                         android:textSize="13sp"
                         android:lineSpacingExtra="3dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card Thông tin tài khoản -->
-            <include layout="@layout/view_payment_bank_details" />
+            <!-- Card ThÃ´ng tin tÃ i khoáº£n -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Bank Name -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="NgÃ¢n hÃ ng"
+                            android:textColor="#8888AA"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvBankName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MB BANK"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- Account Owner -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Chá»§ tÃ i khoáº£n"
+                            android:textColor="#8888AA"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvAccountName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="PHAM NGOC GIA KHANG"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:gravity="end"/>
+                    </LinearLayout>
+
+                    <!-- Account Number -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Sá»‘ tÃ i khoáº£n"
+                            android:textColor="#8888AA"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvAccountNumber"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0869612460"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:gravity="end"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageButton
+                            android:id="@+id/btnCopyAccount"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/clipboard_solid_full"
+                            app:tint="#A13345"
+                            android:contentDescription="Copy Account"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EEEEEE"
+                        android:layout_marginVertical="8dp"/>
+
+                    <!-- Amount -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Sá»‘ tiá»n"
+                            android:textColor="#8888AA"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvAmount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0 Ä‘"
+                            android:textColor="#E53935"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageButton
+                            android:id="@+id/btnCopyAmount"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/clipboard_solid_full"
+                            app:tint="#A13345"
+                            android:contentDescription="Copy Amount"/>
+                    </LinearLayout>
+
+                    <!-- Transfer Code -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Ná»™i dung chuyá»ƒn khoáº£n"
+                            android:textColor="#8888AA"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvPaymentCode"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="â€”"
+                            android:textColor="#E53935"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:gravity="end"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageButton
+                            android:id="@+id/btnCopyCode"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/clipboard_solid_full"
+                            app:tint="#A13345"
+                            android:contentDescription="Copy Code"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Card QR Code -->
-            <include layout="@layout/view_payment_qr_code" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
 
-            <!-- Cảnh báo quan trọng -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="QUÃ‰T MÃƒ QR Äá»‚ THANH TOÃN Tá»° Äá»˜NG"
+                        android:textColor="#2A2A3A"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"/>
+
+                    <FrameLayout
+                        android:layout_width="240dp"
+                        android:layout_height="240dp"
+                        android:background="@drawable/bg_dashed_border"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/imgQrCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="VietQR" />
+
+                        <ProgressBar
+                            android:id="@+id/pbQrLoading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="visible"/>
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sá»­ dá»¥ng á»©ng dá»¥ng ngÃ¢n hÃ ng hoáº·c MoMo Ä‘á»ƒ quÃ©t mÃ£"
+                        android:textColor="#8888AA"
+                        android:textSize="11sp"
+                        android:layout_marginTop="12dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Cáº£nh bÃ¡o quan trá»ng -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -133,7 +361,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Chú ý: Hãy nhập chính xác nội dung chuyển khoản ở trên để giao dịch được duyệt tự động. Vui lòng không đóng màn hình này."
+                    android:text="ChÃº Ã½: HÃ£y nháº­p chÃ­nh xÃ¡c ná»™i dung chuyá»ƒn khoáº£n á»Ÿ trÃªn Ä‘á»ƒ giao dá»‹ch Ä‘Æ°á»£c duyá»‡t tá»± Ä‘á»™ng. Vui lÃ²ng khÃ´ng Ä‘Ã³ng mÃ n hÃ¬nh nÃ y."
                     android:textColor="#E65100"
                     android:textSize="11sp"
                     android:lineSpacingExtra="2dp"/>
@@ -154,7 +382,7 @@
             android:id="@+id/btnOpenApp"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="Mở ứng dụng thanh toán"
+            android:text="Má»Ÿ á»©ng dá»¥ng thanh toÃ¡n"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -177,7 +405,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="6dp"
-                android:text="Test Thành Công"
+                android:text="Test ThÃ nh CÃ´ng"
                 android:textAllCaps="false"
                 android:textColor="#2E7D32"
                 app:strokeColor="#2E7D32"
@@ -193,7 +421,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="6dp"
-                android:text="Test Thất Bại"
+                android:text="Test Tháº¥t Báº¡i"
                 android:textAllCaps="false"
                 android:textColor="#C62828"
                 app:strokeColor="#C62828"
