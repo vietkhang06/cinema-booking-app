@@ -37,6 +37,10 @@ public class LoginActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 1001;
 
+    public static final String EXTRA_FROM_BOOKING = "from_booking";
+
+    private boolean fromBooking = false;
+
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText edtEmail, edtPassword;
     private MaterialButton btnLogin;
@@ -50,6 +54,8 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        fromBooking = getIntent().getBooleanExtra(EXTRA_FROM_BOOKING, false);
 
         authService = ServiceProvider
                 .getInstance(getApplicationContext())
@@ -104,9 +110,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loadRememberedEmail() {
-        String saved = sessionManager.getRememberedEmail();
-        if (!saved.isEmpty()) {
-            edtEmail.setText(saved);
+        String savedEmail    = sessionManager.getRememberedEmail();
+        if (!savedEmail.isEmpty()) {
+            edtEmail.setText(savedEmail);
             cbRemember.setChecked(true);
         }
     }
@@ -142,7 +148,20 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onSuccess(User user) {
                         btnLogin.setEnabled(true);
-                        AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+
+                        if (cbRemember.isChecked()) {
+                            sessionManager.saveRememberedEmail(email);
+                        } else {
+                            sessionManager.clearRememberedEmail();
+                        }
+
+                        if ("admin".equals(user.role) || "staff".equals(user.role)) {
+                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                        } else if (fromBooking) {
+                            finish();
+                        } else {
+                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                        }
                     }
 
                     @Override
@@ -175,7 +194,13 @@ public class LoginActivity extends BaseActivity {
                                 new AuthCallback() {
                                     @Override
                                     public void onSuccess(User user) {
-                                        AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                                        if ("admin".equals(user.role) || "staff".equals(user.role)) {
+                                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                                        } else if (fromBooking) {
+                                            finish();
+                                        } else {
+                                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                                        }
                                     }
 
                                     @Override
@@ -228,7 +253,13 @@ public class LoginActivity extends BaseActivity {
                 authService.signInWithGoogle(account.getIdToken(), new AuthCallback() {
                     @Override
                     public void onSuccess(User user) {
-                        AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                        if ("admin".equals(user.role) || "staff".equals(user.role)) {
+                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                        } else if (fromBooking) {
+                            finish();
+                        } else {
+                            AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
+                        }
                     }
 
                     @Override
