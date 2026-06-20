@@ -288,14 +288,20 @@ public class AdminPromotionAddEditActivity extends AppCompatActivity {
 
         if (code.isEmpty()) {
             etCode.setError("Vui lòng nhập mã khuyến mãi");
+            etCode.requestFocus();
+            Toast.makeText(this, "Vui lòng nhập mã khuyến mãi", Toast.LENGTH_SHORT).show();
             return;
         }
         if (title.isEmpty()) {
             etTitle.setError("Vui lòng nhập tiêu đề");
+            etTitle.requestFocus();
+            Toast.makeText(this, "Vui lòng nhập tiêu đề khuyến mãi", Toast.LENGTH_SHORT).show();
             return;
         }
         if (valueStr.isEmpty()) {
             etValue.setError("Vui lòng nhập giá trị giảm");
+            etValue.requestFocus();
+            Toast.makeText(this, "Vui lòng nhập giá trị giảm", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -304,10 +310,14 @@ public class AdminPromotionAddEditActivity extends AppCompatActivity {
 
         if ("percentage".equals(discountType) && (val <= 0 || val > 100)) {
             etValue.setError("Phần trăm giảm phải từ 1% đến 100%");
+            etValue.requestFocus();
+            Toast.makeText(this, "Phần trăm giảm phải từ 1% đến 100%", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("fixed".equals(discountType) && val <= 0) {
             etValue.setError("Số tiền giảm phải lớn hơn 0đ");
+            etValue.requestFocus();
+            Toast.makeText(this, "Số tiền giảm phải lớn hơn 0đ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -315,6 +325,8 @@ public class AdminPromotionAddEditActivity extends AppCompatActivity {
         if ("percentage".equals(discountType)) {
             if (maxDiscountStr.isEmpty()) {
                 etMaxDiscount.setError("Vui lòng nhập số tiền giảm tối đa");
+                etMaxDiscount.requestFocus();
+                Toast.makeText(this, "Vui lòng nhập số tiền giảm tối đa", Toast.LENGTH_SHORT).show();
                 return;
             }
             maxDisc = Double.parseDouble(maxDiscountStr);
