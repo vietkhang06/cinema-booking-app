@@ -91,7 +91,9 @@ public class TicketDetailActivity extends AppCompatActivity {
             }
         };
 
-        realtimeObservable.addListener(listener);
+        if (realtimeObservable != null) {
+            realtimeObservable.addListener(listener);
+        }
         bookingService = ServiceProvider.getInstance().getBookingService();
 
         initViews();
@@ -411,6 +413,8 @@ public class TicketDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realtimeObservable.removeListener(listener);
+        if (realtimeObservable != null) {
+            realtimeObservable.removeListener(listener);
+        }
     }
 }
