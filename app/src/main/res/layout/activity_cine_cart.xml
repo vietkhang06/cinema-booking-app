@@ -19,14 +19,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnCartBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
             android:src="@drawable/chevron_left_solid_full"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="#111111" />
+            android:tint="#000000"
+            app:tint="#000000" />
 
         <TextView
             android:layout_width="0dp"
@@ -120,11 +121,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ðŸ›’"
-            android:textSize="48sp" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/cart_shopping_solid_full"
+            android:tint="#CCCCCC"
+            app:tint="#CCCCCC" />
 
         <TextView
             android:layout_width="wrap_content"
