@@ -13,7 +13,8 @@ public interface ReviewRepository {
     void updateReview(Review review, ResultCallback<Review> callback);
     void hideReview(String reviewId, ResultCallback<Review> callback);
     void deleteReview(String reviewId, ResultCallback<Void> callback);
-    void addReply(String parentReviewId, Review reply, ResultCallback<Review> callback);
-    void likeReview(String reviewId, String userId, ResultCallback<Review> callback);
-    void dislikeReview(String reviewId, String userId, ResultCallback<Review> callback);
+    void getUserReviewForMovie(String userId, String movieId, ResultCallback<Review> callback);
+    void getReviewsByMovieIdPaged(String movieId, com.google.firebase.firestore.DocumentSnapshot lastVisible, int limit, ResultCallback<android.util.Pair<List<Review>, com.google.firebase.firestore.DocumentSnapshot>> callback);
+    void toggleLike(String reviewId, String userId, ResultCallback<Review> callback);
+    void toggleDislike(String reviewId, String userId, ResultCallback<Review> callback);
 }

@@ -1,24 +1,35 @@
 package com.example.cinemabookingapp.ui.features.booking;
 
+import java.util.ArrayList;
 import android.view.LayoutInflater;
+import java.util.ArrayList;
 import android.view.View;
+import java.util.ArrayList;
 import android.view.ViewGroup;
+import java.util.ArrayList;
 import android.widget.TextView;
+import java.util.ArrayList;
 import java.util.*;
 
+import java.util.ArrayList;
 import androidx.annotation.NonNull;
+import java.util.ArrayList;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import com.example.cinemabookingapp.R;
+import java.util.ArrayList;
 import com.example.cinemabookingapp.data.dto.SeatDTO;
+import java.util.ArrayList;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-//                                                     ↑ đổi thành RecyclerView.ViewHolder (generic)
+//                                                     ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢i thÃƒÆ’Ã‚Â nh RecyclerView.ViewHolder (generic)
 
-    // Thêm 2 hằng số để phân biệt loại item
+    // ThÃƒÆ’Ã‚Âªm 2 hÃƒÂ¡Ã‚ÂºÃ‚Â±ng sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ phÃƒÆ’Ã‚Â¢n biÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t loÃƒÂ¡Ã‚ÂºÃ‚Â¡i item
     private static final int TYPE_LABEL = 0;
     private static final int TYPE_SEAT  = 1;
 
@@ -31,7 +42,7 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public SeatAdapter(List<SeatDTO> seatList, OnSeatClickListener listener) {
         this.listener = listener;
-        setSeats(seatList); // gọi setSeats thay vì gán trực tiếp
+        setSeats(seatList); // gÃƒÂ¡Ã‚Â»Ã‚Âi setSeats thay vÃƒÆ’Ã‚Â¬ gÃƒÆ’Ã‚Â¡n trÃƒÂ¡Ã‚Â»Ã‚Â±c tiÃƒÂ¡Ã‚ÂºÃ‚Â¿p
     }
 
     public void setSeats(List<SeatDTO> seatList) {
@@ -39,7 +50,7 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         String lastRow = null;
         for (SeatDTO seat : seatList) {
             if (!seat.rowName.equals(lastRow)) {
-                items.add(seat.rowName); // chen label "A", "B"... vào trước mỗi hàng
+                items.add(seat.rowName); // chen label "A", "B"... vÃƒÆ’Ã‚Â o trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc mÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hÃƒÆ’Ã‚Â ng
                 lastRow = seat.rowName;
             }
             items.add(seat);
@@ -47,7 +58,7 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    // Thêm method này — quyết định item nào là label, cái nào là ghế
+    // ThÃƒÆ’Ã‚Âªm method nÃƒÆ’Ã‚Â y ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â quyÃƒÂ¡Ã‚ÂºÃ‚Â¿t Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh item nÃƒÆ’Ã‚Â o lÃƒÆ’Ã‚Â  label, cÃƒÆ’Ã‚Â¡i nÃƒÆ’Ã‚Â o lÃƒÆ’Ã‚Â  ghÃƒÂ¡Ã‚ÂºÃ‚Â¿
     @Override
     public int getItemViewType(int position) {
         return items.get(position) instanceof String ? TYPE_LABEL : TYPE_SEAT;
@@ -81,7 +92,7 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return items.size(); // dùng items thay vì seatList
+        return items.size(); // dÃƒÆ’Ã‚Â¹ng items thay vÃƒÆ’Ã‚Â¬ seatList
     }
 
     // --- ViewHolder cho label A, B, C... ---
@@ -94,7 +105,7 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void bind(String label) { tvLabel.setText(label); }
     }
 
-    // --- ViewHolder cho ghế (giữ nguyên bind() của bạn) ---
+    // --- ViewHolder cho ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ (giÃƒÂ¡Ã‚Â»Ã‚Â¯ nguyÃƒÆ’Ã‚Âªn bind() cÃƒÂ¡Ã‚Â»Ã‚Â§a bÃƒÂ¡Ã‚ÂºÃ‚Â¡n) ---
     static class SeatViewHolder extends RecyclerView.ViewHolder {
         TextView tvSeat;
         SeatViewHolder(@NonNull View itemView) {
@@ -120,7 +131,16 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     && (seat.heldUntil > now) 
                     && !currentUserId.equals(seat.heldBy);
 
-            if (isBooked) {
+            boolean isLocked = "LOCKED".equalsIgnoreCase(seat.status)
+                    || "LOCKED".equalsIgnoreCase(seat.seatType);
+
+            if (isLocked) {
+                // PHYSICALLY LOCKED: dark gray color, disabled
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
+                tvSeat.setTextColor(0xFF444444);
+                itemView.setEnabled(false);
+                itemView.setAlpha(0.3f);
+            } else if (isBooked) {
                 // BOOKED: slate color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFF555566);

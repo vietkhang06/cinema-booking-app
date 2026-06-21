@@ -1,6 +1,6 @@
 package com.cinemabooking.backend.shared.scheduler;
 
-import com.google.api.core.ApiFuture;
+import com.cinemabooking.backend.features.cinema.repository.ShowtimeRepository;
 import com.google.cloud.firestore.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,9 @@ import java.util.Map;
 public class ShowtimeScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(ShowtimeScheduler.class);
-    private static final String SCHEDULE_COLLECTION = "showtime_schedules";
-    private static final String SHOWTIME_COLLECTION = "showtimes";
 
     @Autowired
-    private Firestore firestore;
+    private ShowtimeRepository showtimeRepository;
 
     @Scheduled(fixedRate = 60000) // Runs every 60 seconds
     public void executeSchedules() {
@@ -28,12 +26,8 @@ public class ShowtimeScheduler {
         long now = System.currentTimeMillis();
 
         try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(SCHEDULE_COLLECTION)
-                    .whereEqualTo("executed", false)
-                    .get();
-
-            List<QueryDocumentSnapshot> schedules = future.get().getDocuments();
-            WriteBatch batch = firestore.batch();
+            List<QueryDocumentSnapshot> schedules = showtimeRepository.findPendingSchedules();
+            WriteBatch batch = showtimeRepository.getFirestore().batch();
             int count = 0;
 
             for (DocumentSnapshot doc : schedules) {
@@ -77,7 +71,7 @@ public class ShowtimeScheduler {
                     showtimeData.put("updatedAt", now);
 
                     // Write showtime
-                    DocumentReference showtimeRef = firestore.collection(SHOWTIME_COLLECTION).document(scheduleId);
+                    DocumentReference showtimeRef = showtimeRepository.getDocumentReference(scheduleId);
                     batch.set(showtimeRef, showtimeData);
 
                     // Update schedule

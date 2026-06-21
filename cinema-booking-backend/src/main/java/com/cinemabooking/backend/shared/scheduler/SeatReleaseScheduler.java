@@ -1,6 +1,10 @@
 package com.cinemabooking.backend.shared.scheduler;
 
-import com.google.api.core.ApiFuture;
+import com.cinemabooking.backend.features.booking.repository.BookingRepository;
+import com.cinemabooking.backend.features.cinema.repository.SeatRepository;
+import com.cinemabooking.backend.features.cinema.repository.ShowtimeRepository;
+import com.cinemabooking.backend.features.user.repository.UserRepository;
+import com.cinemabooking.backend.features.payment.repository.PaymentRepository;
 import com.google.cloud.firestore.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +18,21 @@ import java.util.List;
 public class SeatReleaseScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(SeatReleaseScheduler.class);
-    private static final String COLLECTION = "seats";
 
     @Autowired
-    private Firestore firestore;
+    private SeatRepository seatRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private ShowtimeRepository showtimeRepository;
 
     @Scheduled(fixedRate = 60000) // Runs every 60 seconds
     public void releaseExpiredSeatsAndBookings() {
@@ -26,40 +41,14 @@ public class SeatReleaseScheduler {
 
         try {
             // Task 1: Scan and release expired seat holds
-            ApiFuture<QuerySnapshot> futureSeats = firestore.collection(COLLECTION)
-                    .whereEqualTo("status", "held")
-                    .get();
-
-            List<QueryDocumentSnapshot> heldSeats = futureSeats.get().getDocuments();
-            WriteBatch seatBatch = firestore.batch();
-            int count = 0;
-
-            for (DocumentSnapshot doc : heldSeats) {
-                Long heldUntilVal = doc.getLong("heldUntil");
-                long heldUntil = heldUntilVal != null ? heldUntilVal : 0L;
-
-                if (heldUntil > 0 && heldUntil < now) {
-                    logger.info("[SEAT_RELEASE] Seat hold expired for seatId={}. Releasing seat...", doc.getId());
-                    seatBatch.update(doc.getReference(),
-                            "status", "available",
-                            "heldBy", null,
-                            "heldUntil", 0L
-                    );
-                    count++;
-                }
-            }
-
-            if (count > 0) {
-                seatBatch.commit().get();
-                logger.info("[SEAT_RELEASE] Batch released {} expired held seats", count);
+            int releasedSeatsCount = seatRepository.releaseExpiredSeats(now);
+            if (releasedSeatsCount > 0) {
+                logger.info("[SEAT_RELEASE] Released {} expired held seats", releasedSeatsCount);
             }
 
             // Task 2: Scan and cancel pending bookings that have timed out
-            ApiFuture<QuerySnapshot> futureBookings = firestore.collection("bookings")
-                    .whereEqualTo("bookingStatus", "PENDING")
-                    .get();
-
-            List<QueryDocumentSnapshot> pendingBookings = futureBookings.get().getDocuments();
+            List<QueryDocumentSnapshot> pendingBookings = bookingRepository.findPendingBookings();
+            
             for (DocumentSnapshot bookingDoc : pendingBookings) {
                 Long createdAtVal = bookingDoc.getLong("createdAt");
                 long createdAt = createdAtVal != null ? createdAtVal : 0L;
@@ -80,7 +69,7 @@ public class SeatReleaseScheduler {
                     String bookingId = bookingDoc.getId();
                     logger.info("[BOOKING_TIMEOUT] Booking {} (Method: {}) has expired. Cancelling dynamically...", bookingId, paymentMethod);
 
-                    WriteBatch batch = firestore.batch();
+                    WriteBatch batch = bookingRepository.getFirestore().batch();
 
                     // 1. Cancel booking
                     batch.update(bookingDoc.getReference(),
@@ -94,16 +83,14 @@ public class SeatReleaseScheduler {
                     int ptsConsumed = ptsConsumedVal != null ? ptsConsumedVal.intValue() : 0;
                     String userId = bookingDoc.getString("userId");
                     if (ptsConsumed > 0 && userId != null) {
-                        batch.update(firestore.collection("users").document(userId),
+                        batch.update(userRepository.getDocumentReference(userId),
                                 "points", FieldValue.increment(ptsConsumed)
                         );
                         logger.info("[LOYALTY_REFUND] Scheduler refunded {} points to user {}", ptsConsumed, userId);
                     }
 
                     // 2. Find and cancel payment
-                    List<QueryDocumentSnapshot> paymentDocs = firestore.collection("payments")
-                            .whereEqualTo("bookingId", bookingId)
-                            .get().get().getDocuments();
+                    List<QueryDocumentSnapshot> paymentDocs = paymentRepository.findByBookingId(bookingId);
                     for (DocumentSnapshot paymentDoc : paymentDocs) {
                         batch.update(paymentDoc.getReference(),
                                 "status", "FAILED",
@@ -115,7 +102,7 @@ public class SeatReleaseScheduler {
                     List<String> seatIds = (List<String>) bookingDoc.get("seatIds");
                     if (seatIds != null) {
                         for (String seatId : seatIds) {
-                            batch.update(firestore.collection("seats").document(seatId),
+                            batch.update(seatRepository.getDocumentReference(seatId),
                                     "status", "available",
                                     "heldBy", null,
                                     "heldUntil", 0L
@@ -126,7 +113,7 @@ public class SeatReleaseScheduler {
                     // 4. Decrease bookedSeatsCount for showtime
                     String showtimeId = bookingDoc.getString("showtimeId");
                     if (showtimeId != null && seatIds != null) {
-                        batch.update(firestore.collection("showtimes").document(showtimeId),
+                        batch.update(showtimeRepository.getDocumentReference(showtimeId),
                                 "bookedSeatsCount", FieldValue.increment(-seatIds.size())
                         );
                     }

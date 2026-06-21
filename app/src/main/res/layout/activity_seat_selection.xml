@@ -42,7 +42,7 @@
         <View android:layout_width="44dp" android:layout_height="44dp"/>
     </LinearLayout>
 
-    <!-- Thông tin suất chiếu -->
+    <!-- ThÃ´ng tin suáº¥t chiáº¿u -->
     <LinearLayout
         android:id="@+id/layoutShowtimeInfo"
         android:layout_width="0dp"
@@ -83,7 +83,7 @@
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 
-    <!-- Màn hình -->
+    <!-- MÃ n hÃ¬nh -->
     <TextView
         android:id="@+id/tvScreen"
         android:layout_width="0dp"
@@ -148,18 +148,27 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:scrollbars="none"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/bottomLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/legendLayout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSeatMap"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSeatMap"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+        </FrameLayout>
     </HorizontalScrollView>
+
 
     <!-- Bottom bar -->
     <LinearLayout
@@ -177,7 +186,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Ghế đã chọn hiển thị dạng chip -->
+        <!-- Gháº¿ Ä‘Ã£ chá»n hiá»ƒn thá»‹ dáº¡ng chip -->
         <HorizontalScrollView
             android:id="@+id/scrollSelectedSeats"
             android:layout_width="match_parent"
@@ -202,7 +211,7 @@
             android:layout_marginBottom="12dp"
             android:visibility="gone"/>
 
-        <!-- Tổng tiền + nút -->
+        <!-- Tá»•ng tiá»n + nÃºt -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -247,5 +256,23 @@
                 app:cornerRadius="25dp"/>
         </LinearLayout>
     </LinearLayout>
+
+    <!-- Overlay Loading -->
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:elevation="100dp">
+        
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="#FFFFFF" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

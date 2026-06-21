@@ -88,4 +88,10 @@ public final class AppNavigator {
             goToCustomerHome(activity);
         }
     }
+
+    public static void goToLoginForBooking(Activity activity) {
+        Intent intent = new Intent(activity, LoginActivity.class);
+        intent.putExtra(LoginActivity.EXTRA_FROM_BOOKING, true);
+        activity.startActivity(intent);
+    }
 }

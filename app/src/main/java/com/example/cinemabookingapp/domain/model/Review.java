@@ -6,19 +6,15 @@ public class Review {
     public String movieId;
     public String bookingId;
     public String movieTitleSnapshot;
-    public int rating;
+    public Integer rating;
     public String content;
     public String status;
-    public long createdAt;
-    public long updatedAt;
-    public boolean deleted;
-    public String parentId;
-    public int replyCount;
-    public java.util.List<Review> replies;
-    public int likes;
-    public int dislikes;
+    public Long createdAt;
+    public Long updatedAt;
+    public Boolean deleted;
     public java.util.List<String> likedBy = new java.util.ArrayList<>();
     public java.util.List<String> dislikedBy = new java.util.ArrayList<>();
+    public Integer replyCount = 0;
 
     public Review() {
     }

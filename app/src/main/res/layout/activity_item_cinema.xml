@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
-    tools:context=".ui.customer.cinema.CinemaDetailActivity">
+    tools:context=".ui.features.cinema.CinemaDetailActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollCinemaDetail"
@@ -102,7 +102,7 @@
                         android:layout_marginTop="6dp"
                         android:textColor="#E5E7EB"
                         android:textSize="14sp"
-                        tools:text="Quan 1, TP Ho Chi Minh" />
+                        tools:text="Quận 1, TP Hồ Chí Minh" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -141,8 +141,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:contentDescription="@null"
-                                android:padding="12dp"
-                                android:scaleType="centerInside"
+                                android:scaleType="fitCenter"
                                 tools:src="@drawable/ic_cinemax_logo" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -163,7 +162,7 @@
                                 android:textColor="#1E1A23"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                tools:text="Dang hoat dong" />
+                                tools:text="Đang hoạt động" />
 
                             <TextView
                                 android:id="@+id/tvCityDistrict"
@@ -173,7 +172,7 @@
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                tools:text="Quan 1, TP Ho Chi Minh" />
+                                tools:text="Quận 1, TP Hồ Chí Minh" />
 
                             <TextView
                                 android:id="@+id/tvPhone"
@@ -196,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Dia chi"
+                        android:text="Địa chỉ"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -215,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Thong tin rap"
+                        android:text="Thông tin rạp"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -248,7 +247,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Ban do"
+                                android:text="Bản đồ"
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -276,7 +275,7 @@
                             android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="Mo ban do"
+                            android:text="Mở bản đồ"
                             android:textAllCaps="false"
                             android:textColor="#FFFFFF"
                             android:textSize="14sp"
@@ -290,7 +289,7 @@
                             android:layout_height="52dp"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Goi dien"
+                            android:text="Gọi điện"
                             android:textAllCaps="false"
                             android:textColor="#1E1A23"
                             android:textSize="14sp"
@@ -311,7 +310,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Dang chieu tai rap"
+                        android:text="Đang chiếu tại rạp"
                         android:textColor="#111111"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -320,9 +319,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Chon phim va khung gio phu hop"
+                        android:text="Chọn phim và khung giờ phù hợp"
                         android:textColor="#666666"
                         android:textSize="13sp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:scrollbars="none">
+                        <LinearLayout
+                            android:id="@+id/layoutDateChips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
 
                     <LinearLayout
                         android:id="@+id/layoutNowShowing"
@@ -331,29 +342,7 @@
                         android:layout_marginTop="14dp"
                         android:orientation="vertical" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Phim sap chieu"
-                        android:textColor="#111111"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Cac phim se co lich tai rap trong thoi gian toi"
-                        android:textColor="#666666"
-                        android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:id="@+id/layoutComingSoon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:orientation="vertical" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

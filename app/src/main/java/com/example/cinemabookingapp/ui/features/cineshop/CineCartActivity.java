@@ -12,15 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.features.cineshop.adapter.CineCartAdapter;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * CineCartActivity — Màn hình Giỏ hàng.
+ * CineCartActivity â€” MÃ n hÃ¬nh Giá» hÃ ng.
  *
- * Luồng:
- *   CineShopFragment (icon cart) → CineCartActivity → CineCheckoutActivity
+ * Luá»“ng:
+ *   CineShopFragment (icon cart) â†’ CineCartActivity â†’ CineCheckoutActivity
  */
 public class CineCartActivity extends FragmentActivity {
 
@@ -45,7 +46,7 @@ public class CineCartActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh khi quay lại từ Checkout
+        // Refresh khi quay láº¡i tá»« Checkout
         refreshUI();
     }
 

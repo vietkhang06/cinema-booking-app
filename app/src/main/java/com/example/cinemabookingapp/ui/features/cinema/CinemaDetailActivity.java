@@ -1,49 +1,91 @@
 package com.example.cinemabookingapp.ui.features.cinema;
 
+import java.util.Calendar;
 import android.content.Context;
+import java.util.Calendar;
 import android.content.Intent;
+import java.util.Calendar;
 import android.content.res.ColorStateList;
+import java.util.Calendar;
 import android.graphics.Color;
+import java.util.Calendar;
 import android.graphics.Typeface;
+import java.util.Calendar;
 import android.net.Uri;
+import java.util.Calendar;
 import android.os.Bundle;
+import java.util.Calendar;
 import android.text.TextUtils;
+import java.util.Calendar;
 import android.util.TypedValue;
+import java.util.Calendar;
 import android.view.Gravity;
+import java.util.Calendar;
 import android.view.View;
+import java.util.Calendar;
 import android.view.ViewGroup;
+import java.util.Calendar;
 import android.widget.ImageView;
+import java.util.Calendar;
 import android.widget.LinearLayout;
+import java.util.Calendar;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import androidx.annotation.Nullable;
 
+import java.util.Calendar;
 import com.bumptech.glide.Glide;
+import java.util.Calendar;
 import com.example.cinemabookingapp.R;
+import java.util.Calendar;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import java.util.Calendar;
 import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
+import java.util.Calendar;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
+import java.util.Calendar;
 import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.model.Cinema;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.model.Movie;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.model.Showtime;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.repository.CinemaRepository;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
+import java.util.Calendar;
 import com.example.cinemabookingapp.domain.repository.ShowtimeRepository;
+import java.util.Calendar;
 import com.example.cinemabookingapp.ui.features.movie.MovieDetailActivity;
+import java.util.Calendar;
 import com.example.cinemabookingapp.ui.features.booking.SeatSelectionActivity;
+import java.util.Calendar;
 import com.google.android.material.button.MaterialButton;
+import java.util.Calendar;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.Calendar;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.Calendar;
 import android.util.Log;
 
 public class CinemaDetailActivity extends BaseActivity {
@@ -73,7 +115,7 @@ public class CinemaDetailActivity extends BaseActivity {
     private MaterialButton btnOpenMap;
     private MaterialButton btnCall;
     private LinearLayout layoutNowShowing;
-    private LinearLayout layoutComingSoon;
+    private LinearLayout layoutDateChips;
 
     private View scrollCinemaDetail;
     private View progressBar;
@@ -85,7 +127,7 @@ public class CinemaDetailActivity extends BaseActivity {
     private ShowtimeRepository showtimeRepository;
     private MovieRepository movieRepository;
     private String cinemaId = "";
-    private String cinemaName = "Rap phim";
+    private String cinemaName = "Rạp phim";
     private String address = "";
     private String city = "";
     private String district = "";
@@ -93,6 +135,23 @@ public class CinemaDetailActivity extends BaseActivity {
     private String status = "";
     private double latitude = 0;
     private double longitude = 0;
+
+    private final List<Showtime> allShowtimes = new ArrayList<>();
+    private final Map<String, Movie> movieMap = new HashMap<>();
+    private final List<DateOption> dateOptions = new ArrayList<>();
+    private int selectedDateIndex = 0;
+
+    private static class DateOption {
+        final String label;
+        final String dateText;
+        final String dateKey;
+
+        DateOption(String label, String dateText, String dateKey) {
+            this.label = label;
+            this.dateText = dateText;
+            this.dateKey = dateKey;
+        }
+    }
 
     public static Intent createIntent(Context context, Cinema cinema) {
         Intent intent = new Intent(context, CinemaDetailActivity.class);
@@ -120,6 +179,7 @@ public class CinemaDetailActivity extends BaseActivity {
         showtimeRepository = new ShowtimeRepositoryImpl(true);
         movieRepository = new MovieRepositoryImpl();
         initViews();
+        initDateOptions();
         bindFallbackExtras();
         setupActions();
         loadCinemaFromFirestore();
@@ -142,7 +202,7 @@ public class CinemaDetailActivity extends BaseActivity {
         btnOpenMap = findViewById(R.id.btnOpenMap);
         btnCall = findViewById(R.id.btnCall);
         layoutNowShowing = findViewById(R.id.layoutNowShowing);
-        layoutComingSoon = findViewById(R.id.layoutComingSoon);
+        layoutDateChips = findViewById(R.id.layoutDateChips);
 
         scrollCinemaDetail = findViewById(R.id.scrollCinemaDetail);
         progressBar = findViewById(R.id.progressBar);
@@ -167,12 +227,13 @@ public class CinemaDetailActivity extends BaseActivity {
         loadCinemaImage();
     }
 
+    // ZELIOUS TASK: Fetch lÃ¡ÂºÂ¡i thÃƒÂ´ng tin mÃ¡Â»â€ºi nhÃ¡ÂºÂ¥t cÃ¡Â»Â§a rÃ¡ÂºÂ¡p nhÃ†Â°: TÃƒÂªn, Ã„ÂÃ¡Â»â€¹a chÃ¡Â»â€°, Hotline, TrÃ¡ÂºÂ¡ng thÃƒÂ¡i hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng, TÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢ bÃ¡ÂºÂ£n Ã„â€˜Ã¡Â»â€œ tÃ¡Â»Â« Firestore.
     private void loadCinemaFromFirestore() {
         if (TextUtils.isEmpty(cinemaId)) {
             return;
         }
 
-        boolean hasFallback = !TextUtils.isEmpty(cinemaName) && !cinemaName.equals("Rap phim");
+        boolean hasFallback = !TextUtils.isEmpty(cinemaName) && !cinemaName.equals("Rạp phim");
 
         if (!hasFallback) {
             scrollCinemaDetail.setVisibility(View.GONE);
@@ -205,6 +266,7 @@ public class CinemaDetailActivity extends BaseActivity {
                 longitude = cinema.longitude;
 
                 bindCinemaInfo();
+                loadCinemaImage();
 
                 scrollCinemaDetail.setVisibility(View.VISIBLE);
                 layoutError.setVisibility(View.GONE);
@@ -225,24 +287,61 @@ public class CinemaDetailActivity extends BaseActivity {
     }
 
     private void bindCinemaInfo() {
-        tvCinemaTitle.setText(safe(cinemaName, "Rap phim"));
+        tvCinemaTitle.setText(safe(cinemaName, "Rạp phim"));
         tvCinemaTagline.setText(buildLocationText());
-        tvStatus.setText(TextUtils.isEmpty(status) ? "Dang hoat dong" : status);
+        
+        String statusText = "Đang hoạt động";
+        int textColor = Color.parseColor("#10B981");
+        int bgColor = Color.parseColor("#E6FBF3");
+        
+        if (!TextUtils.isEmpty(status)) {
+            if ("active".equalsIgnoreCase(status) || "available".equalsIgnoreCase(status) || "scheduled".equalsIgnoreCase(status) || "đang hoạt động".equalsIgnoreCase(status)) {
+                statusText = "Đang hoạt động";
+                textColor = Color.parseColor("#10B981");
+                bgColor = Color.parseColor("#E6FBF3");
+            } else if ("inactive".equalsIgnoreCase(status) || "tạm dừng".equalsIgnoreCase(status)) {
+                statusText = "Tạm dừng";
+                textColor = Color.parseColor("#EF4444");
+                bgColor = Color.parseColor("#FEE2E2");
+            } else {
+                statusText = status;
+                textColor = Color.parseColor("#1E1A23");
+                bgColor = Color.parseColor("#F3F4F6");
+            }
+        }
+        tvStatus.setText(statusText);
+        tvStatus.setTextColor(textColor);
+        tvStatus.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+        
         tvCityDistrict.setText(buildLocationText());
-        tvPhone.setText(TextUtils.isEmpty(phone) ? "Chua cap nhat hotline" : phone);
-        tvAddress.setText(TextUtils.isEmpty(address) ? "Chua cap nhat dia chi" : address);
-        tvAbout.setText("Khong gian rap duoc thiet ke cho trai nghiem xem phim thoai mai, am thanh ro net va khu vuc ghe ngoi hien dai.");
+        tvPhone.setText(TextUtils.isEmpty(phone) ? "Chưa cập nhật hotline" : phone);
+        tvAddress.setText(TextUtils.isEmpty(address) ? "Chưa cập nhật địa chỉ" : address);
+        tvAbout.setText("Không gian rạp được thiết kế cho trải nghiệm xem phim thoải mái, âm thanh rõ nét và khu vực ghế ngồi hiện đại.");
         tvMapInfo.setText(hasCoordinate()
                 ? String.format(Locale.getDefault(), "%.5f, %.5f", latitude, longitude)
-                : "Chua cap nhat toa do");
+                : "Chưa cập nhật tọa độ");
     }
 
     private void loadCinemaImage() {
+        String logoUrl = "https://play-lh.googleusercontent.com/nxo4BC4BQ5hXuNi-UCdPM5kC0uZH1lq7bglINlWNUA_v8yMfHHOtTjhLTvo5NDjVeqx-";
+        String backdropUrl = "https://thelandmark81.com.vn/wp-content/uploads/2025/10/rap-chieu-phim-vincom-thu-duc-cgv-la-diem-hen-ly-tuong-cho-nhung-nguoi-yeu-thich-phim-dien-anh.jpg";
+        
+        if (cinemaName != null) {
+            String nameLower = cinemaName.toLowerCase();
+            if (nameLower.contains("quận 1") || nameLower.contains("quan 1")) {
+                backdropUrl = "https://i1.wp.com/kenhhomestay.com/wp-content/uploads/2019/12/cgv-binh-duong-2.png";
+            } else if (nameLower.contains("quận 2") || nameLower.contains("quan 2")) {
+                backdropUrl = "https://lh7-us.googleusercontent.com/WdQhGK0lo8BkP7xAHPaRG-d0W1qVxgIyEyJ5J3hJGqkmiCXTmaVpXqcGgG3UCIP_4QoGoHnLEQPMHlww126sVxMZQ0NPUn0Hi2rY5GeY0tht6wuIbuY9NDpH3fDJeuwPcFNAZpAo8I94Q0-QWJvbE84";
+            }
+        }
+
         Glide.with(this)
-                .load(R.drawable.ic_cinemax_logo)
+                .load(backdropUrl)
+                .error(R.drawable.ic_cinemax_logo)
                 .into(imgHeroBackdrop);
         Glide.with(this)
-                .load(R.drawable.ic_cinemax_logo)
+                .load(logoUrl)
+                .error(R.drawable.ic_cinemax_logo)
                 .into(imgCinemaLogo);
     }
 
@@ -262,9 +361,10 @@ public class CinemaDetailActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareText.trim());
-        startActivity(Intent.createChooser(intent, "Chia se rap phim"));
+        startActivity(Intent.createChooser(intent, "Chia sẻ rạp phim"));
     }
 
+    // ZELIOUS TASK: MÃ¡Â»Å¸ Google Maps thÃƒÂ´ng qua TÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢ Latitude/Longitude. NÃ¡ÂºÂ¿u khÃƒÂ´ng cÃƒÂ³ tÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢ sÃ¡ÂºÂ½ mÃ¡Â»Å¸ map theo chuÃ¡Â»â€”i text Ã„ÂÃ¡Â»â€¹a chÃ¡Â»â€°.
     private void openMap() {
         Uri uri;
         if (hasCoordinate()) {
@@ -279,7 +379,7 @@ public class CinemaDetailActivity extends BaseActivity {
             }
             uri = Uri.parse("geo:0,0?q=" + Uri.encode(queryBuilder.toString()));
         } else {
-            showToast("Chua co dia chi de mo ban do");
+            showToast("Chưa có địa chỉ để mở bản đồ");
             return;
         }
 
@@ -287,13 +387,13 @@ public class CinemaDetailActivity extends BaseActivity {
         try {
             startActivity(intent);
         } catch (Exception e) {
-            showToast("Khong the mo ban do");
+            showToast("Không thể mở bản đồ");
         }
     }
 
     private void callCinema() {
         if (TextUtils.isEmpty(phone)) {
-            showToast("Chua co so dien thoai");
+            showToast("Chưa có số điện thoại");
             return;
         }
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
@@ -315,6 +415,129 @@ public class CinemaDetailActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    private void initDateOptions() {
+        dateOptions.clear();
+        SimpleDateFormat dateKeyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat dateTextFormat = new SimpleDateFormat("dd / MM", Locale.getDefault());
+
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < 7; i++) {
+            String label;
+            if (i == 0) {
+                label = "Hôm nay";
+            } else if (i == 1) {
+                label = "Ngày mai";
+            } else {
+                label = getDayLabel(cal);
+            }
+            String dateText = dateTextFormat.format(cal.getTime());
+            String dateKey = dateKeyFormat.format(cal.getTime());
+            dateOptions.add(new DateOption(label, dateText, dateKey));
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+    }
+
+    private void renderDateChips() {
+        if (layoutDateChips == null) return;
+        layoutDateChips.removeAllViews();
+
+        if (dateOptions.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < dateOptions.size(); i++) {
+            DateOption option = dateOptions.get(i);
+            boolean selected = i == selectedDateIndex;
+
+            MaterialCardView chip = new MaterialCardView(this);
+            LinearLayout.LayoutParams chipParams = new LinearLayout.LayoutParams(dp(84), dp(64));
+            chipParams.setMarginEnd(dp(10));
+            chip.setLayoutParams(chipParams);
+            chip.setRadius(dp(12));
+            chip.setCardElevation(dp(0));
+            chip.setStrokeWidth(dp(1));
+            chip.setStrokeColor(ColorStateList.valueOf(Color.parseColor(selected ? "#0F56B3" : "#D8D8D8")));
+            chip.setCardBackgroundColor(Color.parseColor(selected ? "#0F56B3" : "#FFFFFF"));
+
+            LinearLayout content = new LinearLayout(this);
+            content.setOrientation(LinearLayout.VERTICAL);
+            content.setGravity(Gravity.CENTER);
+            content.setPadding(dp(8), dp(4), dp(8), dp(4));
+
+            TextView label = new TextView(this);
+            label.setText(option.label);
+            label.setTextColor(Color.parseColor(selected ? "#FFFFFF" : "#555555"));
+            label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+            label.setTypeface(label.getTypeface(), Typeface.BOLD);
+            label.setGravity(Gravity.CENTER);
+
+            TextView dateText = new TextView(this);
+            dateText.setText(option.dateText);
+            dateText.setTextColor(Color.parseColor(selected ? "#FFFFFF" : "#111111"));
+            dateText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+            dateText.setTypeface(dateText.getTypeface(), Typeface.BOLD);
+            dateText.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams dateTextParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            dateTextParams.setMargins(0, dp(2), 0, 0);
+            dateText.setLayoutParams(dateTextParams);
+
+            content.addView(label);
+            content.addView(dateText);
+            chip.addView(content);
+
+            final int index = i;
+            chip.setOnClickListener(v -> {
+                selectedDateIndex = index;
+                renderDateChips();
+                renderRealShowtimes(allShowtimes, movieMap);
+            });
+
+            layoutDateChips.addView(chip);
+        }
+    }
+
+    private String getDayLabel(Calendar targetCal) {
+        Calendar today = Calendar.getInstance();
+        if (isSameDay(targetCal, today)) {
+            return "Hôm nay";
+        }
+        today.add(Calendar.DAY_OF_YEAR, 1);
+        if (isSameDay(targetCal, today)) {
+            return "Ngày mai";
+        }
+        return dayLabel(targetCal.get(Calendar.DAY_OF_WEEK));
+    }
+
+    private boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+               cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    private String dayLabel(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case Calendar.MONDAY:
+                return "Thứ Hai";
+            case Calendar.TUESDAY:
+                return "Thứ Ba";
+            case Calendar.WEDNESDAY:
+                return "Thứ Tư";
+            case Calendar.THURSDAY:
+                return "Thứ Năm";
+            case Calendar.FRIDAY:
+                return "Thứ Sáu";
+            case Calendar.SATURDAY:
+                return "Thứ Bảy";
+            case Calendar.SUNDAY:
+            default:
+                return "Chủ Nhật";
+        }
+    }
+
+    // ZELIOUS TASK: TÃ¡ÂºÂ£i toÃƒÂ n bÃ¡Â»â„¢ suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u (Showtimes) thuÃ¡Â»â„¢c vÃ¡Â»Â rÃ¡ÂºÂ¡p nÃƒÂ y, vÃƒÂ  map (ghÃƒÂ©p) dÃ¡Â»Â¯ liÃ¡Â»â€¡u vÃ¡Â»â€ºi danh sÃƒÂ¡ch Phim (Movies).
     private void loadShowtimesAndMovies() {
         if (TextUtils.isEmpty(cinemaId)) {
             return;
@@ -323,27 +546,30 @@ public class CinemaDetailActivity extends BaseActivity {
         movieRepository.getAllMovies(new ResultCallback<List<Movie>>() {
             @Override
             public void onSuccess(List<Movie> movies) {
-                Map<String, Movie> movieMap = new HashMap<>();
-                List<Movie> comingSoonMovies = new ArrayList<>();
+                movieMap.clear();
                 if (movies != null) {
                     for (Movie m : movies) {
                         movieMap.put(m.movieId, m);
-                        if ("COMING_SOON".equalsIgnoreCase(m.status) || "COMING SOON".equalsIgnoreCase(m.status)) {
-                            comingSoonMovies.add(m);
-                        }
                     }
                 }
 
                 showtimeRepository.getShowtimesByCinemaId(cinemaId, new ResultCallback<List<Showtime>>() {
                     @Override
                     public void onSuccess(List<Showtime> showtimes) {
-                        renderRealShowtimes(showtimes, movieMap, comingSoonMovies);
+                        allShowtimes.clear();
+                        if (showtimes != null) {
+                            allShowtimes.addAll(showtimes);
+                        }
+                        renderDateChips();
+                        renderRealShowtimes(allShowtimes, movieMap);
                     }
 
                     @Override
                     public void onError(String message) {
                         Log.e("CinemaDetailActivity", "Failed to fetch showtimes: " + message);
-                        renderRealShowtimes(new ArrayList<>(), movieMap, comingSoonMovies);
+                        allShowtimes.clear();
+                        renderDateChips();
+                        renderRealShowtimes(allShowtimes, movieMap);
                     }
                 });
             }
@@ -354,36 +580,59 @@ public class CinemaDetailActivity extends BaseActivity {
                 showtimeRepository.getShowtimesByCinemaId(cinemaId, new ResultCallback<List<Showtime>>() {
                     @Override
                     public void onSuccess(List<Showtime> showtimes) {
-                        renderRealShowtimes(showtimes, new HashMap<>(), new ArrayList<>());
+                        allShowtimes.clear();
+                        if (showtimes != null) {
+                            allShowtimes.addAll(showtimes);
+                        }
+                        movieMap.clear();
+                        renderDateChips();
+                        renderRealShowtimes(allShowtimes, movieMap);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
-                        renderRealShowtimes(new ArrayList<>(), new HashMap<>(), new ArrayList<>());
+                        allShowtimes.clear();
+                        movieMap.clear();
+                        renderDateChips();
+                        renderRealShowtimes(allShowtimes, movieMap);
                     }
                 });
             }
         });
     }
 
-    private void renderRealShowtimes(List<Showtime> showtimes, Map<String, Movie> movieMap, List<Movie> comingSoonMovies) {
+    // ZELIOUS TASK: PhÃƒÂ¢n loÃ¡ÂºÂ¡i (gom nhÃƒÂ³m) cÃƒÂ¡c suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u theo "Tên Phim + Định dạng (VD: 2D Phụ đề)" vÃƒÂ  hiÃ¡Â»Æ’n thÃ¡Â»â€¹ theo tÃ¡Â»Â«ng NgÃƒÂ y cÃ¡Â»Â¥ thÃ¡Â»Æ’ (HÃƒÂ´m nay, NgÃƒÂ y mai,...).
+    private void renderRealShowtimes(List<Showtime> showtimes, Map<String, Movie> movieMap) {
         layoutNowShowing.removeAllViews();
-        layoutComingSoon.removeAllViews();
+
+        if (selectedDateIndex < 0 || selectedDateIndex >= dateOptions.size()) {
+            return;
+        }
+        String selectedDateKey = dateOptions.get(selectedDateIndex).dateKey;
 
         Map<String, List<Showtime>> grouped = new HashMap<>();
         long now = System.currentTimeMillis();
+        SimpleDateFormat dateKeyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
         if (showtimes != null) {
             for (Showtime st : showtimes) {
                 if (st.deleted) continue;
-                if (st.startAt < now || !isBookableStatus(st.status)) {
+
+                // Filter by selected date
+                String showtimeDateKey = dateKeyFormat.format(new Date(st.startAt));
+                if (!showtimeDateKey.equals(selectedDateKey)) {
                     continue;
                 }
-                if (Boolean.TRUE.equals(st.isScheduled) && now < st.startAt) {
+
+                // If selected date is today, show only future/current showtimes.
+                boolean isToday = selectedDateIndex == 0;
+                if ((isToday && st.startAt < now) || !isBookableStatus(st.status)) {
                     continue;
                 }
                 if (TextUtils.isEmpty(st.movieId)) continue;
-                
-                String key = st.movieId + "|" + (st.format != null ? st.format : "2D");
+
+                String formatLanguage = (st.format != null ? st.format : "2D") + (st.language != null ? " " + st.language : " PHỤ ĐỀ");
+                String key = st.movieId + "|" + formatLanguage.toUpperCase();
                 List<Showtime> list = grouped.get(key);
                 if (list == null) {
                     list = new ArrayList<>();
@@ -399,7 +648,7 @@ public class CinemaDetailActivity extends BaseActivity {
             String movieId = parts[0];
             String format = parts[1];
             List<Showtime> stList = entry.getValue();
-            
+
             stList.sort((s1, s2) -> Long.compare(s1.startAt, s2.startAt));
 
             Movie movie = movieMap.get(movieId);
@@ -426,43 +675,10 @@ public class CinemaDetailActivity extends BaseActivity {
             tvEmpty.setPadding(0, dp(20), 0, dp(20));
             layoutNowShowing.addView(tvEmpty);
         }
-
-        List<Movie> realComingSoon = new ArrayList<>();
-        for (Movie m : comingSoonMovies) {
-            boolean hasShowtime = false;
-            if (showtimes != null) {
-                for (Showtime st : showtimes) {
-                    if (m.movieId.equals(st.movieId) && !st.deleted) {
-                        hasShowtime = true;
-                        break;
-                    }
-                }
-            }
-            if (!hasShowtime) {
-                realComingSoon.add(m);
-            }
-        }
-
-        int count = 0;
-        for (Movie m : realComingSoon) {
-            if (count >= 3) break;
-            CinemaMovieSchedule schedule = new CinemaMovieSchedule(m, "SẮP CHIẾU", new ArrayList<>());
-            layoutComingSoon.addView(buildScheduleCard(schedule, false));
-            count++;
-        }
-
-        if (realComingSoon.isEmpty()) {
-            TextView tvEmpty = new TextView(this);
-            tvEmpty.setText("Chưa có thông tin phim sắp chiếu.");
-            tvEmpty.setTextColor(Color.parseColor("#666666"));
-            tvEmpty.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            tvEmpty.setGravity(Gravity.CENTER);
-            tvEmpty.setPadding(0, dp(20), 0, dp(20));
-            layoutComingSoon.addView(tvEmpty);
-        }
     }
 
-    private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
+    
+private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
         MaterialCardView card = new MaterialCardView(this);
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -486,85 +702,173 @@ public class CinemaDetailActivity extends BaseActivity {
         body.setOrientation(LinearLayout.VERTICAL);
         body.setPadding(dp(14), dp(14), dp(14), dp(14));
 
-        LinearLayout header = new LinearLayout(this);
-        header.setOrientation(LinearLayout.HORIZONTAL);
-        header.setGravity(Gravity.CENTER_VERTICAL);
+        // Horizontal Layout for Poster + Details
+        LinearLayout horizontalLayout = new LinearLayout(this);
+        horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
+        horizontalLayout.setGravity(Gravity.TOP);
 
-        LinearLayout titleGroup = new LinearLayout(this);
-        titleGroup.setOrientation(LinearLayout.VERTICAL);
-        titleGroup.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        // Movie Poster (on the left)
+        MaterialCardView posterCard = new MaterialCardView(this);
+        LinearLayout.LayoutParams posterParams = new LinearLayout.LayoutParams(dp(72), dp(108));
+        posterCard.setLayoutParams(posterParams);
+        posterCard.setRadius(dp(8));
+        posterCard.setCardElevation(0);
+        posterCard.setStrokeWidth(0);
 
+        ImageView posterView = new ImageView(this);
+        posterView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        ));
+        posterView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        if (schedule.movie != null && !TextUtils.isEmpty(schedule.movie.posterUrl)) {
+            Glide.with(this)
+                    .load(schedule.movie.posterUrl)
+                    .placeholder(R.drawable.ic_cinemax_logo)
+                    .error(R.drawable.ic_cinemax_logo)
+                    .into(posterView);
+        } else {
+            posterView.setImageResource(R.drawable.ic_cinemax_logo);
+        }
+        posterCard.addView(posterView);
+
+        // Movie Info (on the right)
+        LinearLayout infoLayout = new LinearLayout(this);
+        infoLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams infoParams = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+        );
+        infoParams.setMarginStart(dp(14));
+        infoLayout.setLayoutParams(infoParams);
+
+        // Title
         TextView title = new TextView(this);
         title.setText(schedule.movie != null ? schedule.movie.title : "Phim");
         title.setTextColor(Color.parseColor("#111111"));
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         title.setTypeface(title.getTypeface(), Typeface.BOLD);
-        title.setMaxLines(1);
+        title.setMaxLines(2);
         title.setEllipsize(TextUtils.TruncateAt.END);
+        infoLayout.addView(title);
 
-        TextView meta = new TextView(this);
-        String genresText = "";
-        if (schedule.movie != null && schedule.movie.genres != null && !schedule.movie.genres.isEmpty()) {
-            genresText = TextUtils.join(" - ", schedule.movie.genres);
-        }
-        String metaStr = genresText + (schedule.movie != null && schedule.movie.durationMinutes > 0 ? " • " + schedule.movie.durationMinutes + " phút" : "");
-        meta.setText(metaStr);
-        meta.setTextColor(Color.parseColor("#666666"));
-        meta.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        LinearLayout.LayoutParams metaParams = new LinearLayout.LayoutParams(
+        // Meta (Age rating, Duration, Release Date)
+        LinearLayout metaLayout = new LinearLayout(this);
+        metaLayout.setOrientation(LinearLayout.HORIZONTAL);
+        metaLayout.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams metaLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        metaParams.setMargins(0, dp(4), 0, 0);
-        meta.setLayoutParams(metaParams);
+        metaLayoutParams.setMargins(0, dp(6), 0, 0);
+        metaLayout.setLayoutParams(metaLayoutParams);
 
-        titleGroup.addView(title);
-        titleGroup.addView(meta);
-
-        TextView age = new TextView(this);
+        TextView ageBadge = new TextView(this);
         String ageRatingStr = (schedule.movie != null && schedule.movie.ageRating != null) ? schedule.movie.ageRating : "P";
-        age.setText(ageRatingStr);
-        age.setGravity(Gravity.CENTER);
-        age.setTextColor(Color.parseColor("#B56B00"));
-        age.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        age.setTypeface(age.getTypeface(), Typeface.BOLD);
-        age.setBackgroundColor(Color.parseColor("#FFF4D8"));
-        age.setPadding(dp(10), 0, dp(10), 0);
-        age.setMinHeight(dp(28));
+        ageBadge.setText(ageRatingStr);
+        ageBadge.setGravity(Gravity.CENTER);
+        ageBadge.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        ageBadge.setTypeface(ageBadge.getTypeface(), Typeface.BOLD);
 
-        header.addView(titleGroup);
-        header.addView(age);
-        body.addView(header);
+        int ageBgColor = Color.parseColor("#FFF0E8");
+        int ageTextColor = Color.parseColor("#E06A00");
+        if ("P".equalsIgnoreCase(ageRatingStr)) {
+            ageBgColor = Color.parseColor("#E6FBF3");
+            ageTextColor = Color.parseColor("#10B981");
+        } else if ("T13".equalsIgnoreCase(ageRatingStr)) {
+            ageBgColor = Color.parseColor("#FFF4D8");
+            ageTextColor = Color.parseColor("#B56B00");
+        } else if ("T16".equalsIgnoreCase(ageRatingStr) || "T18".equalsIgnoreCase(ageRatingStr)) {
+            ageBgColor = Color.parseColor("#FEE2E2");
+            ageTextColor = Color.parseColor("#EF4444");
+        }
+        ageBadge.setBackgroundColor(ageBgColor);
+        ageBadge.setTextColor(ageTextColor);
+        ageBadge.setPadding(dp(6), dp(2), dp(6), dp(2));
+        metaLayout.addView(ageBadge);
 
+        TextView durationText = new TextView(this);
+        String durationStr = "⏱ " + (schedule.movie != null ? schedule.movie.durationMinutes : 0) + " Phút";
+        durationText.setText(durationStr);
+        durationText.setTextColor(Color.parseColor("#555555"));
+        durationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        LinearLayout.LayoutParams durationParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        durationParams.setMarginStart(dp(10));
+        durationText.setLayoutParams(durationParams);
+        metaLayout.addView(durationText);
+
+        TextView releaseText = new TextView(this);
+        String releaseDateStr = "📅 --";
+        if (schedule.movie != null && schedule.movie.releaseDate > 0) {
+            SimpleDateFormat releaseSdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            releaseDateStr = "📅 " + releaseSdf.format(new Date(schedule.movie.releaseDate));
+        }
+        releaseText.setText(releaseDateStr);
+        releaseText.setTextColor(Color.parseColor("#555555"));
+        releaseText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        LinearLayout.LayoutParams releaseParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        releaseParams.setMarginStart(dp(10));
+        releaseText.setLayoutParams(releaseParams);
+        metaLayout.addView(releaseText);
+
+        infoLayout.addView(metaLayout);
+
+        // Rating
+        TextView ratingText = new TextView(this);
+        double ratingVal = schedule.movie != null ? schedule.movie.ratingAvg : 0.0;
+        ratingText.setText(String.format(Locale.getDefault(), "★ %.1f", ratingVal));
+        ratingText.setTextColor(Color.parseColor("#FFB300"));
+        ratingText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        ratingText.setTypeface(ratingText.getTypeface(), Typeface.BOLD);
+        LinearLayout.LayoutParams ratingParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        ratingParams.setMargins(0, dp(6), 0, 0);
+        ratingText.setLayoutParams(ratingParams);
+        infoLayout.addView(ratingText);
+
+        horizontalLayout.addView(posterCard);
+        horizontalLayout.addView(infoLayout);
+        body.addView(horizontalLayout);
+
+        // Format Label
         TextView format = new TextView(this);
         LinearLayout.LayoutParams formatParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                dp(28)
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
         formatParams.setMargins(0, dp(12), 0, 0);
         format.setLayoutParams(formatParams);
         format.setGravity(Gravity.CENTER);
-        format.setPadding(dp(10), 0, dp(10), 0);
         format.setText(schedule.format);
-        format.setTextColor(Color.parseColor("#1E1A23"));
-        format.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        format.setTextColor(Color.parseColor("#666666"));
+        format.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
         format.setTypeface(format.getTypeface(), Typeface.BOLD);
-        format.setBackgroundResource(R.drawable.bg_cinema_status);
         body.addView(format);
 
+        // Showtime Buttons
         LinearLayout timesWrap = new LinearLayout(this);
         LinearLayout.LayoutParams timesWrapParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        timesWrapParams.setMargins(0, dp(12), 0, 0);
+        timesWrapParams.setMargins(0, dp(8), 0, 0);
         timesWrap.setLayoutParams(timesWrapParams);
         timesWrap.setOrientation(LinearLayout.VERTICAL);
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         int totalShowtimes = schedule.showtimes != null ? schedule.showtimes.size() : 0;
         if (totalShowtimes > 0) {
-            for (int start = 0; start < totalShowtimes; start += 3) {
+            for (int start = 0; start < totalShowtimes; start += 4) {
                 LinearLayout row = new LinearLayout(this);
                 row.setOrientation(LinearLayout.HORIZONTAL);
                 row.setLayoutParams(new LinearLayout.LayoutParams(
@@ -572,7 +876,7 @@ public class CinemaDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 ));
 
-                int end = Math.min(start + 3, totalShowtimes);
+                int end = Math.min(start + 4, totalShowtimes);
                 for (int index = start; index < end; index++) {
                     Showtime st = schedule.showtimes.get(index);
                     String timeVal = sdf.format(new Date(st.startAt));
@@ -647,7 +951,8 @@ public class CinemaDetailActivity extends BaseActivity {
         }
 
         return "active".equalsIgnoreCase(status)
-                || "available".equalsIgnoreCase(status);
+                || "available".equalsIgnoreCase(status)
+                || "scheduled".equalsIgnoreCase(status);
     }
 
     private String buildLocationText() {
@@ -660,7 +965,7 @@ public class CinemaDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(district)) {
             return district;
         }
-        return "Khu vuc dang cap nhat";
+        return "Khu vực đang cập nhật";
     }
 
     private String safe(String value, String fallback) {

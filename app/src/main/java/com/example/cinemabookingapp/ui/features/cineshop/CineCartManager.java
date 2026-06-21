@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CineCartManager — Singleton giữ trạng thái giỏ hàng của Cine Shop.
- * Dùng chung giữa CineShopFragment, CineCartActivity và CineCheckoutActivity.
+ * CineCartManager â€” Singleton giá»¯ tráº¡ng thÃ¡i giá» hÃ ng cá»§a Cine Shop.
+ * DÃ¹ng chung giá»¯a CineShopFragment, CineCartActivity vÃ  CineCheckoutActivity.
  */
 public class CineCartManager {
 
-    // ── Singleton ─────────────────────────────────────────────────────────────
+    // â”€â”€ Singleton â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private static CineCartManager instance;
 
     public static CineCartManager getInstance() {
@@ -21,7 +21,7 @@ public class CineCartManager {
 
     private CineCartManager() {}
 
-    // ── Data model ────────────────────────────────────────────────────────────
+    // â”€â”€ Data model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public static class CartItem {
         public Snack snack;
         public int quantity;
@@ -38,9 +38,9 @@ public class CineCartManager {
 
     private final List<CartItem> items = new ArrayList<>();
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-    /** Thêm hoặc cộng dồn số lượng vào giỏ. */
+    /** ThÃªm hoáº·c cá»™ng dá»“n sá»‘ lÆ°á»£ng vÃ o giá». */
     public void addItem(Snack snack, int quantity) {
         for (CartItem item : items) {
             if (item.snack.snackId.equals(snack.snackId)) {
@@ -51,7 +51,7 @@ public class CineCartManager {
         items.add(new CartItem(snack, quantity));
     }
 
-    /** Cập nhật số lượng tuyệt đối. Nếu qty <= 0 → xoá item. */
+    /** Cáº­p nháº­t sá»‘ lÆ°á»£ng tuyá»‡t Ä‘á»‘i. Náº¿u qty <= 0 â†’ xoÃ¡ item. */
     public void updateQuantity(String snackId, int quantity) {
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).snack.snackId.equals(snackId)) {

@@ -1,27 +1,47 @@
 package com.example.cinemabookingapp.ui.features.booking;
 
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.content.Intent;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.os.Bundle;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.widget.ImageButton;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.widget.TextView;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.widget.Toast;
 
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.example.cinemabookingapp.data.dto.SeatDTO;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.google.android.material.button.MaterialButton;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.text.SimpleDateFormat;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.ArrayList;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.Date;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.List;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.Locale;
+import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import android.widget.LinearLayout;
 
 public class SeatSelectionActivity extends BaseActivity {
@@ -44,6 +64,7 @@ public class SeatSelectionActivity extends BaseActivity {
 
     private TextView tvMovieTitle, tvTotalPrice, tvSeatCount, tvShowtimeDate;
     private MaterialButton btnContinue;
+    private android.widget.FrameLayout layoutLoading;
 
     private String showtimeId, movieTitle, movieId, posterUrl, cinemaName;
     private double basePrice = 85000;
@@ -65,7 +86,7 @@ public class SeatSelectionActivity extends BaseActivity {
         showtimeStart = getIntent().getLongExtra(EXTRA_SHOWTIME_START, 0);
 
         initViews();
-        loadSeats();
+        checkPendingBooking();
     }
 
     private void initViews() {
@@ -78,12 +99,13 @@ public class SeatSelectionActivity extends BaseActivity {
         llSelectedSeatChips = findViewById(R.id.llSelectedSeatChips);
         scrollSelectedSeats = findViewById(R.id.scrollSelectedSeats);
         dividerBottom = findViewById(R.id.dividerBottom);
+        layoutLoading = findViewById(R.id.layoutLoading);
 
         ImageButton btnBack = findViewById(R.id.btnBack);
 
         if (movieTitle != null) tvMovieTitle.setText(movieTitle);
 
-        // Hiển thị ngày + giờ chiếu
+        // HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ngÃƒÆ’Ã‚Â y + giÃƒÂ¡Ã‚Â»Ã‚Â chiÃƒÂ¡Ã‚ÂºÃ‚Â¿u
         if (showtimeStart > 0) {
             SimpleDateFormat dateFmt = new SimpleDateFormat("dd 'Th'M", new Locale("vi"));
             SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -101,12 +123,18 @@ public class SeatSelectionActivity extends BaseActivity {
             String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
                     ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
                     : "";
-            
+
             boolean isBooked = "booked".equalsIgnoreCase(seat.status);
-            boolean isHeldByOther = "held".equalsIgnoreCase(seat.status) 
-                    && (seat.heldUntil > now) 
+            boolean isHeldByOther = "held".equalsIgnoreCase(seat.status)
+                    && (seat.heldUntil > now)
                     && !currentUserId.equals(seat.heldBy);
-            
+            boolean isLocked = "LOCKED".equalsIgnoreCase(seat.status)
+                    || "LOCKED".equalsIgnoreCase(seat.seatType);
+
+            if (isLocked) {
+                Toast.makeText(this, "Ghế đã bị khóa!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (isBooked) {
                 Toast.makeText(this, "Ghế đã được đặt trước!", Toast.LENGTH_SHORT).show();
                 return;
@@ -135,36 +163,58 @@ public class SeatSelectionActivity extends BaseActivity {
                 Toast.makeText(this, "Vui lòng chọn ít nhất 1 ghế!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
+            if (hasEmptySeatInBetween(selected)) {
+                Toast.makeText(this, "Không được đặt vé nếu còn ghế trống ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             btnContinue.setEnabled(false);
-            Toast.makeText(this, "Đang kiểm tra trạng thái ghế...", Toast.LENGTH_SHORT).show();
+            if (layoutLoading != null) layoutLoading.setVisibility(android.view.View.VISIBLE);
 
             List<String> selectedSeatIds = new ArrayList<>();
             for (SeatDTO s : selected) {
                 if (s.seatId != null) selectedSeatIds.add(s.seatId);
             }
 
-            com.example.cinemabookingapp.data.dto.SeatLockRequestDTO lockRequest = 
+            com.example.cinemabookingapp.data.dto.SeatLockRequestDTO lockRequest =
                     new com.example.cinemabookingapp.data.dto.SeatLockRequestDTO(showtimeId, selectedSeatIds);
 
-            com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+            com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi =
                     com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
-                    .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+                            .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
 
             seatApi.lockSeats(lockRequest).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<Void>>() {
                 @Override
                 public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> response) {
                     btnContinue.setEnabled(true);
+                    if (layoutLoading != null) layoutLoading.setVisibility(android.view.View.GONE);
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         goToBookingConfirm(selected);
                     } else {
                         String errMsg = "Ghế đã có người khác chọn hoặc hết hạn khóa ghế. Vui lòng chọn ghế khác!";
-                        if (response.body() != null && response.body().getMessage() != null) {
-                            errMsg = response.body().getMessage();
+                        try {
+                            if (response.errorBody() != null) {
+                                String errorJson = response.errorBody().string();
+                                com.example.cinemabookingapp.data.dto.ApiResponse<?> apiError = 
+                                        new com.google.gson.Gson().fromJson(errorJson, com.example.cinemabookingapp.data.dto.ApiResponse.class);
+                                if (apiError != null && apiError.getMessage() != null) {
+                                    errMsg = apiError.getMessage();
+                                }
+                            }
+                        } catch (Exception ignored) {
+                        }
+
+                        if (response.code() == 404) {
+                            errMsg = "Không thể kết nối đến hệ thống đặt vé. Vui lòng thử lại sau.";
                         } else if (response.code() == 409) {
-                            errMsg = "Xung đột: Ghế đã có người giữ hoặc đã được đặt!";
+                            if (errMsg.equals("Ghế đã có người khác chọn hoặc hết hạn khóa ghế. Vui lòng chọn ghế khác!")) {
+                                errMsg = "Rất tiếc, ghế bạn chọn đã có người giữ. Vui lòng chọn ghế khác!";
+                            }
                         } else if (response.code() == 401 || response.code() == 403) {
-                            errMsg = "Lỗi xác thực: Vui lòng đăng nhập lại!";
+                            errMsg = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+                        } else if (response.code() >= 500) {
+                            errMsg = "Hệ thống đang bận. Vui lòng thử lại sau.";
                         }
                         Toast.makeText(SeatSelectionActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         loadSeats(); // Refresh seat map
@@ -174,7 +224,8 @@ public class SeatSelectionActivity extends BaseActivity {
                 @Override
                 public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, Throwable t) {
                     btnContinue.setEnabled(true);
-                    Toast.makeText(SeatSelectionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    if (layoutLoading != null) layoutLoading.setVisibility(android.view.View.GONE);
+                    Toast.makeText(SeatSelectionActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -182,12 +233,49 @@ public class SeatSelectionActivity extends BaseActivity {
 
     }
 
+    private void checkPendingBooking() {
+        if (showtimeId == null) {
+            loadSeats();
+            return;
+        }
+
+        com.example.cinemabookingapp.data.remote.api.BookingApiService bookingApi =
+                com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
+                        .create(com.example.cinemabookingapp.data.remote.api.BookingApiService.class);
+
+        bookingApi.getPendingBooking(showtimeId).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess() && response.body().getData() != null) {
+                    com.example.cinemabookingapp.data.dto.BookingDTO pendingBooking = response.body().getData();
+                    Toast.makeText(SeatSelectionActivity.this, "Bạn có giao dịch đặt vé chưa hoàn tất. Đang chuyển hướng...", Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(SeatSelectionActivity.this, PaymentInstructionActivity.class);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, pendingBooking.bookingId);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, pendingBooking.paymentCode);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, pendingBooking.total);
+                    intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, pendingBooking.paymentMethod);
+                    intent.putExtra("createdAt", pendingBooking.createdAt);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    loadSeats();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>> call, Throwable t) {
+                loadSeats();
+            }
+        });
+    }
+
     private void loadSeats() {
         if (showtimeId == null) { loadDummySeats(); return; }
 
-        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi =
                 com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
-                .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+                        .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
 
         seatApi.getSeatsByShowtimeId(showtimeId).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>>() {
             @Override
@@ -212,7 +300,7 @@ public class SeatSelectionActivity extends BaseActivity {
 
     private void startRealtimeSeatSync() {
         if (showtimeId == null) return;
-        
+
         if (seatListenerRegistration != null) {
             seatListenerRegistration.remove();
         }
@@ -240,7 +328,7 @@ public class SeatSelectionActivity extends BaseActivity {
                         int maxCol = 1;
                         boolean seatStolen = false;
                         String stolenSeatCode = "";
-                        
+
                         long now = System.currentTimeMillis();
                         String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
                                 ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
@@ -250,12 +338,12 @@ public class SeatSelectionActivity extends BaseActivity {
                             SeatDTO seat = doc.toObject(SeatDTO.class);
                             if (seat != null) {
                                 seat.seatId = doc.getId();
-                                
-                                boolean isAvailable = "available".equalsIgnoreCase(seat.status) 
+
+                                boolean isAvailable = "available".equalsIgnoreCase(seat.status)
                                         || ("held".equalsIgnoreCase(seat.status) && seat.heldUntil < now);
-                                
-                                boolean isHeldByMe = "held".equalsIgnoreCase(seat.status) 
-                                        && (seat.heldUntil >= now) 
+
+                                boolean isHeldByMe = "held".equalsIgnoreCase(seat.status)
+                                        && (seat.heldUntil >= now)
                                         && currentUserId.equals(seat.heldBy);
 
                                 // Check if this seat was selected by me previously
@@ -279,8 +367,8 @@ public class SeatSelectionActivity extends BaseActivity {
                         }
 
                         if (seatStolen) {
-                            Toast.makeText(SeatSelectionActivity.this, 
-                                    "Ghế " + stolenSeatCode + " đã được người khác giữ hoặc đặt trước!", 
+                            Toast.makeText(SeatSelectionActivity.this,
+                                    "Ghế " + stolenSeatCode + " đã được người khác giữ hoặc đặt trước!",
                                     Toast.LENGTH_LONG).show();
                         }
 
@@ -341,13 +429,14 @@ public class SeatSelectionActivity extends BaseActivity {
         double total = 0;
 
         for (SeatDTO s : selected) {
-            total += (s.priceOverride > 0) ? s.priceOverride : basePrice;
+            double price = "VIP".equalsIgnoreCase(s.seatType) ? 75000 : 60000;
+            total += price;
         }
 
         tvTotalPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", total));
         tvSeatCount.setText(selected.size() + " Ghế");
 
-        // Cập nhật chips ghế đã chọn
+        // CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chips ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ chÃƒÂ¡Ã‚Â»Ã‚Ân
         llSelectedSeatChips.removeAllViews();
 
         if (selected.isEmpty()) {
@@ -388,7 +477,8 @@ public class SeatSelectionActivity extends BaseActivity {
         for (SeatDTO s : selected) {
             seatCodes.add(s.seatCode);
             if (s.seatId != null) seatIds.add(s.seatId);
-            total += (s.priceOverride > 0) ? s.priceOverride : basePrice;
+            double price = "VIP".equalsIgnoreCase(s.seatType) ? 75000 : 60000;
+            total += price;
         }
 
         Intent intent = new Intent(this, BookingConfirmActivity.class);
@@ -408,5 +498,72 @@ public class SeatSelectionActivity extends BaseActivity {
         List<SeatDTO> result = new ArrayList<>();
         for (SeatDTO s : seatList) if (s.isSelected) result.add(s);
         return result;
+    }
+
+    private boolean hasEmptySeatInBetween(List<SeatDTO> selected) {
+        java.util.Map<String, List<SeatDTO>> selectedByRow = new java.util.HashMap<>();
+        for (SeatDTO s : selected) {
+            if (s.rowName != null) {
+                if (!selectedByRow.containsKey(s.rowName)) {
+                    selectedByRow.put(s.rowName, new ArrayList<>());
+                }
+                selectedByRow.get(s.rowName).add(s);
+            }
+        }
+
+        java.util.Map<String, List<SeatDTO>> allByRow = new java.util.HashMap<>();
+        for (SeatDTO s : seatList) {
+            if (s.rowName != null) {
+                if (!allByRow.containsKey(s.rowName)) {
+                    allByRow.put(s.rowName, new ArrayList<>());
+                }
+                allByRow.get(s.rowName).add(s);
+            }
+        }
+
+        long now = System.currentTimeMillis();
+
+        for (java.util.Map.Entry<String, List<SeatDTO>> entry : selectedByRow.entrySet()) {
+            String rowName = entry.getKey();
+            List<SeatDTO> rowSelected = entry.getValue();
+            List<SeatDTO> rowAll = allByRow.get(rowName);
+            if (rowAll == null) continue;
+
+            int minCol = Integer.MAX_VALUE;
+            int maxCol = Integer.MIN_VALUE;
+            for (SeatDTO s : rowSelected) {
+                if (true) {
+                    if (s.columnNo < minCol) minCol = s.columnNo;
+                    if (s.columnNo > maxCol) maxCol = s.columnNo;
+                }
+            }
+
+            if (minCol != Integer.MAX_VALUE && maxCol != Integer.MIN_VALUE && maxCol > minCol) {
+                for (SeatDTO seat : rowAll) {
+                    if (true) {
+                        int col = seat.columnNo;
+                        if (col > minCol && col < maxCol) {
+                            boolean isSel = false;
+                            for (SeatDTO sel : rowSelected) {
+                                if (sel.seatId != null && sel.seatId.equals(seat.seatId)) {
+                                    isSel = true;
+                                    break;
+                                }
+                            }
+                            if (!isSel) {
+                                boolean isAvailable = "available".equalsIgnoreCase(seat.status)
+                                        || seat.status == null
+                                        || seat.status.isEmpty()
+                                        || ("held".equalsIgnoreCase(seat.status) && (seat.heldUntil < now));
+                                if (isAvailable) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

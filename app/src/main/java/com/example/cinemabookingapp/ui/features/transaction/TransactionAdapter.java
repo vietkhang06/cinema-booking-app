@@ -204,6 +204,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             itemView.setOnClickListener(v -> {
+                if (isExpired || isCancelled || isUsed) {
+                    android.widget.Toast.makeText(v.getContext(), "Vé này đã dùng, hết hạn hoặc bị hủy", android.widget.Toast.LENGTH_SHORT).show();
+                }
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION && listener != null) {
                     listener.onItemClick(bookings.get(pos));

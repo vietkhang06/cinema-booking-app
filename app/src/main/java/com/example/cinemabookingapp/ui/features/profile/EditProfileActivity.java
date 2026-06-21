@@ -1,6 +1,8 @@
 package com.example.cinemabookingapp.ui.features.profile;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
-import android.app.DatePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,16 +12,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.util.Base64;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.AuthActivity;
 import com.example.cinemabookingapp.di.ServiceProvider;
@@ -33,6 +34,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class EditProfileActivity extends AuthActivity {
 
@@ -51,13 +57,7 @@ public class EditProfileActivity extends AuthActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_edit_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         profileService = ServiceProvider.getInstance().getProfileService();
 
@@ -103,17 +103,35 @@ public class EditProfileActivity extends AuthActivity {
     }
 
     private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        // 1. Tạo ràng buộc: Chỉ cho chọn ngày cách đây tối đa 15 năm về trước
+        Calendar constraintsCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        constraintsCalendar.add(Calendar.YEAR, -15);
+        long maxDateInMillis = constraintsCalendar.getTimeInMillis();
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
-            String date = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
-            birthdateTV.setText(date);
-        }, year, month, day);
-        datePickerDialog.show();
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.before(maxDateInMillis))
+                .build();
+
+        // 2. Khởi tạo MaterialDatePicker và cấu hình chế độ nhập phím trực tiếp
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Chọn ngày sinh")
+                .setCalendarConstraints(constraints)
+                .setSelection(maxDateInMillis)
+                .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+                .build();
+
+        // 3. Lắng nghe sự kiện click nút OK
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String formattedDate = sdf.format(new Date(selection));
+            birthdateTV.setText(formattedDate);
+        });
+
+        // 4. Hiển thị Dialog
+        datePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
     }
+
 
     private void loadUserData() {
         User user = profileService.getCachedProfile();
@@ -129,14 +147,31 @@ public class EditProfileActivity extends AuthActivity {
         } else if ("Nữ".equalsIgnoreCase(user.gender)) {
             rbFemale.setChecked(true);
         }
+        //Kiểm tra có sẵn avatar chưa
+        if (user.avatarUrl != null && user.avatarUrl.startsWith("data:image")) {
+            String base64Content = user.avatarUrl.substring(user.avatarUrl.indexOf(",") + 1);
+            byte[] imageBytes = Base64.decode(base64Content, Base64.DEFAULT);
+            Glide.with(this)
+                    .load(imageBytes)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .circleCrop()
+                    .placeholder(R.drawable.user_solid_full)
+                    .into(profileAvatar);
+        } else {
+            Glide.with(this)
+                    .load(TextUtils.isEmpty(user.avatarUrl) ? R.drawable.user_solid_full : user.avatarUrl)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .circleCrop()
+                    .placeholder(R.drawable.user_solid_full)
+                    .into(profileAvatar);
+        }
 
-        Glide.with(this)
-                .load(TextUtils.isEmpty(user.avatarUrl) ? R.drawable.user_solid_full : user.avatarUrl)
-                .circleCrop()
-                .placeholder(R.drawable.user_solid_full)
-                .into(profileAvatar);
     }
 
+    // ZELIOUS TASK: Thu thập thông tin từ các ô text. 
+    // Đặc biệt, có logic convert ảnh Avatar từ Bitmap sang chuỗi Base64 để lưu thẳng xuống Firestore thay vì dùng Storage, giúp tối ưu băng thông. Sau khi lưu thành công, Update FirebaseAuth Profile nếu có đổi Tên.
     private void saveChanges() {
         String name = usernameInputTV.getText().toString().trim();
         String phone = phoneInputTV.getText().toString().trim();
@@ -148,27 +183,53 @@ public class EditProfileActivity extends AuthActivity {
             return;
         }
 
+        if (!TextUtils.isEmpty(birthDate)) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy", Locale.US);
+                sdf.setLenient(false);
+                Date dateOfBirth = sdf.parse(birthDate);
+                if (dateOfBirth != null) {
+                    Calendar dob = Calendar.getInstance();
+                    dob.setTime(dateOfBirth);
+                    Calendar today = Calendar.getInstance();
+
+                    int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+                    if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+                        age--;
+                    }
+
+                    if (age < 16) {
+                        showToast("Bạn phải từ 16 tuổi trở lên");
+                        return;
+                    }
+                }
+            } catch (ParseException e) {
+                showToast("Ngày sinh không đúng định dạng");
+                return;
+            }
+        }
+
+
         loadingOverlay.setVisibility(View.VISIBLE);
 
         executorService.execute(() -> {
-            // Use a copy to avoid immediate local state change before server confirms
-            User user = profileService.getCachedProfile();
-            if (user == null) {
-                runOnUiThread(() -> {
-                    loadingOverlay.setVisibility(View.GONE);
-                    showToast("Không tìm thấy thông tin người dùng. Vui lòng thử lại sau.");
-                });
-                return;
-            }
-            user.name = name;
-            user.phone = phone;
-            user.birthDate = birthDate;
-            user.gender = gender;
+            User cachedUser = profileService.getCachedProfile();
+            if (cachedUser == null) return;
+
+            User updatedUser = new User();
+            updatedUser.uid = cachedUser.uid;
+            updatedUser.email = cachedUser.email;
+            updatedUser.role = cachedUser.role;
+
+            updatedUser.name = name;
+            updatedUser.phone = phone;
+            updatedUser.birthDate = birthDate;
+            updatedUser.gender = gender;
 
             if (s_profileUri != null) {
                 String uploadedUrl = ServiceProvider.getInstance().getUploadService().uploadImage(s_profileUri);
                 if (uploadedUrl != null) {
-                    user.avatarUrl = uploadedUrl;
+                    updatedUser.avatarUrl = uploadedUrl;
                 } else {
                     android.util.Log.e("EditProfile", "Image upload returned null URL");
                     runOnUiThread(() -> {
@@ -177,10 +238,12 @@ public class EditProfileActivity extends AuthActivity {
                     });
                     return;
                 }
+            } else {
+                updatedUser.avatarUrl = cachedUser.avatarUrl;
             }
 
             runOnUiThread(() -> {
-                profileService.updateUserProfile(user, new ResultCallback<User>() {
+                profileService.updateUserProfile(updatedUser, new ResultCallback<User>() {
                     @Override
                     public void onSuccess(User data) {
                         loadingOverlay.setVisibility(View.GONE);

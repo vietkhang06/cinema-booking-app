@@ -1,56 +1,118 @@
 package com.example.cinemabookingapp.ui.features.cineshop;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.content.Intent;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.graphics.Color;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.os.Bundle;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.os.Handler;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.os.Looper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.view.LayoutInflater;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.view.View;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.view.ViewGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.ImageView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.LinearLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.annotation.NonNull;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.annotation.Nullable;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.fragment.app.Fragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.model.Snack;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cineshop.adapter.CineShopAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cineshop.adapter.CineShopBannerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cineshop.CineCartActivity;
 
 //Zikenic was here
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.dto.CineShopBannerDTO;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.dto.CineShopItemDTO;
-import com.example.cinemabookingapp.utils.CineShopSeeder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.ArrayList;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.Arrays;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.List;
 
 /**
- * CineShopFragment — màn hình "Trang sản phẩm" (Star Shop / Cine Shop).
+ * CineShopFragment Ã¢â‚¬â€ mÃƒÂ n hÃƒÂ¬nh "Trang sản phẩm" (Star Shop / Cine Shop).
  *
- * Giao diện theo phong cách Galaxy Cinema:
- *   • Banner carousel tự động chạy mỗi 3 giây
- *   • 2 tab: SEASONAL / MOVIE
- *   • Danh sách sản phẩm dạng 1 cột (full-width)
- *   • Mỗi item có 2 nút: "MUA NGAY" và "THÊM VÀO GIỎ HÀNG"
+ * Giao diÃ¡Â»â€¡n theo phong cÃƒÂ¡ch Galaxy Cinema:
+ *   Ã¢â‚¬Â¢ Banner carousel tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng chÃ¡ÂºÂ¡y mÃ¡Â»â€”i 3 giÃƒÂ¢y
+ *   Ã¢â‚¬Â¢ 2 tab: SEASONAL / MOVIE
+ *   Ã¢â‚¬Â¢ Danh sÃƒÂ¡ch sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m dÃ¡ÂºÂ¡ng 1 cÃ¡Â»â„¢t (full-width)
+ *   Ã¢â‚¬Â¢ MÃ¡Â»â€”i item cÃƒÂ³ 2 nÃƒÂºt: "MUA NGAY" vÃƒÂ  "THÊM VÀO GIỎ HÀNG"
  *
- * Dữ liệu hiện dùng mock. Khi Firebase sẵn sàng, gọi SnackRepository qua UseCase.
+ * DÃ¡Â»Â¯ liÃ¡Â»â€¡u hiÃ¡Â»â€¡n dÃƒÂ¹ng mock. Khi Firebase sÃ¡ÂºÂµn sÃƒÂ ng, gÃ¡Â»Âi SnackRepository qua UseCase.
  */
 public class CineShopFragment extends Fragment {
 
-    // ── Views ────────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Views Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     private ViewPager2 bannerPager;
     private LinearLayout bannerDots;
     private TextView tabSeasonal, tabMovie;
@@ -58,29 +120,32 @@ public class CineShopFragment extends Fragment {
     private ImageView btnCart;
     private android.widget.ProgressBar loadingProgress;
     private TextView tvEmptyState;
+    private LinearLayout layoutLoginRequired;
+    private com.google.android.material.button.MaterialButton btnLoginRequired;
+    private androidx.core.widget.NestedScrollView scrollContent;
 
-    // ── Adapters ─────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Adapters Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     private CineShopAdapter productAdapter;
     private CineShopBannerAdapter bannerAdapter;
 
-    // ── Data ─────────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Data Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     private final List<Snack> allProducts = new ArrayList<>();
     private final List<View> dotViews     = new ArrayList<>();
 
-    // ── Banner auto-scroll ────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Banner auto-scroll Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     private final Handler bannerHandler = new Handler(Looper.getMainLooper());
     private Runnable bannerRunnable;
 
-    // ── Tab state ─────────────────────────────────────────────────────────────
-    /** SEASONAL → {"CAT_COMBO", "CAT_POPCORN"}; MOVIE → {"CAT_DRINK", "CAT_SNACK"} */
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Tab state Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+    /** SEASONAL Ã¢â€ â€™ {"CAT_COMBO", "CAT_POPCORN"}; MOVIE Ã¢â€ â€™ {"CAT_DRINK", "CAT_SNACK"} */
     private static final String TAB_SEASONAL = "seasonal";
     private static final String TAB_MOVIE    = "movie";
     private String currentTab = TAB_SEASONAL;
 
-    // ── Cart total (hiển thị icon giỏ hàng) ──────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Cart total (hiÃ¡Â»Æ’n thÃ¡Â»â€¹ icon giÃ¡Â»Â hÃƒÂ ng) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     private int cartItemCount = 0;
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Lifecycle Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     @Nullable
     @Override
@@ -89,14 +154,13 @@ public class CineShopFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cine_shop, container, false);
 
-        // Kích hoạt Seeder khởi tạo dữ liệu mẫu nếu Firestore trống
+        // KÃƒÂ­ch hoÃ¡ÂºÂ¡t Seeder khÃ¡Â»Å¸i tÃ¡ÂºÂ¡o dÃ¡Â»Â¯ liÃ¡Â»â€¡u mÃ¡ÂºÂ«u nÃ¡ÂºÂ¿u Firestore trÃ¡Â»â€˜ng
         CineShopSeeder.seedIfNeeded();
 
         bindViews(view);
         setupBanner();
         setupTabs();
         setupRecyclerView();
-        loadCineShopItems();
 
         return view;
     }
@@ -104,7 +168,31 @@ public class CineShopFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        startBannerAutoScroll();
+        checkLoginState();
+    }
+
+    // ZELIOUS: Logic kiÃ¡Â»Æ’m tra trÃ¡ÂºÂ¡ng thÃƒÂ¡i Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p Ã„â€˜Ã¡Â»Æ’ bÃ¡ÂºÂ£o vÃ¡Â»â€¡ tab khÃ¡Â»Âi Guest.
+    // HÃƒÂ m Ã„â€˜Ã†Â°Ã¡Â»Â£c gÃ¡Â»Âi mÃ¡Â»â€”i khi Fragment Ã„â€˜Ã†Â°Ã¡Â»Â£c mÃ¡Â»Å¸ lÃƒÂªn (onResume). DÃƒÂ¹ng FirebaseAuth.getInstance().getCurrentUser() != null Ã„â€˜Ã¡Â»Æ’ kiÃ¡Â»Æ’m tra.
+    // NÃ¡ÂºÂ¿u chÃ†Â°a Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p -> Ã¡ÂºÂ©n giao diÃ¡Â»â€¡n (scrollContent.setVisibility(View.GONE)), hiÃ¡Â»â€¡n layoutLoginRequired (bao gÃ¡Â»â€œm nÃƒÂºt YÃƒÂªu cÃ¡ÂºÂ§u Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p).
+    private void checkLoginState() {
+        boolean isLoggedIn = FirebaseAuth.getInstance().getCurrentUser() != null;
+        if (isLoggedIn) {
+            layoutLoginRequired.setVisibility(View.GONE);
+            scrollContent.setVisibility(View.VISIBLE);
+            
+            // Load data if empty
+            if (bannerAdapter != null && bannerAdapter.getItemCount() == 0) {
+                fetchBannersFromDatabase();
+            }
+            if (allProducts.isEmpty()) {
+                loadCineShopItems();
+            }
+            startBannerAutoScroll();
+        } else {
+            layoutLoginRequired.setVisibility(View.VISIBLE);
+            scrollContent.setVisibility(View.GONE);
+            stopBannerAutoScroll();
+        }
     }
 
     @Override
@@ -113,7 +201,7 @@ public class CineShopFragment extends Fragment {
         stopBannerAutoScroll();
     }
 
-    // ── Bind views ───────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Bind views Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     private void bindViews(View view) {
         bannerPager  = view.findViewById(R.id.bannerPager);
@@ -124,12 +212,26 @@ public class CineShopFragment extends Fragment {
         btnCart      = view.findViewById(R.id.btnCart);
         loadingProgress = view.findViewById(R.id.loadingProgress);
         tvEmptyState    = view.findViewById(R.id.tvEmptyState);
+        layoutLoginRequired = view.findViewById(R.id.layoutLoginRequired);
+        btnLoginRequired = view.findViewById(R.id.btnLoginRequired);
+        scrollContent   = view.findViewById(R.id.scrollContent);
 
-        btnCart.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), CineCartActivity.class)));
+        btnCart.setOnClickListener(v -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                startActivity(new Intent(requireContext(), CineCartActivity.class));
+            } else {
+                AppNavigator.goToLoginForBooking(requireActivity());
+            }
+        });
+
+        if (btnLoginRequired != null) {
+            btnLoginRequired.setOnClickListener(v -> 
+                    AppNavigator.goToLoginForBooking(requireActivity())
+            );
+        }
     }
 
-    // ── Banner ───────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Banner Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     //Zikenic was here
     private void setupBanner() {
         bannerAdapter = new CineShopBannerAdapter();
@@ -141,9 +243,6 @@ public class CineShopFragment extends Fragment {
                 updateDots(position);
             }
         });
-
-        // Call API to fetch banners
-        fetchBannersFromDatabase();
     }
 
     private void fetchBannersFromDatabase() {
@@ -158,7 +257,7 @@ public class CineShopFragment extends Fragment {
                         }
                     }
 
-                    // Sắp xếp banner theo sortOrder tăng dần trên client
+                    // SÃ¡ÂºÂ¯p xÃ¡ÂºÂ¿p banner theo sortOrder tÃ„Æ’ng dÃ¡ÂºÂ§n trÃƒÂªn client
                     activeBanners.sort((b1, b2) -> Integer.compare(b1.sortOrder, b2.sortOrder));
 
                     List<String> bannerUrls = new ArrayList<>();
@@ -240,7 +339,7 @@ public class CineShopFragment extends Fragment {
         }
     }
 
-    // ── Tabs ─────────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Tabs Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     private void setupTabs() {
         tabSeasonal.setOnClickListener(v -> selectTab(TAB_SEASONAL));
@@ -274,7 +373,7 @@ public class CineShopFragment extends Fragment {
                 : Color.WHITE);
     }
 
-    // ── RecyclerView ─────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ RecyclerView Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     private void setupRecyclerView() {
         productAdapter = new CineShopAdapter();
@@ -285,13 +384,13 @@ public class CineShopFragment extends Fragment {
         productAdapter.setOnCartChangedListener(
                 totalCount -> {
                     cartItemCount = totalCount;
-                    // TODO: hiển thị badge số lượng trên icon giỏ hàng nếu cần
+                    // TODO: hiÃ¡Â»Æ’n thÃ¡Â»â€¹ badge sÃ¡Â»â€˜ lÃ†Â°Ã¡Â»Â£ng trÃƒÂªn icon giÃ¡Â»Â hÃƒÂ ng nÃ¡ÂºÂ¿u cÃ¡ÂºÂ§n
                 });
     }
 
     // cart badge count
 
-    // ── Data ─────────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Data Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     private void loadCineShopItems() {
         if (loadingProgress != null) {
@@ -307,7 +406,7 @@ public class CineShopFragment extends Fragment {
                     if (loadingProgress != null) {
                         loadingProgress.setVisibility(View.GONE);
                     }
-                    
+
                     List<CineShopItemDTO> activeItems = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         CineShopItemDTO dto = doc.toObject(CineShopItemDTO.class);
@@ -316,7 +415,7 @@ public class CineShopFragment extends Fragment {
                         }
                     }
 
-                    // Sắp xếp sản phẩm theo sortOrder tăng dần trên client
+                    // SÃ¡ÂºÂ¯p xÃ¡ÂºÂ¿p sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m theo sortOrder tÃ„Æ’ng dÃ¡ÂºÂ§n trÃƒÂªn client
                     activeItems.sort((i1, i2) -> Integer.compare(i1.sortOrder, i2.sortOrder));
 
                     allProducts.clear();
@@ -373,7 +472,7 @@ public class CineShopFragment extends Fragment {
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;

@@ -73,7 +73,7 @@
             android:letterSpacing="0.05"
             android:fontFamily="sans-serif-medium" />
 
-        <!-- Button: THÊM VÀO GIỎ HÀNG -->
+        <!-- Button: THÃŠM VÃ€O GIá»Ž HÃ€NG -->
         <TextView
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"

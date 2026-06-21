@@ -45,7 +45,7 @@ public class MovieDetailScheduleCatalog {
         List<String> sortedDateKeys = new ArrayList<>();
         long now = System.currentTimeMillis();
 
-        // Tính đầu ngày hôm nay (để không bỏ lỡ showtime hôm nay đã qua giờ chiếu)
+        // TÃ­nh Ä‘áº§u ngÃ y hÃ´m nay (Ä‘á»ƒ khÃ´ng bá» lá»¡ showtime hÃ´m nay Ä‘Ã£ qua giá» chiáº¿u)
         Calendar startOfTodayCal = Calendar.getInstance();
         startOfTodayCal.set(Calendar.HOUR_OF_DAY, 0);
         startOfTodayCal.set(Calendar.MINUTE, 0);
@@ -54,12 +54,8 @@ public class MovieDetailScheduleCatalog {
         long startOfToday = startOfTodayCal.getTimeInMillis();
 
         for (Showtime s : showtimes) {
-            // Chỉ bỏ lỡ showtime đã qua ngày (không phải qua giờ — để show tất cả suất hôm nay)
+            // Chá»‰ bá» lá»¡ showtime Ä‘Ã£ qua ngÃ y (khÃ´ng pháº£i qua giá» â€” Ä‘á»ƒ show táº¥t cáº£ suáº¥t hÃ´m nay)
             if (s.deleted || s.startAt < startOfToday || !isBookableStatus(s.status)) {
-                continue;
-            }
-            // Nghiệp vụ Lên lịch: Chỉ cho phép hiển thị nếu đã đến giờ chiếu
-            if (Boolean.TRUE.equals(s.isScheduled) && now < s.startAt) {
                 continue;
             }
             Date showDate = new Date(s.startAt);
@@ -194,7 +190,7 @@ public class MovieDetailScheduleCatalog {
     }
 
     private boolean isBookableStatus(String status) {
-        // null hoặc rỗng → coi là bookable (Admin có thể chưa set)
+        // null hoáº·c rá»—ng â†’ coi lÃ  bookable (Admin cÃ³ thá»ƒ chÆ°a set)
         if (status == null || status.trim().isEmpty()) {
             return true;
         }

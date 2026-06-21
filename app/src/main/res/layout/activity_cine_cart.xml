@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- ── HEADER ── -->
+    <!-- â”€â”€ HEADER â”€â”€ -->
     <LinearLayout
         android:id="@+id/cartHeader"
         android:layout_width="0dp"
@@ -39,7 +39,7 @@
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
-    <!-- ── HEADER DIVIDER ── -->
+    <!-- â”€â”€ HEADER DIVIDER â”€â”€ -->
     <View
         android:id="@+id/cartHeaderDivider"
         android:layout_width="0dp"
@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ── BOTTOM DIVIDER (above bottom bar) ── -->
+    <!-- â”€â”€ BOTTOM DIVIDER (above bottom bar) â”€â”€ -->
     <View
         android:id="@+id/cartBottomDivider"
         android:layout_width="0dp"
@@ -59,7 +59,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ── BOTTOM BAR ── -->
+    <!-- â”€â”€ BOTTOM BAR â”€â”€ -->
     <LinearLayout
         android:id="@+id/cartBottomBar"
         android:layout_width="0dp"
@@ -107,7 +107,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- ── EMPTY STATE ── -->
+    <!-- â”€â”€ EMPTY STATE â”€â”€ -->
     <LinearLayout
         android:id="@+id/layoutEmptyCart"
         android:layout_width="0dp"
@@ -123,7 +123,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🛒"
+            android:text="ðŸ›’"
             android:textSize="48sp" />
 
         <TextView
@@ -135,7 +135,7 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <!-- ── CART RECYCLERVIEW ── -->
+    <!-- â”€â”€ CART RECYCLERVIEW â”€â”€ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCartItems"
         android:layout_width="0dp"

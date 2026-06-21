@@ -1,62 +1,440 @@
 package com.example.cinemabookingapp.ui.features.movie;
 
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.content.Intent;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.content.res.ColorStateList;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.graphics.Typeface;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.media.Image;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.net.Uri;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.util.TypedValue;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.view.Gravity;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.view.View;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.ArrayAdapter;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.graphics.Color;
 
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.EditText;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.widget.RatingBar;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.repository.ReviewRepository;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.adapter.ReviewAdapter;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Review;
 
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.R;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Movie;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMovieByIdUseCase;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Cinema;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Showtime;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.CinemaSection;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.DateOption;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.ShowtimeGroup;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.booking.SeatSelectionActivity;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButton;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.google.android.material.card.MaterialCardView;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import java.text.SimpleDateFormat;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import java.util.HashMap;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import java.util.List;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import java.util.Locale;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import java.util.Map;
+import androidx.annotation.NonNull;
+import android.widget.Button;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
+import androidx.annotation.NonNull;
+import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 public class MovieDetailActivity extends BaseActivity {
@@ -107,21 +485,17 @@ public class MovieDetailActivity extends BaseActivity {
     private LinearLayout layoutInfoSection;
     private LinearLayout layoutReviewSection;
 
-    private RecyclerView rvReviews;
-    private EditText etComment;
-    private RatingBar ratingBar;
-    private MaterialButton btnSendReview;
-    private ReviewAdapter reviewAdapter;
-    private ReviewRepository reviewRepository;
-    private Review parentReviewToReply = null;
-    private com.example.cinemabookingapp.domain.repository.BookingRepository bookingRepository;
-
     private MaterialAutoCompleteTextView actvCity;
     private MaterialAutoCompleteTextView actvCinema;
     private LinearLayout layoutDateChips;
     private LinearLayout layoutCinemaGroups;
+    private LinearLayout layoutEmptySchedule;
 
     private MaterialButton btnBookTickets;
+
+    private androidx.recyclerview.widget.RecyclerView rvReviews;
+    private EditText etCommentInput;
+    private Button btnPostComment;
 
     private MovieDetailScheduleCatalog scheduleCatalog;
     private GetMovieByIdUseCase getMovieByIdUseCase;
@@ -139,6 +513,31 @@ public class MovieDetailActivity extends BaseActivity {
     private String selectedDateLabel = "";
     private String selectedDateText = "";
     private String selectedShowtime = "";
+    /** LÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“i tÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£ng suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đặt vé ngay" */
+    private MovieDetailScheduleCatalog.ShowtimeItem selectedShowtimeItem = null;
+
+    private AddReviewUseCase addReviewUseCase;
+    private GetReviewsByMovieUseCase getReviewsByMovieUseCase;
+    private com.example.cinemabookingapp.ui.features.movie.adapter.ReviewAdapter reviewAdapter;
+
+    private com.example.cinemabookingapp.domain.repository.ReviewRepository reviewRepository;
+    private com.google.firebase.firestore.DocumentSnapshot lastReviewVisible = null;
+    private boolean isReviewLoading = false;
+    private boolean isReviewsLoaded = false;
+    private boolean hasMoreReviews = true;
+    private com.google.android.material.button.MaterialButton btnRateMovie;
+    private TextView tvLoadMoreComments;
+    private TextView tvAverageRatingReview;
+    private Review userReview; 
+    private com.google.firebase.firestore.ListenerRegistration movieListener;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (movieListener != null) {
+            movieListener.remove();
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,13 +553,11 @@ public class MovieDetailActivity extends BaseActivity {
         renderCinemaGroups();
         setupTabs();
         setupActions();
-        setupReviews();
         loadMovieFromFirestore();
     }
 
     private void initViews() {
-        scrollMovieDetail = findViewById(R.id.scrollMovieDetail);
-
+        // scrollMovieDetail (ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ xÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³a ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng)
         imgHeroBackdrop = findViewById(R.id.imgHeroBackdrop);
         imgPosterThumb = findViewById(R.id.imgPosterThumb);
 
@@ -179,33 +576,86 @@ public class MovieDetailActivity extends BaseActivity {
         toggleSections = findViewById(R.id.toggleSections);
         btnTabSchedule = findViewById(R.id.btnTabSchedule);
         btnTabInfo = findViewById(R.id.btnTabInfo);
-        btnTabReview = findViewById(R.id.btnTabReview);
+        
 
         layoutScheduleSection = findViewById(R.id.layoutScheduleSection);
         layoutInfoSection = findViewById(R.id.layoutInfoSection);
-        layoutReviewSection = findViewById(R.id.layoutReviewSection);
-
-        rvReviews = findViewById(R.id.rvReviews);
-        etComment = findViewById(R.id.etComment);
-        ratingBar = findViewById(R.id.ratingBar);
-        btnSendReview = findViewById(R.id.btnSendReview);
+        
 
         actvCity = findViewById(R.id.actvCity);
         actvCinema = findViewById(R.id.actvCinema);
         layoutDateChips = findViewById(R.id.layoutDateChips);
         layoutCinemaGroups = findViewById(R.id.layoutCinemaGroups);
+        layoutEmptySchedule = findViewById(R.id.layoutEmptySchedule);
 
         btnBookTickets = findViewById(R.id.btnBookTickets);
         btnBookTickets.setVisibility(View.GONE);
+
+        btnRateMovie = findViewById(R.id.btnRateMovie);
+        tvLoadMoreComments = findViewById(R.id.tvLoadMoreComments);
+        tvAverageRatingReview = findViewById(R.id.tvAverageRatingReview);
+
+        rvReviews = findViewById(R.id.rvReviews);
+        rvReviews.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+        reviewAdapter = new com.example.cinemabookingapp.ui.features.movie.adapter.ReviewAdapter();
+        rvReviews.setAdapter(reviewAdapter);
+
+        etCommentInput = findViewById(R.id.etCommentInput);
+        btnPostComment = findViewById(R.id.btnPostComment);
     }
-    //Zikenic was here _ commit test
+
     private void initUseCase() {
         MovieRepository movieRepository = new MovieRepositoryImpl(new MovieRemoteDataSource());
         getMovieByIdUseCase = new GetMovieByIdUseCase(movieRepository);
         showtimeRepository = new ShowtimeRepositoryImpl(true);
         cinemaRepository = new CinemaRepositoryImpl();
-        reviewRepository = new ReviewRepositoryImpl();
-        bookingRepository = new com.example.cinemabookingapp.data.repository.BookingRepositoryImpl();
+        addReviewUseCase = appContainer.getAddReviewUseCase();
+        getReviewsByMovieUseCase = appContainer.getGetReviewsByMovieUseCase();
+        reviewRepository = new com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl();
+
+        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        reviewAdapter.setListener(new com.example.cinemabookingapp.ui.features.movie.adapter.ReviewAdapter.ReviewActionListener() {
+            @Override
+            public void onLikeClick(Review review, int position) {
+                if (currentUid == null) {
+                    showLoginRequiredDialog("Đăng nhập để thực hiện chức năng này");
+                    return;
+                }
+                reviewRepository.toggleLike(review.reviewId, currentUid, new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review data) {
+                        review.likedBy = data.likedBy;
+                        review.dislikedBy = data.dislikedBy;
+                        reviewAdapter.notifyItemChanged(position);
+                    }
+                    @Override
+                    public void onError(String message) {}
+                });
+            }
+
+            @Override
+            public void onDislikeClick(Review review, int position) {
+                if (currentUid == null) {
+                    showLoginRequiredDialog("Đăng nhập để thực hiện chức năng này");
+                    return;
+                }
+                reviewRepository.toggleDislike(review.reviewId, currentUid, new ResultCallback<Review>() {
+                    @Override
+                    public void onSuccess(Review data) {
+                        review.likedBy = data.likedBy;
+                        review.dislikedBy = data.dislikedBy;
+                        reviewAdapter.notifyItemChanged(position);
+                    }
+                    @Override
+                    public void onError(String message) {}
+                });
+            }
+
+            @Override
+            public void onReplyClick(Review review, int position) {
+                showToast("Tính năng trả lời đang được phát triển");
+            }
+        }, currentUid);
     }
 
     private void initScheduleCatalog() {
@@ -229,10 +679,10 @@ public class MovieDetailActivity extends BaseActivity {
 
         tvMovieTitle.setText(title);
         tvMovieTagline.setText(tagline);
-        tvRating.setText("★ " + rating);
+        tvRating.setText(String.format("★ %s", rating));
         tvAgeRating.setText(ageRating);
-        tvDuration.setText("⏱ " + duration);
-        tvReleaseDate.setText("📅 " + releaseDate);
+        tvDuration.setText(String.format("⏱ %s", duration));
+        tvReleaseDate.setText(String.format("📅 %s", releaseDate));
         tvSynopsis.setText(description);
         selectedMoviePosterUrl = posterUrl;
         loadImage(posterUrl);
@@ -252,13 +702,29 @@ public class MovieDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(String errorMessage) {
-                // giữ fallback từ intent
+            public void onError(@NonNull String errorMessage) {
+                // giÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯ fallback tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« intent
             }
         });
 
+        if (movieListener != null) {
+            movieListener.remove();
+        }
+        movieListener = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("movies")
+                .document(selectedMovieId)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null || snapshot == null || !snapshot.exists()) return;
+                    Double ratingAvg = snapshot.getDouble("ratingAvg");
+                    if (ratingAvg != null) {
+                        tvRating.setText(String.format(java.util.Locale.getDefault(), "★ %.1f", ratingAvg));
+                        if (tvAverageRatingReview != null) {
+                            tvAverageRatingReview.setText(String.format(java.util.Locale.getDefault(), "%.1f", ratingAvg));
+                        }
+                    }
+                });
+
         loadShowtimesFromFirestore();
-        loadReviews();
     }
 
     private void loadShowtimesFromFirestore() {
@@ -268,7 +734,7 @@ public class MovieDetailActivity extends BaseActivity {
 
         cinemaRepository.getAllCinemas(new ResultCallback<List<Cinema>>() {
             @Override
-            public void onSuccess(List<Cinema> cinemas) {
+            public void onSuccess(@NonNull List<Cinema> cinemas) {
                 cinemaMap.clear();
                 for (Cinema c : cinemas) {
                     if (c.cinemaId != null) cinemaMap.put(c.cinemaId, c);
@@ -278,8 +744,8 @@ public class MovieDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(String message) {
-                // Ngay cả khi cinema load lỗi, vẫn tiếp tục load showtime với cinemaMap hiện tại
+            public void onError(@NonNull String message) {
+                // Ngay cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ khi cinema load lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi, vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â«n tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c load showtime vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºi cinemaMap hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i
                 Log.w("MovieDetail", "Error loading cinemas (will proceed anyway): " + message);
                 loadShowtimesForMovie();
             }
@@ -289,11 +755,11 @@ public class MovieDetailActivity extends BaseActivity {
     private void loadShowtimesForMovie() {
         showtimeRepository.getShowtimesByMovieId(selectedMovieId, new ResultCallback<List<Showtime>>() {
             @Override
-            public void onSuccess(List<Showtime> showtimes) {
+            public void onSuccess(@NonNull List<Showtime> showtimes) {
                 Log.d("MovieDetail", "Showtimes loaded: " + showtimes.size() + " for movieId=" + selectedMovieId);
 
-                // Nếu cinemaMap rỗng nhưng có showtimes, tạo placeholder Cinema từ cinemaId
-                // Đảm bảo UI không bị trống hoàn toàn dù cinema API thất bại
+                // NÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u cinemaMap rÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âng nhÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ showtimes, tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡o placeholder Cinema tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« cinemaId
+                // ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£m bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£o UI khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ trÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ng hoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n toÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ cinema API thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i
                 if (cinemaMap.isEmpty() && !showtimes.isEmpty()) {
                     for (Showtime s : showtimes) {
                         if (s.cinemaId != null && !cinemaMap.containsKey(s.cinemaId)) {
@@ -327,6 +793,9 @@ public class MovieDetailActivity extends BaseActivity {
                         if (!cinemasInCity.isEmpty()) {
                             selectedCinema = cinemasInCity.get(0);
                             scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
+                            selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
+                            selectedShowtimeItem = getFirstShowtimeItem(selectedCity, selectedCinema, selectedRoomType);
+                            selectedShowtime = selectedShowtimeItem != null ? selectedShowtimeItem.timeText : "";
                         }
                     }
                 } else {
@@ -344,8 +813,156 @@ public class MovieDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(@NonNull String message) {
                 Log.e("MovieDetail", "Error loading showtimes: " + message);
+            }
+        });
+    }
+
+    // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i danh sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ch bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh luÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n (gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi trong loadMovieFromFirestore)
+    private void loadReviews() {
+        lastReviewVisible = null;
+        isReviewLoading = false;
+        hasMoreReviews = true;
+        reviewAdapter.setReviews(new java.util.ArrayList<>());
+        tvLoadMoreComments.setVisibility(View.GONE);
+        
+        // Fetch user's rating first
+        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (currentUid != null && !TextUtils.isEmpty(selectedMovieId)) {
+            reviewRepository.getUserReviewForMovie(currentUid, selectedMovieId, new ResultCallback<Review>() {
+                @Override
+                public void onSuccess(Review data) {
+                    userReview = data;
+                    if (userReview != null && userReview.rating != null && userReview.rating > 0) {
+                        btnRateMovie.setText("Cập nhật đánh giá");
+                    } else {
+                        btnRateMovie.setText("Đánh giá phim");
+                    }
+                }
+                @Override
+                public void onError(String message) {}
+            });
+        }
+        
+        loadReviewsPaged();
+    }
+    
+    private void loadReviewsPaged() {
+        if (isReviewLoading || !hasMoreReviews || TextUtils.isEmpty(selectedMovieId)) return;
+        isReviewLoading = true;
+        
+        reviewRepository.getReviewsByMovieIdPaged(selectedMovieId, lastReviewVisible, 10, new ResultCallback<android.util.Pair<List<Review>, com.google.firebase.firestore.DocumentSnapshot>>() {
+            @Override
+            public void onSuccess(android.util.Pair<List<Review>, com.google.firebase.firestore.DocumentSnapshot> data) {
+                isReviewLoading = false;
+                List<Review> list = data.first;
+                if (list != null && !list.isEmpty()) {
+                    reviewAdapter.addReviews(list);
+                    lastReviewVisible = data.second;
+                    hasMoreReviews = (lastReviewVisible != null);
+                    tvLoadMoreComments.setVisibility(hasMoreReviews ? View.VISIBLE : View.GONE);
+                } else {
+                    hasMoreReviews = false;
+                    tvLoadMoreComments.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                isReviewLoading = false;
+                Log.e("Review", message);
+            }
+        });
+    }
+
+    private void showRatingBottomSheet() {
+        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showLoginRequiredDialog("Đăng nhập để có thể để lại đánh giá");
+            return;
+        }
+
+        com.google.android.material.bottomsheet.BottomSheetDialog bottomSheetDialog = new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_rating, null);
+        bottomSheetDialog.setContentView(view);
+
+        android.widget.RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+        Button btnSubmitRating = view.findViewById(R.id.btnSubmitRating);
+
+        if (userReview != null && userReview.rating != null && userReview.rating > 0) {
+            ratingBar.setRating(userReview.rating);
+        }
+
+        btnSubmitRating.setOnClickListener(v -> {
+            float rating = ratingBar.getRating();
+            if (rating == 0) {
+                showToast("Vui lòng chọn mức đánh giá!");
+                return;
+            }
+            submitRating(rating);
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.show();
+    }
+    
+    private void submitRating(float rating) {
+        String content = ""; // ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng kÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨m chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯ (hoÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·c cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ kÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨m nÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u muÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“n gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢p chung)
+        
+        if (userReview != null) {
+            // Update exist
+            int oldRating = userReview.rating != null ? userReview.rating : 0;
+            userReview.rating = Math.round(rating);
+            // using reviewRepository.updateReview
+            com.example.cinemabookingapp.domain.repository.ReviewRepository repo = new com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl();
+            repo.updateReview(userReview, new ResultCallback<Review>() {
+                @Override
+                public void onSuccess(Review data) {
+                    showToast("Cập nhật đánh giá thành công!");
+                    btnRateMovie.setText("Cập nhật đánh giá");
+                    isReviewsLoaded = false;
+                    loadReviews(); 
+                }
+                @Override
+                public void onError(String message) {
+                    showToast("Lỗi cập nhật đánh giá");
+                }
+            });
+        } else {
+            // Add new
+            postComment(content, Math.round(rating));
+        }
+    }
+
+    private void postComment(String content, int rating) {
+        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showLoginRequiredDialog("Đăng nhập để có thể để lại đánh giá");
+            return;
+        }
+
+        Review newReview = new Review();
+        newReview.movieId = selectedMovieId;
+        newReview.userId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        newReview.content = content;
+        newReview.rating = rating;
+        newReview.movieTitleSnapshot = tvMovieTitle.getText().toString();
+
+        addReviewUseCase.execute(newReview, new ResultCallback<Review>() {
+            @Override
+            public void onSuccess(Review data) {
+                if (rating > 0) {
+                    showToast("Đã gửi đánh giá!");
+                    btnRateMovie.setText("Cập nhật đánh giá");
+                } else {
+                    showToast("Đã đăng bình luận!");
+                    etCommentInput.setText("");
+                }
+                isReviewsLoaded = false;
+                loadReviews(); // TÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i danh sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ch
+            }
+            @Override
+            public void onError(String message) {
+                showToast(message);
             }
         });
     }
@@ -360,12 +977,15 @@ public class MovieDetailActivity extends BaseActivity {
 
         tvMovieTitle.setText(safe(movie.title, tvMovieTitle.getText().toString()));
         tvMovieTagline.setText(buildTagline(movie));
-        tvRating.setText("★ " + formatRating(movie.ratingAvg));
+        tvRating.setText(String.format("★ %s", formatRating(movie.ratingAvg)));
+        if (tvAverageRatingReview != null) {
+            tvAverageRatingReview.setText(String.format("★ %s", formatRating(movie.ratingAvg)));
+        }
         tvAgeRating.setText(safe(movie.ageRating, "T13"));
-        tvDuration.setText("⏱ " + movie.durationMinutes + " phút");
+        tvDuration.setText(String.format("⏱ %d phút", movie.durationMinutes));
 
         if (movie.releaseDate > 0) {
-            tvReleaseDate.setText("📅 " + formatReleaseDate(movie.releaseDate));
+            tvReleaseDate.setText(String.format("📅 %s", formatReleaseDate(movie.releaseDate)));
         }
 
         tvSynopsis.setText(safe(movie.description, tvSynopsis.getText().toString()));
@@ -404,22 +1024,25 @@ public class MovieDetailActivity extends BaseActivity {
         actvCinema.setOnClickListener(v -> actvCinema.showDropDown());
 
         actvCity.setOnItemClickListener((parent, view, position, id) -> {
-            String city = scheduleCatalog.getCityNames().get(position);
-            onCitySelected(city);
+            List<String> cities = scheduleCatalog.getCityNames();
+            if (cities != null && position >= 0 && position < cities.size()) {
+                String city = cities.get(position);
+                onCitySelected(city);
+            }
         });
 
         actvCinema.setOnItemClickListener((parent, view, position, id) -> {
             List<String> cinemas = scheduleCatalog.getCinemaNames(selectedCity);
-            if (position >= 0 && position < cinemas.size()) {
+            if (cinemas != null && position >= 0 && position < cinemas.size()) {
                 onCinemaSelected(cinemas.get(position));
             }
         });
     }
 
     private ArrayAdapter<String> createCenteredAdapter(List<String> values) {
-        return new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values) {
+        return new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values) {
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView tv = (TextView) super.getView(position, convertView, parent);
                 tv.setGravity(Gravity.CENTER);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -427,7 +1050,7 @@ public class MovieDetailActivity extends BaseActivity {
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
                 tv.setGravity(Gravity.CENTER);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -438,11 +1061,13 @@ public class MovieDetailActivity extends BaseActivity {
 
     private void onCitySelected(String city) {
         selectedCity = city;
+        selectedShowtimeItem = null; // reset khi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢i thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â nh phÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“
         actvCity.setText(city, false);
 
         selectedCinema = getFirstCinemaName(city);
         selectedRoomType = getFirstRoomType(city, selectedCinema);
-        selectedShowtime = getFirstShowtime(city, selectedCinema, selectedRoomType);
+        selectedShowtimeItem = getFirstShowtimeItem(city, selectedCinema, selectedRoomType);
+        selectedShowtime = selectedShowtimeItem != null ? selectedShowtimeItem.timeText : "";
 
         scheduleCatalog.setExpandedCinema(city, selectedCinema);
 
@@ -454,7 +1079,8 @@ public class MovieDetailActivity extends BaseActivity {
     private void onCinemaSelected(String cinemaName) {
         selectedCinema = cinemaName;
         selectedRoomType = getFirstRoomType(selectedCity, cinemaName);
-        selectedShowtime = getFirstShowtime(selectedCity, cinemaName, selectedRoomType);
+        selectedShowtimeItem = getFirstShowtimeItem(selectedCity, cinemaName, selectedRoomType);
+        selectedShowtime = selectedShowtimeItem != null ? selectedShowtimeItem.timeText : "";
 
         actvCinema.setText(cinemaName, false);
         scheduleCatalog.setExpandedCinema(selectedCity, cinemaName);
@@ -536,6 +1162,7 @@ public class MovieDetailActivity extends BaseActivity {
         }
 
         selectedDateIndex = index;
+        selectedShowtimeItem = null; // reset khi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢i ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y
         DateOption option = dateOptions.get(index);
         selectedDateLabel = option.label;
         selectedDateText = option.dateText;
@@ -550,7 +1177,8 @@ public class MovieDetailActivity extends BaseActivity {
                 selectedCinema = cinemas.get(0);
                 scheduleCatalog.setExpandedCinema(selectedCity, selectedCinema);
                 selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-                selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
+                selectedShowtimeItem = getFirstShowtimeItem(selectedCity, selectedCinema, selectedRoomType);
+                selectedShowtime = selectedShowtimeItem != null ? selectedShowtimeItem.timeText : "";
             } else {
                 selectedCinema = "";
                 selectedRoomType = "";
@@ -573,13 +1201,12 @@ public class MovieDetailActivity extends BaseActivity {
 
         List<CinemaSection> sections = scheduleCatalog.getCinemas(selectedCity);
         if (sections == null || sections.isEmpty()) {
-            TextView empty = new TextView(this);
-            empty.setText("Chưa có dữ liệu rạp cho khu vực này.");
-            empty.setTextColor(Color.parseColor("#555555"));
-            empty.setGravity(Gravity.CENTER);
-            empty.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            layoutCinemaGroups.addView(empty);
+            layoutCinemaGroups.setVisibility(android.view.View.GONE);
+            if (layoutEmptySchedule != null) layoutEmptySchedule.setVisibility(android.view.View.VISIBLE);
             return;
+        } else {
+            layoutCinemaGroups.setVisibility(android.view.View.VISIBLE);
+            if (layoutEmptySchedule != null) layoutEmptySchedule.setVisibility(android.view.View.GONE);
         }
 
         for (CinemaSection section : sections) {
@@ -627,64 +1254,68 @@ public class MovieDetailActivity extends BaseActivity {
             content.setOrientation(LinearLayout.VERTICAL);
             content.setVisibility(expanded ? View.VISIBLE : View.GONE);
 
-            for (ShowtimeGroup group : section.groups) {
-                TextView groupTitle = new TextView(this);
-                LinearLayout.LayoutParams groupParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                groupParams.setMargins(0, dp(14), 0, 0);
-                groupTitle.setLayoutParams(groupParams);
-                groupTitle.setText(group.title);
-                groupTitle.setTextColor(Color.parseColor("#111111"));
-                groupTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
-                groupTitle.setTypeface(groupTitle.getTypeface(), Typeface.BOLD);
+            if (section.groups != null) {
+                for (ShowtimeGroup group : section.groups) {
+                    if (group == null) continue;
+                    TextView groupTitle = new TextView(this);
+                    LinearLayout.LayoutParams groupParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    groupParams.setMargins(0, dp(14), 0, 0);
+                    groupTitle.setLayoutParams(groupParams);
+                    groupTitle.setText(group.title);
+                    groupTitle.setTextColor(Color.parseColor("#111111"));
+                    groupTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+                    groupTitle.setTypeface(groupTitle.getTypeface(), Typeface.BOLD);
 
-                content.addView(groupTitle);
+                    content.addView(groupTitle);
 
-                LinearLayout rows = new LinearLayout(this);
-                rows.setOrientation(LinearLayout.VERTICAL);
-                rows.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                ));
-
-                List<MovieDetailScheduleCatalog.ShowtimeItem> times = group.showtimes;
-                for (int start = 0; start < times.size(); start += 4) {
-                    LinearLayout row = new LinearLayout(this);
-                    row.setOrientation(LinearLayout.HORIZONTAL);
-                    row.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout rows = new LinearLayout(this);
+                    rows.setOrientation(LinearLayout.VERTICAL);
+                    rows.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     ));
 
-                    int end = Math.min(start + 4, times.size());
-                    for (int t = start; t < end; t++) {
-                        MovieDetailScheduleCatalog.ShowtimeItem item = times.get(t);
-                        MaterialButton timeButton = buildTimeButton(item, section.name, group.title);
-                        LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                dp(36)
-                        );
-                        timeParams.setMargins(0, 0, dp(8), dp(8));
-                        timeButton.setLayoutParams(timeParams);
-                        row.addView(timeButton);
+                    List<MovieDetailScheduleCatalog.ShowtimeItem> times = group.showtimes;
+                    if (times == null || times.isEmpty()) continue;
+                    for (int start = 0; start < times.size(); start += 4) {
+                        LinearLayout row = new LinearLayout(this);
+                        row.setOrientation(LinearLayout.HORIZONTAL);
+                        row.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+
+                        int end = Math.min(start + 4, times.size());
+                        for (int t = start; t < end; t++) {
+                            MovieDetailScheduleCatalog.ShowtimeItem item = times.get(t);
+                            MaterialButton timeButton = buildTimeButton(item, section.name, group.title);
+                            LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    dp(36)
+                            );
+                            timeParams.setMargins(0, 0, dp(8), dp(8));
+                            timeButton.setLayoutParams(timeParams);
+                            row.addView(timeButton);
+                        }
+
+                        rows.addView(row);
                     }
 
-                    rows.addView(row);
+                    content.addView(rows);
+
+                    View divider = new View(this);
+                    LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            dp(1)
+                        );
+                    dividerParams.setMargins(0, dp(10), 0, dp(4));
+                    divider.setLayoutParams(dividerParams);
+                    divider.setBackgroundColor(Color.parseColor("#EEEEEE"));
+                    content.addView(divider);
                 }
-
-                content.addView(rows);
-
-                View divider = new View(this);
-                LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(1)
-                    );
-                dividerParams.setMargins(0, dp(10), 0, dp(4));
-                divider.setLayoutParams(dividerParams);
-                divider.setBackgroundColor(Color.parseColor("#EEEEEE"));
-                content.addView(divider);
             }
 
             header.setOnClickListener(v -> toggleCinemaSection(section.name));
@@ -708,28 +1339,30 @@ public class MovieDetailActivity extends BaseActivity {
         button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         button.setTextColor(Color.parseColor("#111111"));
 
-        boolean selected = cinemaName.equals(selectedCinema)
-                && roomType.equals(selectedRoomType)
-                && item.timeText.equals(selectedShowtime);
+        boolean selected = (cinemaName != null && cinemaName.equals(selectedCinema))
+                && (roomType != null && roomType.equals(selectedRoomType))
+                && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
 
         styleTimeButton(button, selected);
 
         button.setOnClickListener(v -> {
-            selectedCinema = cinemaName;
-            selectedRoomType = roomType;
-            selectedShowtime = item.timeText;
+            // 1. KiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢m tra xem suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£c chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân hay khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng
+            boolean isCurrentlySelected = (cinemaName != null && cinemaName.equals(selectedCinema))
+                    && (roomType != null && roomType.equals(selectedRoomType))
+                    && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
 
-            Intent intent = new Intent(MovieDetailActivity.this, SeatSelectionActivity.class);
-
-            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, item.showtimeId);
-            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
-            intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
-            intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, cinemaName);
-            intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, item.startAt);
-            intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, item.basePrice);
-            intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
-
-            startActivity(intent);
+            if (isCurrentlySelected) {
+                // 2. NÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y rÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œi -> BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥m lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â½ CHÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã¢â‚¬â„¢N
+                selectedShowtime = "";
+                selectedShowtimeItem = null;
+            } else {
+            // ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â° lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±a chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân, KHÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNG check ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â viÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n "Đặt vé ngay"
+            selectedCinema      = cinemaName;
+            selectedRoomType    = roomType;
+            selectedShowtime    = item.timeText;
+            selectedShowtimeItem = item;   // lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng sau
+            }
+            renderCinemaGroups(); // lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºi UI nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi gian ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ highlight suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân
         });
 
         return button;
@@ -753,7 +1386,8 @@ public class MovieDetailActivity extends BaseActivity {
                 if (section.expanded) {
                     selectedCinema = section.name;
                     selectedRoomType = getFirstRoomType(selectedCity, selectedCinema);
-                    selectedShowtime = getFirstShowtime(selectedCity, selectedCinema, selectedRoomType);
+                    selectedShowtimeItem = getFirstShowtimeItem(selectedCity, selectedCinema, selectedRoomType);
+                    selectedShowtime = selectedShowtimeItem != null ? selectedShowtimeItem.timeText : "";
                 }
             } else {
                 section.expanded = false;
@@ -762,32 +1396,6 @@ public class MovieDetailActivity extends BaseActivity {
 
         actvCinema.setText(selectedCinema, false);
         renderCinemaGroups();
-    }
-
-    private void ensureSectionExpanded(String cinemaName) {
-        List<CinemaSection> sections = scheduleCatalog.getCinemas(selectedCity);
-        if (sections == null) {
-            return;
-        }
-
-        for (CinemaSection section : sections) {
-            section.expanded = section.name.equals(cinemaName);
-        }
-    }
-
-    private void ensureCitySelectionFor(String city) {
-        List<String> cinemaNames = scheduleCatalog.getCinemaNames(city);
-        if (cinemaNames.isEmpty()) {
-            selectedCinema = "";
-            selectedRoomType = "";
-            selectedShowtime = "";
-            return;
-        }
-
-        selectedCinema = cinemaNames.get(0);
-        selectedRoomType = getFirstRoomType(city, selectedCinema);
-        selectedShowtime = getFirstShowtime(city, selectedCinema, selectedRoomType);
-        scheduleCatalog.setExpandedCinema(city, selectedCinema);
     }
 
     private void setupTabs() {
@@ -806,17 +1414,29 @@ public class MovieDetailActivity extends BaseActivity {
     private void updateTabUi(int checkedId) {
         boolean scheduleSelected = checkedId == R.id.btnTabSchedule;
         boolean infoSelected = checkedId == R.id.btnTabInfo;
-        boolean reviewSelected = checkedId == R.id.btnTabReview;
+        boolean newsSelected = false;
 
         layoutScheduleSection.setVisibility(scheduleSelected ? View.VISIBLE : View.GONE);
         layoutInfoSection.setVisibility(infoSelected ? View.VISIBLE : View.GONE);
-        layoutReviewSection.setVisibility(reviewSelected ? View.VISIBLE : View.GONE);
+        
+        
+        if (newsSelected) {
+            if (!isReviewsLoaded) {
+                loadReviews();
+                isReviewsLoaded = true;
+            } else if (rvReviews != null && reviewAdapter != null) {
+                rvReviews.post(() -> {
+                    reviewAdapter.notifyDataSetChanged();
+                    rvReviews.requestLayout();
+                });
+            }
+        }
 
         showBookingButton(scheduleSelected);
 
         applyTabStyle(btnTabSchedule, scheduleSelected);
         applyTabStyle(btnTabInfo, infoSelected);
-        applyTabStyle(btnTabReview, reviewSelected);
+        
     }
 
     private void applyTabStyle(MaterialButton button, boolean selected) {
@@ -860,139 +1480,19 @@ public class MovieDetailActivity extends BaseActivity {
         btnPlayTrailer.setOnClickListener(v -> openTrailer());
 
         btnBookTickets.setOnClickListener(v -> prepareBookingPayload());
-    }
 
-    private void setupReviews() {
-        reviewAdapter = new ReviewAdapter(new ReviewAdapter.OnReviewInteractionListener() {
-            @Override
-            public void onReplyClick(Review parentReview) {
-                parentReviewToReply = parentReview;
-                etComment.setHint("Đang trả lời...");
-                etComment.requestFocus();
-                ratingBar.setVisibility(View.GONE);
+        btnRateMovie.setOnClickListener(v -> showRatingBottomSheet());
+        
+        tvLoadMoreComments.setOnClickListener(v -> loadReviewsPaged());
+
+        btnPostComment.setOnClickListener(v -> {
+            String content = etCommentInput.getText().toString().trim();
+
+            if (TextUtils.isEmpty(content)) {
+                showToast("Vui lòng nhập bình luận");
+                return;
             }
-
-            @Override
-            public void onLikeClick(Review review) {
-                reviewRepository.likeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
-                    @Override
-                    public void onSuccess(Review result) {
-                        loadReviews();
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        showToast("Lỗi: " + errorMessage);
-                    }
-                });
-            }
-
-            @Override
-            public void onDislikeClick(Review review) {
-                reviewRepository.dislikeReview(review.reviewId, "user_123", new ResultCallback<Review>() {
-                    @Override
-                    public void onSuccess(Review result) {
-                        loadReviews();
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        showToast("Lỗi: " + errorMessage);
-                    }
-                });
-            }
-        });
-        rvReviews.setLayoutManager(new LinearLayoutManager(this));
-        rvReviews.setAdapter(reviewAdapter);
-
-        btnSendReview.setOnClickListener(v -> submitReview());
-    }
-
-    private void loadReviews() {
-        if (TextUtils.isEmpty(selectedMovieId)) return;
-        reviewRepository.getReviewsByMovieId(selectedMovieId, new ResultCallback<List<Review>>() {
-            @Override
-            public void onSuccess(List<Review> result) {
-                reviewAdapter.setReviews(result);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                showToast("Lỗi tải đánh giá: " + errorMessage);
-            }
-        });
-    }
-
-    private void submitReview() {
-        String content = etComment.getText().toString().trim();
-        if (TextUtils.isEmpty(content)) {
-            showToast("Vui lòng nhập nội dung");
-            return;
-        }
-
-        btnSendReview.setEnabled(false);
-        String currentUserId = "user_123"; // TODO: Lấy User ID thực tế
-
-        bookingRepository.checkUserHasBookedMovie(currentUserId, selectedMovieId, new ResultCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean hasBooked) {
-                if (!hasBooked) {
-                    btnSendReview.setEnabled(true);
-                    showToast("Bạn cần mua vé xem bộ phim này để có thể tham gia đánh giá và bình luận!");
-                    return;
-                }
-
-                Review review = new Review();
-                review.movieId = selectedMovieId;
-                review.content = content;
-                review.userId = currentUserId;
-                review.movieTitleSnapshot = tvMovieTitle.getText().toString();
-
-                if (parentReviewToReply == null) {
-                    // Thêm review gốc
-                    review.rating = (int) ratingBar.getRating();
-                    reviewRepository.createReview(review, new ResultCallback<Review>() {
-                        @Override
-                        public void onSuccess(Review result) {
-                            etComment.setText("");
-                            ratingBar.setRating(5);
-                            btnSendReview.setEnabled(true);
-                            loadReviews(); // Tải lại danh sách
-                        }
-
-                        @Override
-                        public void onError(String errorMessage) {
-                            btnSendReview.setEnabled(true);
-                            showToast("Lỗi thêm đánh giá");
-                        }
-                    });
-                } else {
-                    // Thêm reply
-                    reviewRepository.addReply(parentReviewToReply.reviewId, review, new ResultCallback<Review>() {
-                        @Override
-                        public void onSuccess(Review result) {
-                            etComment.setText("");
-                            etComment.setHint("Viết đánh giá...");
-                            parentReviewToReply = null;
-                            ratingBar.setVisibility(View.VISIBLE);
-                            btnSendReview.setEnabled(true);
-                            loadReviews(); // Tải lại danh sách
-                        }
-
-                        @Override
-                        public void onError(String errorMessage) {
-                            btnSendReview.setEnabled(true);
-                            showToast("Lỗi thêm câu trả lời");
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                btnSendReview.setEnabled(true);
-                showToast("Lỗi kiểm tra lịch sử mua vé: " + errorMessage);
-            }
+            postComment(content, 0); // Rating is unused now
         });
     }
 
@@ -1008,17 +1508,18 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void openTrailer() {
-        if (TextUtils.isEmpty(selectedTrailerUrl)) {
+        if (TextUtils.isEmpty(selectedTrailerUrl) || "null".equalsIgnoreCase(selectedTrailerUrl.trim())) {
             showToast("Phim này chưa có trailer");
             return;
         }
 
-        if (!selectedTrailerUrl.startsWith("http")) {
-            selectedTrailerUrl = "https://" + selectedTrailerUrl;
+        String trailerUrl = selectedTrailerUrl.trim();
+        if (!trailerUrl.startsWith("http")) {
+            trailerUrl = "https://" + trailerUrl;
         }
 
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(selectedTrailerUrl));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl));
             startActivity(intent);
         } catch (Exception e) {
             showToast("Không thể mở trailer");
@@ -1026,7 +1527,15 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void prepareBookingPayload() {
-        if (TextUtils.isEmpty(selectedCity)
+        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (currentUid == null) {
+            showLoginRequiredDialog("Đăng nhập để đặt vé");
+            return;
+        }
+
+        // 2. KiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢m tra ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§ thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng tin chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a
+        if (selectedShowtimeItem == null
+                || TextUtils.isEmpty(selectedCity)
                 || TextUtils.isEmpty(selectedCinema)
                 || TextUtils.isEmpty(selectedDateText)
                 || TextUtils.isEmpty(selectedShowtime)) {
@@ -1034,22 +1543,16 @@ public class MovieDetailActivity extends BaseActivity {
             return;
         }
 
-        Intent bookingResult = buildBookingPayloadIntent();
-        setResult(RESULT_OK, bookingResult);
-        showToast("Dữ liệu đặt vé đã sẵn sàng cho màn tiếp theo");
-    }
-
-    public Intent buildBookingPayloadIntent() {
-        Intent bookingResult = new Intent();
-        bookingResult.putExtra(EXTRA_BOOKING_MOVIE_ID, selectedMovieId);
-        bookingResult.putExtra(EXTRA_BOOKING_MOVIE_TITLE, tvMovieTitle.getText().toString());
-        bookingResult.putExtra(EXTRA_BOOKING_CITY, selectedCity);
-        bookingResult.putExtra(EXTRA_BOOKING_CINEMA, selectedCinema);
-        bookingResult.putExtra(EXTRA_BOOKING_DATE_LABEL, selectedDateLabel);
-        bookingResult.putExtra(EXTRA_BOOKING_DATE_TEXT, selectedDateText);
-        bookingResult.putExtra(EXTRA_BOOKING_ROOM_TYPE, selectedRoomType);
-        bookingResult.putExtra(EXTRA_BOOKING_SHOWTIME, selectedShowtime);
-        return bookingResult;
+        // 3. ChuyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n sang mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ghÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿
+        Intent intent = new Intent(this, SeatSelectionActivity.class);
+        intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, selectedShowtimeItem.showtimeId);
+        intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
+        intent.putExtra(SeatSelectionActivity.EXTRA_POSTER_URL, selectedMoviePosterUrl);
+        intent.putExtra(SeatSelectionActivity.EXTRA_CINEMA_NAME, selectedCinema);
+        intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_START, selectedShowtimeItem.startAt);
+        intent.putExtra(SeatSelectionActivity.EXTRA_BASE_PRICE, selectedShowtimeItem.basePrice);
+        intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_ID, selectedMovieId);
+        startActivity(intent);
     }
 
     private String buildTagline(Movie movie) {
@@ -1079,27 +1582,39 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private String getFirstRoomType(String city, String cinemaName) {
+        if (TextUtils.isEmpty(city) || TextUtils.isEmpty(cinemaName)) {
+            return "";
+        }
         List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
+        if (sections == null) {
+            return "";
+        }
         for (CinemaSection section : sections) {
-            if (section.name.equals(cinemaName) && section.groups != null && !section.groups.isEmpty()) {
+            if (section != null && cinemaName.equals(section.name) && section.groups != null && !section.groups.isEmpty()) {
                 return section.groups.get(0).title;
             }
         }
         return "";
     }
 
-    private String getFirstShowtime(String city, String cinemaName, String roomType) {
+    private MovieDetailScheduleCatalog.ShowtimeItem getFirstShowtimeItem(String city, String cinemaName, String roomType) {
+        if (TextUtils.isEmpty(city) || TextUtils.isEmpty(cinemaName) || TextUtils.isEmpty(roomType)) {
+            return null;
+        }
         List<CinemaSection> sections = scheduleCatalog.getCinemas(city);
+        if (sections == null) {
+            return null;
+        }
         for (CinemaSection section : sections) {
-            if (section.name.equals(cinemaName)) {
+            if (section != null && cinemaName.equals(section.name) && section.groups != null) {
                 for (ShowtimeGroup group : section.groups) {
-                    if (group.title.equals(roomType) && group.showtimes != null && !group.showtimes.isEmpty()) {
-                        return group.showtimes.get(0).timeText;
+                    if (group != null && roomType.equals(group.title) && group.showtimes != null && !group.showtimes.isEmpty()) {
+                        return group.showtimes.get(0);
                     }
                 }
             }
         }
-        return "";
+        return null;
     }
 
     private String safe(String value, String fallback) {
@@ -1111,5 +1626,100 @@ public class MovieDetailActivity extends BaseActivity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * HiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ dialog yÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªu cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p khi ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  muÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©.
+     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đăng nhập" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â¸ LoginActivity (sau khi login xong sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ quay vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y).
+     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Để sau" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ng dialog, ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c xem phim.
+     */
+    private void showLoginRequiredDialog(String message) {
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog =
+                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(dp(24), dp(32), dp(24), dp(32));
+        layout.setBackgroundColor(android.graphics.Color.WHITE);
+
+        // Icon
+        android.widget.ImageView icon = new android.widget.ImageView(this);
+        icon.setImageResource(android.R.drawable.ic_lock_idle_lock);
+        android.widget.LinearLayout.LayoutParams iconParams =
+                new android.widget.LinearLayout.LayoutParams(dp(48), dp(48));
+        iconParams.gravity = android.view.Gravity.CENTER_HORIZONTAL;
+        iconParams.bottomMargin = dp(16);
+        icon.setLayoutParams(iconParams);
+        layout.addView(icon);
+
+        // TiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªu ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â
+        android.widget.TextView tvTitle = new android.widget.TextView(this);
+        tvTitle.setText(message);
+        tvTitle.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 20f);
+        tvTitle.setTypeface(tvTitle.getTypeface(), android.graphics.Typeface.BOLD);
+        tvTitle.setTextColor(android.graphics.Color.parseColor("#1A1A2E"));
+        tvTitle.setGravity(android.view.Gravity.CENTER);
+        android.widget.LinearLayout.LayoutParams titleParams =
+                new android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        titleParams.bottomMargin = dp(8);
+        tvTitle.setLayoutParams(titleParams);
+        layout.addView(tvTitle);
+
+        // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£
+        android.widget.TextView tvDesc = new android.widget.TextView(this);
+        tvDesc.setText("Bạn cần đăng nhập để tiếp tục đặt vé. Sau khi đăng nhập, bạn sẽ được quay lại trang này.");
+        tvDesc.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f);
+        tvDesc.setTextColor(android.graphics.Color.parseColor("#666666"));
+        tvDesc.setGravity(android.view.Gravity.CENTER);
+        android.widget.LinearLayout.LayoutParams descParams =
+                new android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        descParams.bottomMargin = dp(28);
+        tvDesc.setLayoutParams(descParams);
+        layout.addView(tvDesc);
+
+        // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p
+        com.google.android.material.button.MaterialButton btnLogin =
+                new com.google.android.material.button.MaterialButton(this);
+        btnLogin.setText("Đăng nhập");
+        btnLogin.setAllCaps(false);
+        btnLogin.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f);
+        btnLogin.setCornerRadius(dp(12));
+        btnLogin.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1E4F8F")));
+        btnLogin.setTextColor(android.graphics.Color.WHITE);
+        android.widget.LinearLayout.LayoutParams loginParams =
+                new android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(50));
+        loginParams.bottomMargin = dp(12);
+        btnLogin.setLayoutParams(loginParams);
+        btnLogin.setOnClickListener(v -> {
+            dialog.dismiss();
+            com.example.cinemabookingapp.core.navigation.AppNavigator.goToLoginForBooking(this);
+        });
+        layout.addView(btnLogin);
+
+        // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ sau
+        com.google.android.material.button.MaterialButton btnLater =
+                new com.google.android.material.button.MaterialButton(this,
+                        null, android.R.attr.borderlessButtonStyle);
+        btnLater.setText("Để sau");
+        btnLater.setAllCaps(false);
+        btnLater.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f);
+        btnLater.setTextColor(android.graphics.Color.parseColor("#888888"));
+        android.widget.LinearLayout.LayoutParams laterParams =
+                new android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(48));
+        btnLater.setLayoutParams(laterParams);
+        btnLater.setOnClickListener(v -> dialog.dismiss());
+        layout.addView(btnLater);
+
+        dialog.setContentView(layout);
+        dialog.show();
     }
 }

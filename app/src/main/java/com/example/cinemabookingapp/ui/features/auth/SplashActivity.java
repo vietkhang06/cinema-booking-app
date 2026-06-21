@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -14,6 +15,7 @@ import com.example.cinemabookingapp.di.ServiceProvider;
 
 public class SplashActivity extends BaseActivity {
 
+    private static final String TAG = "SPLASH_DEBUG";
     private static final long SPLASH_DELAY = 2500L;
 
     private View[] dots;
@@ -27,8 +29,18 @@ public class SplashActivity extends BaseActivity {
         startDotAnimation();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (sessionManager.isLoggedIn() && sessionManager.isRememberMe()) {
-                AppNavigator.goToHomeByRole(this, sessionManager.getRole());
+            boolean isLoggedIn = sessionManager.isLoggedIn();
+            String role = sessionManager.getRole();
+            boolean isRememberMe = sessionManager.isRememberMe();
+
+            Log.e(TAG, "========== SPLASH TRACE ==========");
+            Log.e(TAG, "isLoggedIn = " + isLoggedIn);
+            Log.e(TAG, "isRememberMe = " + isRememberMe);
+            Log.e(TAG, "role = [" + role + "]");
+            Log.e(TAG, "==================================");
+
+            if (isLoggedIn && isRememberMe) {
+                AppNavigator.goToHomeByRole(this, role);
             } else {
                 ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().logOut();
                 AppNavigator.goToLogin(this);

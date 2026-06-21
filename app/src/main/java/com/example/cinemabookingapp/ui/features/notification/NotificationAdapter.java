@@ -71,7 +71,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             
             if ("Hủy suất chiếu".equals(notification.title) || "SHOWTIME_CANCELLED".equals(notification.type)) {
                  titleTV.setTextColor(android.graphics.Color.RED);
-                 imageView.setImageResource(R.drawable.ic_thumb_down_filled);
+                 imageView.setImageResource(R.drawable.ic_notification);
             } else {
                  titleTV.setTextColor(android.graphics.Color.BLACK);
                  imageView.setImageResource(R.drawable.login_icon); // Fallback icon

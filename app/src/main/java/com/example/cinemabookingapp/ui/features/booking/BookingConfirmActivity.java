@@ -1,45 +1,95 @@
 package com.example.cinemabookingapp.ui.features.booking;
 
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import android.content.Intent;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import android.os.Bundle;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import android.widget.ImageButton;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import android.widget.TextView;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import android.widget.Toast;
 
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.dto.ApiResponse;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.dto.BookingDTO;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.dto.SeatBookingRequestDTO;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.dto.ValidateVoucherRequest;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.remote.api.BookingApiService;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.example.cinemabookingapp.data.remote.api.VoucherApiService;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.android.material.button.MaterialButton;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.text.SimpleDateFormat;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.Date;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.HashMap;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.List;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.Locale;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.Map;
+import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.UUID;
 
 public class BookingConfirmActivity extends AppCompatActivity {
 
-    public static final String EXTRA_SHOWTIME_ID   = "showtimeId";
-    public static final String EXTRA_MOVIE_TITLE   = "movieTitle";
-    public static final String EXTRA_MOVIE_ID      = "movieId";
-    public static final String EXTRA_POSTER_URL    = "posterUrl";
-    public static final String EXTRA_CINEMA_NAME   = "cinemaName";
+    public static final String EXTRA_SHOWTIME_ID = "showtimeId";
+    public static final String EXTRA_MOVIE_TITLE = "movieTitle";
+    public static final String EXTRA_MOVIE_ID = "movieId";
+    public static final String EXTRA_POSTER_URL = "posterUrl";
+    public static final String EXTRA_CINEMA_NAME = "cinemaName";
     public static final String EXTRA_SHOWTIME_START = "showtimeStart";
-    public static final String EXTRA_TOTAL         = "total";
-    public static final String EXTRA_SEAT_CODES    = "seatCodes";
-    public static final String EXTRA_SEAT_IDS      = "seatIds";
+    public static final String EXTRA_TOTAL = "total";
+    public static final String EXTRA_SEAT_CODES = "seatCodes";
+    public static final String EXTRA_SEAT_IDS = "seatIds";
 
     private String showtimeId, movieTitle, movieId, cinemaName, imageUrl;
     private long showtimeStart;
@@ -48,6 +98,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private TextView tvTimer;
     private BookingTimerManager.TimerListener timerListener;
+    // Bien cuc bo khai bao
+    private boolean hasShownWarning = false;
 
     // Phase 3 Promotion Fields
     private com.example.cinemabookingapp.domain.model.User currentUser;
@@ -61,9 +113,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private com.google.android.material.switchmaterial.SwitchMaterial switchStars;
     private TextView btnPromo;
 
-    // Phase 4 MoMo Payment Fields
+    // Phase 4 Payment Fields
     private android.widget.RadioGroup rgPayment;
-    private String selectedPaymentMethod = "cash";
+    private String selectedPaymentMethod = "bank";
     private com.google.android.material.bottomsheet.BottomSheetDialog momoDialog;
 
     // Phase 5 Age Rating Fields
@@ -72,31 +124,36 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private boolean isBookingConfirmed = false;
 
+    // Snack order fields
+    private android.widget.LinearLayout layoutSnackContainer;
+    private final List<com.example.cinemabookingapp.domain.model.Snack> snackList = new ArrayList<>();
+    private final java.util.Map<String, Integer> selectedSnacks = new java.util.HashMap<>();
+    private double totalSnacksPrice = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_confirm);
 
-        // Nhận data
-        showtimeId   = getIntent().getStringExtra(EXTRA_SHOWTIME_ID);
-        movieTitle   = getIntent().getStringExtra(EXTRA_MOVIE_TITLE);
-        movieId      = getIntent().getStringExtra(EXTRA_MOVIE_ID);
-        cinemaName   = getIntent().getStringExtra(EXTRA_CINEMA_NAME);
-        imageUrl     = getIntent().getStringExtra(EXTRA_POSTER_URL);
+        // NhÃ¡ÂºÂ­n data
+        showtimeId = getIntent().getStringExtra(EXTRA_SHOWTIME_ID);
+        movieTitle = getIntent().getStringExtra(EXTRA_MOVIE_TITLE);
+        movieId = getIntent().getStringExtra(EXTRA_MOVIE_ID);
+        cinemaName = getIntent().getStringExtra(EXTRA_CINEMA_NAME);
+        imageUrl = getIntent().getStringExtra(EXTRA_POSTER_URL);
         showtimeStart = getIntent().getLongExtra(EXTRA_SHOWTIME_START, 0);
-        total        = getIntent().getDoubleExtra(EXTRA_TOTAL, 0);
-        seatCodes    = getIntent().getStringArrayListExtra(EXTRA_SEAT_CODES);
-        seatIds      = getIntent().getStringArrayListExtra(EXTRA_SEAT_IDS);
+        total = getIntent().getDoubleExtra(EXTRA_TOTAL, 0);
+        seatCodes = getIntent().getStringArrayListExtra(EXTRA_SEAT_CODES);
+        seatIds = getIntent().getStringArrayListExtra(EXTRA_SEAT_IDS);
 
         tvTimer = findViewById(R.id.tvTimer);
 
-        // Start timer if not already active
         if (!BookingTimerManager.getInstance().isTimerActive(this)) {
-            BookingTimerManager.getInstance().startTimer(this, 7 * 60 * 1000);
+            BookingTimerManager.getInstance().startTimer(this, 5 * 60 * 1000);
         } else {
             BookingTimerManager.getInstance().restoreTimer(this);
         }
-
+// Ham dem nguoc thoi gian
         timerListener = new BookingTimerManager.TimerListener() {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -104,6 +161,17 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 long seconds = (millisUntilFinished % 60000) / 1000;
                 if (tvTimer != null) {
                     tvTimer.setText(String.format(Locale.getDefault(), "Thời gian giữ ghế: %02d:%02d", minutes, seconds));
+                }
+                if (millisUntilFinished <= 60000 && !hasShownWarning) {
+                    hasShownWarning = true;
+                    if (!isFinishing() && !isDestroyed()) {
+                        new androidx.appcompat.app.AlertDialog.Builder(BookingConfirmActivity.this)
+                                .setTitle("Thông báo")
+                                .setMessage("Chú ý thời gian giữ ghế còn 1 phút, xin vui lòng thanh toán")
+                                .setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss())
+                                .setCancelable(false)
+                                .show();
+                    }
                 }
             }
 
@@ -131,12 +199,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private void initViews() {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Bind data lên UI
         TextView tvMovie = findViewById(R.id.tvMovieName);
         TextView tvCinema = findViewById(R.id.tvCinemaName);
         TextView tvTime = findViewById(R.id.tvShowtime);
         TextView tvSeats = findViewById(R.id.tvSeats);
-        
+
         tvOriginalPrice = findViewById(R.id.tvOriginalPrice);
         tvTotal = findViewById(R.id.tvTotal);
         btnPromo = findViewById(R.id.btnPromo);
@@ -149,23 +216,22 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (tvCinema != null && cinemaName != null) tvCinema.setText(cinemaName);
 
         if (tvTime != null && showtimeStart > 0) {
-            SimpleDateFormat fmt = new SimpleDateFormat(
-                    "HH:mm - dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm - dd/MM/yyyy", Locale.getDefault());
             tvTime.setText(fmt.format(new Date(showtimeStart)));
         }
 
-        if (tvSeats != null && seatCodes != null)
+        if (tvSeats != null && seatCodes != null) {
             tvSeats.setText(String.join(", ", seatCodes));
+        }
 
-        if (tvTotal != null)
+        if (tvTotal != null) {
             tvTotal.setText(String.format(Locale.getDefault(), "%,.0f đ", total));
+        }
 
         rgPayment = findViewById(R.id.rgPayment);
         if (rgPayment != null) {
             rgPayment.setOnCheckedChangeListener((group, checkedId) -> {
-                if (checkedId == R.id.rbPayCash) {
-                    selectedPaymentMethod = "cash";
-                } else if (checkedId == R.id.rbPayBank) {
+                if (checkedId == R.id.rbPayBank) {
                     selectedPaymentMethod = "bank";
                 } else if (checkedId == R.id.rbPayMomo) {
                     selectedPaymentMethod = "momo";
@@ -181,6 +247,9 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (btnConfirm != null) {
             btnConfirm.setOnClickListener(v -> checkAgeRatingAndProceed());
         }
+
+        layoutSnackContainer = findViewById(R.id.layoutSnackContainer);
+        loadSnacks();
     }
 
     private void loadMovieData() {
@@ -239,7 +308,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void showAgeWarningDialog(int minAge, Runnable onConfirm) {
-        com.google.android.material.bottomsheet.BottomSheetDialog warnDialog = 
+        com.google.android.material.bottomsheet.BottomSheetDialog warnDialog =
                 new com.google.android.material.bottomsheet.BottomSheetDialog(this);
         android.view.View view = getLayoutInflater().inflate(R.layout.dialog_age_warning, null);
         warnDialog.setContentView(view);
@@ -273,22 +342,69 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         new com.example.cinemabookingapp.service.AuthenticationService(this).getCurrentAuthUser(
-            new com.example.cinemabookingapp.domain.common.ResultCallback<com.example.cinemabookingapp.domain.model.User>() {
-                @Override
-                public void onSuccess(com.example.cinemabookingapp.domain.model.User user) {
-                    if (user != null) {
-                        currentUser = user;
-                        applyTierDiscount();
-                        updateStarsUI();
+                new com.example.cinemabookingapp.domain.common.ResultCallback<com.example.cinemabookingapp.domain.model.User>() {
+                    @Override
+                    public void onSuccess(com.example.cinemabookingapp.domain.model.User user) {
+                        if (user != null) {
+                            currentUser = user;
+                            applyTierDiscount();
+                            updateStarsUI();
+                            checkAndApplyVouchers(); // TÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng lÃ¡ÂºÂ¥y voucher
+                        }
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(BookingConfirmActivity.this, "Không thể tải thông tin thành viên. Ưu đãi thẻ có thể không được áp dụng.", Toast.LENGTH_LONG).show();
                     }
                 }
-
-                @Override
-                public void onError(String message) {
-                    // Fail silently
-                }
-            }
         );
+    }
+
+    private String appliedVoucherId = "";
+
+    private void checkAndApplyVouchers() {
+        if (currentUser == null) return;
+        
+        FirebaseFirestore.getInstance()
+                .collection("vouchers")
+                .whereEqualTo("userId", currentUser.uid)
+                .whereEqualTo("isUsed", false)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot != null && !snapshot.isEmpty()) {
+                        // TÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng chÃ¡Â»Ân voucher cÃƒÂ³ giÃƒÂ¡ trÃ¡Â»â€¹ cao nhÃ¡ÂºÂ¥t
+                        double maxDiscount = 0;
+                        com.google.firebase.firestore.DocumentSnapshot bestVoucher = null;
+                        
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                            Double discount = doc.getDouble("discountValue");
+                            if (discount != null && discount > maxDiscount) {
+                                maxDiscount = discount;
+                                bestVoucher = doc;
+                            }
+                        }
+                        
+                        if (bestVoucher != null) {
+                            appliedVoucherId = bestVoucher.getId();
+                            String type = bestVoucher.getString("voucherType");
+                            
+                            // PhÃƒÂ¢n biÃ¡Â»â€¡t Voucher giÃ¡ÂºÂ£m thÃ¡ÂºÂ³ng (200k) vÃƒÂ  giÃ¡ÂºÂ£m % (10%)
+                            if (maxDiscount > 100) {
+                                discountVoucher = maxDiscount;
+                            } else {
+                                discountVoucher = (total + totalSnacksPrice) * (maxDiscount / 100.0);
+                            }
+                            
+                            if (tvAppliedPromo != null) {
+                                tvAppliedPromo.setText(String.format(Locale.getDefault(), "Voucher ví: -%,.0f đ", discountVoucher));
+                                tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
+                            }
+                            updateTotalPrice();
+                            Toast.makeText(this, "Hệ thống tự động áp dụng Voucher từ ví của bạn!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     private void applyTierDiscount() {
@@ -297,19 +413,19 @@ public class BookingConfirmActivity extends AppCompatActivity {
         double factor = 0;
         String levelName = "Thành viên";
         if (level.contains("vip")) {
-            factor = 0.10; // 10%
+            factor = 0.10;
             levelName = "VIP";
         } else if (level.contains("platinum")) {
-            factor = 0.15; // 15%
+            factor = 0.15;
             levelName = "Platinum";
         } else if (level.contains("gold")) {
-            factor = 0.08; // 8%
+            factor = 0.08;
             levelName = "Gold";
         }
         if (factor > 0) {
             discountRank = total * factor;
             if (tvAppliedPromo != null) {
-                tvAppliedPromo.setText("Đã áp dụng ưu đãi hạng " + levelName + " (-" + (int)(factor * 100) + "%)");
+                tvAppliedPromo.setText("Đã áp dụng ưu đãi hạng " + levelName + " (-" + (int) (factor * 100) + "%)");
             }
         }
         updateTotalPrice();
@@ -317,7 +433,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private void updateStarsUI() {
         if (currentUser == null) return;
-        int points = currentUser.points != null ? currentUser.points : 0;
+        int points = (currentUser.points != null) ? currentUser.points : 0;
         if (tvStarsLabel != null) {
             tvStarsLabel.setText(String.format(Locale.getDefault(), "Áp dụng điểm Stars (%d Stars có sẵn)", points));
         }
@@ -326,7 +442,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
             switchStars.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 isStarsApplied = isChecked;
                 if (isChecked) {
-                    // 1 Stars = 1,000 VND
                     discountStars = points * 1000.0;
                 } else {
                     discountStars = 0;
@@ -337,13 +452,13 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void updateTotalPrice() {
-        double finalTotal = total - discountVoucher - discountRank - discountStars;
+        double finalTotal = (total + totalSnacksPrice) - discountVoucher - discountRank - discountStars;
         if (finalTotal < 0) finalTotal = 0;
 
         if (discountVoucher > 0 || discountRank > 0 || discountStars > 0) {
             if (tvOriginalPrice != null) {
                 tvOriginalPrice.setVisibility(android.view.View.VISIBLE);
-                tvOriginalPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", total));
+                tvOriginalPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", total + totalSnacksPrice));
                 tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
             }
         } else {
@@ -358,7 +473,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void showPromoDialog() {
-        com.google.android.material.bottomsheet.BottomSheetDialog dialog = 
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog =
                 new com.google.android.material.bottomsheet.BottomSheetDialog(this);
         android.view.View view = getLayoutInflater().inflate(R.layout.dialog_promo_input, null);
         dialog.setContentView(view);
@@ -366,90 +481,229 @@ public class BookingConfirmActivity extends AppCompatActivity {
         android.widget.EditText edtPromoCode = view.findViewById(R.id.edtPromoCode);
         android.widget.Button btnApplyPromo = view.findViewById(R.id.btnApplyPromo);
         TextView tvPromoStatus = view.findViewById(R.id.tvPromoStatus);
+        android.widget.Spinner spinnerVouchers = view.findViewById(R.id.spinnerVouchers);
 
         if (!appliedPromoCode.isEmpty() && edtPromoCode != null) {
             edtPromoCode.setText(appliedPromoCode);
         }
 
-        if (btnApplyPromo != null) {
-            btnApplyPromo.setOnClickListener(v -> {
-                if (edtPromoCode == null) return;
-                String code = edtPromoCode.getText().toString().trim().toUpperCase();
-                if (code.isEmpty()) {
-                    Toast.makeText(this, "Vui lòng nhập mã khuyến mãi!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        final java.util.List<DocumentSnapshot> myVouchers = new ArrayList<>();
 
-                double voucherValue = 0;
-                String promoMsg = "";
-                boolean isValid = false;
+        if (spinnerVouchers != null && currentUser != null) {
+            FirebaseFirestore.getInstance().collection("vouchers")
+                    .whereEqualTo("userId", currentUser.uid)
+                    .whereEqualTo("isUsed", false)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        myVouchers.clear();
+                        List<String> voucherNames = new ArrayList<>();
+                        voucherNames.add("--- Chọn Voucher cá nhân ---");
 
-                if ("GALAXY50".equals(code)) {
-                    voucherValue = 50000;
-                    promoMsg = "Đã áp dụng mã GALAXY50 (-50k)";
-                    isValid = true;
-                } else if ("WELCOME10".equals(code)) {
-                    voucherValue = total * 0.10;
-                    promoMsg = "Đã áp dụng mã WELCOME10 (-10%)";
-                    isValid = true;
-                } else if ("FREESHOP".equals(code)) {
-                    voucherValue = 20000;
-                    promoMsg = "Đã áp dụng mã FREESHOP (-20k)";
-                    isValid = true;
-                } else {
-                    // Validate from Backend
-                    VoucherApiService voucherApi = RetrofitClient.getInstance().create(VoucherApiService.class);
-                    voucherApi.validateVoucher(new ValidateVoucherRequest(code)).enqueue(new retrofit2.Callback<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>>() {
-                        @Override
-                        public void onResponse(retrofit2.Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, retrofit2.Response<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> response) {
-                            if (response.isSuccessful() && response.body() != null && response.body().isSuccess() && response.body().getData() != null) {
-                                int discountPercent = response.body().getData().discountPercent;
-                                discountVoucher = total * discountPercent / 100.0;
-                                appliedPromoCode = code;
-                                if (tvAppliedPromo != null) {
-                                    tvAppliedPromo.setText("Đã áp dụng Voucher (-" + discountPercent + "%)");
-                                    tvAppliedPromo.setTextColor(0xFF4CAF50);
-                                }
-                                updateTotalPrice();
-                                dialog.dismiss();
-                                Toast.makeText(BookingConfirmActivity.this, "Áp dụng Voucher giảm " + discountPercent + "% thành công!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                String msg = response.body() != null ? response.body().getMessage() : "Mã voucher không hợp lệ!";
-                                if (tvPromoStatus != null) {
-                                    tvPromoStatus.setText(msg);
-                                    tvPromoStatus.setVisibility(android.view.View.VISIBLE);
-                                }
+                        if (snapshot != null && !snapshot.isEmpty()) {
+                            myVouchers.addAll(snapshot.getDocuments());
+                            for (DocumentSnapshot doc : myVouchers) {
+                                String type = doc.getString("voucherType");
+                                Double discount = doc.getDouble("discountValue");
+                                if (discount == null) discount = 0.0;
+                                
+                                String name = "Voucher hệ thống";
+                                if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
+                                
+                                voucherNames.add(String.format(Locale.getDefault(), "%s (-%,.0f đ)", name, discount));
                             }
                         }
 
-                        @Override
-                        public void onFailure(retrofit2.Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, Throwable t) {
-                            Toast.makeText(BookingConfirmActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                                this, android.R.layout.simple_spinner_dropdown_item, voucherNames);
+                        spinnerVouchers.setAdapter(adapter);
                     });
-                    return; // Return early, async handles the rest
-                }
+        }
 
-                if (isValid) {
-                    discountVoucher = voucherValue;
-                    appliedPromoCode = code;
+        if (btnApplyPromo != null) {
+            btnApplyPromo.setOnClickListener(v -> {
+                if (spinnerVouchers != null && spinnerVouchers.getSelectedItemPosition() > 0) {
+                    // NgÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng Ã„â€˜ÃƒÂ£ chÃ¡Â»Ân Voucher cÃƒÂ¡ nhÃƒÂ¢n trong Dropdown
+                    int selectedIndex = spinnerVouchers.getSelectedItemPosition() - 1;
+                    DocumentSnapshot selectedVoucher = myVouchers.get(selectedIndex);
+                    
+                    appliedVoucherId = selectedVoucher.getId();
+                    String type = selectedVoucher.getString("voucherType");
+                    Double discount = selectedVoucher.getDouble("discountValue");
+                    if (discount == null) discount = 0.0;
+
+                    if (discount > 100) {
+                        discountVoucher = discount;
+                    } else {
+                        discountVoucher = (total + totalSnacksPrice) * (discount / 100.0);
+                    }
+
+                    appliedPromoCode = ""; 
                     if (tvAppliedPromo != null) {
-                        tvAppliedPromo.setText(promoMsg);
+                        String name = "Voucher hệ thống";
+                        if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
+                        tvAppliedPromo.setText(String.format(Locale.getDefault(), "Đã áp dụng: %s (-%,.0f đ)", name, discountVoucher));
+                        tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                         tvAppliedPromo.setTextColor(0xFF4CAF50);
                     }
+                    
                     updateTotalPrice();
                     dialog.dismiss();
-                    Toast.makeText(this, "Áp dụng mã khuyến mãi thành công!", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (tvPromoStatus != null) {
-                        tvPromoStatus.setText("Mã khuyến mãi không hợp lệ hoặc đã hết hạn!");
-                        tvPromoStatus.setVisibility(android.view.View.VISIBLE);
-                    }
+                    Toast.makeText(this, "Áp dụng Voucher cá nhân thành công!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                if (edtPromoCode == null) return;
+
+                String code = edtPromoCode.getText().toString().trim().toUpperCase(Locale.getDefault());
+                if (code.isEmpty()) {
+                    Toast.makeText(this, "Vui lòng chọn Voucher hoặc nhập mã khuyến mãi!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double subtotal = total + totalSnacksPrice;
+
+                btnApplyPromo.setEnabled(false);
+                if (tvPromoStatus != null) {
+                    tvPromoStatus.setVisibility(android.view.View.VISIBLE);
+                    tvPromoStatus.setText("Đang kiểm tra mã khuyến mãi...");
+                }
+
+                FirebaseFirestore.getInstance()
+                        .collection("promotions") // nÃ¡ÂºÂ¿u collection cÃ¡Â»Â§a bÃ¡ÂºÂ¡n tÃƒÂªn khÃƒÂ¡c, Ã„â€˜Ã¡Â»â€¢i Ã¡Â»Å¸ Ã„â€˜ÃƒÂ¢y
+                        .whereEqualTo("code", code)
+                        .limit(1)
+                        .get()
+                        .addOnSuccessListener(snapshot -> {
+                            btnApplyPromo.setEnabled(true);
+
+                            if (snapshot == null || snapshot.isEmpty()) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không hợp lệ hoặc đã hết hạn!");
+                                return;
+                            }
+
+                            DocumentSnapshot doc = snapshot.getDocuments().get(0);
+
+                            String status = doc.getString("status");
+                            Boolean deleted = doc.getBoolean("deleted");
+                            Long validFrom = doc.getLong("validFrom");
+                            Long validTo = doc.getLong("validTo");
+                            Long usageLimit = doc.getLong("usageLimit");
+                            Long usedCount = doc.getLong("usedCount");
+                            Double minAmount = doc.getDouble("minAmount");
+                            String targetRole = doc.getString("targetRole");
+                            String discountType = doc.getString("discountType");
+                            Double discountValue = doc.getDouble("discountValue");
+                            Double maxDiscountAmount = doc.getDouble("maxDiscountAmount");
+                            String title = doc.getString("title");
+
+                            long now = System.currentTimeMillis();
+
+                            if (!"active".equalsIgnoreCase(status)) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không còn hoạt động!");
+                                return;
+                            }
+
+                            if (Boolean.TRUE.equals(deleted)) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã bị xoá!");
+                                return;
+                            }
+
+                            if (validFrom != null && now < validFrom) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi chưa đến thời gian áp dụng!");
+                                return;
+                            }
+
+                            if (validTo != null && now > validTo) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã hết hạn!");
+                                return;
+                            }
+
+                            if (usageLimit != null && usedCount != null && usedCount >= usageLimit) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã hết lượt sử dụng!");
+                                return;
+                            }
+
+                            if (minAmount != null && subtotal < minAmount) {
+                                showPromoInvalid(tvPromoStatus,
+                                        String.format(Locale.getDefault(),
+                                                "Đơn hàng phải tối thiểu %,.0f đ để áp dụng mã này!", minAmount));
+                                return;
+                            }
+
+                            if (!isPromoTargetMatch(targetRole)) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không áp dụng cho tài khoản của bạn!");
+                                return;
+                            }
+
+                            double voucherValue = 0;
+
+                            if ("percentage".equalsIgnoreCase(discountType)) {
+                                double percent = discountValue != null ? discountValue : 0;
+                                voucherValue = subtotal * (percent / 100.0);
+
+                                if (maxDiscountAmount != null && maxDiscountAmount > 0) {
+                                    voucherValue = Math.min(voucherValue, maxDiscountAmount);
+                                }
+                            } else if ("fixed".equalsIgnoreCase(discountType)
+                                    || "amount".equalsIgnoreCase(discountType)) {
+                                voucherValue = discountValue != null ? discountValue : 0;
+                            }
+
+                            if (voucherValue <= 0) {
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không hợp lệ!");
+                                return;
+                            }
+
+                            discountVoucher = voucherValue;
+                            appliedPromoCode = code;
+
+                            if (tvAppliedPromo != null) {
+                                String promoLabel = (title != null && !title.trim().isEmpty())
+                                        ? title
+                                        : code;
+
+                                tvAppliedPromo.setText(
+                                        String.format(Locale.getDefault(),
+                                                "Đã áp dụng: %s (-%,.0f đ)", promoLabel, voucherValue)
+                                );
+                                tvAppliedPromo.setTextColor(0xFF4CAF50);
+                            }
+
+                            updateTotalPrice();
+                            dialog.dismiss();
+                            Toast.makeText(this, "Áp dụng mã khuyến mãi thành công!", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            btnApplyPromo.setEnabled(true);
+                            showPromoInvalid(tvPromoStatus, "Không thể kiểm tra khuyến mãi: " + e.getMessage());
+                        });
             });
         }
 
         dialog.show();
+    }
+
+    private void showPromoInvalid(TextView tvPromoStatus, String message) {
+        if (tvPromoStatus != null) {
+            tvPromoStatus.setText(message);
+            tvPromoStatus.setVisibility(android.view.View.VISIBLE);
+        }
+    }
+
+    private boolean isPromoTargetMatch(String targetRole) {
+        if (targetRole == null || targetRole.trim().isEmpty() || "all".equalsIgnoreCase(targetRole.trim())) {
+            return true;
+        }
+
+        if (currentUser == null) {
+            return false;
+        }
+
+        String userRole = currentUser.role != null ? currentUser.role : "";
+        String memberLevel = currentUser.memberLevel != null ? currentUser.memberLevel : "";
+
+        return targetRole.equalsIgnoreCase(userRole)
+                || targetRole.equalsIgnoreCase(memberLevel);
     }
 
     private void confirmBooking() {
@@ -465,18 +719,19 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (btnConfirm != null) btnConfirm.setEnabled(false);
 
         List<SeatBookingRequestDTO.SnackOrder> snackOrders = new ArrayList<>();
-
-        double finalTotal = total - discountVoucher - discountRank - discountStars;
-        if (finalTotal < 0) finalTotal = 0;
+        for (java.util.Map.Entry<String, Integer> entry : selectedSnacks.entrySet()) {
+            snackOrders.add(new SeatBookingRequestDTO.SnackOrder(entry.getKey(), entry.getValue()));
+        }
 
         SeatBookingRequestDTO request = new SeatBookingRequestDTO(
                 showtimeId,
                 seatIds != null ? seatIds : new ArrayList<>(),
                 snackOrders,
-                paymentMethod,
-                appliedPromoCode.isEmpty() ? null : appliedPromoCode,
-                finalTotal
+                paymentMethod
         );
+        request.promoCode = appliedPromoCode;
+        request.discountVoucher = discountVoucher;
+        request.useStars = isStarsApplied;
 
         BookingApiService bookingApi = RetrofitClient.getInstance()
                 .create(BookingApiService.class);
@@ -490,26 +745,32 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     isBookingConfirmed = true;
                     BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
                     
-                    // Gửi thông báo đặt vé
-                    com.example.cinemabookingapp.domain.model.Notification notif = new com.example.cinemabookingapp.domain.model.Notification();
-                    notif.userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    notif.title = "Đặt vé thành công";
-                    notif.message = "Bạn đã đặt thành công vé xem phim " + movieTitle + " tại rạp " + cinemaName + ".";
-                    notif.type = com.example.cinemabookingapp.domain.model.NotificationType.BOOKING_SUCCESS.name();
-                    notif.refId = booking.bookingId;
-                    notif.isRead = false;
-                    new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl().sendNotification(notif, null);
+                    // Ã„ÂÃƒÂ¡nh dÃ¡ÂºÂ¥u Voucher Ã„â€˜ÃƒÂ£ sÃ¡Â»Â­ dÃ¡Â»Â¥ng (Ã„â€˜Ã¡Â»Æ’ khÃƒÂ´ng xÃƒÂ i lÃ¡ÂºÂ¡i Ã„â€˜Ã†Â°Ã¡Â»Â£c nÃ¡Â»Â¯a)
+                    if (appliedVoucherId != null && !appliedVoucherId.isEmpty()) {
+                        FirebaseFirestore.getInstance().collection("vouchers")
+                                .document(appliedVoucherId)
+                                .update("isUsed", true, "usedAt", System.currentTimeMillis());
+                    }
 
-                    if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
+                    if ("momo".equals(paymentMethod)) {
+                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
+                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
+                        startActivity(intent);
+                        finish();
+                    } else if ("bank".equals(paymentMethod)) {
                         Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null); // will query via bookingId
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
+                        intent.putExtra("createdAt", booking.createdAt);
                         startActivity(intent);
                         finish();
                     } else {
+                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
                         Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -522,6 +783,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     } else if (response.body() != null && response.body().getMessage() != null) {
                         msg = response.body().getMessage();
                     }
+                    createNotification("Đặt vé thất bại", msg, "BOOKING_FAILED");
                     Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -529,9 +791,29 @@ public class BookingConfirmActivity extends AppCompatActivity {
             @Override
             public void onFailure(retrofit2.Call<ApiResponse<BookingDTO>> call, Throwable t) {
                 if (btnConfirm != null) btnConfirm.setEnabled(true);
-                Toast.makeText(BookingConfirmActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(BookingConfirmActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    // ZELIOUS: Logic gÃ¡Â»Â­i thÃƒÂ´ng bÃƒÂ¡o khi cÃƒÂ³ kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ API trÃ¡ÂºÂ£ vÃ¡Â»Â.
+    // LÃ¡ÂºÂ¥y userId hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i, tÃ¡ÂºÂ¡o object Notification vÃ¡Â»â€ºi type 'BOOKING_SUCCESS' hoÃ¡ÂºÂ·c 'BOOKING_FAILED'
+    // Sau Ã„â€˜ÃƒÂ³ gÃ¡Â»Âi NotificationRepositoryImpl Ã„â€˜Ã¡Â»Æ’ Ã„â€˜Ã¡ÂºÂ©y Document nÃƒÂ y xuÃ¡Â»â€˜ng Firestore.
+    private void createNotification(String title, String message, String type) {
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
+                com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (userId == null) return;
+        com.example.cinemabookingapp.domain.model.Notification notification = new com.example.cinemabookingapp.domain.model.Notification();
+        notification.userId = userId;
+        notification.title = title;
+        notification.message = message;
+        notification.type = type;
+        notification.isRead = false;
+        notification.createdAt = System.currentTimeMillis();
+        notification.updatedAt = System.currentTimeMillis();
+
+        new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl()
+                .createNotification(notification, null);
     }
 
     private void showMomoCheckoutDialog(String paymentMethod) {
@@ -582,14 +864,14 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
     private void releaseLockedSeats() {
         if (seatIds == null || seatIds.isEmpty() || showtimeId == null) return;
-        
-        com.example.cinemabookingapp.data.dto.SeatLockRequestDTO releaseReq = 
+
+        com.example.cinemabookingapp.data.dto.SeatLockRequestDTO releaseReq =
                 new com.example.cinemabookingapp.data.dto.SeatLockRequestDTO(showtimeId, seatIds);
-        
-        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi = 
+
+        com.example.cinemabookingapp.data.remote.api.SeatApiService seatApi =
                 com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance()
-                .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
-        
+                        .create(com.example.cinemabookingapp.data.remote.api.SeatApiService.class);
+
         seatApi.releaseSeats(releaseReq).enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<Void>>() {
             @Override
             public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> response) {
@@ -601,6 +883,125 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 android.util.Log.e("BOOKING_FLOW", "Failed to release seats: " + t.getMessage());
             }
         });
+    }
+
+    private void loadSnacks() {
+        if (layoutSnackContainer == null) return;
+        layoutSnackContainer.removeAllViews();
+
+        android.widget.TextView tvLoading = new android.widget.TextView(this);
+        tvLoading.setText("Đang tải danh sách bắp nước...");
+        tvLoading.setTextColor(android.graphics.Color.GRAY);
+        layoutSnackContainer.addView(tvLoading);
+
+        new com.example.cinemabookingapp.data.repository.SnackRepositoryImpl().getAllSnacks(
+                new com.example.cinemabookingapp.domain.common.ResultCallback<List<com.example.cinemabookingapp.domain.model.Snack>>() {
+                    @Override
+                    public void onSuccess(List<com.example.cinemabookingapp.domain.model.Snack> snacks) {
+                        layoutSnackContainer.removeAllViews();
+                        snackList.clear();
+                        if (snacks == null || snacks.isEmpty()) {
+                            android.widget.TextView tvEmpty = new android.widget.TextView(BookingConfirmActivity.this);
+                            tvEmpty.setText("Không có combo bắp nước khả dụng.");
+                            tvEmpty.setTextColor(android.graphics.Color.GRAY);
+                            layoutSnackContainer.addView(tvEmpty);
+                            return;
+                        }
+                        snackList.addAll(snacks);
+                        for (com.example.cinemabookingapp.domain.model.Snack snack : snacks) {
+                            addSnackItemToView(snack);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        layoutSnackContainer.removeAllViews();
+                        android.widget.TextView tvError = new android.widget.TextView(BookingConfirmActivity.this);
+                        tvError.setText("Không thể tải danh sách bắp nước.");
+                        tvError.setTextColor(android.graphics.Color.RED);
+                        layoutSnackContainer.addView(tvError);
+                    }
+                }
+        );
+    }
+
+    private void addSnackItemToView(com.example.cinemabookingapp.domain.model.Snack snack) {
+        android.view.View snackView = getLayoutInflater().inflate(R.layout.item_booking_snack, layoutSnackContainer, false);
+
+        android.widget.ImageView ivSnackImage = snackView.findViewById(R.id.ivSnackImage);
+        android.widget.TextView tvSnackName = snackView.findViewById(R.id.tvSnackName);
+        android.widget.TextView tvSnackDesc = snackView.findViewById(R.id.tvSnackDesc);
+        android.widget.TextView tvSnackPrice = snackView.findViewById(R.id.tvSnackPrice);
+        android.widget.TextView tvQuantity = snackView.findViewById(R.id.tvQuantity);
+        android.view.View btnMinus = snackView.findViewById(R.id.btnMinus);
+        android.view.View btnPlus = snackView.findViewById(R.id.btnPlus);
+
+        if (tvSnackName != null) tvSnackName.setText(snack.name);
+        if (tvSnackDesc != null) tvSnackDesc.setText(snack.description);
+        if (tvSnackPrice != null) {
+            tvSnackPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", snack.price));
+        }
+
+        if (ivSnackImage != null) {
+            if (snack.imageUrl != null && !snack.imageUrl.isEmpty()) {
+                // Clear tint list so downloaded images are displayed in their original colors
+                ivSnackImage.setImageTintList(null);
+                com.bumptech.glide.Glide.with(this)
+                        .load(snack.imageUrl)
+                        .placeholder(R.drawable.gift_solid_full)
+                        .into(ivSnackImage);
+            } else {
+                // Apply fallback tint color to the placeholder image
+                ivSnackImage.setImageResource(R.drawable.gift_solid_full);
+                ivSnackImage.setImageTintList(android.content.res.ColorStateList.valueOf(0xFFA13345));
+            }
+        }
+
+        if (tvQuantity != null) {
+            tvQuantity.setText("0");
+        }
+
+        if (btnPlus != null) {
+            btnPlus.setOnClickListener(v -> {
+                int currentQty = selectedSnacks.containsKey(snack.snackId) ? selectedSnacks.get(snack.snackId) : 0;
+                currentQty++;
+                selectedSnacks.put(snack.snackId, currentQty);
+                if (tvQuantity != null) {
+                    tvQuantity.setText(String.valueOf(currentQty));
+                }
+                recalculateSnacksTotal();
+            });
+        }
+
+        if (btnMinus != null) {
+            btnMinus.setOnClickListener(v -> {
+                int currentQty = selectedSnacks.containsKey(snack.snackId) ? selectedSnacks.get(snack.snackId) : 0;
+                if (currentQty > 0) {
+                    currentQty--;
+                    if (currentQty == 0) {
+                        selectedSnacks.remove(snack.snackId);
+                    } else {
+                        selectedSnacks.put(snack.snackId, currentQty);
+                    }
+                    if (tvQuantity != null) {
+                        tvQuantity.setText(String.valueOf(currentQty));
+                    }
+                    recalculateSnacksTotal();
+                }
+            });
+        }
+
+        layoutSnackContainer.addView(snackView);
+    }
+
+    private void recalculateSnacksTotal() {
+        totalSnacksPrice = 0;
+        for (com.example.cinemabookingapp.domain.model.Snack snack : snackList) {
+            if (selectedSnacks.containsKey(snack.snackId)) {
+                totalSnacksPrice += snack.price * selectedSnacks.get(snack.snackId);
+            }
+        }
+        updateTotalPrice();
     }
 
     @Override
