@@ -74,12 +74,12 @@
                     android:id="@+id/btnCartMinus"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
-                    android:text="âˆ’"
+                    android:text="-"
                     android:textColor="#333333"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvCartQty"

@@ -1,5 +1,6 @@
 package com.example.cinemabookingapp.ui.features.booking;
 
+import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.ui.features.transaction.TicketDetailActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import android.content.Intent;
@@ -714,6 +715,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         }
     }
 
+    // tao booking voi payment status la pending
     private void createBookingOnBackend(String paymentMethod) {
         MaterialButton btnConfirm = findViewById(R.id.btnConfirm);
         if (btnConfirm != null) btnConfirm.setEnabled(false);
@@ -733,8 +735,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         request.discountVoucher = discountVoucher;
         request.useStars = isStarsApplied;
 
-        BookingApiService bookingApi = RetrofitClient.getInstance()
-                .create(BookingApiService.class);
+        BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
 
         bookingApi.createBooking(request).enqueue(new retrofit2.Callback<ApiResponse<BookingDTO>>() {
             @Override
@@ -751,24 +752,30 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 .document(appliedVoucherId)
                                 .update("isUsed", true, "usedAt", System.currentTimeMillis());
                     }
-
+//                    if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
+//                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
+//                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+//                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
+//                        startActivity(intent);
+//                        finish();
+//                    } else if ("bank".equals(paymentMethod)) {
+//                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
+//                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
+//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
+//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
+//                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
+//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
+//                        intent.putExtra("createdAt", booking.createdAt);
+//                        startActivity(intent);
+//                        finish();
+//                    } else {
+//                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
+//                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
+//                        finish();
+//                    }
                     if ("momo".equals(paymentMethod)) {
-                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
-                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
-                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
-                        startActivity(intent);
-                        finish();
-                    } else if ("bank".equals(paymentMethod)) {
-                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
-                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
-                        intent.putExtra("createdAt", booking.createdAt);
-                        startActivity(intent);
-                        finish();
+                        confirmPayment(booking);
                     } else {
                         createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
                         Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
@@ -791,6 +798,55 @@ public class BookingConfirmActivity extends AppCompatActivity {
             @Override
             public void onFailure(retrofit2.Call<ApiResponse<BookingDTO>> call, Throwable t) {
                 if (btnConfirm != null) btnConfirm.setEnabled(true);
+                Toast.makeText(BookingConfirmActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // xac nhan thanh toan thanh cong
+    private void confirmPayment(BookingDTO booking){
+        BookingApiService bookingApi = RetrofitClient.getInstance()
+                .create(BookingApiService.class);
+
+        bookingApi.confirmPayment(booking.bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    createNotification("Thanh toán thành công", "Bạn đã thanh toán thành công. Vui lòng kiểm tra vé của bạn.", "BOOKING_SUCCESS");
+                    if ("momo".equals(booking.paymentMethod)) {
+                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
+                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
+                        startActivity(intent);
+                        finish();
+                    } else if ("bank".equals(booking.paymentMethod)) {
+                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, booking.paymentMethod);
+                        intent.putExtra("createdAt", booking.createdAt);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
+                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                } else {
+                    String msg = "Lỗi xác nhận thanh toán. Vui lòng thử lại.";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        msg = response.body().getMessage();
+                    }
+                    createNotification("Thanh toán thất bại", msg, "BOOKING_FAILED");
+                    Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
                 Toast.makeText(BookingConfirmActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
             }
         });

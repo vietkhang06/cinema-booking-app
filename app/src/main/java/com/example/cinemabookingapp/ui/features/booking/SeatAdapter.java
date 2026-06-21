@@ -136,23 +136,23 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             if (isLocked) {
                 // PHYSICALLY LOCKED: dark gray color, disabled
-                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_lock);
                 tvSeat.setTextColor(0xFF444444);
                 itemView.setEnabled(false);
-                itemView.setAlpha(0.3f);
+                itemView.setAlpha(0.6f);
             } else if (isBooked) {
                 // BOOKED: slate color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFF555566);
                 itemView.setEnabled(false);
                 itemView.setAlpha(0.6f);
-            } else if (isHeldByOther) {
+            } else if (isHeldByOther || isHeldByMe) {
                 // HELD BY OTHER: locked gray color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
                 tvSeat.setTextColor(0xFF888888);
                 itemView.setEnabled(false);
                 itemView.setAlpha(0.4f);
-            } else if (isHeldByMe || seat.isSelected) {
+            } else if (seat.isSelected ) {
                 // HELD BY ME / SELECTED: selected color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_selection);
                 tvSeat.setTextColor(0xFFFFFFFF);
