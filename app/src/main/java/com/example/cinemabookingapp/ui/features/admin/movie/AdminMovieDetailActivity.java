@@ -127,6 +127,9 @@ public class AdminMovieDetailActivity extends BaseActivity {
                         movieRepository.softDeleteMovie(movieId, new ResultCallback<Void>() {
                             @Override
                             public void onSuccess(Void data) {
+                                com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                        "DELETE_MOVIE", "MOVIE", movieId, "Đã xóa phim: " + tvTitle.getText().toString()
+                                );
                                 showToast("Đã xoá phim");
                                 finish();
                             }

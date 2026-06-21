@@ -90,9 +90,9 @@ public class AdminPaymentAdapter extends RecyclerView.Adapter<AdminPaymentAdapte
         }
 
         public void bind(AdminPayment payment) {
-            tvPaymentCode.setText(payment.paymentCode != null ? payment.paymentCode : "-");
+            tvPaymentCode.setText(payment.paymentCode != null ? payment.paymentCode : "—");
             tvPaymentAmount.setText(currencyFormatter.format(payment.amount) + " đ");
-            tvPaymentDate.setText(payment.createdAt != null ? dateFormatter.format(new Date(payment.createdAt)) : "-");
+            tvPaymentDate.setText(dateFormatter.format(new Date(payment.createdAt)));
 
             // Style based on provider
             if ("momo".equalsIgnoreCase(payment.provider)) {

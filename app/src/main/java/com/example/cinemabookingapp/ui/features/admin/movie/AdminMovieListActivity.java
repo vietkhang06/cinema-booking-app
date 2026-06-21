@@ -172,6 +172,9 @@ public class AdminMovieListActivity extends BaseActivity {
                         public void onSuccess(Void data) {
                             showLoading(false);
                             showToast("Đã xoá phim");
+                            com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                    "DELETE_MOVIE", "MOVIE", movie.movieId, "Đã xóa phim: " + movie.title
+                            );
                             loadMovies();
                         }
 

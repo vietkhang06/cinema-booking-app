@@ -25,12 +25,14 @@ import java.util.Locale;
 public class AdminSeatTemplateActivity extends AppCompatActivity {
 
     private static final int DEFAULT_ROWS = 6;
-    private static final int DEFAULT_COLUMNS = 12;
+    private static final int DEFAULT_COLUMNS = 6;
 
     private String roomId;
     private SeatRepository seatRepository;
 
     private final List<SeatPlanRow> seatRows = new ArrayList<>();
+    private int initialRows = DEFAULT_ROWS;
+    private int initialCols = DEFAULT_COLUMNS;
 
     private SeatPlanRowAdapter rowAdapter;
     private int selectedPaintType = SeatPlanCell.TYPE_NORMAL;

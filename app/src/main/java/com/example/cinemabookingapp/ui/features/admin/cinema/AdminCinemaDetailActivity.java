@@ -118,6 +118,9 @@ public class AdminCinemaDetailActivity extends BaseActivity {
                             cinemaRepository.softDeleteCinema(cinemaId, new ResultCallback<Void>() {
                                 @Override
                                 public void onSuccess(Void data) {
+                                    com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                            "DELETE_CINEMA", "CINEMA", cinemaId, "Đã xóa rạp: " + tvName.getText().toString()
+                                    );
                                     showToast("Đã xóa rạp thành công");
                                     finish();
                                 }
@@ -269,6 +272,9 @@ public class AdminCinemaDetailActivity extends BaseActivity {
                 roomRepository.updateRoom(r, new ResultCallback<Room>() {
                     @Override
                     public void onSuccess(Room data) {
+                        com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                "UPDATE_ROOM", "ROOM", data.roomId, "Đã cập nhật phòng chiếu: " + data.name
+                        );
                         showToast("Đã cập nhật phòng chiếu");
                         dialog.dismiss();
                         loadRooms();
@@ -283,6 +289,9 @@ public class AdminCinemaDetailActivity extends BaseActivity {
                 roomRepository.createRoom(r, new ResultCallback<Room>() {
                     @Override
                     public void onSuccess(Room data) {
+                        com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                "CREATE_ROOM", "ROOM", data.roomId, "Đã tạo phòng chiếu '" + data.name + "' tại rạp '" + tvName.getText().toString() + "'"
+                        );
                         showToast("Đã thêm phòng chiếu");
                         dialog.dismiss();
                         loadRooms();
@@ -307,6 +316,9 @@ public class AdminCinemaDetailActivity extends BaseActivity {
                     roomRepository.softDeleteRoom(room.roomId, new ResultCallback<Void>() {
                         @Override
                         public void onSuccess(Void data) {
+                            com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                                    "DELETE_ROOM", "ROOM", room.roomId, "Đã xóa phòng chiếu '" + room.name + "'"
+                            );
                             showToast("Đã xóa phòng chiếu thành công");
                             loadRooms();
                         }
@@ -334,7 +346,13 @@ public class AdminCinemaDetailActivity extends BaseActivity {
                 tvPhone.setText(c.phone);
                 tvLat.setText(String.valueOf(c.latitude));
                 tvLng.setText(String.valueOf(c.longitude));
-                tvStatus.setText(c.status);
+                if (c.status != null && ("active".equalsIgnoreCase(c.status) || "hoạt động".equalsIgnoreCase(c.status))) {
+                    tvStatus.setText("HOẠT ĐỘNG");
+                    tvStatus.setTextColor(android.graphics.Color.parseColor("#10B981"));
+                } else {
+                    tvStatus.setText("TẠM NGỪNG");
+                    tvStatus.setTextColor(android.graphics.Color.parseColor("#EF4444"));
+                }
             }
 
             @Override
