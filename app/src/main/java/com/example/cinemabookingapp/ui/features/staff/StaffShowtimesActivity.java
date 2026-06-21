@@ -146,7 +146,7 @@ public class StaffShowtimesActivity extends AuthActivity {
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    showToast("Lá»—i táº£i dá»¯ liá»‡u lá»‹ch chiáº¿u: " + e.getMessage());
+                    showToast("Lỗi tải dữ liệu lịch chiếu: " + e.getMessage());
                 });
             }
         });
@@ -188,17 +188,17 @@ public class StaffShowtimesActivity extends AuthActivity {
 
             holder.tvStartTime.setText(timeFormat.format(new Date(s.startAt)));
 
-            String movieTitle = movies.getOrDefault(s.movieId, "Phim khÃ´ng xÃ¡c Ä‘á»‹nh");
+            String movieTitle = movies.getOrDefault(s.movieId, "Phim không xác định");
             holder.tvMovieTitle.setText(movieTitle);
 
-            String cinemaName = cinemas.getOrDefault(s.cinemaId, "Ráº¡p khÃ´ng xÃ¡c Ä‘á»‹nh");
-            holder.tvCinemaRoom.setText(cinemaName + " - PhÃ²ng " + s.roomId);
+            String cinemaName = cinemas.getOrDefault(s.cinemaId, "Rạp không xác định");
+            holder.tvCinemaRoom.setText(cinemaName + " - Phòng " + s.roomId);
 
-            holder.tvFormatLang.setText((s.format != null ? s.format : "2D") + " | " + (s.language != null ? s.language : "Phá»¥ Ä‘á»"));
+            holder.tvFormatLang.setText((s.format != null ? s.format : "2D") + " | " + (s.language != null ? s.language : "Phụ đề"));
 
             int bookedCount = s.bookedSeatsCount;
             int total = s.totalSeats > 0 ? s.totalSeats : 90;
-            holder.tvSeatsCount.setText("Gháº¿: " + bookedCount + "/" + total);
+            holder.tvSeatsCount.setText("Ghế: " + bookedCount + "/" + total);
 
             int progressPercent = (bookedCount * 100) / total;
             holder.pbSeats.setProgress(progressPercent);

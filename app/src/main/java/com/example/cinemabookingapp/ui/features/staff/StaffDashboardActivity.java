@@ -221,10 +221,10 @@ public class StaffDashboardActivity extends AuthActivity {
     }
 
     private void applyStaffBottomNavState(int index) {
-        applyStaffBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Tá»•ng quan");
-        applyStaffBottomState(navScanCard, navScanLabel, navScanIcon, index == 1, "QuÃ©t QR");
-        applyStaffBottomState(navNotifCard, navNotifLabel, navNotifIcon, index == 2, "ThÃ´ng bÃ¡o");
-        applyStaffBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 3, "CÃ i Ä‘áº·t");
+        applyStaffBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Tổng quan");
+        applyStaffBottomState(navScanCard, navScanLabel, navScanIcon, index == 1, "Quét QR");
+        applyStaffBottomState(navNotifCard, navNotifLabel, navNotifIcon, index == 2, "Thông báo");
+        applyStaffBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 3, "Cài đặt");
         if (bottomNavContainer != null) {
             bottomNavContainer.requestLayout();
         }
@@ -325,28 +325,28 @@ public class StaffDashboardActivity extends AuthActivity {
                 // Check authorization
                 String role = user.role == null ? "" : user.role.trim().toLowerCase();
                 if (!"staff".equals(role) && !"admin".equals(role)) {
-                    showToast("TÃ i khoáº£n khÃ´ng cÃ³ quyá»n truy cáº­p module Staff");
+                    showToast("Tài khoản không có quyền truy cập module Staff");
                     AppNavigator.goToHomeByRole(StaffDashboardActivity.this, user.role);
                     return;
                 }
 
                 // Set welcome greetings
                 String displayName = (user.name != null && !user.name.isEmpty()) ? user.name : user.email;
-                tvWelcome.setText("Xin chÃ o, " + displayName + " ðŸ‘‹");
+                tvWelcome.setText("Xin chào, " + displayName + " ðŸ‘‹");
 
                 // Bind to Profile UI Elements
                 tvProfileName.setText(displayName);
                 tvProfileUid.setText(user.uid);
                 tvProfileEmail.setText(user.email);
-                tvProfilePhone.setText(user.phone != null && !user.phone.isEmpty() ? user.phone : "ChÆ°a cáº­p nháº­t");
-                tvProfileGender.setText(user.gender != null && !user.gender.isEmpty() ? user.gender : "ChÆ°a cáº­p nháº­t");
-                tvProfileBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "ChÆ°a cáº­p nháº­t");
-                tvProfileStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoáº¡t Ä‘á»™ng");
+                tvProfilePhone.setText(user.phone != null && !user.phone.isEmpty() ? user.phone : "Chưa cập nhật");
+                tvProfileGender.setText(user.gender != null && !user.gender.isEmpty() ? user.gender : "Chưa cập nhật");
+                tvProfileBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "Chưa cập nhật");
+                tvProfileStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoạt động");
                 
                 if ("admin".equalsIgnoreCase(user.role)) {
-                    tvProfileRole.setText("Quáº£n trá»‹ viÃªn");
+                    tvProfileRole.setText("Quản trị viên");
                 } else {
-                    tvProfileRole.setText("NhÃ¢n viÃªn");
+                    tvProfileRole.setText("Nhân viên");
                 }
 
                 // Load Avatars
@@ -365,7 +365,7 @@ public class StaffDashboardActivity extends AuthActivity {
 
             @Override
             public void onError(String message) {
-                showToast("Lá»—i táº£i thÃ´ng tin tÃ i khoáº£n: " + message);
+                showToast("Lỗi tải thông tin tài khoản: " + message);
             }
         });
     }
@@ -557,7 +557,7 @@ public class StaffDashboardActivity extends AuthActivity {
                         intent.putExtra("invoiceId", rawValue);
                         startActivity(intent);
                     } else {
-                        showToast("MÃ£ QR rá»—ng");
+                        showToast("Mã QR rỗng");
                     }
                 })
                 .addOnCanceledListener(() -> {
@@ -566,20 +566,20 @@ public class StaffDashboardActivity extends AuthActivity {
                 })
                 .addOnFailureListener(e -> {
                     applyStaffBottomNavState(currentTab);
-                    showToast("QuÃ©t tháº¥t báº¡i: " + e.getMessage());
+                    showToast("Quét thất bại: " + e.getMessage());
                 });
     }
 
     private void performLogout() {
         new AlertDialog.Builder(this)
-                .setTitle("ÄÄƒng xuáº¥t")
-                .setMessage("Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n Ä‘Äƒng xuáº¥t khÃ´ng?")
-                .setPositiveButton("ÄÄƒng xuáº¥t", (dialog, which) -> {
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                .setPositiveButton("Đăng xuất", (dialog, which) -> {
                     ServiceProvider.getInstance().getAuthenticationService().logOut();
-                    showToast("ÄÃ£ Ä‘Äƒng xuáº¥t");
+                    showToast("Đã đăng xuất");
                     AppNavigator.goToLogin(this);
                 })
-                .setNegativeButton("Há»§y", null)
+                .setNegativeButton("Hủy", null)
                 .show();
     }
 
@@ -590,19 +590,19 @@ public class StaffDashboardActivity extends AuthActivity {
         TextInputEditText etConfirmPassword = dialogView.findViewById(R.id.etConfirmPassword);
 
         new AlertDialog.Builder(this)
-                .setTitle("Äá»•i máº­t kháº©u")
+                .setTitle("Đổi mật khẩu")
                 .setView(dialogView)
-                .setPositiveButton("Cáº­p nháº­t", (dialog, which) -> {
+                .setPositiveButton("Cập nhật", (dialog, which) -> {
                     String newPass = etNewPassword.getText().toString();
                     String confirmPass = etConfirmPassword.getText().toString();
 
                     if (TextUtils.isEmpty(newPass) || newPass.length() < 6) {
-                        showToast("Máº­t kháº©u má»›i pháº£i Ã­t nháº¥t 6 kÃ½ tá»±");
+                        showToast("Mật khẩu mới phải ít nhất 6 ký tự");
                         return;
                     }
 
                     if (!newPass.equals(confirmPass)) {
-                        showToast("Máº­t kháº©u xÃ¡c nháº­n khÃ´ng khá»›p");
+                        showToast("Mật khẩu xác nhận không khớp");
                         return;
                     }
 
@@ -610,14 +610,14 @@ public class StaffDashboardActivity extends AuthActivity {
                     ServiceProvider.getInstance().getAuthenticationService().updatePassword(newPass)
                             .addOnSuccessListener(aVoid -> {
                                 showLoading(false);
-                                showToast("Äá»•i máº­t kháº©u thÃ nh cÃ´ng");
+                                showToast("Đổi mật khẩu thành công");
                             })
                             .addOnFailureListener(e -> {
                                 showLoading(false);
-                                showToast("Lá»—i: " + e.getMessage());
+                                showToast("Lỗi: " + e.getMessage());
                             });
                 })
-                .setNegativeButton("Há»§y", null)
+                .setNegativeButton("Hủy", null)
                 .show();
     }
 
@@ -654,19 +654,19 @@ public class StaffDashboardActivity extends AuthActivity {
             if (minutes > 60) {
                 long hours = minutes / 60;
                 long mins = minutes % 60;
-                holder.tvCountdown.setText("CÃ²n " + hours + "g " + mins + "p");
+                holder.tvCountdown.setText("Còn " + hours + "g " + mins + "p");
             } else if (minutes > 0) {
-                holder.tvCountdown.setText("CÃ²n " + minutes + " phÃºt");
+                holder.tvCountdown.setText("Còn " + minutes + " phút");
             } else if (minutes > -120) {
-                holder.tvCountdown.setText("Äang chiáº¿u");
+                holder.tvCountdown.setText("Đang chiếu");
                 holder.tvCountdown.setTextColor(Color.parseColor("#4CAF50")); // Green for active
             } else {
-                holder.tvCountdown.setText("ÄÃ£ káº¿t thÃºc");
+                holder.tvCountdown.setText("Đã kết thúc");
             }
 
             String titleStr = movieTitleMap.getOrDefault(showtime.movieId, "Phim");
             holder.tvMovieTitle.setText(titleStr);
-            holder.tvRoom.setText("PhÃ²ng " + (showtime.roomId != null ? showtime.roomId : ""));
+            holder.tvRoom.setText("Phòng " + (showtime.roomId != null ? showtime.roomId : ""));
             
             // Format badges e.g. 2D / 3D / IMAX
             String formatStr = (showtime.format != null ? showtime.format : "2D").trim();
@@ -727,11 +727,11 @@ public class StaffDashboardActivity extends AuthActivity {
 
             holder.tvTime.setText(timeFormat.format(new Date(log.createdAt)));
 
-            String action = log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "HOáº T Äá»˜NG";
-            String note = log.note != null ? log.note : "Nháº­t kÃ½ váº­n hÃ nh";
+            String action = log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "HOẠT ĐỘNG";
+            String note = log.note != null ? log.note : "Nhật ký vận hành";
 
             holder.tvTitle.setText(note);
-            holder.tvSubtitle.setText("HÃ nh Ä‘á»™ng: " + action + " (bá»Ÿi " + log.actorId + ")");
+            holder.tvSubtitle.setText("Hành động: " + action + " (bởi " + log.actorId + ")");
 
             // Styling colors and icons dynamically based on action types
             if (action.contains("CHECKIN") || action.contains("SCAN")) {

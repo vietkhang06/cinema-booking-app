@@ -177,7 +177,7 @@ public class HomeActivity extends BaseActivity {
     private View scrollContent;
     private View fragmentContainer;
     private com.google.android.material.chip.ChipGroup chipGroupGenre;
-    private String selectedGenre = "Táº¥t cáº£";
+    private String selectedGenre = "Tất cả";
 
 
 
@@ -352,7 +352,7 @@ public class HomeActivity extends BaseActivity {
             }
 
             if (currentUid == null) {
-                showToast("Báº¡n cáº§n Ä‘Äƒng nháº­p tÃ i khoáº£n Ä‘á»ƒ tiáº¿p tá»¥c.");
+                showToast("Bạn cần đăng nhập tài khoản để tiếp tục.");
                 AppNavigator.goToLoginForBooking(HomeActivity.this);
             } else {
                 Intent intent = new Intent(HomeActivity.this, CustomerSupportActivity.class);
@@ -467,7 +467,7 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void onError(String errorMessage) {
-                showToast("Lá»—i load banner");
+                showToast("Lỗi load banner");
             }
         });
     }
@@ -505,7 +505,7 @@ public class HomeActivity extends BaseActivity {
             if (item == null) continue;
 
             boolean matchStatus = filter.equals(item.getStatus());
-            boolean matchGenre = "Táº¥t cáº£".equals(selectedGenre)
+            boolean matchGenre = "Tất cả".equals(selectedGenre)
                     || item.getGenres().contains(selectedGenre);
 
             if (matchStatus && matchGenre) {
@@ -557,11 +557,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void applyBottomNavState(int index) {
-        applyBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Trang chá»§");
-        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Ráº¡p Phim");
+        applyBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Trang Ch\u1ee7");
+        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Rạp Phim");
         applyBottomState(navCartCard, navCartLabel, navCartIcon, index == 2, "Cine Shop");
-        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Äiá»‡n áº¢nh");
-        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "TÃ i Khoáº£n");
+        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Điện Ảnh");
+        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "Tài Khoản");
         bottomNavContainer.requestLayout();
     }
 
@@ -669,7 +669,7 @@ public class HomeActivity extends BaseActivity {
 
     private void openMovieDetail(HomeMovieItem item) {
         if (item == null) {
-            showToast("KhÃ´ng thá»ƒ má»Ÿ chi tiáº¿t phim");
+            showToast("Không thể mở chi tiết phim");
             return;
         }
 
@@ -746,7 +746,7 @@ public class HomeActivity extends BaseActivity {
     }
     private void buildGenreChipsFromData() {
         LinkedHashSet<String> genreSet = new LinkedHashSet<>();
-        genreSet.add("Táº¥t cáº£");
+        genreSet.add("Tất cả");
         for (HomeMovieItem item : allMovies) {
             for (String g : item.getGenres()) {
                 if (g != null && !g.trim().isEmpty()) {
@@ -756,13 +756,13 @@ public class HomeActivity extends BaseActivity {
         }
 
         chipGroupGenre.removeAllViews();
-        selectedGenre = "Táº¥t cáº£";
+        selectedGenre = "Tất cả";
 
         for (String genre : genreSet) {
             Chip chip = new Chip(this);
             chip.setText(genre);
             chip.setCheckable(true);
-            chip.setChecked(genre.equals("Táº¥t cáº£"));
+            chip.setChecked(genre.equals("Tất cả"));
 
             chip.setTextSize(10f);
             chip.setChipMinHeight(dp(36));
@@ -780,7 +780,7 @@ public class HomeActivity extends BaseActivity {
             chip.setChipStrokeWidth(dp(1));
             chip.setRippleColor(ColorStateList.valueOf(Color.parseColor("#33000000")));
 
-            if (genre.equals("Táº¥t cáº£")) {
+            if (genre.equals("Tất cả")) {
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#1E1A23")));
                 chip.setTextColor(ColorStateList.valueOf(Color.WHITE));
             }

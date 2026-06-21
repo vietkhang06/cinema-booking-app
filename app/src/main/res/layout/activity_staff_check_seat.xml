@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="SÆ¡ Ä‘á»“ gháº¿ ngá»“i"
+            android:text="Sơ đồ ghế ngồi"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -66,7 +66,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MÃ€N HÃŒNH"
+            android:text="MÀN HÌNH"
             android:textSize="12sp"
             android:textColor="#7A757F"
             android:layout_marginTop="4dp" />
@@ -106,7 +106,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ThÆ°á»ng"
+                android:text="Thường"
                 android:textSize="10sp"
                 android:textColor="#7A757F" />
         </LinearLayout>
@@ -146,7 +146,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Äang giá»¯"
+                android:text="Đang giữ"
                 android:textSize="10sp"
                 android:textColor="#7A757F" />
         </LinearLayout>
@@ -165,7 +165,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ÄÃ£ mua"
+                android:text="Đã mua"
                 android:textSize="10sp"
                 android:textColor="#7A757F" />
         </LinearLayout>

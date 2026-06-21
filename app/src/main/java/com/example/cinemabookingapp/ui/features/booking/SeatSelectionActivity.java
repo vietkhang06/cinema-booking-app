@@ -110,7 +110,7 @@ public class SeatSelectionActivity extends BaseActivity {
             SimpleDateFormat dateFmt = new SimpleDateFormat("dd 'Th'M", new Locale("vi"));
             SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
             tvShowtimeDate.setText(dateFmt.format(new Date(showtimeStart))
-                    + " ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ " + timeFmt.format(new Date(showtimeStart)));
+                    + " • " + timeFmt.format(new Date(showtimeStart)));
         }
 
         btnBack.setOnClickListener(v -> finish());
@@ -132,22 +132,22 @@ public class SeatSelectionActivity extends BaseActivity {
                     || "LOCKED".equalsIgnoreCase(seat.seatType);
 
             if (isLocked) {
-                Toast.makeText(this, "GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ khÃƒÆ’Ã‚Â³a!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ghế đã bị khóa!", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (isBooked) {
-                Toast.makeText(this, "GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ghế đã được đặt trước!", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (isHeldByOther) {
-                Toast.makeText(this, "GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬Ëœang Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c ngÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi khÃƒÆ’Ã‚Â¡c giÃƒÂ¡Ã‚Â»Ã‚Â¯!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ghế đang được người khác giữ!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Enforce maximum 5 seats selection
             if (!seat.isSelected) {
                 if (getSelectedSeats().size() >= 5) {
-                    Toast.makeText(this, "BÃƒÂ¡Ã‚ÂºÃ‚Â¡n chÃƒÂ¡Ã‚Â»Ã¢â‚¬Â° cÃƒÆ’Ã‚Â³ thÃƒÂ¡Ã‚Â»Ã†â€™ chÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi Ãƒâ€žÃ¢â‚¬Ëœa 5 ghÃƒÂ¡Ã‚ÂºÃ‚Â¿", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Bạn chỉ có thể chọn tối đa 5 ghế", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -160,12 +160,12 @@ public class SeatSelectionActivity extends BaseActivity {
         btnContinue.setOnClickListener(v -> {
             List<SeatDTO> selected = getSelectedSeats();
             if (selected.isEmpty()) {
-                Toast.makeText(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân ÃƒÆ’Ã‚Â­t nhÃƒÂ¡Ã‚ÂºÃ‚Â¥t 1 ghÃƒÂ¡Ã‚ÂºÃ‚Â¿!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn ít nhất 1 ghế!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (hasEmptySeatInBetween(selected)) {
-                Toast.makeText(this, "KhÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t vÃƒÆ’Ã‚Â© nÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÆ’Ã‚Â²n ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ trÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng ÃƒÂ¡Ã‚Â»Ã…Â¸ giÃƒÂ¡Ã‚Â»Ã‚Â¯a trong cÃƒÆ’Ã‚Â¹ng mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t hÃƒÆ’Ã‚Â ng!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Không được đặt vé nếu còn ghế trống ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -192,7 +192,7 @@ public class SeatSelectionActivity extends BaseActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         goToBookingConfirm(selected);
                     } else {
-                        String errMsg = "GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ cÃƒÆ’Ã‚Â³ ngÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi khÃƒÆ’Ã‚Â¡c chÃƒÂ¡Ã‚Â»Ã‚Ân hoÃƒÂ¡Ã‚ÂºÃ‚Â·c hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n khÃƒÆ’Ã‚Â³a ghÃƒÂ¡Ã‚ÂºÃ‚Â¿. Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ khÃƒÆ’Ã‚Â¡c!";
+                        String errMsg = "Ghế đã có người khác chọn hoặc hết hạn khóa ghế. Vui lòng chọn ghế khác!";
                         try {
                             if (response.errorBody() != null) {
                                 String errorJson = response.errorBody().string();
@@ -206,15 +206,15 @@ public class SeatSelectionActivity extends BaseActivity {
                         }
 
                         if (response.code() == 404) {
-                            errMsg = "KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ kÃƒÂ¡Ã‚ÂºÃ‚Â¿t nÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â¿n hÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ thÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t vÃƒÆ’Ã‚Â©. Vui lÃƒÆ’Ã‚Â²ng thÃƒÂ¡Ã‚Â»Ã‚Â­ lÃƒÂ¡Ã‚ÂºÃ‚Â¡i sau.";
+                            errMsg = "Không thể kết nối đến hệ thống đặt vé. Vui lòng thử lại sau.";
                         } else if (response.code() == 409) {
-                            if (errMsg.equals("GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ cÃƒÆ’Ã‚Â³ ngÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi khÃƒÆ’Ã‚Â¡c chÃƒÂ¡Ã‚Â»Ã‚Ân hoÃƒÂ¡Ã‚ÂºÃ‚Â·c hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n khÃƒÆ’Ã‚Â³a ghÃƒÂ¡Ã‚ÂºÃ‚Â¿. Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ khÃƒÆ’Ã‚Â¡c!")) {
-                                errMsg = "RÃƒÂ¡Ã‚ÂºÃ‚Â¥t tiÃƒÂ¡Ã‚ÂºÃ‚Â¿c, ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ bÃƒÂ¡Ã‚ÂºÃ‚Â¡n chÃƒÂ¡Ã‚Â»Ã‚Ân Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ cÃƒÆ’Ã‚Â³ ngÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi giÃƒÂ¡Ã‚Â»Ã‚Â¯. Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ khÃƒÆ’Ã‚Â¡c!";
+                            if (errMsg.equals("Ghế đã có người khác chọn hoặc hết hạn khóa ghế. Vui lòng chọn ghế khác!")) {
+                                errMsg = "Rất tiếc, ghế bạn chọn đã có người giữ. Vui lòng chọn ghế khác!";
                             }
                         } else if (response.code() == 401 || response.code() == 403) {
-                            errMsg = "PhiÃƒÆ’Ã‚Âªn Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n. Vui lÃƒÆ’Ã‚Â²ng Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p lÃƒÂ¡Ã‚ÂºÃ‚Â¡i.";
+                            errMsg = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
                         } else if (response.code() >= 500) {
-                            errMsg = "HÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ thÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng Ãƒâ€žÃ¢â‚¬Ëœang bÃƒÂ¡Ã‚ÂºÃ‚Â­n. Vui lÃƒÆ’Ã‚Â²ng thÃƒÂ¡Ã‚Â»Ã‚Â­ lÃƒÂ¡Ã‚ÂºÃ‚Â¡i sau.";
+                            errMsg = "Hệ thống đang bận. Vui lòng thử lại sau.";
                         }
                         Toast.makeText(SeatSelectionActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         loadSeats(); // Refresh seat map
@@ -225,7 +225,7 @@ public class SeatSelectionActivity extends BaseActivity {
                 public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<Void>> call, Throwable t) {
                     btnContinue.setEnabled(true);
                     if (layoutLoading != null) layoutLoading.setVisibility(android.view.View.GONE);
-                    Toast.makeText(SeatSelectionActivity.this, "KÃƒÂ¡Ã‚ÂºÃ‚Â¿t nÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi mÃƒÂ¡Ã‚ÂºÃ‚Â¡ng khÃƒÆ’Ã‚Â´ng ÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢n Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh. Vui lÃƒÆ’Ã‚Â²ng kiÃƒÂ¡Ã‚Â»Ã†â€™m tra lÃƒÂ¡Ã‚ÂºÃ‚Â¡i Wifi/4G.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SeatSelectionActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -248,7 +248,7 @@ public class SeatSelectionActivity extends BaseActivity {
             public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<com.example.cinemabookingapp.data.dto.BookingDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess() && response.body().getData() != null) {
                     com.example.cinemabookingapp.data.dto.BookingDTO pendingBooking = response.body().getData();
-                    Toast.makeText(SeatSelectionActivity.this, "BÃƒÂ¡Ã‚ÂºÃ‚Â¡n cÃƒÆ’Ã‚Â³ giao dÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t vÃƒÆ’Ã‚Â© chÃƒâ€ Ã‚Â°a hoÃƒÆ’Ã‚Â n tÃƒÂ¡Ã‚ÂºÃ‚Â¥t. Ãƒâ€žÃ‚Âang chuyÃƒÂ¡Ã‚Â»Ã†â€™n hÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºng...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SeatSelectionActivity.this, "Bạn có giao dịch đặt vé chưa hoàn tất. Đang chuyển hướng...", Toast.LENGTH_LONG).show();
 
                     Intent intent = new Intent(SeatSelectionActivity.this, PaymentInstructionActivity.class);
                     intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, pendingBooking.bookingId);
@@ -284,7 +284,7 @@ public class SeatSelectionActivity extends BaseActivity {
                     // Initial load successful. Now start realtime Firestore sync!
                     startRealtimeSeatSync();
                 } else {
-                    String msg = response.body() != null ? response.body().getMessage() : "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i server (" + response.code() + ")";
+                    String msg = response.body() != null ? response.body().getMessage() : "Lỗi server (" + response.code() + ")";
                     Toast.makeText(SeatSelectionActivity.this, msg, Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -292,7 +292,7 @@ public class SeatSelectionActivity extends BaseActivity {
 
             @Override
             public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<List<SeatDTO>>> call, Throwable t) {
-                Toast.makeText(SeatSelectionActivity.this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i kÃƒÂ¡Ã‚ÂºÃ‚Â¿t nÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SeatSelectionActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -368,7 +368,7 @@ public class SeatSelectionActivity extends BaseActivity {
 
                         if (seatStolen) {
                             Toast.makeText(SeatSelectionActivity.this,
-                                    "GhÃƒÂ¡Ã‚ÂºÃ‚Â¿ " + stolenSeatCode + " Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c ngÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi khÃƒÆ’Ã‚Â¡c giÃƒÂ¡Ã‚Â»Ã‚Â¯ hoÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc!",
+                                    "Ghế " + stolenSeatCode + " đã được người khác giữ hoặc đặt trước!",
                                     Toast.LENGTH_LONG).show();
                         }
 
@@ -433,8 +433,8 @@ public class SeatSelectionActivity extends BaseActivity {
             total += price;
         }
 
-        tvTotalPrice.setText(String.format(Locale.getDefault(), "%,.0f Ãƒâ€žÃ¢â‚¬Ëœ", total));
-        tvSeatCount.setText(selected.size() + " GhÃƒÂ¡Ã‚ÂºÃ‚Â¿");
+        tvTotalPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", total));
+        tvSeatCount.setText(selected.size() + " Ghế");
 
         // CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chips ghÃƒÂ¡Ã‚ÂºÃ‚Â¿ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ chÃƒÂ¡Ã‚Â»Ã‚Ân
         llSelectedSeatChips.removeAllViews();

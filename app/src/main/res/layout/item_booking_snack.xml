@@ -36,7 +36,7 @@
             android:id="@+id/tvSnackName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Báº¯p Sweet"
+            android:text="Bắp Sweet"
             android:textColor="#1E1A23"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Báº¯p rang caramel thÆ¡m ngá»t"
+            android:text="Bắp rang caramel thơm ngọt"
             android:textColor="#7A757F"
             android:textSize="11sp"
             android:maxLines="2"
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="50.000 Ä‘"
+            android:text="50.000 đ"
             android:textColor="#A13345"
             android:textSize="13sp"
             android:textStyle="bold" />

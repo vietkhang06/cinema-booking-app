@@ -124,14 +124,14 @@ public class MovieDetailScheduleCatalog {
                         continue;
                     }
 
-                    String city = cinema.city != null ? cinema.city.trim() : "KhÃ¡c";
-                    String name = cinema.name != null ? cinema.name : "Ráº¡p khÃ´ng tÃªn";
+                    String city = cinema.city != null ? cinema.city.trim() : "Khác";
+                    String name = cinema.name != null ? cinema.name : "Rạp không tên";
 
                     // Group cinema showtimes by format and language (ShowtimeGroup)
                     Map<String, List<ShowtimeItem>> itemsByGroup = new HashMap<>();
                     for (Showtime s : cinemaShowtimes) {
                         String groupTitle = (s.format != null ? s.format : "2D") + " " +
-                                (s.language != null ? s.language : "Phá»¥ Ä‘á»").toUpperCase();
+                                (s.language != null ? s.language : "Phụ đề").toUpperCase();
                         
                         if (!itemsByGroup.containsKey(groupTitle)) {
                             itemsByGroup.put(groupTitle, new ArrayList<>());
@@ -175,11 +175,11 @@ public class MovieDetailScheduleCatalog {
     private String getDayLabel(Calendar targetCal) {
         Calendar today = Calendar.getInstance();
         if (isSameDay(targetCal, today)) {
-            return "HÃ´m nay";
+            return "Hôm nay";
         }
         today.add(Calendar.DAY_OF_YEAR, 1);
         if (isSameDay(targetCal, today)) {
-            return "NgÃ y mai";
+            return "Ngày mai";
         }
         return dayLabel(targetCal.get(Calendar.DAY_OF_WEEK));
     }
@@ -205,17 +205,17 @@ public class MovieDetailScheduleCatalog {
     private String dayLabel(int dayOfWeek) {
         switch (dayOfWeek) {
             case Calendar.MONDAY:
-                return "Thá»© 2";
+                return "Thứ 2";
             case Calendar.TUESDAY:
-                return "Thá»© 3";
+                return "Thứ 3";
             case Calendar.WEDNESDAY:
-                return "Thá»© 4";
+                return "Thứ 4";
             case Calendar.THURSDAY:
-                return "Thá»© 5";
+                return "Thứ 5";
             case Calendar.FRIDAY:
-                return "Thá»© 6";
+                return "Thứ 6";
             case Calendar.SATURDAY:
-                return "Thá»© 7";
+                return "Thứ 7";
             case Calendar.SUNDAY:
             default:
                 return "CN";

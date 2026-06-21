@@ -513,7 +513,7 @@ public class MovieDetailActivity extends BaseActivity {
     private String selectedDateLabel = "";
     private String selectedDateText = "";
     private String selectedShowtime = "";
-    /** LÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“i tÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£ng suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ngay" */
+    /** LÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“i tÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£ng suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đặt vé ngay" */
     private MovieDetailScheduleCatalog.ShowtimeItem selectedShowtimeItem = null;
 
     private AddReviewUseCase addReviewUseCase;
@@ -618,7 +618,7 @@ public class MovieDetailActivity extends BaseActivity {
             @Override
             public void onLikeClick(Review review, int position) {
                 if (currentUid == null) {
-                    showLoginRequiredDialog("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â©c nÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y");
+                    showLoginRequiredDialog("Đăng nhập để thực hiện chức năng này");
                     return;
                 }
                 reviewRepository.toggleLike(review.reviewId, currentUid, new ResultCallback<Review>() {
@@ -636,7 +636,7 @@ public class MovieDetailActivity extends BaseActivity {
             @Override
             public void onDislikeClick(Review review, int position) {
                 if (currentUid == null) {
-                    showLoginRequiredDialog("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â©c nÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y");
+                    showLoginRequiredDialog("Đăng nhập để thực hiện chức năng này");
                     return;
                 }
                 reviewRepository.toggleDislike(review.reviewId, currentUid, new ResultCallback<Review>() {
@@ -653,7 +653,7 @@ public class MovieDetailActivity extends BaseActivity {
 
             @Override
             public void onReplyClick(Review review, int position) {
-                showToast("TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­nh nÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng trÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£c phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡t triÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n");
+                showToast("Tính năng trả lời đang được phát triển");
             }
         }, currentUid);
     }
@@ -672,17 +672,17 @@ public class MovieDetailActivity extends BaseActivity {
         String posterUrl = safe(intent.getStringExtra(EXTRA_MOVIE_POSTER_URL), "");
         String rating = safe(intent.getStringExtra(EXTRA_MOVIE_RATING), "8.5");
         String ageRating = safe(intent.getStringExtra(EXTRA_MOVIE_AGE_RATING), "T13");
-        String duration = safe(intent.getStringExtra(EXTRA_MOVIE_DURATION), "103 phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt");
+        String duration = safe(intent.getStringExtra(EXTRA_MOVIE_DURATION), "103 phút");
         String releaseDate = safe(intent.getStringExtra(EXTRA_MOVIE_RELEASE_DATE), "20/04/2026");
-        String description = safe(intent.getStringExtra(EXTRA_MOVIE_DESCRIPTION), "PhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§n mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ phim sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£c cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« Firestore.");
-        String tagline = safe(intent.getStringExtra(EXTRA_MOVIE_TAGLINE), "KhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡m phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ch chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©");
+        String description = safe(intent.getStringExtra(EXTRA_MOVIE_DESCRIPTION), "Phần mô tả phim sẽ được cập nhật từ Firestore.");
+        String tagline = safe(intent.getStringExtra(EXTRA_MOVIE_TAGLINE), "Khám phá lịch chiếu và suất vé");
 
         tvMovieTitle.setText(title);
         tvMovieTagline.setText(tagline);
-        tvRating.setText(String.format("ÃƒÆ’Ã‚Â¢Ãƒâ€¹Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %s", rating));
+        tvRating.setText(String.format("★ %s", rating));
         tvAgeRating.setText(ageRating);
-        tvDuration.setText(String.format("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â± %s", duration));
-        tvReleaseDate.setText(String.format("ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %s", releaseDate));
+        tvDuration.setText(String.format("⏱ %s", duration));
+        tvReleaseDate.setText(String.format("📅 %s", releaseDate));
         tvSynopsis.setText(description);
         selectedMoviePosterUrl = posterUrl;
         loadImage(posterUrl);
@@ -717,7 +717,7 @@ public class MovieDetailActivity extends BaseActivity {
                     if (e != null || snapshot == null || !snapshot.exists()) return;
                     Double ratingAvg = snapshot.getDouble("ratingAvg");
                     if (ratingAvg != null) {
-                        tvRating.setText(String.format(java.util.Locale.getDefault(), "ÃƒÆ’Ã‚Â¢Ãƒâ€¹Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %.1f", ratingAvg));
+                        tvRating.setText(String.format(java.util.Locale.getDefault(), "★ %.1f", ratingAvg));
                         if (tvAverageRatingReview != null) {
                             tvAverageRatingReview.setText(String.format(java.util.Locale.getDefault(), "%.1f", ratingAvg));
                         }
@@ -765,8 +765,8 @@ public class MovieDetailActivity extends BaseActivity {
                         if (s.cinemaId != null && !cinemaMap.containsKey(s.cinemaId)) {
                             Cinema placeholder = new Cinema();
                             placeholder.cinemaId = s.cinemaId;
-                            placeholder.name = "RÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡p " + s.cinemaId;
-                            placeholder.city = "KhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c";
+                            placeholder.name = "Rạp " + s.cinemaId;
+                            placeholder.city = "Khác";
                             cinemaMap.put(s.cinemaId, placeholder);
                         }
                     }
@@ -835,9 +835,9 @@ public class MovieDetailActivity extends BaseActivity {
                 public void onSuccess(Review data) {
                     userReview = data;
                     if (userReview != null && userReview.rating != null && userReview.rating > 0) {
-                        btnRateMovie.setText("CÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+                        btnRateMovie.setText("Cập nhật đánh giá");
                     } else {
-                        btnRateMovie.setText("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ phim");
+                        btnRateMovie.setText("Đánh giá phim");
                     }
                 }
                 @Override
@@ -878,7 +878,7 @@ public class MovieDetailActivity extends BaseActivity {
 
     private void showRatingBottomSheet() {
         if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showLoginRequiredDialog("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+            showLoginRequiredDialog("Đăng nhập để có thể để lại đánh giá");
             return;
         }
 
@@ -896,7 +896,7 @@ public class MovieDetailActivity extends BaseActivity {
         btnSubmitRating.setOnClickListener(v -> {
             float rating = ratingBar.getRating();
             if (rating == 0) {
-                showToast("Vui lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â²ng chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â©c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡!");
+                showToast("Vui lòng chọn mức đánh giá!");
                 return;
             }
             submitRating(rating);
@@ -918,14 +918,14 @@ public class MovieDetailActivity extends BaseActivity {
             repo.updateReview(userReview, new ResultCallback<Review>() {
                 @Override
                 public void onSuccess(Review data) {
-                    showToast("CÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â nh cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng!");
-                    btnRateMovie.setText("CÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+                    showToast("Cập nhật đánh giá thành công!");
+                    btnRateMovie.setText("Cập nhật đánh giá");
                     isReviewsLoaded = false;
                     loadReviews(); 
                 }
                 @Override
                 public void onError(String message) {
-                    showToast("LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+                    showToast("Lỗi cập nhật đánh giá");
                 }
             });
         } else {
@@ -936,7 +936,7 @@ public class MovieDetailActivity extends BaseActivity {
 
     private void postComment(String content, int rating) {
         if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showLoginRequiredDialog("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+            showLoginRequiredDialog("Đăng nhập để có thể để lại đánh giá");
             return;
         }
 
@@ -951,10 +951,10 @@ public class MovieDetailActivity extends BaseActivity {
             @Override
             public void onSuccess(Review data) {
                 if (rating > 0) {
-                    showToast("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â­i ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡!");
-                    btnRateMovie.setText("CÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡");
+                    showToast("Đã gửi đánh giá!");
+                    btnRateMovie.setText("Cập nhật đánh giá");
                 } else {
-                    showToast("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh luÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n!");
+                    showToast("Đã đăng bình luận!");
                     etCommentInput.setText("");
                 }
                 isReviewsLoaded = false;
@@ -977,15 +977,15 @@ public class MovieDetailActivity extends BaseActivity {
 
         tvMovieTitle.setText(safe(movie.title, tvMovieTitle.getText().toString()));
         tvMovieTagline.setText(buildTagline(movie));
-        tvRating.setText(String.format("ÃƒÆ’Ã‚Â¢Ãƒâ€¹Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %s", formatRating(movie.ratingAvg)));
+        tvRating.setText(String.format("★ %s", formatRating(movie.ratingAvg)));
         if (tvAverageRatingReview != null) {
-            tvAverageRatingReview.setText(String.format("ÃƒÆ’Ã‚Â¢Ãƒâ€¹Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %s", formatRating(movie.ratingAvg)));
+            tvAverageRatingReview.setText(String.format("★ %s", formatRating(movie.ratingAvg)));
         }
         tvAgeRating.setText(safe(movie.ageRating, "T13"));
-        tvDuration.setText(String.format("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â± %d phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt", movie.durationMinutes));
+        tvDuration.setText(String.format("⏱ %d phút", movie.durationMinutes));
 
         if (movie.releaseDate > 0) {
-            tvReleaseDate.setText(String.format("ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ %s", formatReleaseDate(movie.releaseDate)));
+            tvReleaseDate.setText(String.format("📅 %s", formatReleaseDate(movie.releaseDate)));
         }
 
         tvSynopsis.setText(safe(movie.description, tvSynopsis.getText().toString()));
@@ -1103,7 +1103,7 @@ public class MovieDetailActivity extends BaseActivity {
         List<DateOption> dateOptions = scheduleCatalog.getDateOptions();
         if (dateOptions.isEmpty()) {
             TextView empty = new TextView(this);
-            empty.setText("ChÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ch ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y.");
+            empty.setText("Chưa có lịch ngày.");
             empty.setTextColor(Color.parseColor("#555555"));
             layoutDateChips.addView(empty);
             return;
@@ -1243,7 +1243,7 @@ public class MovieDetailActivity extends BaseActivity {
             name.setGravity(Gravity.CENTER_VERTICAL);
 
             TextView arrow = new TextView(this);
-            arrow.setText(expanded ? "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â´" : "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¾");
+            arrow.setText(expanded ? "▴" : "▾");
             arrow.setTextColor(Color.parseColor("#777777"));
             arrow.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
 
@@ -1356,7 +1356,7 @@ public class MovieDetailActivity extends BaseActivity {
                 selectedShowtime = "";
                 selectedShowtimeItem = null;
             } else {
-            // ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â° lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±a chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân, KHÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNG check ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â viÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© ngay"
+            // ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â° lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±a chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân, KHÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNG check ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â viÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n "Đặt vé ngay"
             selectedCinema      = cinemaName;
             selectedRoomType    = roomType;
             selectedShowtime    = item.timeText;
@@ -1489,7 +1489,7 @@ public class MovieDetailActivity extends BaseActivity {
             String content = etCommentInput.getText().toString().trim();
 
             if (TextUtils.isEmpty(content)) {
-                showToast("Vui lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â²ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh luÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n");
+                showToast("Vui lòng nhập bình luận");
                 return;
             }
             postComment(content, 0); // Rating is unused now
@@ -1504,12 +1504,12 @@ public class MovieDetailActivity extends BaseActivity {
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText.trim());
 
-        startActivity(Intent.createChooser(shareIntent, "Chia sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â» phim"));
+        startActivity(Intent.createChooser(shareIntent, "Chia sẻ phim"));
     }
 
     private void openTrailer() {
         if (TextUtils.isEmpty(selectedTrailerUrl) || "null".equalsIgnoreCase(selectedTrailerUrl.trim())) {
-            showToast("Phim nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ trailer");
+            showToast("Phim này chưa có trailer");
             return;
         }
 
@@ -1522,14 +1522,14 @@ public class MovieDetailActivity extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl));
             startActivity(intent);
         } catch (Exception e) {
-            showToast("KhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â¸ trailer");
+            showToast("Không thể mở trailer");
         }
     }
 
     private void prepareBookingPayload() {
         String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
         if (currentUid == null) {
-            showLoginRequiredDialog("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©");
+            showLoginRequiredDialog("Đăng nhập để đặt vé");
             return;
         }
 
@@ -1539,7 +1539,7 @@ public class MovieDetailActivity extends BaseActivity {
                 || TextUtils.isEmpty(selectedCinema)
                 || TextUtils.isEmpty(selectedDateText)
                 || TextUtils.isEmpty(selectedShowtime)) {
-            showToast("HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£y chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§y ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§ rÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡p, ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u");
+            showToast("Hãy chọn đầy đủ rạp, ngày và suất chiếu");
             return;
         }
 
@@ -1561,7 +1561,7 @@ public class MovieDetailActivity extends BaseActivity {
             genre = movie.genres.get(0);
         }
         String language = safe(movie.language, "Vietnamese");
-        return genre + " ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ " + language;
+        return genre + " • " + language;
     }
 
     private String formatRating(double rating) {
@@ -1630,8 +1630,8 @@ public class MovieDetailActivity extends BaseActivity {
 
     /**
      * HiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ dialog yÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªu cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p khi ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  muÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©.
-     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â¸ LoginActivity (sau khi login xong sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ quay vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y).
-     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ sau" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ng dialog, ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c xem phim.
+     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đăng nhập" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â¸ LoginActivity (sau khi login xong sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ quay vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y).
+     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Để sau" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ng dialog, ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c xem phim.
      */
     private void showLoginRequiredDialog(String message) {
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
@@ -1669,7 +1669,7 @@ public class MovieDetailActivity extends BaseActivity {
 
         // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£
         android.widget.TextView tvDesc = new android.widget.TextView(this);
-        tvDesc.setText("BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡n cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©. Sau khi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p, bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡n sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£c quay lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i trang nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y.");
+        tvDesc.setText("Bạn cần đăng nhập để tiếp tục đặt vé. Sau khi đăng nhập, bạn sẽ được quay lại trang này.");
         tvDesc.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f);
         tvDesc.setTextColor(android.graphics.Color.parseColor("#666666"));
         tvDesc.setGravity(android.view.Gravity.CENTER);
@@ -1684,7 +1684,7 @@ public class MovieDetailActivity extends BaseActivity {
         // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p
         com.google.android.material.button.MaterialButton btnLogin =
                 new com.google.android.material.button.MaterialButton(this);
-        btnLogin.setText("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p");
+        btnLogin.setText("Đăng nhập");
         btnLogin.setAllCaps(false);
         btnLogin.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f);
         btnLogin.setCornerRadius(dp(12));
@@ -1707,7 +1707,7 @@ public class MovieDetailActivity extends BaseActivity {
         com.google.android.material.button.MaterialButton btnLater =
                 new com.google.android.material.button.MaterialButton(this,
                         null, android.R.attr.borderlessButtonStyle);
-        btnLater.setText("ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ sau");
+        btnLater.setText("Để sau");
         btnLater.setAllCaps(false);
         btnLater.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f);
         btnLater.setTextColor(android.graphics.Color.parseColor("#888888"));

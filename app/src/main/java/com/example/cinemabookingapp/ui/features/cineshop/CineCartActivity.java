@@ -78,6 +78,6 @@ public class CineCartActivity extends FragmentActivity {
         layoutEmptyCart.setVisibility(empty ? View.VISIBLE : View.GONE);
 
         double total = CineCartManager.getInstance().getTotalPrice();
-        tvCartTotal.setText(fmt.format(total) + "Ä‘");
+        tvCartTotal.setText(fmt.format(total) + "đ");
     }
 }

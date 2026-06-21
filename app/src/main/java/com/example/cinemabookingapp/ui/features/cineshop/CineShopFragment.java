@@ -100,13 +100,13 @@ import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.List;
 
 /**
- * CineShopFragment Ã¢â‚¬â€ mÃƒÂ n hÃƒÂ¬nh "Trang sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m" (Star Shop / Cine Shop).
+ * CineShopFragment Ã¢â‚¬â€ mÃƒÂ n hÃƒÂ¬nh "Trang sản phẩm" (Star Shop / Cine Shop).
  *
  * Giao diÃ¡Â»â€¡n theo phong cÃƒÂ¡ch Galaxy Cinema:
  *   Ã¢â‚¬Â¢ Banner carousel tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng chÃ¡ÂºÂ¡y mÃ¡Â»â€”i 3 giÃƒÂ¢y
  *   Ã¢â‚¬Â¢ 2 tab: SEASONAL / MOVIE
  *   Ã¢â‚¬Â¢ Danh sÃƒÂ¡ch sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m dÃ¡ÂºÂ¡ng 1 cÃ¡Â»â„¢t (full-width)
- *   Ã¢â‚¬Â¢ MÃ¡Â»â€”i item cÃƒÂ³ 2 nÃƒÂºt: "MUA NGAY" vÃƒÂ  "THÃƒÅ M VÃƒâ‚¬O GIÃ¡Â»Å½ HÃƒâ‚¬NG"
+ *   Ã¢â‚¬Â¢ MÃ¡Â»â€”i item cÃƒÂ³ 2 nÃƒÂºt: "MUA NGAY" vÃƒÂ  "THÊM VÀO GIỎ HÀNG"
  *
  * DÃ¡Â»Â¯ liÃ¡Â»â€¡u hiÃ¡Â»â€¡n dÃƒÂ¹ng mock. Khi Firebase sÃ¡ÂºÂµn sÃƒÂ ng, gÃ¡Â»Âi SnackRepository qua UseCase.
  */
@@ -446,7 +446,7 @@ public class CineShopFragment extends Fragment {
                     }
                     if (tvEmptyState != null) {
                         tvEmptyState.setVisibility(View.VISIBLE);
-                        tvEmptyState.setText("LÃ¡Â»â€”i tÃ¡ÂºÂ£i sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m: " + e.getMessage());
+                        tvEmptyState.setText("Lỗi tải sản phẩm: " + e.getMessage());
                     }
                 });
     }
@@ -465,7 +465,7 @@ public class CineShopFragment extends Fragment {
         if (tvEmptyState != null) {
             if (filtered.isEmpty()) {
                 tvEmptyState.setVisibility(View.VISIBLE);
-                tvEmptyState.setText("KhÃƒÂ´ng cÃƒÂ³ sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m nÃƒÂ o khÃ¡ÂºÂ£ dÃ¡Â»Â¥ng.");
+                tvEmptyState.setText("Không có sản phẩm nào khả dụng.");
             } else {
                 tvEmptyState.setVisibility(View.GONE);
             }

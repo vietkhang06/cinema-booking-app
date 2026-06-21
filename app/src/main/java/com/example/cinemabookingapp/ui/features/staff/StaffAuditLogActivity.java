@@ -86,7 +86,7 @@ public class StaffAuditLogActivity extends AuthActivity {
                 })
                 .addOnFailureListener(e -> {
                     showLoading(false);
-                    showToast("Lá»—i táº£i nháº­t kÃ½: " + e.getMessage());
+                    showToast("Lỗi tải nhật ký: " + e.getMessage());
                 });
     }
 
@@ -112,7 +112,7 @@ public class StaffAuditLogActivity extends AuthActivity {
             holder.tvActionBadge.setText(log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "ACTION");
             holder.tvTimestamp.setText(dateFormat.format(new Date(log.createdAt)));
             holder.tvNote.setText(log.note);
-            holder.tvActor.setText("Thá»±c hiá»‡n bá»Ÿi: " + log.actorId + " (" + log.actorRole + ")");
+            holder.tvActor.setText("Thực hiện bởi: " + log.actorId + " (" + log.actorRole + ")");
 
             // Badge color based on action type
             String action = log.action != null ? log.action.toUpperCase(Locale.getDefault()) : "";

@@ -97,18 +97,18 @@ public class StaffInvoiceActivity extends AuthActivity {
                 public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                     if (response.isSuccessful()) {
                         writeAuditLog("CONFIRM_PAYMENT", "Confirmed payment at counter");
-                        showToast("Ã„ÂÃƒÂ£ xÃƒÂ¡c nhÃ¡ÂºÂ­n thanh toÃƒÂ¡n");
+                        showToast("Đã xác nhận thanh toán");
                         retrieveDataFromNavigator();
                     } else {
                         showLoading(false);
-                        showToast("KhÃƒÂ´ng thÃ¡Â»Æ’ cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t thanh toÃƒÂ¡n: " + response.message());
+                        showToast("Không thể cập nhật thanh toán: " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
                     showLoading(false);
-                    showToast("LÃ¡Â»â€”i: " + t.getMessage());
+                    showToast("Lỗi: " + t.getMessage());
                 }
             });
         });
@@ -122,21 +122,21 @@ public class StaffInvoiceActivity extends AuthActivity {
                 public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                     if (response.isSuccessful()) {
                         writeAuditLog("CHECKIN", "Successfully check-in customer");
-                        showToast("Check-in thÃƒÂ nh cÃƒÂ´ng");
+                        showToast("Check-in thành công");
                         if (invoiceDetail != null && invoiceDetail.booking != null) {
                             createCheckinNotification(invoiceDetail.booking.userId, invoiceDetail.booking.movieTitleSnapshot);
                         }
                         retrieveDataFromNavigator();
                     } else {
                         showLoading(false);
-                        showToast("Check-in thÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i: " + response.message());
+                        showToast("Check-in thất bại: " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
                     showLoading(false);
-                    showToast("LÃ¡Â»â€”i: " + t.getMessage());
+                    showToast("Lỗi: " + t.getMessage());
                 }
             });
         });
@@ -147,7 +147,7 @@ public class StaffInvoiceActivity extends AuthActivity {
         invoiceId = intent.getStringExtra("invoiceId");
 
         if (invoiceId == null || invoiceId.trim().isEmpty()) {
-            showToast("HÃƒÂ³a Ã„â€˜Ã†Â¡n khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡");
+            showToast("Hóa đơn không hợp lệ");
             finish();
             return;
         }
@@ -158,7 +158,7 @@ public class StaffInvoiceActivity extends AuthActivity {
             public void onSuccess(Booking booking) {
                 if (booking == null) {
                     showLoading(false);
-                    showToast("KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y hÃƒÂ³a Ã„â€˜Ã†Â¡n: " + invoiceId);
+                    showToast("Không tìm thấy hóa đơn: " + invoiceId);
                     finish();
                     return;
                 }
@@ -170,7 +170,7 @@ public class StaffInvoiceActivity extends AuthActivity {
                         if (invoiceDetail != null) {
                             bindDataView(invoiceDetail);
                         } else {
-                            showToast("LÃ¡Â»â€”i tÃ¡ÂºÂ£i chi tiÃ¡ÂºÂ¿t hÃƒÂ³a Ã„â€˜Ã†Â¡n");
+                            showToast("Lỗi tải chi tiết hóa đơn");
                         }
                     });
                 });
@@ -179,7 +179,7 @@ public class StaffInvoiceActivity extends AuthActivity {
             @Override
             public void onError(String message) {
                 showLoading(false);
-                showToast("LÃ¡Â»â€”i: " + message);
+                showToast("Lỗi: " + message);
             }
         });
     }
@@ -188,11 +188,11 @@ public class StaffInvoiceActivity extends AuthActivity {
         eInvoiceView.setInvoiceDetail(detail);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        transactionDateTV.setText("NgÃƒÂ y tÃ¡ÂºÂ¡o: " + sdf.format(new Date(detail.booking.createdAt)));
+        transactionDateTV.setText("Ngày tạo: " + sdf.format(new Date(detail.booking.createdAt)));
 
         String payStatus = detail.booking.paymentStatus;
         if ("confirmed".equalsIgnoreCase(payStatus) || "paid".equalsIgnoreCase(payStatus)) {
-            paymentStatusTV.setText("Ã„ÂÃƒÆ’ THANH TOÃƒÂN");
+            paymentStatusTV.setText("ĐÃ THANH TOÁN");
             paymentStatusTV.setTextColor(0xFF4CAF50);
             updatePaymentButton.setVisibility(View.GONE);
             checkinButton.setVisibility(View.VISIBLE);
@@ -200,22 +200,22 @@ public class StaffInvoiceActivity extends AuthActivity {
 
             if (detail.booking.checkInAt > 0) {
                 checkinButton.setEnabled(false);
-                checkinButton.setText("Ã„ÂÃƒÂ£ Check-in");
-                checkinStatusTV.setText("Ã„ÂÃƒÂ£ Check-in lÃƒÂºc: " + sdf.format(new Date(detail.booking.checkInAt)));
+                checkinButton.setText("Đã Check-in");
+                checkinStatusTV.setText("Đã Check-in lúc: " + sdf.format(new Date(detail.booking.checkInAt)));
                 checkinStatusTV.setTextColor(0xFF4CAF50);
             } else {
                 checkinButton.setEnabled(true);
-                checkinButton.setText("Check-in VÃƒÂ©");
-                checkinStatusTV.setText("TrÃ¡ÂºÂ¡ng thÃƒÂ¡i: ChÃ†Â°a Check-in");
+                checkinButton.setText("Check-in Vé");
+                checkinStatusTV.setText("Trạng thái: Chưa Check-in");
                 checkinStatusTV.setTextColor(0xFFE53935);
             }
         } else {
-            paymentStatusTV.setText("CHÃ¡Â»Å“ THANH TOÃƒÂN");
+            paymentStatusTV.setText("CHỜ THANH TOÁN");
             paymentStatusTV.setTextColor(0xFFFF9800);
             updatePaymentButton.setVisibility(View.VISIBLE);
             checkinButton.setVisibility(View.GONE);
             Glide.with(this).load(R.drawable.ic_cross_circle).into(paymentStatusImg);
-            checkinStatusTV.setText("VÃƒÂ© chÃ†Â°a thanh toÃƒÂ¡n, khÃƒÂ´ng thÃ¡Â»Æ’ check-in");
+            checkinStatusTV.setText("Vé chưa thanh toán, không thể check-in");
             checkinStatusTV.setTextColor(0xFFE53935);
         }
     }
@@ -244,8 +244,8 @@ public class StaffInvoiceActivity extends AuthActivity {
         if (userId == null) return;
         com.example.cinemabookingapp.domain.model.Notification notification = new com.example.cinemabookingapp.domain.model.Notification();
         notification.userId = userId;
-        notification.title = "Check-in thÃƒÂ nh cÃƒÂ´ng";
-        notification.message = "CÃ¡ÂºÂ£m Ã†Â¡n bÃ¡ÂºÂ¡n Ã„â€˜ÃƒÂ£ check-in xem phim " + (movieTitle != null ? movieTitle : "") + ". ChÃƒÂºc bÃ¡ÂºÂ¡n xem phim vui vÃ¡ÂºÂ»!";
+        notification.title = "Check-in thành công";
+        notification.message = "Cảm ơn bạn đã check-in xem phim " + (movieTitle != null ? movieTitle : "") + ". Chúc bạn xem phim vui vẻ!";
         notification.type = "CHECKIN_SUCCESS";
         notification.isRead = false;
         notification.createdAt = System.currentTimeMillis();

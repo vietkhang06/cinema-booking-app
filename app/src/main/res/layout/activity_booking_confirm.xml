@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="XÃ¡c nháº­n Ä‘áº·t vÃ©"
+            android:text="Xác nhận đặt vé"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold"/>
@@ -51,7 +51,7 @@
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thá»i gian giá»¯ gháº¿: 07:00"
+            android:text="Thời gian giữ ghế: 07:00"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold"/>
@@ -85,7 +85,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="THÃ”NG TIN VÃ‰"
+                        android:text="THÔNG TIN VÉ"
                         android:textColor="#A13345"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -127,7 +127,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Ráº¡p"
+                            android:layout_weight="1" android:text="Rạp"
                             android:textColor="#666688" android:textSize="13sp" android:textStyle="bold"/>
                         <TextView android:id="@+id/tvCinemaName"
                             android:layout_width="0dp" android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Suáº¥t chiáº¿u"
+                            android:layout_weight="1" android:text="Suất chiếu"
                             android:textColor="#666688" android:textSize="13sp" android:textStyle="bold"/>
                         <TextView android:id="@+id/tvShowtime"
                             android:layout_width="0dp" android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Gháº¿"
+                            android:layout_weight="1" android:text="Ghế"
                             android:textColor="#666688" android:textSize="13sp" android:textStyle="bold"/>
                         <TextView android:id="@+id/tvSeats"
                             android:layout_width="0dp" android:layout_height="wrap_content"
@@ -186,7 +186,7 @@
                             android:id="@+id/btnPromo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Khuyáº¿n MÃ£i  â€º"
+                            android:text="Khuyến Mãi  ›"
                             android:textColor="#FAFAFC"
                             android:textSize="13sp"
                             android:textStyle="bold"
@@ -224,7 +224,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ãp dá»¥ng Ä‘iá»ƒm Stars"
+                            android:text="Áp dụng điểm Stars"
                             android:textColor="#FFFFFF"
                             android:textSize="13sp"
                             android:textStyle="bold"/>
@@ -241,7 +241,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Tá»•ng tiá»n"
+                            android:layout_weight="1" android:text="Tổng tiền"
                             android:textColor="#666688" android:textSize="15sp" android:textStyle="bold"/>
                         <TextView android:id="@+id/tvOriginalPrice"
                             android:layout_width="wrap_content"
@@ -254,7 +254,7 @@
                         <TextView android:id="@+id/tvTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 Ä‘"
+                            android:text="0 đ"
                             android:textColor="@color/black"
                             android:textSize="20sp"
                             android:textStyle="bold"/>
@@ -267,7 +267,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Báº®P NÆ¯á»šC MUA KÃˆM"
+                android:text="BẮP NƯỚC MUA KÈM"
                 android:textColor="#A13345"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -296,7 +296,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PHÆ¯Æ NG THá»¨C THANH TOÃN"
+                android:text="PHƯƠNG THỨC THANH TOÁN"
                 android:textColor="#A13345"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -323,7 +323,7 @@
                         android:id="@+id/rbPayBank"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Chuyá»ƒn khoáº£n MBBank"
+                        android:text="Chuyển khoản MBBank"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"
                         android:buttonTint="#E53935"
@@ -340,7 +340,7 @@
                         android:id="@+id/rbPayMomo"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="VÃ­ Ä‘iá»‡n tá»­ MoMo"
+                        android:text="Ví điện tử MoMo"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"
                         android:buttonTint="#E53935"
@@ -363,7 +363,7 @@
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="XÃ¡c nháº­n Ä‘áº·t vÃ©"
+            android:text="Xác nhận đặt vé"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"

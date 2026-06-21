@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Thanh toÃ¡n"
+            android:text="Thanh toán"
             android:textColor="#111111"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -84,7 +84,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PhÆ°Æ¡ng thá»©c thanh toÃ¡n"
+                    android:text="Phương thức thanh toán"
                     android:textColor="#111111"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -176,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="VÃ­ Äiá»‡n Tá»­ MoMo"
+                        android:text="Ví Điện Tử MoMo"
                         android:textColor="#222222"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -223,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="OnePay - Visa, Master, JCB,â€¦ / ATM / QR NgÃ¢n hÃ ng / Apple Pay"
+                        android:text="OnePay - Visa, Master, JCB,… / ATM / QR Ngân hàng / Apple Pay"
                         android:textColor="#222222"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -247,7 +247,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Khuyáº¿n mÃ£i"
+                    android:text="Khuyến mãi"
                     android:textColor="#111111"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -276,7 +276,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:text="MÃ£ voucher"
+                        android:text="Mã voucher"
                         android:textColor="#E8640C"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -286,7 +286,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="12dp"
-                        android:text="Chá»n voucher"
+                        android:text="Chọn voucher"
                         android:textColor="#005FE0"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -318,7 +318,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_input_orange"
                         android:paddingHorizontal="12dp"
-                        android:hint="Nháº­p mÃ£ voucher"
+                        android:hint="Nhập mã voucher"
                         android:textColorHint="#BBBBBB"
                         android:textColor="#111111"
                         android:textSize="14sp"
@@ -332,7 +332,7 @@
                         android:layout_height="44dp"
                         android:gravity="center"
                         android:background="@drawable/bg_btn_orange_filled"
-                        android:text="Ãp dá»¥ng"
+                        android:text="Áp dụng"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -346,7 +346,7 @@
                     android:textColor="#4CAF50"
                     android:textSize="13sp"
                     android:visibility="gone"
-                    android:text="ÄÃ£ Ã¡p dá»¥ng: ..." />
+                    android:text="Đã áp dụng: ..." />
 
                 <!-- Äiá»ƒm Star row header -->
                 <LinearLayout
@@ -370,7 +370,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:text="Sá»­ dá»¥ng Ä‘iá»ƒm Star"
+                        android:text="Sử dụng điểm Star"
                         android:textColor="#E8640C"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -395,7 +395,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:text="Äiá»ƒm hiá»‡n cÃ³: 0"
+                        android:text="Điểm hiện có: 0"
                         android:textColor="#888888"
                         android:textSize="13sp" />
 
@@ -412,7 +412,7 @@
                             android:layout_marginEnd="8dp"
                             android:background="@drawable/bg_input_orange"
                             android:paddingHorizontal="12dp"
-                            android:hint="Nháº­p Sá»‘ Stars"
+                            android:hint="Nhập Số Stars"
                             android:textColorHint="#BBBBBB"
                             android:textColor="#111111"
                             android:textSize="14sp"
@@ -426,7 +426,7 @@
                             android:layout_height="44dp"
                             android:gravity="center"
                             android:background="@drawable/bg_btn_orange_filled"
-                            android:text="Ãp dá»¥ng"
+                            android:text="Áp dụng"
                             android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -451,7 +451,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NÆ¡i nháº­n hÃ ng"
+                    android:text="Nơi nhận hàng"
                     android:textColor="#111111"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -508,7 +508,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tá»•ng cá»™ng: "
+                android:text="Tổng cộng: "
                 android:textColor="#888888"
                 android:textSize="13sp" />
 
@@ -516,7 +516,7 @@
                 android:id="@+id/tvCheckoutTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0Ä‘"
+                android:text="0đ"
                 android:textColor="#E8640C"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -528,7 +528,7 @@
             android:layout_height="46dp"
             android:gravity="center"
             android:background="@drawable/bg_btn_orange_filled"
-            android:text="Thanh ToÃ¡n"
+            android:text="Thanh Toán"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:textStyle="bold" />

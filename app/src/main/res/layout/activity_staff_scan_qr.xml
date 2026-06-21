@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="QuÃ©t MÃ£ VÃ©"
+            android:text="Quét Mã Vé"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -116,7 +116,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Káº¿t quáº£ quÃ©t gáº§n nháº¥t:"
+                        android:text="Kết quả quét gần nhất:"
                         android:textSize="13sp"
                         android:textColor="#7A757F" />
 
@@ -124,7 +124,7 @@
                         android:id="@+id/tv_scan_result"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ChÆ°a cÃ³ thÃ´ng tin quÃ©t"
+                        android:text="Chưa có thông tin quét"
                         android:textColor="#1E1A23"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -134,7 +134,7 @@
                         android:id="@+id/tv_ticket_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tráº¡ng thÃ¡i vÃ©: --"
+                        android:text="Trạng thái vé: --"
                         android:textSize="13sp"
                         android:textColor="#7A757F"
                         android:layout_marginTop="4dp" />
@@ -146,7 +146,7 @@
                 android:id="@+id/btn_scan_camera"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:text="Má»Ÿ Camera QuÃ©t QR"
+                android:text="Mở Camera Quét QR"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="16dp"
@@ -161,7 +161,7 @@
                 android:id="@+id/btn_upload_image"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:text="Táº£i áº£nh lÃªn tá»« thÆ° viá»‡n"
+                android:text="Tải ảnh lên từ thư viện"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="16dp"

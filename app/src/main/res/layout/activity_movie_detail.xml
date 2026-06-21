@@ -146,7 +146,7 @@
                                 android:id="@+id/tvMovieTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="TÃªn phim"
+                                android:text="Tên phim"
                                 android:textColor="#111111"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -155,7 +155,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="KhÃ¡m phÃ¡ lá»‹ch chiáº¿u vÃ  suáº¥t vÃ©"
+                                android:text="Khám phá lịch chiếu và suất vé"
                                 android:textColor="#666666"
                                 android:textSize="13sp" />
 
@@ -211,7 +211,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="14dp"
-                                    android:text="â± 103 phÃºt"
+                                    android:text="⏱ 103 phút"
                                     android:textColor="#444444"
                                     android:textSize="13sp" />
                                 <TextView
@@ -239,7 +239,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Lá»‹ch chiáº¿u"
+                            android:text="Lịch chiếu"
                             android:textAllCaps="false"
                             app:cornerRadius="15dp" />
                         <com.google.android.material.button.MaterialButton
@@ -247,7 +247,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="ThÃ´ng tin"
+                            android:text="Thông tin"
                             android:textAllCaps="false"
                             app:cornerRadius="15dp" />
                         <com.google.android.material.button.MaterialButton
@@ -255,7 +255,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="BÃ¬nh luáº­n"
+                            android:text="Bình luận"
                             android:textAllCaps="false"
                             app:cornerRadius="15dp" />
                     </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -277,7 +277,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="6dp"
                                 android:layout_weight="1"
-                                android:hint="Tá»‰nh/ThÃ nh"
+                                android:hint="Tỉnh/Thành"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
                                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                     android:id="@+id/actvCity"
@@ -292,7 +292,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:layout_weight="1"
-                                android:hint="Chá»n ráº¡p"
+                                android:hint="Chọn rạp"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
                                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                     android:id="@+id/actvCinema"
@@ -341,7 +341,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="12dp"
-                                android:text="Ráº¥t tiáº¿c, chÆ°a cÃ³ suáº¥t chiáº¿u nÃ o"
+                                android:text="Rất tiếc, chưa có suất chiếu nào"
                                 android:textColor="#888888"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -350,7 +350,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Vui lÃ²ng chá»n ngÃ y hoáº·c ráº¡p khÃ¡c"
+                                android:text="Vui lòng chọn ngày hoặc rạp khác"
                                 android:textColor="#AAAAAA"
                                 android:textSize="13sp" />
                         </LinearLayout>
@@ -367,7 +367,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Ná»™i dung phim"
+                            android:text="Nội dung phim"
                             android:textColor="#111111"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -377,7 +377,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:lineSpacingExtra="4dp"
-                            android:text="MÃ´ táº£ phim..."
+                            android:text="Mô tả phim..."
                             android:textColor="#555555"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -401,7 +401,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="ÄÃ¡nh giÃ¡ &amp; BÃ¬nh luáº­n"
+                                android:text="Đánh giá &amp; Bình luận"
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -429,7 +429,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="44dp"
                             android:layout_marginBottom="16dp"
-                            android:text="ÄÃ¡nh giÃ¡ phim"
+                            android:text="Đánh giá phim"
                             android:textAllCaps="false"
                             android:textColor="#1E1A23"
                             app:backgroundTint="#F4F4F4"
@@ -454,7 +454,7 @@
                                     android:id="@+id/etCommentInput"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="Chia sáº» cáº£m nghÄ© cá»§a báº¡n vá» phim..."
+                                    android:hint="Chia sẻ cảm nghĩ của bạn về phim..."
                                     android:background="@null"
                                     android:textSize="14sp"
                                     android:minLines="2"
@@ -465,7 +465,7 @@
                                     android:layout_height="36dp"
                                     android:layout_gravity="end"
                                     android:backgroundTint="#1E1A23"
-                                    android:text="Gá»­i"
+                                    android:text="Gửi"
                                     android:textSize="12sp"
                                     app:cornerRadius="18dp"/>
                             </LinearLayout>
@@ -483,7 +483,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:text="Táº£i thÃªm bÃ¬nh luáº­n"
+                            android:text="Tải thêm bình luận"
                             android:textColor="#1E4F8F"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -498,7 +498,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="22dp"
-                        android:text="Äáº·t vÃ© ngay"
+                        android:text="Đặt vé ngay"
                         android:textAllCaps="false"
                         android:textStyle="bold"
                         android:visibility="gone"

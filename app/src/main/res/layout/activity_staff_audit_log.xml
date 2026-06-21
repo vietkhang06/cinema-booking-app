@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Nháº­t KÃ½ Váº­n HÃ nh"
+            android:text="Nhật Ký Vận Hành"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="64dp"
-        android:text="KhÃ´ng cÃ³ lá»‹ch sá»­ nháº­t kÃ½ váº­n hÃ nh"
+        android:text="Không có lịch sử nhật ký vận hành"
         android:textSize="16sp"
         android:textColor="#7A757F"
         android:visibility="gone" />

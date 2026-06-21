@@ -38,13 +38,13 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Item
             int quantity = Integer.parseInt(parts[2]);
 
             holder.itemNameTV.setText(name);
-            holder.itemPriceTV.setText(String.format("ÄÆ¡n giÃ¡: %,.0f vnd", price));
+            holder.itemPriceTV.setText(String.format("Đơn giá: %,.0f vnd", price));
             holder.itemQuantityTV.setText("x" + quantity);
             
             // Set default popcorn/snack indicator icon
             holder.snackImageView.setImageResource(R.drawable.login_icon);
         } catch (Exception e) {
-            holder.itemNameTV.setText("Äá»“ Äƒn");
+            holder.itemNameTV.setText("Đồ ăn");
             holder.itemPriceTV.setText("");
             holder.itemQuantityTV.setText("");
         }

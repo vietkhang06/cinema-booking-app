@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Chá» Thanh ToÃ¡n"
+            android:text="Chờ Thanh Toán"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="64dp"
-        android:text="KhÃ´ng cÃ³ hÃ³a Ä‘Æ¡n nÃ o chá» thanh toÃ¡n"
+        android:text="Không có hóa đơn nào chờ thanh toán"
         android:textSize="16sp"
         android:textColor="#7A757F"
         android:visibility="gone" />

@@ -76,7 +76,7 @@ public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH
             DecimalFormat fmt = new DecimalFormat("#,###");
 
             tvName.setText(item.quantity + "x " + item.snack.name);
-            tvPrice.setText(fmt.format(item.snack.price) + "Ä‘");
+            tvPrice.setText(fmt.format(item.snack.price) + "đ");
             tvQty.setText(String.valueOf(item.quantity));
 
             if (imgItem != null) {

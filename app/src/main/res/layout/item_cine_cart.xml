@@ -45,7 +45,7 @@
                 android:id="@+id/tvCartItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1x Sáº£n pháº©m"
+                android:text="1x Sản phẩm"
                 android:textColor="#111111"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="0Ä‘"
+                android:text="0đ"
                 android:textColor="#E8640C"
                 android:textSize="14sp"
                 android:textStyle="bold" />

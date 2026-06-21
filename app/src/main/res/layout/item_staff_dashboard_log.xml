@@ -53,7 +53,7 @@
             android:id="@+id/tv_log_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="QuÃ©t bá»Ÿi: Staff 01"
+            android:text="Quét bởi: Staff 01"
             android:textColor="#7A757F"
             android:textSize="11sp"
             android:layout_marginTop="2dp"

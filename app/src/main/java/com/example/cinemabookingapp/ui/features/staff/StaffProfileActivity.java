@@ -85,29 +85,29 @@ public class StaffProfileActivity extends AuthActivity {
                     User user = response.body().getData();
                     displayProfile(user);
                 } else {
-                    showToast("KhÃ´ng thá»ƒ táº£i há»“ sÆ¡ nhÃ¢n viÃªn");
+                    showToast("Không thể tải hồ sơ nhân viên");
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
                 showLoading(false);
-                showToast("Lá»—i káº¿t ná»‘i: " + t.getMessage());
+                showToast("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
 
     private void displayProfile(User user) {
         tvUid.setText(user.uid);
-        tvName.setText(user.name != null && !user.name.isEmpty() ? user.name : "ChÆ°a cáº­p nháº­t");
+        tvName.setText(user.name != null && !user.name.isEmpty() ? user.name : "Chưa cập nhật");
         tvEmail.setText(user.email);
-        tvPhone.setText(user.phone != null && !user.phone.isEmpty() ? user.phone : "ChÆ°a cáº­p nháº­t");
-        tvGender.setText(user.gender != null && !user.gender.isEmpty() ? user.gender : "ChÆ°a cáº­p nháº­t");
-        tvBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "ChÆ°a cáº­p nháº­t");
-        tvStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoáº¡t Ä‘á»™ng");
+        tvPhone.setText(user.phone != null && !user.phone.isEmpty() ? user.phone : "Chưa cập nhật");
+        tvGender.setText(user.gender != null && !user.gender.isEmpty() ? user.gender : "Chưa cập nhật");
+        tvBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "Chưa cập nhật");
+        tvStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoạt động");
 
         if ("admin".equalsIgnoreCase(user.role)) {
-            tvRoleBadge.setText("Quáº£n trá»‹ viÃªn");
+            tvRoleBadge.setText("Quản trị viên");
             View adminBottomNav = findViewById(R.id.adminBottomNav);
             if (adminBottomNav != null) {
                 adminBottomNav.setVisibility(View.VISIBLE);
@@ -117,7 +117,7 @@ public class StaffProfileActivity extends AuthActivity {
                 backBtn.setVisibility(View.GONE);
             }
         } else if ("staff".equalsIgnoreCase(user.role)) {
-            tvRoleBadge.setText("NhÃ¢n viÃªn");
+            tvRoleBadge.setText("Nhân viên");
         } else {
             tvRoleBadge.setText(user.role);
         }
@@ -132,14 +132,14 @@ public class StaffProfileActivity extends AuthActivity {
 
     private void performLogout() {
         new AlertDialog.Builder(this)
-                .setTitle("ÄÄƒng xuáº¥t")
-                .setMessage("Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n Ä‘Äƒng xuáº¥t khÃ´ng?")
-                .setPositiveButton("ÄÄƒng xuáº¥t", (dialog, which) -> {
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                .setPositiveButton("Đăng xuất", (dialog, which) -> {
                     ServiceProvider.getInstance().getAuthenticationService().logOut();
-                    showToast("ÄÃ£ Ä‘Äƒng xuáº¥t");
+                    showToast("Đã đăng xuất");
                     AppNavigator.goToLogin(this);
                 })
-                .setNegativeButton("Há»§y", null)
+                .setNegativeButton("Hủy", null)
                 .show();
     }
 
@@ -150,20 +150,20 @@ public class StaffProfileActivity extends AuthActivity {
         TextInputEditText etConfirmPassword = dialogView.findViewById(R.id.etConfirmPassword);
 
         new AlertDialog.Builder(this)
-                .setTitle("Äá»•i máº­t kháº©u")
+                .setTitle("Đổi mật khẩu")
                 .setView(dialogView)
-                .setPositiveButton("Cáº­p nháº­t", (dialog, which) -> {
+                .setPositiveButton("Cập nhật", (dialog, which) -> {
                     String oldPass = etOldPassword.getText().toString();
                     String newPass = etNewPassword.getText().toString();
                     String confirmPass = etConfirmPassword.getText().toString();
 
                     if (TextUtils.isEmpty(newPass) || newPass.length() < 6) {
-                        showToast("Máº­t kháº©u má»›i pháº£i Ã­t nháº¥t 6 kÃ½ tá»±");
+                        showToast("Mật khẩu mới phải ít nhất 6 ký tự");
                         return;
                     }
 
                     if (!newPass.equals(confirmPass)) {
-                        showToast("Máº­t kháº©u xÃ¡c nháº­n khÃ´ng khá»›p");
+                        showToast("Mật khẩu xác nhận không khớp");
                         return;
                     }
 
@@ -171,14 +171,14 @@ public class StaffProfileActivity extends AuthActivity {
                     ServiceProvider.getInstance().getAuthenticationService().updatePassword(newPass)
                             .addOnSuccessListener(aVoid -> {
                                 showLoading(false);
-                                showToast("Äá»•i máº­t kháº©u thÃ nh cÃ´ng");
+                                showToast("Đổi mật khẩu thành công");
                             })
                             .addOnFailureListener(e -> {
                                 showLoading(false);
-                                showToast("Lá»—i: " + e.getMessage());
+                                showToast("Lỗi: " + e.getMessage());
                             });
                 })
-                .setNegativeButton("Há»§y", null)
+                .setNegativeButton("Hủy", null)
                 .show();
     }
 }

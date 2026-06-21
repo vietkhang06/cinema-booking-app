@@ -30,7 +30,7 @@
             android:id="@+id/tv_showtime_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CÃ²n 5 phÃºt"
+            android:text="Còn 5 phút"
             android:textColor="#7A757F"
             android:textSize="11sp"
             android:layout_marginTop="2dp" />

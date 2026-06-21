@@ -33,8 +33,8 @@ public class WelcomeVoucherService {
         Notification notif = new Notification();
         notif.notificationId = notifRef.getId();
         notif.userId = userId;
-        notif.title = "ChÃ o má»«ng KhÃ¡ch hÃ ng má»›i!";
-        notif.message = "Báº¡n vá»«a nháº­n Ä‘Æ°á»£c Voucher 200.000Ä‘ Ã¡p dá»¥ng cho má»i giao dá»‹ch. ChÃºc báº¡n xem phim vui váº»!";
+        notif.title = "Chào mừng Khách hàng mới!";
+        notif.message = "Bạn vừa nhận được Voucher 200.000đ áp dụng cho mọi giao dịch. Chúc bạn xem phim vui vẻ!";
         notif.type = NotificationType.VOUCHER_RECEIVED.name();
         notif.isRead = false;
         notif.createdAt = currentTime;
@@ -42,7 +42,7 @@ public class WelcomeVoucherService {
         batch.set(notifRef, notif);
 
         batch.commit()
-                .addOnSuccessListener(aVoid -> Log.d("WelcomeVoucher", "ÄÃ£ gá»­i voucher thÃ nh cÃ´ng cho user: " + userId))
-                .addOnFailureListener(e -> Log.e("WelcomeVoucher", "Lá»—i gá»­i voucher: " + e.getMessage()));
+                .addOnSuccessListener(aVoid -> Log.d("WelcomeVoucher", "Đã gửi voucher thành công cho user: " + userId))
+                .addOnFailureListener(e -> Log.e("WelcomeVoucher", "Lỗi gửi voucher: " + e.getMessage()));
     }
 }

@@ -55,7 +55,7 @@
                 android:id="@+id/snack_item_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GiÃ¡: 30.000 vnd"
+                android:text="Giá: 30.000 vnd"
                 android:textSize="13sp"
                 android:textColor="#7A757F"/>
         </LinearLayout>

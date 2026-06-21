@@ -409,7 +409,7 @@ import java.util.Map;
  *   - NhÃƒÂ¡Ã‚ÂºÃ‚Â­p mÃƒÆ’Ã‚Â£ voucher
  *   - SÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã†â€™m Star
  *   - ChÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh/thÃƒÆ’Ã‚Â nh + rÃƒÂ¡Ã‚ÂºÃ‚Â¡p nhÃƒÂ¡Ã‚ÂºÃ‚Â­n hÃƒÆ’Ã‚Â ng
- *   - Bottom bar: tÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng tiÃƒÂ¡Ã‚Â»Ã‚Ân + nÃƒÆ’Ã‚Âºt "Thanh ToÃƒÆ’Ã‚Â¡n"
+ *   - Bottom bar: tÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng tiÃƒÂ¡Ã‚Â»Ã‚Ân + nÃƒÆ’Ã‚Âºt "Thanh Toán"
  */
 public class CineCheckoutActivity extends FragmentActivity {
 
@@ -434,17 +434,17 @@ public class CineCheckoutActivity extends FragmentActivity {
 
     // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Province ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Cinema data (mock) ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
     private static final String[] PROVINCES = {
-            "ChÃƒÂ¡Ã‚Â»Ã‚Ân tÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh/thÃƒÆ’Ã‚Â nh", "HÃƒÆ’Ã‚Â  NÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i", "TP. HÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“ ChÃƒÆ’Ã‚Â­ Minh",
-            "Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â  NÃƒÂ¡Ã‚ÂºÃ‚Âµng", "CÃƒÂ¡Ã‚ÂºÃ‚Â§n ThÃƒâ€ Ã‚Â¡", "CÃƒÆ’Ã‚Â  Mau", "HuÃƒÂ¡Ã‚ÂºÃ‚Â¿", "Nha Trang"
+            "Chọn tỉnh/thành", "Hà Nội", "TP. Hồ Chí Minh",
+            "Đà Nẵng", "Cần Thơ", "Cà Mau", "Huế", "Nha Trang"
     };
     private static final String[][] CINEMAS = {
-            {"ChÃƒÂ¡Ã‚Â»Ã‚Ân rÃƒÂ¡Ã‚ÂºÃ‚Â¡p"},
-            {"Galaxy MÃƒÆ’Ã‚Âª Linh", "Galaxy NguyÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¦n Du", "Galaxy Kinh DÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng VÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng"},
-            {"Galaxy TÃƒÆ’Ã‚Â¢n BÃƒÆ’Ã‚Â¬nh", "Galaxy NguyÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¦n VÃƒâ€žÃ†â€™n QuÃƒÆ’Ã‚Â¡", "Galaxy Co.opXtra"},
-            {"Galaxy Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â  NÃƒÂ¡Ã‚ÂºÃ‚Âµng"},
-            {"Galaxy CÃƒÂ¡Ã‚ÂºÃ‚Â§n ThÃƒâ€ Ã‚Â¡"},
-            {"Galaxy CÃƒÆ’Ã‚Â  Mau"},
-            {"Galaxy HuÃƒÂ¡Ã‚ÂºÃ‚Â¿"},
+            {"Chọn rạp"},
+            {"Galaxy Mê Linh", "Galaxy Nguyễn Du", "Galaxy Kinh Dương Vương"},
+            {"Galaxy Tân Bình", "Galaxy Nguyễn Văn Quá", "Galaxy Co.opXtra"},
+            {"Galaxy Đà Nẵng"},
+            {"Galaxy Cần Thơ"},
+            {"Galaxy Cà Mau"},
+            {"Galaxy Huế"},
             {"Galaxy Nha Trang"}
     };
 
@@ -493,7 +493,7 @@ public class CineCheckoutActivity extends FragmentActivity {
 
         btnCheckoutPay.setOnClickListener(v -> {
             if (selectedPayment == null) {
-                Toast.makeText(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân phÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng thÃƒÂ¡Ã‚Â»Ã‚Â©c thanh toÃƒÆ’Ã‚Â¡n", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -501,13 +501,13 @@ public class CineCheckoutActivity extends FragmentActivity {
                     ? FirebaseAuth.getInstance().getCurrentUser().getUid()
                     : null;
             if (currentUid == null) {
-                Toast.makeText(this, "Vui lÃƒÆ’Ã‚Â²ng Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ thanh toÃƒÆ’Ã‚Â¡n", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng đăng nhập để thanh toán", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             List<CineCartManager.CartItem> items = CineCartManager.getInstance().getItems();
             if (items.isEmpty()) {
-                Toast.makeText(this, "GiÃƒÂ¡Ã‚Â»Ã‚Â hÃƒÆ’Ã‚Â ng cÃƒÂ¡Ã‚Â»Ã‚Â§a bÃƒÂ¡Ã‚ÂºÃ‚Â¡n Ãƒâ€žÃ¢â‚¬Ëœang trÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -524,7 +524,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                 primaryItemName = firstItem.snack.name;
                 primaryImageUrl = firstItem.snack.imageUrl;
                 if (items.size() > 1) {
-                    primaryItemName += " vÃƒÆ’Ã‚Â  " + (items.size() - 1) + " sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m khÃƒÆ’Ã‚Â¡c";
+                    primaryItemName += " và " + (items.size() - 1) + " sản phẩm khác";
                 }
             }
 
@@ -551,7 +551,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         CineShopOrderResponseDTO orderResponse = response.body().getData();
                         if (orderResponse != null) {
-                            Toast.makeText(CineCheckoutActivity.this, "Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚ÂºÃ‚Â·t hÃƒÆ’Ã‚Â ng thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng! Vui lÃƒÆ’Ã‚Â²ng hoÃƒÆ’Ã‚Â n tÃƒÂ¡Ã‚ÂºÃ‚Â¥t thanh toÃƒÆ’Ã‚Â¡n. ÃƒÂ°Ã…Â¸Ã…Â½Ã¢â‚¬Â°", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CineCheckoutActivity.this, "Đặt hàng thành công! Vui lòng hoàn tất thanh toán. 🎉", Toast.LENGTH_LONG).show();
                             CineCartManager.getInstance().clear();
 
                             // Redirect to PaymentInstructionActivity
@@ -565,17 +565,17 @@ public class CineCheckoutActivity extends FragmentActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(CineCheckoutActivity.this, "KhÃƒÆ’Ã‚Â´ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­n Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c thÃƒÆ’Ã‚Â´ng tin Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â¡n hÃƒÆ’Ã‚Â ng.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CineCheckoutActivity.this, "Không nhận được thông tin đơn hàng.", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(CineCheckoutActivity.this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i tÃƒÂ¡Ã‚ÂºÃ‚Â¡o Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â¡n hÃƒÆ’Ã‚Â ng: " + response.code(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CineCheckoutActivity.this, "Lỗi tạo đơn hàng: " + response.code(), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(retrofit2.Call<ApiResponse<CineShopOrderResponseDTO>> call, Throwable t) {
                     btnCheckoutPay.setEnabled(true);
-                    Toast.makeText(CineCheckoutActivity.this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i mÃƒÂ¡Ã‚ÂºÃ‚Â¡ng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CineCheckoutActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -609,7 +609,7 @@ public class CineCheckoutActivity extends FragmentActivity {
             ((TextView) row.findViewById(R.id.tvCartItemName))
                     .setText(item.quantity + "x " + item.snack.name);
             ((TextView) row.findViewById(R.id.tvCartItemPrice))
-                    .setText(fmt.format(item.subtotal()) + "Ãƒâ€žÃ¢â‚¬Ëœ");
+                    .setText(fmt.format(item.subtotal()) + "đ");
 
             layoutOrderSummary.addView(row);
         }
@@ -642,14 +642,14 @@ public class CineCheckoutActivity extends FragmentActivity {
         tvVoucherToggle.setOnClickListener(v -> {
             boolean visible = layoutVoucherInput.getVisibility() == View.VISIBLE;
             layoutVoucherInput.setVisibility(visible ? View.GONE : View.VISIBLE);
-            tvVoucherToggle.setText(visible ? "ÃƒÂ¢Ã¢â‚¬â€œÃ‚Â¼" : "ÃƒÂ¢Ã¢â‚¬â€œÃ‚Â²");
+            tvVoucherToggle.setText(visible ? "▼" : "▲");
         });
 
         // Star toggle
         tvStarToggle.setOnClickListener(v -> {
             boolean visible = layoutStarInput.getVisibility() == View.VISIBLE;
             layoutStarInput.setVisibility(visible ? View.GONE : View.VISIBLE);
-            tvStarToggle.setText(visible ? "ÃƒÂ¢Ã¢â‚¬â€œÃ‚Â¼" : "ÃƒÂ¢Ã¢â‚¬â€œÃ‚Â²");
+            tvStarToggle.setText(visible ? "▼" : "▲");
         });
 
         // Choose personal voucher
@@ -662,7 +662,7 @@ public class CineCheckoutActivity extends FragmentActivity {
         btnApplyVoucher.setOnClickListener(v -> {
             String code = etVoucherCode.getText().toString().trim().toUpperCase(java.util.Locale.getDefault());
             if (code.isEmpty()) {
-                Toast.makeText(this, "Vui lÃƒÆ’Ã‚Â²ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p mÃƒÆ’Ã‚Â£ voucher", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập mã voucher", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -677,7 +677,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                     .addOnSuccessListener(snapshot -> {
                         btnApplyVoucher.setEnabled(true);
                         if (snapshot == null || snapshot.isEmpty()) {
-                            Toast.makeText(this, "MÃƒÆ’Ã‚Â£ khuyÃƒÂ¡Ã‚ÂºÃ‚Â¿n mÃƒÆ’Ã‚Â£i khÃƒÆ’Ã‚Â´ng hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ hoÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Mã khuyến mãi không hợp lệ hoặc đã hết hạn!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -697,23 +697,23 @@ public class CineCheckoutActivity extends FragmentActivity {
                         long now = System.currentTimeMillis();
 
                         if (!"active".equalsIgnoreCase(status) || Boolean.TRUE.equals(deleted)) {
-                            Toast.makeText(this, "MÃƒÆ’Ã‚Â£ khuyÃƒÂ¡Ã‚ÂºÃ‚Â¿n mÃƒÆ’Ã‚Â£i khÃƒÆ’Ã‚Â´ng cÃƒÆ’Ã‚Â²n hoÃƒÂ¡Ã‚ÂºÃ‚Â¡t Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ng!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Mã khuyến mãi không còn hoạt động!", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if (validFrom != null && now < validFrom) {
-                            Toast.makeText(this, "ChÃƒâ€ Ã‚Â°a Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â¿n thÃƒÂ¡Ã‚Â»Ã‚Âi gian ÃƒÆ’Ã‚Â¡p dÃƒÂ¡Ã‚Â»Ã‚Â¥ng!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Chưa đến thời gian áp dụng!", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if (validTo != null && now > validTo) {
-                            Toast.makeText(this, "MÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Mã đã hết hạn!", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if (usageLimit != null && usedCount != null && usedCount >= usageLimit) {
-                            Toast.makeText(this, "Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ hÃƒÂ¡Ã‚ÂºÃ‚Â¿t lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£t sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Đã hết lượt sử dụng!", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if (minAmount != null && subtotal < minAmount) {
-                            Toast.makeText(this, String.format(java.util.Locale.getDefault(), "Ãƒâ€žÃ‚ÂÃƒâ€ Ã‚Â¡n hÃƒÆ’Ã‚Â ng phÃƒÂ¡Ã‚ÂºÃ‚Â£i tÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi thiÃƒÂ¡Ã‚Â»Ã†â€™u %,.0f Ãƒâ€žÃ¢â‚¬Ëœ", minAmount), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, String.format(java.util.Locale.getDefault(), "Đơn hàng phải tối thiểu %,.0f đ", minAmount), Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -729,7 +729,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                         }
 
                         if (voucherValue <= 0) {
-                            Toast.makeText(this, "MÃƒÆ’Ã‚Â£ khuyÃƒÂ¡Ã‚ÂºÃ‚Â¿n mÃƒÆ’Ã‚Â£i khÃƒÆ’Ã‚Â´ng hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Mã khuyến mãi không hợp lệ!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -738,16 +738,16 @@ public class CineCheckoutActivity extends FragmentActivity {
 
                         String promoLabel = (title != null && !title.trim().isEmpty()) ? title : code;
                         if (tvAppliedPromo != null) {
-                            tvAppliedPromo.setText("Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ ÃƒÆ’Ã‚Â¡p dÃƒÂ¡Ã‚Â»Ã‚Â¥ng: " + promoLabel + " (-" + fmt.format(voucherValue) + "Ãƒâ€žÃ¢â‚¬Ëœ)");
+                            tvAppliedPromo.setText("Đã áp dụng: " + promoLabel + " (-" + fmt.format(voucherValue) + "đ)");
                             tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                         }
 
-                        Toast.makeText(this, "ÃƒÆ’Ã‚Âp dÃƒÂ¡Ã‚Â»Ã‚Â¥ng thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng! GiÃƒÂ¡Ã‚ÂºÃ‚Â£m " + fmt.format(voucherValue) + "Ãƒâ€žÃ¢â‚¬Ëœ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Áp dụng thành công! Giảm " + fmt.format(voucherValue) + "đ", Toast.LENGTH_SHORT).show();
                         updateTotal();
                     })
                     .addOnFailureListener(e -> {
                         btnApplyVoucher.setEnabled(true);
-                        Toast.makeText(this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i kiÃƒÂ¡Ã‚Â»Ã†â€™m tra khuyÃƒÂ¡Ã‚ÂºÃ‚Â¿n mÃƒÆ’Ã‚Â£i: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Lỗi kiểm tra khuyến mãi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
 
@@ -755,11 +755,11 @@ public class CineCheckoutActivity extends FragmentActivity {
         btnApplyStar.setOnClickListener(v -> {
             String pts = etStarPoints.getText().toString().trim();
             if (pts.isEmpty()) {
-                Toast.makeText(this, "Vui lÃƒÆ’Ã‚Â²ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã†â€™m Star", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập số điểm Star", Toast.LENGTH_SHORT).show();
                 return;
             }
             // TODO: validate Star points via API
-            Toast.makeText(this, "BÃƒÂ¡Ã‚ÂºÃ‚Â¡n khÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â§ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã†â€™m Star Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ ÃƒÆ’Ã‚Â¡p dÃƒÂ¡Ã‚Â»Ã‚Â¥ng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bạn không đủ điểm Star để áp dụng", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -788,7 +788,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                     public void onNothingSelected(android.widget.AdapterView<?> parent) {}
                 });
 
-        // Default to "CÃƒÆ’Ã‚Â  Mau" (index 5)
+        // Default to "Cà Mau" (index 5)
         spinnerProvince.setSelection(5);
     }
 
@@ -798,7 +798,7 @@ public class CineCheckoutActivity extends FragmentActivity {
         double total = CineCartManager.getInstance().getTotalPrice();
         total -= discountVoucher;
         if (total < 0) total = 0;
-        tvCheckoutTotal.setText(fmt.format(total) + "Ãƒâ€žÃ¢â‚¬Ëœ");
+        tvCheckoutTotal.setText(fmt.format(total) + "đ");
     }
 
     private void showPersonalVoucherDialog() {
@@ -813,7 +813,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                 .addOnSuccessListener(snapshot -> {
                     btnApplyVoucher.setEnabled(true);
                     if (snapshot == null || snapshot.isEmpty()) {
-                        Toast.makeText(this, "BÃƒÂ¡Ã‚ÂºÃ‚Â¡n khÃƒÆ’Ã‚Â´ng cÃƒÆ’Ã‚Â³ voucher cÃƒÆ’Ã‚Â¡ nhÃƒÆ’Ã‚Â¢n nÃƒÆ’Ã‚Â o.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Bạn không có voucher cá nhân nào.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -829,7 +829,7 @@ public class CineCheckoutActivity extends FragmentActivity {
                     }
 
                     new android.app.AlertDialog.Builder(this)
-                            .setTitle("ChÃƒÂ¡Ã‚Â»Ã‚Ân Voucher CÃƒÂ¡Ã‚Â»Ã‚Â§a BÃƒÂ¡Ã‚ÂºÃ‚Â¡n")
+                            .setTitle("Chọn Voucher Của Bạn")
                             .setItems(displayList.toArray(new String[0]), (dialog, which) -> {
                                 com.example.cinemabookingapp.domain.model.Voucher selected = list.get(which);
                                 double subtotal = CineCartManager.getInstance().getTotalPrice();
@@ -838,7 +838,7 @@ public class CineCheckoutActivity extends FragmentActivity {
 
                                 if (selected.discountPercent > 100) {
                                     discount = selected.discountPercent;
-                                    discountText = fmt.format(discount) + "Ãƒâ€žÃ¢â‚¬Ëœ";
+                                    discountText = fmt.format(discount) + "đ";
                                 } else {
                                     discount = subtotal * (selected.discountPercent / 100.0);
                                     discountText = selected.discountPercent + "%";
@@ -850,18 +850,18 @@ public class CineCheckoutActivity extends FragmentActivity {
                                 etVoucherCode.setText(""); // XoÃƒÆ’Ã‚Â¡ chÃƒÂ¡Ã‚Â»Ã‚Â¯ trong ÃƒÆ’Ã‚Â´ nhÃƒÂ¡Ã‚ÂºÃ‚Â­p Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ trÃƒÆ’Ã‚Â¡nh hiÃƒÂ¡Ã‚Â»Ã†â€™u nhÃƒÂ¡Ã‚ÂºÃ‚Â§m lÃƒÆ’Ã‚Â  Ãƒâ€žÃ¢â‚¬Ëœang ÃƒÆ’Ã‚Â¡p 2 mÃƒÆ’Ã‚Â£
 
                                 if (tvAppliedPromo != null) {
-                                    tvAppliedPromo.setText("Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ ÃƒÆ’Ã‚Â¡p dÃƒÂ¡Ã‚Â»Ã‚Â¥ng: Voucher cÃƒÆ’Ã‚Â¡ nhÃƒÆ’Ã‚Â¢n (-" + discountText + ")");
+                                    tvAppliedPromo.setText("Đã áp dụng: Voucher cá nhân (-" + discountText + ")");
                                     tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                                 }
-                                Toast.makeText(this, "Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ ÃƒÆ’Ã‚Â¡p dÃƒÂ¡Ã‚Â»Ã‚Â¥ng voucher cÃƒÆ’Ã‚Â¡ nhÃƒÆ’Ã‚Â¢n giÃƒÂ¡Ã‚ÂºÃ‚Â£m " + discountText, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Đã áp dụng voucher cá nhân giảm " + discountText, Toast.LENGTH_SHORT).show();
                                 updateTotal();
                             })
-                            .setNegativeButton("Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â³ng", null)
+                            .setNegativeButton("Đóng", null)
                             .show();
                 })
                 .addOnFailureListener(e -> {
                     btnApplyVoucher.setEnabled(true);
-                    Toast.makeText(this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i tÃƒÂ¡Ã‚ÂºÃ‚Â£i voucher: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lỗi tải voucher: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 

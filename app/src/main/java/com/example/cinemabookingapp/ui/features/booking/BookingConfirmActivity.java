@@ -160,15 +160,15 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 long minutes = millisUntilFinished / 60000;
                 long seconds = (millisUntilFinished % 60000) / 1000;
                 if (tvTimer != null) {
-                    tvTimer.setText(String.format(Locale.getDefault(), "ThÃ¡Â»Âi gian giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿: %02d:%02d", minutes, seconds));
+                    tvTimer.setText(String.format(Locale.getDefault(), "Thời gian giữ ghế: %02d:%02d", minutes, seconds));
                 }
                 if (millisUntilFinished <= 60000 && !hasShownWarning) {
                     hasShownWarning = true;
                     if (!isFinishing() && !isDestroyed()) {
                         new androidx.appcompat.app.AlertDialog.Builder(BookingConfirmActivity.this)
-                                .setTitle("ThÃƒÂ´ng bÃƒÂ¡o")
-                                .setMessage("ChÃƒÂº ÃƒÂ½ thÃ¡Â»Âi gian giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿ cÃƒÂ²n 1 phÃƒÂºt, xin vui lÃƒÂ²ng thanh toÃƒÂ¡n")
-                                .setPositiveButton("Ã„ÂÃƒÂ³ng", (dialog, which) -> dialog.dismiss())
+                                .setTitle("Thông báo")
+                                .setMessage("Chú ý thời gian giữ ghế còn 1 phút, xin vui lòng thanh toán")
+                                .setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss())
                                 .setCancelable(false)
                                 .show();
                     }
@@ -178,7 +178,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 if (tvTimer != null) {
-                    tvTimer.setText("ThÃ¡Â»Âi gian giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿: 00:00");
+                    tvTimer.setText("Thời gian giữ ghế: 00:00");
                 }
                 if (momoDialog != null && momoDialog.isShowing()) {
                     momoDialog.dismiss();
@@ -186,7 +186,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 if (!isBookingConfirmed) {
                     releaseLockedSeats();
                 }
-                Toast.makeText(BookingConfirmActivity.this, "ThÃ¡Â»Âi gian giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿ Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t! Vui lÃƒÂ²ng chÃ¡Â»Ân lÃ¡ÂºÂ¡i.", Toast.LENGTH_LONG).show();
+                Toast.makeText(BookingConfirmActivity.this, "Thời gian giữ ghế đã hết! Vui lòng chọn lại.", Toast.LENGTH_LONG).show();
                 finish();
             }
         };
@@ -225,7 +225,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         }
 
         if (tvTotal != null) {
-            tvTotal.setText(String.format(Locale.getDefault(), "%,.0f Ã„â€˜", total));
+            tvTotal.setText(String.format(Locale.getDefault(), "%,.0f đ", total));
         }
 
         rgPayment = findViewById(R.id.rgPayment);
@@ -319,11 +319,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
         android.widget.Button btnAgree = view.findViewById(R.id.btnAgreeWarn);
 
         if (tvWarningTitle != null) {
-            tvWarningTitle.setText("XÃƒÂ¡c nhÃ¡ÂºÂ­n Ã„â€˜Ã¡Â»â„¢ tuÃ¡Â»â€¢i tÃ¡Â»â€˜i thiÃ¡Â»Æ’u C" + minAge);
+            tvWarningTitle.setText("Xác nhận độ tuổi tối thiểu C" + minAge);
         }
 
         if (tvWarningMsg != null) {
-            tvWarningMsg.setText("Phim nÃƒÂ y cÃƒÂ³ phÃƒÂ¢n loÃ¡ÂºÂ¡i Ã„â€˜Ã¡Â»â„¢ tuÃ¡Â»â€¢i lÃƒÂ  C" + minAge + " - CHÃ¡Â»Ë† DÃƒâ‚¬NH CHO KHÃƒÂN GIÃ¡ÂºÂ¢ TÃ¡Â»Âª " + minAge + " TUÃ¡Â»â€I TRÃ¡Â»Å¾ LÃƒÅ N. Vui lÃƒÂ²ng xÃƒÂ¡c nhÃ¡ÂºÂ­n bÃ¡ÂºÂ¡n Ã„â€˜Ã¡Â»Â§ tuÃ¡Â»â€¢i trÃ†Â°Ã¡Â»â€ºc khi tiÃ¡ÂºÂ¿p tÃ¡Â»Â¥c thanh toÃƒÂ¡n. VÃƒÂ© Ã„â€˜ÃƒÂ£ mua khÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c hoÃƒÂ n trÃ¡ÂºÂ£ hoÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¢i trÃ¡ÂºÂ£ nÃ¡ÂºÂ¿u khÃƒÂ´ng Ã„â€˜Ã¡Â»Â§ tuÃ¡Â»â€¢i.");
+            tvWarningMsg.setText("Phim này có phân loại độ tuổi là C" + minAge + " - CHỈ DÀNH CHO KHÁN GIẢ TỪ " + minAge + " TUỔI TRỞ LÊN. Vui lòng xác nhận bạn đủ tuổi trước khi tiếp tục thanh toán. Vé đã mua không được hoàn trả hoặc đổi trả nếu không đủ tuổi.");
         }
 
         if (btnCancel != null) {
@@ -355,7 +355,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String message) {
-                        Toast.makeText(BookingConfirmActivity.this, "KhÃƒÂ´ng thÃ¡Â»Æ’ tÃ¡ÂºÂ£i thÃƒÂ´ng tin thÃƒÂ nh viÃƒÂªn. Ã†Â¯u Ã„â€˜ÃƒÂ£i thÃ¡ÂºÂ» cÃƒÂ³ thÃ¡Â»Æ’ khÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c ÃƒÂ¡p dÃ¡Â»Â¥ng.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(BookingConfirmActivity.this, "Không thể tải thông tin thành viên. Ưu đãi thẻ có thể không được áp dụng.", Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -397,11 +397,11 @@ public class BookingConfirmActivity extends AppCompatActivity {
                             }
                             
                             if (tvAppliedPromo != null) {
-                                tvAppliedPromo.setText(String.format(Locale.getDefault(), "Voucher vÃƒÂ­: -%,.0f Ã„â€˜", discountVoucher));
+                                tvAppliedPromo.setText(String.format(Locale.getDefault(), "Voucher ví: -%,.0f đ", discountVoucher));
                                 tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                             }
                             updateTotalPrice();
-                            Toast.makeText(this, "HÃ¡Â»â€¡ thÃ¡Â»â€˜ng tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng ÃƒÂ¡p dÃ¡Â»Â¥ng Voucher tÃ¡Â»Â« vÃƒÂ­ cÃ¡Â»Â§a bÃ¡ÂºÂ¡n!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Hệ thống tự động áp dụng Voucher từ ví của bạn!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -411,7 +411,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (currentUser == null || currentUser.memberLevel == null) return;
         String level = currentUser.memberLevel.toLowerCase();
         double factor = 0;
-        String levelName = "ThÃƒÂ nh viÃƒÂªn";
+        String levelName = "Thành viên";
         if (level.contains("vip")) {
             factor = 0.10;
             levelName = "VIP";
@@ -425,7 +425,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (factor > 0) {
             discountRank = total * factor;
             if (tvAppliedPromo != null) {
-                tvAppliedPromo.setText("Ã„ÂÃƒÂ£ ÃƒÂ¡p dÃ¡Â»Â¥ng Ã†Â°u Ã„â€˜ÃƒÂ£i hÃ¡ÂºÂ¡ng " + levelName + " (-" + (int) (factor * 100) + "%)");
+                tvAppliedPromo.setText("Đã áp dụng ưu đãi hạng " + levelName + " (-" + (int) (factor * 100) + "%)");
             }
         }
         updateTotalPrice();
@@ -435,7 +435,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (currentUser == null) return;
         int points = (currentUser.points != null) ? currentUser.points : 0;
         if (tvStarsLabel != null) {
-            tvStarsLabel.setText(String.format(Locale.getDefault(), "ÃƒÂp dÃ¡Â»Â¥ng Ã„â€˜iÃ¡Â»Æ’m Stars (%d Stars cÃƒÂ³ sÃ¡ÂºÂµn)", points));
+            tvStarsLabel.setText(String.format(Locale.getDefault(), "Áp dụng điểm Stars (%d Stars có sẵn)", points));
         }
         if (switchStars != null) {
             switchStars.setEnabled(points > 0);
@@ -458,7 +458,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (discountVoucher > 0 || discountRank > 0 || discountStars > 0) {
             if (tvOriginalPrice != null) {
                 tvOriginalPrice.setVisibility(android.view.View.VISIBLE);
-                tvOriginalPrice.setText(String.format(Locale.getDefault(), "%,.0f Ã„â€˜", total + totalSnacksPrice));
+                tvOriginalPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", total + totalSnacksPrice));
                 tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
             }
         } else {
@@ -468,7 +468,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         }
 
         if (tvTotal != null) {
-            tvTotal.setText(String.format(Locale.getDefault(), "%,.0f Ã„â€˜", finalTotal));
+            tvTotal.setText(String.format(Locale.getDefault(), "%,.0f đ", finalTotal));
         }
     }
 
@@ -497,7 +497,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     .addOnSuccessListener(snapshot -> {
                         myVouchers.clear();
                         List<String> voucherNames = new ArrayList<>();
-                        voucherNames.add("--- ChÃ¡Â»Ân Voucher cÃƒÂ¡ nhÃƒÂ¢n ---");
+                        voucherNames.add("--- Chọn Voucher cá nhân ---");
 
                         if (snapshot != null && !snapshot.isEmpty()) {
                             myVouchers.addAll(snapshot.getDocuments());
@@ -506,10 +506,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 Double discount = doc.getDouble("discountValue");
                                 if (discount == null) discount = 0.0;
                                 
-                                String name = "Voucher hÃ¡Â»â€¡ thÃ¡Â»â€˜ng";
-                                if ("WELCOME_VOUCHER".equals(type)) name = "QuÃƒÂ  TÃƒÂ¢n Binh";
+                                String name = "Voucher hệ thống";
+                                if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
                                 
-                                voucherNames.add(String.format(Locale.getDefault(), "%s (-%,.0f Ã„â€˜)", name, discount));
+                                voucherNames.add(String.format(Locale.getDefault(), "%s (-%,.0f đ)", name, discount));
                             }
                         }
 
@@ -539,16 +539,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                     appliedPromoCode = ""; 
                     if (tvAppliedPromo != null) {
-                        String name = "Voucher hÃ¡Â»â€¡ thÃ¡Â»â€˜ng";
-                        if ("WELCOME_VOUCHER".equals(type)) name = "QuÃƒÂ  TÃƒÂ¢n Binh";
-                        tvAppliedPromo.setText(String.format(Locale.getDefault(), "Ã„ÂÃƒÂ£ ÃƒÂ¡p dÃ¡Â»Â¥ng: %s (-%,.0f Ã„â€˜)", name, discountVoucher));
+                        String name = "Voucher hệ thống";
+                        if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
+                        tvAppliedPromo.setText(String.format(Locale.getDefault(), "Đã áp dụng: %s (-%,.0f đ)", name, discountVoucher));
                         tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                         tvAppliedPromo.setTextColor(0xFF4CAF50);
                     }
                     
                     updateTotalPrice();
                     dialog.dismiss();
-                    Toast.makeText(this, "ÃƒÂp dÃ¡Â»Â¥ng Voucher cÃƒÂ¡ nhÃƒÂ¢n thÃƒÂ nh cÃƒÂ´ng!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Áp dụng Voucher cá nhân thành công!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -556,7 +556,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                 String code = edtPromoCode.getText().toString().trim().toUpperCase(Locale.getDefault());
                 if (code.isEmpty()) {
-                    Toast.makeText(this, "Vui lÃƒÂ²ng chÃ¡Â»Ân Voucher hoÃ¡ÂºÂ·c nhÃ¡ÂºÂ­p mÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Vui lòng chọn Voucher hoặc nhập mã khuyến mãi!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -565,7 +565,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 btnApplyPromo.setEnabled(false);
                 if (tvPromoStatus != null) {
                     tvPromoStatus.setVisibility(android.view.View.VISIBLE);
-                    tvPromoStatus.setText("Ã„Âang kiÃ¡Â»Æ’m tra mÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i...");
+                    tvPromoStatus.setText("Đang kiểm tra mã khuyến mãi...");
                 }
 
                 FirebaseFirestore.getInstance()
@@ -577,7 +577,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                             btnApplyPromo.setEnabled(true);
 
                             if (snapshot == null || snapshot.isEmpty()) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡ hoÃ¡ÂºÂ·c Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không hợp lệ hoặc đã hết hạn!");
                                 return;
                             }
 
@@ -599,39 +599,39 @@ public class BookingConfirmActivity extends AppCompatActivity {
                             long now = System.currentTimeMillis();
 
                             if (!"active".equalsIgnoreCase(status)) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i khÃƒÂ´ng cÃƒÂ²n hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không còn hoạt động!");
                                 return;
                             }
 
                             if (Boolean.TRUE.equals(deleted)) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i Ã„â€˜ÃƒÂ£ bÃ¡Â»â€¹ xoÃƒÂ¡!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã bị xoá!");
                                 return;
                             }
 
                             if (validFrom != null && now < validFrom) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i chÃ†Â°a Ã„â€˜Ã¡ÂºÂ¿n thÃ¡Â»Âi gian ÃƒÂ¡p dÃ¡Â»Â¥ng!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi chưa đến thời gian áp dụng!");
                                 return;
                             }
 
                             if (validTo != null && now > validTo) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã hết hạn!");
                                 return;
                             }
 
                             if (usageLimit != null && usedCount != null && usedCount >= usageLimit) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t lÃ†Â°Ã¡Â»Â£t sÃ¡Â»Â­ dÃ¡Â»Â¥ng!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi đã hết lượt sử dụng!");
                                 return;
                             }
 
                             if (minAmount != null && subtotal < minAmount) {
                                 showPromoInvalid(tvPromoStatus,
                                         String.format(Locale.getDefault(),
-                                                "Ã„ÂÃ†Â¡n hÃƒÂ ng phÃ¡ÂºÂ£i tÃ¡Â»â€˜i thiÃ¡Â»Æ’u %,.0f Ã„â€˜ Ã„â€˜Ã¡Â»Æ’ ÃƒÂ¡p dÃ¡Â»Â¥ng mÃƒÂ£ nÃƒÂ y!", minAmount));
+                                                "Đơn hàng phải tối thiểu %,.0f đ để áp dụng mã này!", minAmount));
                                 return;
                             }
 
                             if (!isPromoTargetMatch(targetRole)) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i khÃƒÂ´ng ÃƒÂ¡p dÃ¡Â»Â¥ng cho tÃƒÂ i khoÃ¡ÂºÂ£n cÃ¡Â»Â§a bÃ¡ÂºÂ¡n!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không áp dụng cho tài khoản của bạn!");
                                 return;
                             }
 
@@ -650,7 +650,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                             }
 
                             if (voucherValue <= 0) {
-                                showPromoInvalid(tvPromoStatus, "MÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡!");
+                                showPromoInvalid(tvPromoStatus, "Mã khuyến mãi không hợp lệ!");
                                 return;
                             }
 
@@ -664,18 +664,18 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                                 tvAppliedPromo.setText(
                                         String.format(Locale.getDefault(),
-                                                "Ã„ÂÃƒÂ£ ÃƒÂ¡p dÃ¡Â»Â¥ng: %s (-%,.0f Ã„â€˜)", promoLabel, voucherValue)
+                                                "Đã áp dụng: %s (-%,.0f đ)", promoLabel, voucherValue)
                                 );
                                 tvAppliedPromo.setTextColor(0xFF4CAF50);
                             }
 
                             updateTotalPrice();
                             dialog.dismiss();
-                            Toast.makeText(this, "ÃƒÂp dÃ¡Â»Â¥ng mÃƒÂ£ khuyÃ¡ÂºÂ¿n mÃƒÂ£i thÃƒÂ nh cÃƒÂ´ng!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Áp dụng mã khuyến mãi thành công!", Toast.LENGTH_SHORT).show();
                         })
                         .addOnFailureListener(e -> {
                             btnApplyPromo.setEnabled(true);
-                            showPromoInvalid(tvPromoStatus, "KhÃƒÂ´ng thÃ¡Â»Æ’ kiÃ¡Â»Æ’m tra khuyÃ¡ÂºÂ¿n mÃƒÂ£i: " + e.getMessage());
+                            showPromoInvalid(tvPromoStatus, "Không thể kiểm tra khuyến mãi: " + e.getMessage());
                         });
             });
         }
@@ -753,7 +753,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     }
 
                     if ("momo".equals(paymentMethod)) {
-                        Toast.makeText(BookingConfirmActivity.this, "Thanh toÃƒÂ¡n qua VÃƒÂ­ MoMo thÃƒÂ nh cÃƒÂ´ng!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
                         intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
                         intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
@@ -770,20 +770,20 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        createNotification("Ã„ÂÃ¡ÂºÂ·t vÃƒÂ© thÃƒÂ nh cÃƒÂ´ng", "BÃ¡ÂºÂ¡n Ã„â€˜ÃƒÂ£ Ã„â€˜Ã¡ÂºÂ·t vÃƒÂ© thÃƒÂ nh cÃƒÂ´ng. Vui lÃƒÂ²ng thanh toÃƒÂ¡n tÃ¡ÂºÂ¡i quÃ¡ÂºÂ§y trÃ†Â°Ã¡Â»â€ºc khi suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u bÃ¡ÂºÂ¯t Ã„â€˜Ã¡ÂºÂ§u 15 phÃƒÂºt.", "BOOKING_SUCCESS");
-                        Toast.makeText(BookingConfirmActivity.this, "Ã„ÂÃ¡ÂºÂ·t vÃƒÂ© thÃƒÂ nh cÃƒÂ´ng (ChÃ¡Â»Â thanh toÃƒÂ¡n tÃ¡ÂºÂ¡i quÃ¡ÂºÂ§y)!", Toast.LENGTH_SHORT).show();
+                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
+                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 } else {
-                    String msg = "LÃ¡Â»â€”i tÃ¡ÂºÂ¡o vÃƒÂ©. Vui lÃƒÂ²ng thÃ¡Â»Â­ lÃ¡ÂºÂ¡i.";
+                    String msg = "Lỗi tạo vé. Vui lòng thử lại.";
                     if (response.code() == 409) {
-                        msg = "Xung Ã„â€˜Ã¡Â»â„¢t: GhÃ¡ÂºÂ¿ Ã„â€˜ÃƒÂ£ Ã„â€˜Ã†Â°Ã¡Â»Â£c Ã„â€˜Ã¡ÂºÂ·t hoÃ¡ÂºÂ·c Ã„â€˜ang cÃƒÂ³ ngÃ†Â°Ã¡Â»Âi khÃƒÂ¡c giÃ¡Â»Â¯!";
+                        msg = "Xung đột: Ghế đã được đặt hoặc đang có người khác giữ!";
                     } else if (response.code() == 403) {
-                        msg = "LÃ¡Â»â€”i: BÃ¡ÂºÂ¡n khÃƒÂ´ng giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿ nÃƒÂ y hoÃ¡ÂºÂ·c Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n giÃ¡Â»Â¯ ghÃ¡ÂºÂ¿!";
+                        msg = "Lỗi: Bạn không giữ ghế này hoặc đã hết hạn giữ ghế!";
                     } else if (response.body() != null && response.body().getMessage() != null) {
                         msg = response.body().getMessage();
                     }
-                    createNotification("Ã„ÂÃ¡ÂºÂ·t vÃƒÂ© thÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i", msg, "BOOKING_FAILED");
+                    createNotification("Đặt vé thất bại", msg, "BOOKING_FAILED");
                     Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -791,7 +791,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
             @Override
             public void onFailure(retrofit2.Call<ApiResponse<BookingDTO>> call, Throwable t) {
                 if (btnConfirm != null) btnConfirm.setEnabled(true);
-                Toast.makeText(BookingConfirmActivity.this, "KÃ¡ÂºÂ¿t nÃ¡Â»â€˜i mÃ¡ÂºÂ¡ng khÃƒÂ´ng Ã¡Â»â€¢n Ã„â€˜Ã¡Â»â€¹nh. Vui lÃƒÂ²ng kiÃ¡Â»Æ’m tra lÃ¡ÂºÂ¡i Wifi/4G.", Toast.LENGTH_LONG).show();
+                Toast.makeText(BookingConfirmActivity.this, "Kết nối mạng không ổn định. Vui lòng kiểm tra lại Wifi/4G.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -829,20 +829,20 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (finalTotal < 0) finalTotal = 0;
 
         if (tvMomoAmount != null) {
-            tvMomoAmount.setText(String.format(Locale.getDefault(), "SÃ¡Â»â€˜ tiÃ¡Â»Ân: %,.0f Ã„â€˜", finalTotal));
+            tvMomoAmount.setText(String.format(Locale.getDefault(), "Số tiền: %,.0f đ", finalTotal));
         }
 
         if (btnCancelMomo != null) {
             btnCancelMomo.setOnClickListener(v -> {
                 momoDialog.dismiss();
-                Toast.makeText(this, "HÃ¡Â»Â§y thanh toÃƒÂ¡n MoMo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Hủy thanh toán MoMo", Toast.LENGTH_SHORT).show();
             });
         }
 
         if (btnConfirmMomo != null) {
             btnConfirmMomo.setOnClickListener(v -> {
                 momoDialog.dismiss();
-                Toast.makeText(this, "Ã„Âang xÃ¡Â»Â­ lÃƒÂ½ giao dÃ¡Â»â€¹ch MoMo...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đang xử lý giao dịch MoMo...", Toast.LENGTH_SHORT).show();
                 createBookingOnBackend(paymentMethod);
             });
         }
@@ -890,7 +890,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         layoutSnackContainer.removeAllViews();
 
         android.widget.TextView tvLoading = new android.widget.TextView(this);
-        tvLoading.setText("Ã„Âang tÃ¡ÂºÂ£i danh sÃƒÂ¡ch bÃ¡ÂºÂ¯p nÃ†Â°Ã¡Â»â€ºc...");
+        tvLoading.setText("Đang tải danh sách bắp nước...");
         tvLoading.setTextColor(android.graphics.Color.GRAY);
         layoutSnackContainer.addView(tvLoading);
 
@@ -902,7 +902,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         snackList.clear();
                         if (snacks == null || snacks.isEmpty()) {
                             android.widget.TextView tvEmpty = new android.widget.TextView(BookingConfirmActivity.this);
-                            tvEmpty.setText("KhÃƒÂ´ng cÃƒÂ³ combo bÃ¡ÂºÂ¯p nÃ†Â°Ã¡Â»â€ºc khÃ¡ÂºÂ£ dÃ¡Â»Â¥ng.");
+                            tvEmpty.setText("Không có combo bắp nước khả dụng.");
                             tvEmpty.setTextColor(android.graphics.Color.GRAY);
                             layoutSnackContainer.addView(tvEmpty);
                             return;
@@ -917,7 +917,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     public void onError(String message) {
                         layoutSnackContainer.removeAllViews();
                         android.widget.TextView tvError = new android.widget.TextView(BookingConfirmActivity.this);
-                        tvError.setText("KhÃƒÂ´ng thÃ¡Â»Æ’ tÃ¡ÂºÂ£i danh sÃƒÂ¡ch bÃ¡ÂºÂ¯p nÃ†Â°Ã¡Â»â€ºc.");
+                        tvError.setText("Không thể tải danh sách bắp nước.");
                         tvError.setTextColor(android.graphics.Color.RED);
                         layoutSnackContainer.addView(tvError);
                     }
@@ -939,7 +939,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         if (tvSnackName != null) tvSnackName.setText(snack.name);
         if (tvSnackDesc != null) tvSnackDesc.setText(snack.description);
         if (tvSnackPrice != null) {
-            tvSnackPrice.setText(String.format(Locale.getDefault(), "%,.0f Ã„â€˜", snack.price));
+            tvSnackPrice.setText(String.format(Locale.getDefault(), "%,.0f đ", snack.price));
         }
 
         if (ivSnackImage != null) {

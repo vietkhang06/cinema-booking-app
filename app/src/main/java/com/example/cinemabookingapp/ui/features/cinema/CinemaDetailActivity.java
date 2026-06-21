@@ -127,7 +127,7 @@ public class CinemaDetailActivity extends BaseActivity {
     private ShowtimeRepository showtimeRepository;
     private MovieRepository movieRepository;
     private String cinemaId = "";
-    private String cinemaName = "RÃ¡ÂºÂ¡p phim";
+    private String cinemaName = "Rạp phim";
     private String address = "";
     private String city = "";
     private String district = "";
@@ -233,7 +233,7 @@ public class CinemaDetailActivity extends BaseActivity {
             return;
         }
 
-        boolean hasFallback = !TextUtils.isEmpty(cinemaName) && !cinemaName.equals("RÃ¡ÂºÂ¡p phim");
+        boolean hasFallback = !TextUtils.isEmpty(cinemaName) && !cinemaName.equals("Rạp phim");
 
         if (!hasFallback) {
             scrollCinemaDetail.setVisibility(View.GONE);
@@ -249,9 +249,9 @@ public class CinemaDetailActivity extends BaseActivity {
                     if (!hasFallback) {
                         scrollCinemaDetail.setVisibility(View.GONE);
                         layoutError.setVisibility(View.VISIBLE);
-                        tvErrorMessage.setText("KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y thÃƒÂ´ng tin rÃ¡ÂºÂ¡p nÃƒÂ y.");
+                        tvErrorMessage.setText("Không tìm thấy thông tin rạp này.");
                     } else {
-                        showToast("KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y thÃƒÂ´ng tin rÃ¡ÂºÂ¡p.");
+                        showToast("Không tìm thấy thông tin rạp.");
                     }
                     return;
                 }
@@ -278,29 +278,29 @@ public class CinemaDetailActivity extends BaseActivity {
                 if (!hasFallback) {
                     scrollCinemaDetail.setVisibility(View.GONE);
                     layoutError.setVisibility(View.VISIBLE);
-                    tvErrorMessage.setText(TextUtils.isEmpty(message) ? "LÃ¡Â»â€”i kÃ¡ÂºÂ¿t nÃ¡Â»â€˜i. Vui lÃƒÂ²ng thÃ¡Â»Â­ lÃ¡ÂºÂ¡i." : message);
+                    tvErrorMessage.setText(TextUtils.isEmpty(message) ? "Lỗi kết nối. Vui lòng thử lại." : message);
                 } else {
-                    showToast(message == null ? "KhÃƒÂ´ng thÃ¡Â»Æ’ tÃ¡ÂºÂ£i thÃƒÂ´ng tin rÃ¡ÂºÂ¡p mÃ¡Â»â€ºi nhÃ¡ÂºÂ¥t." : message);
+                    showToast(message == null ? "Không thể tải thông tin rạp mới nhất." : message);
                 }
             }
         });
     }
 
     private void bindCinemaInfo() {
-        tvCinemaTitle.setText(safe(cinemaName, "RÃ¡ÂºÂ¡p phim"));
+        tvCinemaTitle.setText(safe(cinemaName, "Rạp phim"));
         tvCinemaTagline.setText(buildLocationText());
         
-        String statusText = "Ã„Âang hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng";
+        String statusText = "Đang hoạt động";
         int textColor = Color.parseColor("#10B981");
         int bgColor = Color.parseColor("#E6FBF3");
         
         if (!TextUtils.isEmpty(status)) {
-            if ("active".equalsIgnoreCase(status) || "available".equalsIgnoreCase(status) || "scheduled".equalsIgnoreCase(status) || "Ã„â€˜ang hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng".equalsIgnoreCase(status)) {
-                statusText = "Ã„Âang hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng";
+            if ("active".equalsIgnoreCase(status) || "available".equalsIgnoreCase(status) || "scheduled".equalsIgnoreCase(status) || "đang hoạt động".equalsIgnoreCase(status)) {
+                statusText = "Đang hoạt động";
                 textColor = Color.parseColor("#10B981");
                 bgColor = Color.parseColor("#E6FBF3");
-            } else if ("inactive".equalsIgnoreCase(status) || "tÃ¡ÂºÂ¡m dÃ¡Â»Â«ng".equalsIgnoreCase(status)) {
-                statusText = "TÃ¡ÂºÂ¡m dÃ¡Â»Â«ng";
+            } else if ("inactive".equalsIgnoreCase(status) || "tạm dừng".equalsIgnoreCase(status)) {
+                statusText = "Tạm dừng";
                 textColor = Color.parseColor("#EF4444");
                 bgColor = Color.parseColor("#FEE2E2");
             } else {
@@ -314,12 +314,12 @@ public class CinemaDetailActivity extends BaseActivity {
         tvStatus.setBackgroundTintList(ColorStateList.valueOf(bgColor));
         
         tvCityDistrict.setText(buildLocationText());
-        tvPhone.setText(TextUtils.isEmpty(phone) ? "ChÃ†Â°a cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t hotline" : phone);
-        tvAddress.setText(TextUtils.isEmpty(address) ? "ChÃ†Â°a cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t Ã„â€˜Ã¡Â»â€¹a chÃ¡Â»â€°" : address);
-        tvAbout.setText("KhÃƒÂ´ng gian rÃ¡ÂºÂ¡p Ã„â€˜Ã†Â°Ã¡Â»Â£c thiÃ¡ÂºÂ¿t kÃ¡ÂºÂ¿ cho trÃ¡ÂºÂ£i nghiÃ¡Â»â€¡m xem phim thoÃ¡ÂºÂ£i mÃƒÂ¡i, ÃƒÂ¢m thanh rÃƒÂµ nÃƒÂ©t vÃƒÂ  khu vÃ¡Â»Â±c ghÃ¡ÂºÂ¿ ngÃ¡Â»â€œi hiÃ¡Â»â€¡n Ã„â€˜Ã¡ÂºÂ¡i.");
+        tvPhone.setText(TextUtils.isEmpty(phone) ? "Chưa cập nhật hotline" : phone);
+        tvAddress.setText(TextUtils.isEmpty(address) ? "Chưa cập nhật địa chỉ" : address);
+        tvAbout.setText("Không gian rạp được thiết kế cho trải nghiệm xem phim thoải mái, âm thanh rõ nét và khu vực ghế ngồi hiện đại.");
         tvMapInfo.setText(hasCoordinate()
                 ? String.format(Locale.getDefault(), "%.5f, %.5f", latitude, longitude)
-                : "ChÃ†Â°a cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t tÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢");
+                : "Chưa cập nhật tọa độ");
     }
 
     private void loadCinemaImage() {
@@ -328,9 +328,9 @@ public class CinemaDetailActivity extends BaseActivity {
         
         if (cinemaName != null) {
             String nameLower = cinemaName.toLowerCase();
-            if (nameLower.contains("quÃ¡ÂºÂ­n 1") || nameLower.contains("quan 1")) {
+            if (nameLower.contains("quận 1") || nameLower.contains("quan 1")) {
                 backdropUrl = "https://i1.wp.com/kenhhomestay.com/wp-content/uploads/2019/12/cgv-binh-duong-2.png";
-            } else if (nameLower.contains("quÃ¡ÂºÂ­n 2") || nameLower.contains("quan 2")) {
+            } else if (nameLower.contains("quận 2") || nameLower.contains("quan 2")) {
                 backdropUrl = "https://lh7-us.googleusercontent.com/WdQhGK0lo8BkP7xAHPaRG-d0W1qVxgIyEyJ5J3hJGqkmiCXTmaVpXqcGgG3UCIP_4QoGoHnLEQPMHlww126sVxMZQ0NPUn0Hi2rY5GeY0tht6wuIbuY9NDpH3fDJeuwPcFNAZpAo8I94Q0-QWJvbE84";
             }
         }
@@ -361,7 +361,7 @@ public class CinemaDetailActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareText.trim());
-        startActivity(Intent.createChooser(intent, "Chia sÃ¡ÂºÂ» rÃ¡ÂºÂ¡p phim"));
+        startActivity(Intent.createChooser(intent, "Chia sẻ rạp phim"));
     }
 
     // ZELIOUS TASK: MÃ¡Â»Å¸ Google Maps thÃƒÂ´ng qua TÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢ Latitude/Longitude. NÃ¡ÂºÂ¿u khÃƒÂ´ng cÃƒÂ³ tÃ¡Â»Âa Ã„â€˜Ã¡Â»â„¢ sÃ¡ÂºÂ½ mÃ¡Â»Å¸ map theo chuÃ¡Â»â€”i text Ã„ÂÃ¡Â»â€¹a chÃ¡Â»â€°.
@@ -379,7 +379,7 @@ public class CinemaDetailActivity extends BaseActivity {
             }
             uri = Uri.parse("geo:0,0?q=" + Uri.encode(queryBuilder.toString()));
         } else {
-            showToast("ChÃ†Â°a cÃƒÂ³ Ã„â€˜Ã¡Â»â€¹a chÃ¡Â»â€° Ã„â€˜Ã¡Â»Æ’ mÃ¡Â»Å¸ bÃ¡ÂºÂ£n Ã„â€˜Ã¡Â»â€œ");
+            showToast("Chưa có địa chỉ để mở bản đồ");
             return;
         }
 
@@ -387,13 +387,13 @@ public class CinemaDetailActivity extends BaseActivity {
         try {
             startActivity(intent);
         } catch (Exception e) {
-            showToast("KhÃƒÂ´ng thÃ¡Â»Æ’ mÃ¡Â»Å¸ bÃ¡ÂºÂ£n Ã„â€˜Ã¡Â»â€œ");
+            showToast("Không thể mở bản đồ");
         }
     }
 
     private void callCinema() {
         if (TextUtils.isEmpty(phone)) {
-            showToast("ChÃ†Â°a cÃƒÂ³ sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i");
+            showToast("Chưa có số điện thoại");
             return;
         }
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
@@ -424,9 +424,9 @@ public class CinemaDetailActivity extends BaseActivity {
         for (int i = 0; i < 7; i++) {
             String label;
             if (i == 0) {
-                label = "HÃƒÂ´m nay";
+                label = "Hôm nay";
             } else if (i == 1) {
-                label = "NgÃƒÂ y mai";
+                label = "Ngày mai";
             } else {
                 label = getDayLabel(cal);
             }
@@ -503,11 +503,11 @@ public class CinemaDetailActivity extends BaseActivity {
     private String getDayLabel(Calendar targetCal) {
         Calendar today = Calendar.getInstance();
         if (isSameDay(targetCal, today)) {
-            return "HÃƒÂ´m nay";
+            return "Hôm nay";
         }
         today.add(Calendar.DAY_OF_YEAR, 1);
         if (isSameDay(targetCal, today)) {
-            return "NgÃƒÂ y mai";
+            return "Ngày mai";
         }
         return dayLabel(targetCal.get(Calendar.DAY_OF_WEEK));
     }
@@ -520,20 +520,20 @@ public class CinemaDetailActivity extends BaseActivity {
     private String dayLabel(int dayOfWeek) {
         switch (dayOfWeek) {
             case Calendar.MONDAY:
-                return "ThÃ¡Â»Â© Hai";
+                return "Thứ Hai";
             case Calendar.TUESDAY:
-                return "ThÃ¡Â»Â© Ba";
+                return "Thứ Ba";
             case Calendar.WEDNESDAY:
-                return "ThÃ¡Â»Â© TÃ†Â°";
+                return "Thứ Tư";
             case Calendar.THURSDAY:
-                return "ThÃ¡Â»Â© NÃ„Æ’m";
+                return "Thứ Năm";
             case Calendar.FRIDAY:
-                return "ThÃ¡Â»Â© SÃƒÂ¡u";
+                return "Thứ Sáu";
             case Calendar.SATURDAY:
-                return "ThÃ¡Â»Â© BÃ¡ÂºÂ£y";
+                return "Thứ Bảy";
             case Calendar.SUNDAY:
             default:
-                return "ChÃ¡Â»Â§ NhÃ¡ÂºÂ­t";
+                return "Chủ Nhật";
         }
     }
 
@@ -601,7 +601,7 @@ public class CinemaDetailActivity extends BaseActivity {
         });
     }
 
-    // ZELIOUS TASK: PhÃƒÂ¢n loÃ¡ÂºÂ¡i (gom nhÃƒÂ³m) cÃƒÂ¡c suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u theo "TÃƒÂªn Phim + Ã„ÂÃ¡Â»â€¹nh dÃ¡ÂºÂ¡ng (VD: 2D PhÃ¡Â»Â¥ Ã„â€˜Ã¡Â»Â)" vÃƒÂ  hiÃ¡Â»Æ’n thÃ¡Â»â€¹ theo tÃ¡Â»Â«ng NgÃƒÂ y cÃ¡Â»Â¥ thÃ¡Â»Æ’ (HÃƒÂ´m nay, NgÃƒÂ y mai,...).
+    // ZELIOUS TASK: PhÃƒÂ¢n loÃ¡ÂºÂ¡i (gom nhÃƒÂ³m) cÃƒÂ¡c suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u theo "Tên Phim + Định dạng (VD: 2D Phụ đề)" vÃƒÂ  hiÃ¡Â»Æ’n thÃ¡Â»â€¹ theo tÃ¡Â»Â«ng NgÃƒÂ y cÃ¡Â»Â¥ thÃ¡Â»Æ’ (HÃƒÂ´m nay, NgÃƒÂ y mai,...).
     private void renderRealShowtimes(List<Showtime> showtimes, Map<String, Movie> movieMap) {
         layoutNowShowing.removeAllViews();
 
@@ -631,7 +631,7 @@ public class CinemaDetailActivity extends BaseActivity {
                 }
                 if (TextUtils.isEmpty(st.movieId)) continue;
 
-                String formatLanguage = (st.format != null ? st.format : "2D") + (st.language != null ? " " + st.language : " PHÃ¡Â»Â¤ Ã„ÂÃ¡Â»â‚¬");
+                String formatLanguage = (st.format != null ? st.format : "2D") + (st.language != null ? " " + st.language : " PHỤ ĐỀ");
                 String key = st.movieId + "|" + formatLanguage.toUpperCase();
                 List<Showtime> list = grouped.get(key);
                 if (list == null) {
@@ -668,7 +668,7 @@ public class CinemaDetailActivity extends BaseActivity {
 
         if (nowShowingSchedules.isEmpty()) {
             TextView tvEmpty = new TextView(this);
-            tvEmpty.setText("HiÃ¡Â»â€¡n khÃƒÂ´ng cÃƒÂ³ suÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u nÃƒÂ o tÃ¡ÂºÂ¡i rÃ¡ÂºÂ¡p nÃƒÂ y.");
+            tvEmpty.setText("Hiện không có suất chiếu nào tại rạp này.");
             tvEmpty.setTextColor(Color.parseColor("#666666"));
             tvEmpty.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             tvEmpty.setGravity(Gravity.CENTER);
@@ -790,7 +790,7 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
         metaLayout.addView(ageBadge);
 
         TextView durationText = new TextView(this);
-        String durationStr = "Ã¢ÂÂ± " + (schedule.movie != null ? schedule.movie.durationMinutes : 0) + " PhÃƒÂºt";
+        String durationStr = "⏱ " + (schedule.movie != null ? schedule.movie.durationMinutes : 0) + " Phút";
         durationText.setText(durationStr);
         durationText.setTextColor(Color.parseColor("#555555"));
         durationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
@@ -803,10 +803,10 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
         metaLayout.addView(durationText);
 
         TextView releaseText = new TextView(this);
-        String releaseDateStr = "Ã°Å¸â€œâ€¦ --";
+        String releaseDateStr = "📅 --";
         if (schedule.movie != null && schedule.movie.releaseDate > 0) {
             SimpleDateFormat releaseSdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            releaseDateStr = "Ã°Å¸â€œâ€¦ " + releaseSdf.format(new Date(schedule.movie.releaseDate));
+            releaseDateStr = "📅 " + releaseSdf.format(new Date(schedule.movie.releaseDate));
         }
         releaseText.setText(releaseDateStr);
         releaseText.setTextColor(Color.parseColor("#555555"));
@@ -824,7 +824,7 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
         // Rating
         TextView ratingText = new TextView(this);
         double ratingVal = schedule.movie != null ? schedule.movie.ratingAvg : 0.0;
-        ratingText.setText(String.format(Locale.getDefault(), "Ã¢Ëœâ€¦ %.1f", ratingVal));
+        ratingText.setText(String.format(Locale.getDefault(), "★ %.1f", ratingVal));
         ratingText.setTextColor(Color.parseColor("#FFB300"));
         ratingText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
         ratingText.setTypeface(ratingText.getTypeface(), Typeface.BOLD);
@@ -892,7 +892,7 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
-            MaterialButton timeButton = buildTimeButton(schedule.movie, null, "SÃ¡ÂºÂ¯p cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t", false);
+            MaterialButton timeButton = buildTimeButton(schedule.movie, null, "Sắp cập nhật", false);
             row.addView(timeButton);
             timesWrap.addView(row);
         }
@@ -965,7 +965,7 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
         if (!TextUtils.isEmpty(district)) {
             return district;
         }
-        return "Khu vÃ¡Â»Â±c Ã„â€˜ang cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t";
+        return "Khu vực đang cập nhật";
     }
 
     private String safe(String value, String fallback) {

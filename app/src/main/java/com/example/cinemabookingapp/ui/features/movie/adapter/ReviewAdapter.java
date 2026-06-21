@@ -194,7 +194,7 @@ public class ReviewAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
                                 if (doc.getString("name") != null) {
                                     tvUserName.setText(doc.getString("name"));
                                 } else {
-                                    tvUserName.setText("NgÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi dÃƒÆ’Ã‚Â¹ng");
+                                    tvUserName.setText("Người dùng");
                                 }
                                 String avatarUrl = doc.getString("avatarUrl");
                                 if (avatarUrl != null && !avatarUrl.isEmpty()) {
@@ -206,13 +206,13 @@ public class ReviewAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
                                     imgUserAvatar.setImageResource(R.drawable.ic_user_avatar_24);
                                 }
                             } else {
-                                tvUserName.setText("NgÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi dÃƒÆ’Ã‚Â¹ng");
+                                tvUserName.setText("Người dùng");
                                 imgUserAvatar.setImageResource(R.drawable.ic_user_avatar_24);
                             }
                         })
-                        .addOnFailureListener(e -> tvUserName.setText("NgÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi dÃƒÆ’Ã‚Â¹ng"));
+                        .addOnFailureListener(e -> tvUserName.setText("Người dùng"));
             } else {
-                tvUserName.setText("NgÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âi dÃƒÆ’Ã‚Â¹ng");
+                tvUserName.setText("Người dùng");
             }
 
             if (review.createdAt > 0) {
@@ -221,7 +221,7 @@ public class ReviewAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
 
             if ("hidden".equals(review.status)) {
                 tvReviewContent.setVisibility(View.VISIBLE);
-                tvReviewContent.setText("BÃƒÆ’Ã‚Â¬nh luÃƒÂ¡Ã‚ÂºÃ‚Â­n nÃƒÆ’Ã‚Â y Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ quÃƒÂ¡Ã‚ÂºÃ‚Â£n trÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ viÃƒÆ’Ã‚Âªn ÃƒÂ¡Ã‚ÂºÃ‚Â©n.");
+                tvReviewContent.setText("Bình luận này đã bị quản trị viên ẩn.");
                 tvReviewContent.setTextColor(android.graphics.Color.GRAY);
                 tvReviewContent.setTypeface(null, android.graphics.Typeface.ITALIC);
             } else if (review.content == null || review.content.trim().isEmpty()) {
@@ -242,7 +242,7 @@ public class ReviewAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
             
             tvLikeCount.setText(String.valueOf(review.likedBy != null ? review.likedBy.size() : 0));
             tvDislikeCount.setText(String.valueOf(review.dislikedBy != null ? review.dislikedBy.size() : 0));
-            tvReplyCount.setText(review.replyCount != null && review.replyCount > 0 ? review.replyCount + " TrÃƒÂ¡Ã‚ÂºÃ‚Â£ lÃƒÂ¡Ã‚Â»Ã‚Âi" : "TrÃƒÂ¡Ã‚ÂºÃ‚Â£ lÃƒÂ¡Ã‚Â»Ã‚Âi");
+            tvReplyCount.setText(review.replyCount != null && review.replyCount > 0 ? review.replyCount + " Trả lời" : "Trả lời");
 
             boolean isLiked = currentUserId != null && review.likedBy != null && review.likedBy.contains(currentUserId);
             boolean isDisliked = currentUserId != null && review.dislikedBy != null && review.dislikedBy.contains(currentUserId);

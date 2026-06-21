@@ -62,7 +62,7 @@
             android:id="@+id/tv_actor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thá»±c hiá»‡n bá»Ÿi: staff_uid"
+            android:text="Thực hiện bởi: staff_uid"
             android:textSize="11sp"
             android:textColor="#7A757F" />
     </LinearLayout>

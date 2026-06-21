@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Chá»n gháº¿"
+            android:text="Chọn ghế"
             android:textColor="@color/black"
             android:textSize="13sp"
             android:textStyle="bold"/>
@@ -72,7 +72,7 @@
             android:id="@+id/tvSeatCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Gháº¿"
+            android:text="0 Ghế"
             android:textColor="#FAFAFC"
             android:textSize="12sp"
             android:background="#2A2A3A"
@@ -117,7 +117,7 @@
             android:background="@drawable/couch_solid_normal"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="ThÆ°á»ng" android:textSize="11sp" android:textColor="#2A2A3A"
+            android:text="Thường" android:textSize="11sp" android:textColor="#2A2A3A"
             android:layout_marginEnd="12dp"/>
 
         <View android:layout_width="12dp" android:layout_height="12dp"
@@ -131,14 +131,14 @@
             android:background="@drawable/couch_solid_full"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="ÄÃ£ Ä‘áº·t" android:textSize="11sp" android:textColor="#2A2A3A"
+            android:text="Đã đặt" android:textSize="11sp" android:textColor="#2A2A3A"
             android:layout_marginEnd="12dp"/>
 
         <View android:layout_width="12dp" android:layout_height="12dp"
             android:background="@drawable/couch_solid_selection"
             android:layout_marginEnd="4dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Äang chá»n" android:textSize="11sp" android:textColor="#2A2A3A"/>
+            android:text="Đang chọn" android:textSize="11sp" android:textColor="#2A2A3A"/>
     </LinearLayout>
 
     <!-- Seat map -->
@@ -227,7 +227,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tá»•ng tiá»n"
+                    android:text="Tổng tiền"
                     android:textColor="#D6D6E7"
                     android:textSize="11sp"/>
 
@@ -235,7 +235,7 @@
                     android:id="@+id/tvTotalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Ä‘"
+                    android:text="0 đ"
                     android:textColor="#FFFFFF"
                     android:textSize="22sp"
                     android:textStyle="bold"/>
@@ -247,7 +247,7 @@
                 android:layout_height="50dp"
                 android:paddingStart="28dp"
                 android:paddingEnd="28dp"
-                android:text="Mua vÃ©"
+                android:text="Mua vé"
                 android:textAllCaps="false"
                 android:textSize="15sp"
                 android:textStyle="bold"

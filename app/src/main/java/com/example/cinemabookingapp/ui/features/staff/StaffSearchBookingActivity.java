@@ -79,7 +79,7 @@ public class StaffSearchBookingActivity extends AuthActivity {
     private void doSearch() {
         String query = searchInput.getText().toString().trim();
         if (query.isEmpty()) {
-            showToast("Vui lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â²ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³a tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬m kiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿m");
+            showToast("Vui lòng nhập từ khóa tìm kiếm");
             return;
         }
 
@@ -102,14 +102,14 @@ public class StaffSearchBookingActivity extends AuthActivity {
                         resultsRv.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    showToast("KhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬m thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥y kÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t quÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ hoÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·c lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi kÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t nÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“i");
+                    showToast("Không tìm thấy kết quả hoặc lỗi kết nối");
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<BookingDTO>>> call, Throwable t) {
                 showLoading(false);
-                showToast("LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi: " + t.getMessage());
+                showToast("Lỗi: " + t.getMessage());
             }
         });
     }
@@ -133,16 +133,16 @@ public class StaffSearchBookingActivity extends AuthActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             BookingDTO dto = items.get(position);
             holder.tvMovieTitle.setText(dto.movieTitleSnapshot);
-            holder.tvBookingId.setText("MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©: " + dto.bookingId);
+            holder.tvBookingId.setText("Mã vé: " + dto.bookingId);
             holder.tvCinemaRoom.setText(dto.cinemaNameSnapshot + " - " + dto.roomNameSnapshot);
 
             String formattedTime = dto.showtimeStartAtSnapshot > 0 
                     ? dateFormat.format(new Date(dto.showtimeStartAtSnapshot)) 
-                    : "ChÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a xÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹nh";
-            holder.tvShowtime.setText("SuÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u: " + formattedTime);
+                    : "Chưa xác định";
+            holder.tvShowtime.setText("Suất chiếu: " + formattedTime);
 
             String seats = dto.seatCodes != null ? String.join(", ", dto.seatCodes) : "";
-            holder.tvSeats.setText("GhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿: " + seats);
+            holder.tvSeats.setText("Ghế: " + seats);
 
             holder.tvTotalPrice.setText(String.format("%,.0f vnd", dto.total));
 
