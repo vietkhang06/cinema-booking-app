@@ -129,6 +129,18 @@ public class AuthenticationService {
             @NonNull String phone,
             AuthCallback callback
     ) {
+        signUpWithEmailAndPassword(email, password, phone, null, null, null, callback);
+    }
+
+    public void signUpWithEmailAndPassword(
+            @NonNull String email,
+            @NonNull String password,
+            @NonNull String phone,
+            @Nullable String name,
+            @Nullable String gender,
+            @Nullable String birthDate,
+            AuthCallback callback
+    ) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
 
@@ -138,7 +150,14 @@ public class AuthenticationService {
                         return;
                     }
 
-                    userRepo.createUser(newUserDoc(fUser, phone), new ResultCallback<User>() {
+                    User user = newUserDoc(fUser, phone);
+                    if (user != null) {
+                        user.name = name;
+                        user.gender = gender;
+                        user.birthDate = birthDate;
+                    }
+
+                    userRepo.createUser(user, new ResultCallback<User>() {
                         @Override
                         public void onSuccess(User data) {
                             if (data == null) {

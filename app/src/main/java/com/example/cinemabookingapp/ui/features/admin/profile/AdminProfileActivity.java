@@ -135,7 +135,7 @@ public class AdminProfileActivity extends AuthActivity {
     }
 
     private void displayProfile(User user) {
-        tvUid.setText(user.uid);
+        tvUid.setText(user.getFormattedCode());
         String name = user.name != null && !user.name.isEmpty() ? user.name : "Chưa cập nhật";
         tvName.setText(name);
         tvEmail.setText(user.email);

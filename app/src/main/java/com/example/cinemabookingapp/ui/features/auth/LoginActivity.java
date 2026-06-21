@@ -104,9 +104,6 @@ public class LoginActivity extends BaseActivity {
 
         findViewById(R.id.btnFacebook)
                 .setOnClickListener(v -> startFacebookLogin());
-
-        findViewById(R.id.btnApple)
-                .setOnClickListener(v -> showToast("Apple chưa hỗ trợ"));
     }
 
     private void loadRememberedEmail() {
