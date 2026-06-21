@@ -18,6 +18,9 @@ import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.domain.model.Booking;
 import com.example.cinemabookingapp.ui.features.admin.adapter.AdminPaymentAdapter;
 import com.example.cinemabookingapp.ui.features.admin.model.AdminPayment;
+import com.example.cinemabookingapp.data.remote.api.BookingApiService;
+import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.data.dto.ApiResponse;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -25,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -207,8 +209,8 @@ public class AdminPaymentListActivity extends BaseActivity implements AdminPayme
         showLoading(true);
         db.collection("bookings").document(payment.bookingId).get()
                 .addOnSuccessListener(docSnapshot -> {
-                    showLoading(false);
                     if (docSnapshot.exists()) {
+                        showLoading(false);
                         Booking booking = docSnapshot.toObject(Booking.class);
                         if (booking != null) {
                             if (booking.bookingId == null) {
@@ -219,7 +221,45 @@ public class AdminPaymentListActivity extends BaseActivity implements AdminPayme
                             showToast("Lỗi định dạng dữ liệu vé.");
                         }
                     } else {
-                        showToast("Không tìm thấy thông tin đặt vé cho giao dịch này.");
+                        // Fallback: Check in cine_shop_orders
+                        db.collection("cine_shop_orders").document(payment.bookingId).get()
+                                .addOnSuccessListener(shopDoc -> {
+                                    showLoading(false);
+                                    if (shopDoc.exists()) {
+                                        Booking booking = new Booking();
+                                        booking.bookingId = shopDoc.getId();
+                                        booking.userId = shopDoc.getString("userId");
+                                        booking.showtimeId = null; // CineShop indicator
+                                        booking.movieTitleSnapshot = shopDoc.getString("itemName");
+                                        booking.movieImageUrlSnapshot = shopDoc.getString("itemImageUrl");
+
+                                        String pMethod = shopDoc.getString("paymentMethod");
+                                        booking.cinemaNameSnapshot = "CineShop - Nhận tại rạp (" + (pMethod != null ? pMethod.toUpperCase() : "ZALOPAY") + ")";
+
+                                        Long qtyObj = shopDoc.getLong("quantity");
+                                        int qty = qtyObj != null ? qtyObj.intValue() : 1;
+                                        booking.roomNameSnapshot = "Số lượng: " + qty;
+                                        booking.showtimeStartAtSnapshot = 0L;
+
+                                        Double priceObj = shopDoc.getDouble("totalPrice");
+                                        double price = priceObj != null ? priceObj : 0.0;
+                                        booking.total = price;
+                                        booking.subtotal = price;
+
+                                        booking.bookingStatus = shopDoc.getString("status");
+                                        booking.paymentStatus = shopDoc.getString("status");
+                                        booking.paymentCode = payment.paymentCode;
+
+                                        showDetailBottomSheet(payment, booking);
+                                    } else {
+                                        showToast("Không tìm thấy thông tin đặt vé/đơn hàng cho giao dịch này.");
+                                    }
+                                })
+                                .addOnFailureListener(err -> {
+                                    showLoading(false);
+                                    Log.e(TAG, "Error fetching shop order detail", err);
+                                    showToast("Không thể tải thông tin đơn hàng.");
+                                });
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -249,24 +289,24 @@ public class AdminPaymentListActivity extends BaseActivity implements AdminPayme
         MaterialButton btnRejectPayment = view.findViewById(R.id.btnRejectPayment);
 
         tvDetailAmount.setText(currencyFormatter.format(payment.amount) + " đ");
-        tvDetailPaymentCode.setText(payment.paymentCode != null ? payment.paymentCode : "—");
+        tvDetailPaymentCode.setText(payment.paymentCode != null ? payment.paymentCode : "-");
         tvDetailCustomerId.setText(booking.userId != null ? booking.userId : "Khách vãng lai");
-        tvDetailMovie.setText(booking.movieTitleSnapshot != null ? booking.movieTitleSnapshot : "—");
+        tvDetailMovie.setText(booking.movieTitleSnapshot != null ? booking.movieTitleSnapshot : "-");
 
         String cinemaInfo = (booking.cinemaNameSnapshot != null ? booking.cinemaNameSnapshot : "")
                 + (booking.roomNameSnapshot != null ? " - " + booking.roomNameSnapshot : "");
-        tvDetailCinema.setText(cinemaInfo.trim().isEmpty() ? "—" : cinemaInfo);
+        tvDetailCinema.setText(cinemaInfo.trim().isEmpty() ? "-" : cinemaInfo);
 
         if (booking.showtimeStartAtSnapshot > 0) {
             tvDetailShowtime.setText(dateTimeFormatter.format(new Date(booking.showtimeStartAtSnapshot)));
         } else {
-            tvDetailShowtime.setText("—");
+            tvDetailShowtime.setText("-");
         }
 
         if (booking.seatCodes != null && !booking.seatCodes.isEmpty()) {
             tvDetailSeats.setText(TextUtils.join(", ", booking.seatCodes));
         } else {
-            tvDetailSeats.setText("—");
+            tvDetailSeats.setText("-");
         }
 
         if ("momo".equalsIgnoreCase(payment.provider)) {
@@ -301,7 +341,7 @@ public class AdminPaymentListActivity extends BaseActivity implements AdminPayme
     private void showConfirmRejection(AdminPayment payment, Booking booking, BottomSheetDialog detailDialog) {
         new AlertDialog.Builder(this)
                 .setTitle("Từ chối thanh toán")
-                .setMessage("Bạn có chắc chắn muốn từ chối giao dịch " + payment.paymentCode + "? Trạng thái đặt vé sẽ được cập nhật thành đã hủy.")
+                .setMessage("Bạn có chắc chắn muốn từ chối giao dịch " + payment.paymentCode + "? Trạng thái đặt vé và sẽ được cập nhật thành đã hủy.")
                 .setPositiveButton("Từ chối", (dialog, which) -> executeRejection(payment, booking, detailDialog))
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -309,56 +349,76 @@ public class AdminPaymentListActivity extends BaseActivity implements AdminPayme
 
     private void executeApproval(AdminPayment payment, Booking booking, BottomSheetDialog detailDialog) {
         showLoading(true);
-        long now = System.currentTimeMillis();
-
-        WriteBatch batch = db.batch();
-        batch.update(db.collection("payments").document(payment.paymentId),
-                "status", "SUCCESS",
-                "updatedAt", now);
-
-        batch.update(db.collection("bookings").document(booking.bookingId),
-                "bookingStatus", "CONFIRMED",
-                "paymentStatus", "SUCCESS",
-                "updatedAt", now);
-
-        batch.commit()
-                .addOnSuccessListener(aVoid -> {
-                    showLoading(false);
+        BookingApiService bookingApi =
+                RetrofitClient.getInstance()
+                        .create(BookingApiService.class);
+        bookingApi.confirmPayment(booking.bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call,
+                                   retrofit2.Response<ApiResponse<Void>> response) {
+                showLoading(false);
+                if (response.isSuccessful()) {
                     detailDialog.dismiss();
                     showToast("Phê duyệt thanh toán thành công!");
-                })
-                .addOnFailureListener(e -> {
-                    showLoading(false);
-                    Log.e(TAG, "Approve failed", e);
-                    showToast("Duyệt thanh toán thất bại: " + e.getMessage());
-                });
+                } else {
+                    String errorMsg = "Duyệt thanh toán thất bại!";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorStr = response.errorBody().string();
+                            ApiResponse<?> apiError =
+                                    new com.google.gson.Gson().fromJson(errorStr, ApiResponse.class);
+                            if (apiError != null && apiError.getMessage() != null) {
+                                errorMsg = apiError.getMessage();
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                    showToast(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                showLoading(false);
+                showToast("Lỗi: " + t.getMessage());
+            }
+        });
     }
 
     private void executeRejection(AdminPayment payment, Booking booking, BottomSheetDialog detailDialog) {
         showLoading(true);
-        long now = System.currentTimeMillis();
-
-        WriteBatch batch = db.batch();
-        batch.update(db.collection("payments").document(payment.paymentId),
-                "status", "FAILED",
-                "updatedAt", now);
-
-        batch.update(db.collection("bookings").document(booking.bookingId),
-                "bookingStatus", "CANCELLED",
-                "paymentStatus", "FAILED",
-                "updatedAt", now);
-
-        batch.commit()
-                .addOnSuccessListener(aVoid -> {
-                    showLoading(false);
+        BookingApiService bookingApi =
+                RetrofitClient.getInstance()
+                        .create(BookingApiService.class);
+        bookingApi.cancelBooking(booking.bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ApiResponse<Void>> call,
+                                   retrofit2.Response<ApiResponse<Void>> response) {
+                showLoading(false);
+                if (response.isSuccessful()) {
                     detailDialog.dismiss();
                     showToast("Đã từ chối thanh toán giao dịch.");
-                })
-                .addOnFailureListener(e -> {
-                    showLoading(false);
-                    Log.e(TAG, "Reject failed", e);
-                    showToast("Từ chối thanh toán thất bại: " + e.getMessage());
-                });
+                } else {
+                    String errorMsg = "Từ chối thanh toán thất bại!";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorStr = response.errorBody().string();
+                            ApiResponse<?> apiError =
+                                    new com.google.gson.Gson().fromJson(errorStr, ApiResponse.class);
+                            if (apiError != null && apiError.getMessage() != null) {
+                                errorMsg = apiError.getMessage();
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                    showToast(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                showLoading(false);
+                showToast("Lỗi: " + t.getMessage());
+            }
+        });
     }
 
     @Override

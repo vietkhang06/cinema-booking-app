@@ -169,6 +169,18 @@
             android:exported="false" />
         <activity
             android:name=".ui.features.admin.report.AdminReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.features.admin.cineshop.AdminCineShopListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.features.admin.cineshop.AdminCineShopFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.features.admin.notification.AdminSendNotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.features.admin.notification.AdminSelectUserActivity"
             android:exported="false" /> <!-- MAIN -->
         <activity
             android:name=".MainActivity"

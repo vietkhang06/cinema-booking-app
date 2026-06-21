@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemabookingapp.R;
 import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.data.dto.CineShopItemDTO;
-import com.example.cinemabookingapp.ui.features.admin.dashboard.AdminBottomNavHelper;
 import com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,8 +38,6 @@ public class AdminCineShopListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_cineshop_list);
-
-
 
         initViews();
         setupList();
