@@ -24,4 +24,17 @@ public class User {
 
     public User() {
     }
+
+    public String getFormattedCode() {
+        if (uid == null) return "";
+        String prefix = "KH";
+        if ("admin".equalsIgnoreCase(role)) {
+            prefix = "QTV";
+        } else if ("staff".equalsIgnoreCase(role)) {
+            prefix = "NV";
+        }
+        int hash = Math.abs(uid.hashCode());
+        int num = (hash % 99) + 1;
+        return prefix + String.format("%02d", num);
+    }
 }

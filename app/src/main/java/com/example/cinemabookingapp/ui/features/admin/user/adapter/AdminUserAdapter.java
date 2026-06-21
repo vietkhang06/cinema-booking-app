@@ -1,5 +1,8 @@
 package com.example.cinemabookingapp.ui.features.admin.user.adapter;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import com.example.cinemabookingapp.domain.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.Holder> {
 
@@ -45,20 +49,51 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.Hold
     public void onBindViewHolder(@NonNull Holder h, int i) {
         User u = list.get(i);
 
-        h.name.setText(u.name != null ? u.name : "N/A");
-        h.email.setText(u.email != null ? u.email : "N/A");
+        h.name.setText(u.name != null ? u.name : "Khách hàng");
         
-        String cinema = u.cinemaName != null && !u.cinemaName.isEmpty() ? u.cinemaName : "Chưa phân rạp";
-        h.roleAndCinema.setText("Vai trò: " + (u.role != null ? u.role.toUpperCase() : "CUSTOMER") + " • Rạp: " + cinema);
+        String contact = "";
+        if (u.phone != null && !u.phone.isEmpty()) {
+            contact += u.phone;
+        }
+        if (u.email != null && !u.email.isEmpty()) {
+            if (!contact.isEmpty()) contact += " • ";
+            contact += u.email;
+        }
+        h.contact.setText(contact.isEmpty() ? "Không có thông tin liên hệ" : contact);
 
-        if ("active".equalsIgnoreCase(u.status)) {
-            h.status.setText("HOẠT ĐỘNG");
-            h.status.setTextColor(android.graphics.Color.parseColor("#10B981"));
-            h.status.setBackgroundResource(R.drawable.bg_status_active_pill);
+        // Level styling
+        String level = u.memberLevel != null ? u.memberLevel.toUpperCase(Locale.getDefault()) : "STANDARD";
+        if ("BASIC".equals(level)) {
+            level = "STANDARD";
+        }
+        h.level.setText(level);
+        if ("GOLD".equals(level)) {
+            h.level.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFF3CD")));
+            h.level.setTextColor(Color.parseColor("#856404"));
+        } else if ("PLATINUM".equals(level)) {
+            h.level.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E2E8F0")));
+            h.level.setTextColor(Color.parseColor("#475569"));
+        } else if ("VIP".equals(level)) {
+            h.level.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F8D7DA")));
+            h.level.setTextColor(Color.parseColor("#721C24"));
         } else {
-            h.status.setText("TẠM KHÓA");
-            h.status.setTextColor(android.graphics.Color.parseColor("#E53935"));
-            h.status.setBackgroundResource(R.drawable.bg_status_inactive_pill);
+            h.level.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F6F4F8")));
+            h.level.setTextColor(Color.parseColor("#4A4650"));
+        }
+
+        // Points
+        h.points.setText(((u.points != null) ? u.points : 0) + " điểm");
+
+        // Status light indicator
+        boolean isActive = !"locked".equalsIgnoreCase(u.status);
+        if (isActive) {
+            h.viewStatus.setBackgroundResource(R.drawable.dot_active);
+            h.viewStatus.setBackgroundTintList(null);
+        } else {
+            h.viewStatus.setBackgroundResource(0);
+            h.viewStatus.setBackground(new ColorDrawable(Color.RED));
+            h.viewStatus.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            h.viewStatus.setClipToOutline(true);
         }
 
         if (u.avatarUrl != null && !u.avatarUrl.isEmpty()) {
@@ -84,15 +119,17 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.Hold
 
     static class Holder extends RecyclerView.ViewHolder {
         ImageView avatar;
-        TextView name, email, roleAndCinema, status;
+        TextView name, contact, level, points;
+        View viewStatus;
 
         Holder(View v) {
             super(v);
-            avatar = v.findViewById(R.id.ivUserAvatar);
-            name = v.findViewById(R.id.tvUserName);
-            email = v.findViewById(R.id.tvUserEmail);
-            roleAndCinema = v.findViewById(R.id.tvUserRoleAndCinema);
-            status = v.findViewById(R.id.tvUserStatus);
+            avatar = v.findViewById(R.id.imgAvatar);
+            name = v.findViewById(R.id.tvCustomerName);
+            contact = v.findViewById(R.id.tvCustomerContact);
+            level = v.findViewById(R.id.tvCustomerLevel);
+            points = v.findViewById(R.id.tvCustomerPoints);
+            viewStatus = v.findViewById(R.id.viewStatusIndicator);
         }
     }
 }

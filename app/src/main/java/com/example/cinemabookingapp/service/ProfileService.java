@@ -57,7 +57,7 @@ public class ProfileService {
             @Override
             public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if(!response.body().isSuccess()){
+                    if(response.body().isSuccess()){
                         User updatedUser = response.body().getData();
                         authService.setCurrentAuthUser(updatedUser);
                         callback.onSuccess(updatedUser);
