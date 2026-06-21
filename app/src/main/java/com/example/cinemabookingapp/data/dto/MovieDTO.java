@@ -19,6 +19,7 @@ public class MovieDTO {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+    public boolean featuredPopup;
 
     public MovieDTO() {
     }

@@ -13,6 +13,9 @@ import com.example.cinemabookingapp.core.base.BaseActivity;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
 
+import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.domain.model.User;
+
 public class SplashActivity extends BaseActivity {
 
     private static final String TAG = "SPLASH_DEBUG";
@@ -40,10 +43,27 @@ public class SplashActivity extends BaseActivity {
             Log.e(TAG, "==================================");
 
             if (isLoggedIn && isRememberMe) {
-                AppNavigator.goToHomeByRole(this, role);
+                ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().getCurrentAuthUser(new ResultCallback<User>() {
+                    @Override
+                    public void onSuccess(User data) {
+                        String finalRole = role;
+                        if (data != null) {
+                            finalRole = data.role;
+                            sessionManager.saveLoginState(true, data.role, data.uid);
+                        }
+                        Log.e(TAG, "Dynamic role sync success. Routing to: " + finalRole);
+                        AppNavigator.goToHomeByRole(SplashActivity.this, finalRole);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e(TAG, "Dynamic role sync failed: " + message + ". Falling back to cached role: " + role);
+                        AppNavigator.goToHomeByRole(SplashActivity.this, role);
+                    }
+                });
             } else {
                 ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().logOut();
-                AppNavigator.goToLogin(this);
+                AppNavigator.goToCustomerHome(this);
             }
         }, SPLASH_DELAY);
     }

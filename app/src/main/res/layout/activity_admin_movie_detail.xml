@@ -110,5 +110,16 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSetFeatured"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#D97706"
+            android:drawablePadding="8dp"
+            android:text="⭐  Đặt làm Popup nổi bật"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
     </LinearLayout>
 </ScrollView>

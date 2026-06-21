@@ -261,6 +261,81 @@ public class MovieRemoteDataSource {
                 });
     }
 
+    /**
+     * Sets the featuredPopup flag for a movie.
+     * Clears the flag on all other movies first to ensure only one featured movie at a time.
+     */
+    public void setFeaturedPopup(String movieId, boolean featured, ResultCallback<Void> callback) {
+        if (movieId == null || movieId.trim().isEmpty()) {
+            if (callback != null) callback.onError("movieId không hợp lệ");
+            return;
+        }
+
+        // Step 1: Clear featuredPopup on all currently featured movies
+        firestore.collection(COLLECTION_MOVIES)
+                .whereEqualTo("featuredPopup", true)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    // Batch clear all existing featured movies
+                    com.google.firebase.firestore.WriteBatch batch = firestore.batch();
+                    for (com.google.firebase.firestore.QueryDocumentSnapshot doc : querySnapshot) {
+                        batch.update(doc.getReference(), "featuredPopup", false);
+                    }
+
+                    batch.commit().addOnSuccessListener(unused -> {
+                        if (!featured) {
+                            // If we're just clearing, we're done
+                            if (callback != null) callback.onSuccess(null);
+                            return;
+                        }
+                        // Step 2: Set the target movie as featured
+                        firestore.collection(COLLECTION_MOVIES)
+                                .document(movieId)
+                                .update("featuredPopup", true)
+                                .addOnSuccessListener(v -> {
+                                    if (callback != null) callback.onSuccess(null);
+                                })
+                                .addOnFailureListener(e -> {
+                                    if (callback != null)
+                                        callback.onError(messageOrDefault(e, "Không thể đặt phim nổi bật"));
+                                });
+                    }).addOnFailureListener(e -> {
+                        if (callback != null)
+                            callback.onError(messageOrDefault(e, "Không thể xoá trạng thái nổi bật cũ"));
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null)
+                        callback.onError(messageOrDefault(e, "Không thể truy vấn phim nổi bật"));
+                });
+    }
+
+    /**
+     * Fetches the single movie marked as featuredPopup = true.
+     * Returns null via callback if none found.
+     */
+    public void getFeaturedPopupMovie(ResultCallback<Movie> callback) {
+        firestore.collection(COLLECTION_MOVIES)
+                .whereEqualTo("featuredPopup", true)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot == null || querySnapshot.isEmpty()) {
+                        if (callback != null) callback.onSuccess(null);
+                        return;
+                    }
+                    com.google.firebase.firestore.QueryDocumentSnapshot doc =
+                            (com.google.firebase.firestore.QueryDocumentSnapshot)
+                                    querySnapshot.getDocuments().get(0);
+                    Movie movie = mapDocumentToMovie(doc.getId(), doc.getData());
+                    if (callback != null) callback.onSuccess(movie);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null)
+                        callback.onError(messageOrDefault(e, "Không thể tải phim nổi bật"));
+                });
+    }
+
     private boolean isVisible(DocumentSnapshot documentSnapshot) {
         Boolean deleted = documentSnapshot.getBoolean("deleted");
         if (deleted != null && deleted) {
@@ -310,6 +385,13 @@ public class MovieRemoteDataSource {
         setValue(movie, "updatedAt", data.get("updatedAt"));
         setValue(movie, "isActive", data.get("isActive"));
         setValue(movie, "deleted", data.get("deleted"));
+        // featuredPopup field
+        Object featured = data.get("featuredPopup");
+        if (featured instanceof Boolean) {
+            setValue(movie, "featuredPopup", featured);
+        } else {
+            setValue(movie, "featuredPopup", false);
+        }
 
         return movie;
     }
@@ -363,6 +445,9 @@ public class MovieRemoteDataSource {
 
         putIfNotNull(data, "isActive", readValue(movie, "isActive"));
         putIfNotNull(data, "deleted", readValue(movie, "deleted"));
+        // featuredPopup – always write explicitly to avoid Firestore missing field
+        Object featuredPopup = readValue(movie, "featuredPopup");
+        data.put("featuredPopup", Boolean.TRUE.equals(featuredPopup));
         putIfPositiveLong(data, "createdAt", readValue(movie, "createdAt"));
 
         return data;

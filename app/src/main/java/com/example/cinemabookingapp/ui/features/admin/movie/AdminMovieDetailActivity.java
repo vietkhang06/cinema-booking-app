@@ -29,7 +29,7 @@ public class AdminMovieDetailActivity extends BaseActivity {
 
     private ImageView imgPoster;
     private TextView tvTitle, tvGenres, tvLanguage, tvDuration, tvReleaseDate, tvAgeRating, tvStatus, tvDescription;
-    private MaterialButton btnEdit, btnDelete;
+    private MaterialButton btnEdit, btnDelete, btnSetFeatured;
 
     private MovieRepository movieRepository;
     private String movieId;
@@ -68,6 +68,7 @@ public class AdminMovieDetailActivity extends BaseActivity {
 
         btnEdit = findViewById(R.id.btnEdit);
         btnDelete = findViewById(R.id.btnDelete);
+        btnSetFeatured = findViewById(R.id.btnSetFeatured);
     }
 
     private void bindActions() {
@@ -78,6 +79,60 @@ public class AdminMovieDetailActivity extends BaseActivity {
         });
 
         btnDelete.setOnClickListener(v -> confirmDelete());
+
+        btnSetFeatured.setOnClickListener(v -> {
+            if (currentMovie == null) return;
+            if (currentMovie.featuredPopup) {
+                // Already featured – offer to unset
+                new AlertDialog.Builder(this)
+                        .setTitle("Gỡ Popup nổi bật")
+                        .setMessage("Phim này đang là Popup nổi bật. Bạn có muốn gỡ không?")
+                        .setPositiveButton("Gỡ", (d, w) -> performSetFeatured(false))
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("Đặt Popup nổi bật")
+                        .setMessage("Đặt \"" + currentMovie.title + "\" làm Popup nổi bật khi khởi động app?\n\nPhim nổi bật hiện tại (nếu có) sẽ bị gỡ.")
+                        .setPositiveButton("Xác nhận", (d, w) -> performSetFeatured(true))
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+            }
+        });
+    }
+
+    private void performSetFeatured(boolean featured) {
+        btnSetFeatured.setEnabled(false);
+        movieRepository.setFeaturedPopup(movieId, featured, new ResultCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                if (currentMovie != null) {
+                    currentMovie.featuredPopup = featured;
+                    updateFeaturedButtonState();
+                }
+                btnSetFeatured.setEnabled(true);
+                showToast(featured ? "Đã đặt làm Popup nổi bật ✅" : "Đã gỡ Popup nổi bật");
+            }
+
+            @Override
+            public void onError(String message) {
+                btnSetFeatured.setEnabled(true);
+                showToast("Lỗi: " + message);
+            }
+        });
+    }
+
+    private void updateFeaturedButtonState() {
+        if (btnSetFeatured == null || currentMovie == null) return;
+        if (currentMovie.featuredPopup) {
+            btnSetFeatured.setText("⭐  Đang là Popup nổi bật – Nhấn để gỡ");
+            btnSetFeatured.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#059669")));
+        } else {
+            btnSetFeatured.setText("⭐  Đặt làm Popup nổi bật");
+            btnSetFeatured.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#D97706")));
+        }
     }
 
     private void loadMovie(String id) {
@@ -117,6 +172,8 @@ public class AdminMovieDetailActivity extends BaseActivity {
                 .placeholder(R.drawable.login_icon)
                 .error(R.drawable.login_icon)
                 .into(imgPoster);
+
+        updateFeaturedButtonState();
     }
 
     private void confirmDelete() {

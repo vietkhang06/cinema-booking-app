@@ -28,7 +28,17 @@
             android:textStyle="bold"
             android:fontFamily="sans-serif-light" />
 
-        <ImageView
+                <ImageView
+            android:id="@+id/btnProfileCart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="6dp"
+            android:src="@drawable/cart_shopping_solid_full"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="8dp"
+            app:tint="#333333" />
+
+<ImageView
             android:id="@+id/btnProfileSettings"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -278,12 +288,37 @@
                         android:orientation="horizontal"
                         android:gravity="center">
 
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                        <FrameLayout
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:layout_marginEnd="6dp"
-                            android:src="@drawable/ic_notification"
-                            app:tint="#555555" />
+                            android:clipChildren="false"
+                            android:clipToPadding="false">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_notification"
+                                app:tint="#555555" />
+
+                            <TextView
+                                android:id="@+id/profile_notification_badge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top|end"
+                                android:background="@drawable/bg_badge_red_circle"
+                                android:gravity="center"
+                                android:minWidth="14dp"
+                                android:minHeight="14dp"
+                                android:paddingHorizontal="4dp"
+                                android:paddingVertical="1dp"
+                                android:text="1"
+                                android:textColor="#FFFFFF"
+                                android:textSize="8sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+                        </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -352,7 +387,7 @@
 
             <View android:layout_width="match_parent" android:layout_height="8dp" android:background="#F2F2F7" />
 
-            <!-- ── FEATURES: Đổi Quà | My Rewards | Tính Năng Mới ── -->
+            <!-- ── FEATURES: Vé của tôi | Ưu đãi của tôi ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -361,9 +396,9 @@
                 android:paddingVertical="16dp"
                 android:background="#FFFFFF">
 
-                <!-- Đổi Quà -->
+                <!-- Vé của tôi -->
                 <LinearLayout
-                    android:id="@+id/btnDoiQua"
+                    android:id="@+id/btnMyTickets"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -381,8 +416,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="16dp"
-                            android:src="@drawable/retweet_solid_full"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_ticket_search"
                             app:tint="#FFD700" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -390,13 +425,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Đổi Quà"
+                        android:text="Vé của tôi"
                         android:textColor="#1A3A8C"
                         android:textSize="13sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- My Rewards -->
+                <!-- Ưu đãi của tôi -->
                 <LinearLayout
                     android:id="@+id/btnMyRewards"
                     android:layout_width="0dp"
@@ -425,42 +460,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="My Rewards"
-                        android:textColor="#1A3A8C"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <!-- Tính Năng Mới -->
-                <LinearLayout
-                    android:id="@+id/btnTinhNangMoi"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:background="?attr/selectableItemBackgroundBorderless">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        app:cardCornerRadius="36dp"
-                        app:cardElevation="2dp"
-                        app:cardBackgroundColor="#1A3A8C">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="16dp"
-                            android:src="@drawable/gem_solid_full"
-                            app:tint="#40E0D0" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Tính Năng Mới"
+                        android:text="Ưu đãi của tôi"
                         android:textColor="#1A3A8C"
                         android:textSize="13sp"
                         android:textStyle="bold" />

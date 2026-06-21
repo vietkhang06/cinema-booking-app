@@ -13,4 +13,6 @@ public interface MovieRepository {
     void searchMovies(String keyword, ResultCallback<List<Movie>> callback);
     void updateMovie(Movie movie, ResultCallback<Movie> callback);
     void softDeleteMovie(String movieId, ResultCallback<Void> callback);
+    void setFeaturedPopup(String movieId, boolean featured, ResultCallback<Void> callback);
+    void getFeaturedPopupMovie(ResultCallback<Movie> callback);
 }
