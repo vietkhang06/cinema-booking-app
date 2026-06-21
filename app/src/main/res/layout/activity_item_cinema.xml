@@ -102,7 +102,7 @@
                         android:layout_marginTop="6dp"
                         android:textColor="#E5E7EB"
                         android:textSize="14sp"
-                        tools:text="Quáº­n 1, TP Há»“ ChÃ­ Minh" />
+                        tools:text="Quận 1, TP Hồ Chí Minh" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -162,7 +162,7 @@
                                 android:textColor="#1E1A23"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                tools:text="Äang hoáº¡t Ä‘á»™ng" />
+                                tools:text="Đang hoạt động" />
 
                             <TextView
                                 android:id="@+id/tvCityDistrict"
@@ -172,7 +172,7 @@
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                tools:text="Quáº­n 1, TP Há»“ ChÃ­ Minh" />
+                                tools:text="Quận 1, TP Hồ Chí Minh" />
 
                             <TextView
                                 android:id="@+id/tvPhone"
@@ -195,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Äá»‹a chá»‰"
+                        android:text="Địa chỉ"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -214,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="ThÃ´ng tin ráº¡p"
+                        android:text="Thông tin rạp"
                         android:textColor="#111111"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -247,7 +247,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Báº£n Ä‘á»“"
+                                android:text="Bản đồ"
                                 android:textColor="#111111"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -275,7 +275,7 @@
                             android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="Má»Ÿ báº£n Ä‘á»“"
+                            android:text="Mở bản đồ"
                             android:textAllCaps="false"
                             android:textColor="#FFFFFF"
                             android:textSize="14sp"
@@ -289,7 +289,7 @@
                             android:layout_height="52dp"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Gá»i Ä‘iá»‡n"
+                            android:text="Gọi điện"
                             android:textAllCaps="false"
                             android:textColor="#1E1A23"
                             android:textSize="14sp"
@@ -310,7 +310,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Äang chiáº¿u táº¡i ráº¡p"
+                        android:text="Đang chiếu tại rạp"
                         android:textColor="#111111"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -319,7 +319,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Chá»n phim vÃ  khung giá» phÃ¹ há»£p"
+                        android:text="Chọn phim và khung giờ phù hợp"
                         android:textColor="#666666"
                         android:textSize="13sp" />
 
@@ -383,7 +383,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="KhÃ´ng thá»ƒ táº£i thÃ´ng tin ráº¡p"
+            android:text="Không thể tải thông tin rạp"
             android:textColor="#111111"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -393,7 +393,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Vui lÃ²ng kiá»ƒm tra káº¿t ná»‘i vÃ  thá»­ láº¡i."
+            android:text="Vui lòng kiểm tra kết nối và thử lại."
             android:textColor="#666666"
             android:textSize="14sp"
             android:gravity="center" />
@@ -403,7 +403,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
-            android:text="Thá»­ láº¡i"
+            android:text="Thử lại"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             app:backgroundTint="#1E1A23"

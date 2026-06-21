@@ -13,7 +13,7 @@ public class AddReviewUseCase {
 
     public void execute(Review review, ResultCallback<Review> callback) {
         if ((review.content == null || review.content.trim().isEmpty()) && (review.rating == null || review.rating == 0)) {
-            callback.onError("Ná»™i dung bÃ¬nh luáº­n khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng");
+            callback.onError("Nội dung bình luận không được để trống");
             return;
         }
 

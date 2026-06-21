@@ -44,7 +44,7 @@ public class StaffCheckOrder extends AppCompatActivity {
 
         invoiceId = getIntent().getStringExtra("invoiceId");
         if (invoiceId == null || invoiceId.trim().isEmpty()) {
-            Toast.makeText(this, "HÃ³a Ä‘Æ¡n khÃ´ng há»£p lá»‡", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Hóa đơn không hợp lệ", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -82,9 +82,9 @@ public class StaffCheckOrder extends AppCompatActivity {
                     noOrderFoundTV.setVisibility(View.GONE);
                     snackLayout.setVisibility(View.VISIBLE);
 
-                    totalSnackPriceTV.setText(String.format("Tá»•ng giÃ¡: %,.0f vnd", detail.snackOrder.total));
+                    totalSnackPriceTV.setText(String.format("Tổng giá: %,.0f vnd", detail.snackOrder.total));
                     int totalQty = detail.snackOrder.items.stream().mapToInt(item -> item.quantity).sum();
-                    amountSnackTV.setText("Sá»‘ lÆ°á»£ng: " + totalQty);
+                    amountSnackTV.setText("Số lượng: " + totalQty);
 
                     OrderItemAdapter adapter = new OrderItemAdapter(detail.snackItems);
                     snackContainerView.setAdapter(adapter);

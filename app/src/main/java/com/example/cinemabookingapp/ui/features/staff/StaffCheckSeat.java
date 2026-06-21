@@ -54,7 +54,7 @@ public class StaffCheckSeat extends AuthActivity {
 
         showtimeId = getIntent().getStringExtra("showtimeId");
         if (showtimeId == null || showtimeId.trim().isEmpty()) {
-            showToast("SuÃ¡ÂºÂ¥t chiÃ¡ÂºÂ¿u khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡");
+            showToast("Suất chiếu không hợp lệ");
             finish();
             return;
         }
@@ -105,7 +105,7 @@ public class StaffCheckSeat extends AuthActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     startRealtimeSeatSync();
                 } else {
-                    String msg = response.body() != null ? response.body().getMessage() : "LÃ¡Â»â€”i server (" + response.code() + ")";
+                    String msg = response.body() != null ? response.body().getMessage() : "Lỗi server (" + response.code() + ")";
                     showToast(msg);
                     finish();
                 }
@@ -114,7 +114,7 @@ public class StaffCheckSeat extends AuthActivity {
             @Override
             public void onFailure(Call<ApiResponse<List<SeatDTO>>> call, Throwable t) {
                 showLoading(false);
-                showToast("LÃ¡Â»â€”i kÃ¡ÂºÂ¿t nÃ¡Â»â€˜i: " + t.getMessage());
+                showToast("Lỗi kết nối: " + t.getMessage());
                 finish();
             }
         });
@@ -174,21 +174,21 @@ public class StaffCheckSeat extends AuthActivity {
         boolean isHeld = "held".equalsIgnoreCase(seat.status) && (seat.heldUntil > now);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("ThÃƒÂ´ng tin ghÃ¡ÂºÂ¿ " + seat.seatCode);
+        builder.setTitle("Thông tin ghế " + seat.seatCode);
 
         if (isHeld) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String expiry = sdf.format(new Date(seat.heldUntil));
-            builder.setMessage("TrÃ¡ÂºÂ¡ng thÃƒÂ¡i: Ã„Âang giÃ¡Â»Â¯ chÃ¡Â»â€”\n\nMÃƒÂ£ khÃƒÂ¡ch hÃƒÂ ng: " + seat.heldBy + "\nThÃ¡Â»Âi hÃ¡ÂºÂ¡n giÃ¡Â»Â¯: " + expiry);
+            builder.setMessage("Trạng thái: Đang giữ chỗ\n\nMã khách hàng: " + seat.heldBy + "\nThời hạn giữ: " + expiry);
 
-            builder.setPositiveButton("GiÃ¡ÂºÂ£i phÃƒÂ³ng ghÃ¡ÂºÂ¿", (dialog, which) -> releaseSeat(seat));
-            builder.setNegativeButton("Ã„ÂÃƒÂ³ng", null);
+            builder.setPositiveButton("Giải phóng ghế", (dialog, which) -> releaseSeat(seat));
+            builder.setNegativeButton("Đóng", null);
         } else if (isBooked) {
-            builder.setMessage("TrÃ¡ÂºÂ¡ng thÃƒÂ¡i: Ã„ÂÃƒÂ£ Ã„â€˜Ã¡ÂºÂ·t mua (KhÃƒÂ´ng thÃ¡Â»Æ’ giÃ¡ÂºÂ£i phÃƒÂ³ng)");
-            builder.setNegativeButton("Ã„ÂÃƒÂ³ng", null);
+            builder.setMessage("Trạng thái: Đã đặt mua (Không thể giải phóng)");
+            builder.setNegativeButton("Đóng", null);
         } else {
-            builder.setMessage("TrÃ¡ÂºÂ¡ng thÃƒÂ¡i: GhÃ¡ÂºÂ¿ trÃ¡Â»â€˜ng (" + (seat.seatType != null ? seat.seatType : "Standard") + ")");
-            builder.setNegativeButton("Ã„ÂÃƒÂ³ng", null);
+            builder.setMessage("Trạng thái: Ghế trống (" + (seat.seatType != null ? seat.seatType : "Standard") + ")");
+            builder.setNegativeButton("Đóng", null);
         }
         builder.show();
     }
@@ -204,16 +204,16 @@ public class StaffCheckSeat extends AuthActivity {
                 showLoading(false);
                 if (response.isSuccessful()) {
                     writeAuditLog("RELEASE_SEAT", seat.seatId, "Released held seat " + seat.seatCode + " held by " + seat.heldBy);
-                    showToast("Ã„ÂÃƒÂ£ giÃ¡ÂºÂ£i phÃƒÂ³ng ghÃ¡ÂºÂ¿ " + seat.seatCode + " thÃƒÂ nh cÃƒÂ´ng!");
+                    showToast("Đã giải phóng ghế " + seat.seatCode + " thành công!");
                 } else {
-                    showToast("LÃ¡Â»â€”i giÃ¡ÂºÂ£i phÃƒÂ³ng ghÃ¡ÂºÂ¿: " + response.message());
+                    showToast("Lỗi giải phóng ghế: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
                 showLoading(false);
-                showToast("LÃ¡Â»â€”i kÃ¡ÂºÂ¿t nÃ¡Â»â€˜i: " + t.getMessage());
+                showToast("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

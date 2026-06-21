@@ -32,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Giá» hÃ ng"
+            android:text="Giỏ hàng"
             android:textColor="#111111"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tá»•ng cá»™ng:"
+                android:text="Tổng cộng:"
                 android:textColor="#888888"
                 android:textSize="12sp" />
 
@@ -89,7 +89,7 @@
                 android:id="@+id/tvCartTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0Ä‘"
+                android:text="0đ"
                 android:textColor="#E8640C"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -101,7 +101,7 @@
             android:layout_height="46dp"
             android:gravity="center"
             android:background="@drawable/bg_btn_orange_filled"
-            android:text="Thanh toÃ¡n"
+            android:text="Thanh toán"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -130,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Giá» hÃ ng cá»§a báº¡n Ä‘ang trá»‘ng"
+            android:text="Giỏ hàng của bạn đang trống"
             android:textColor="#888888"
             android:textSize="15sp" />
     </LinearLayout>

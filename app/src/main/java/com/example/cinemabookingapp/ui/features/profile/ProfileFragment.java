@@ -116,7 +116,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onError(String message) {
                 if (isAdded()) {
-                    Toast.makeText(getContext(), "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i tÃƒÂ¡Ã‚ÂºÃ‚Â£i thÃƒÆ’Ã‚Â´ng tin: " + message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Lỗi tải thông tin: " + message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -179,7 +179,7 @@ public class ProfileFragment extends Fragment {
         badgeImage.setImageTintList(android.content.res.ColorStateList.valueOf(badgeColor));
         achievementBar.setProgress(progress);
 
-        totalSpendingTV.setText(String.format("%,dÃƒâ€žÃ¢â‚¬Ëœ", totalSpending).replace(',', '.'));
+        totalSpendingTV.setText(String.format("%,dđ", totalSpending).replace(',', '.'));
     }
 
     // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Init views ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
@@ -220,7 +220,7 @@ public class ProfileFragment extends Fragment {
 
     private void setMenuText(@NonNull View view) {
         setHtmlText(menuHotline, 0,
-                "GÃƒÂ¡Ã‚Â»Ã‚Âi <b>Ãƒâ€žÃ‚ÂÃƒâ€ Ã‚Â¯ÃƒÂ¡Ã‚Â»Ã…â€œNG DÃƒÆ’Ã¢â‚¬Å¡Y NÃƒÆ’Ã¢â‚¬Å“NG</b>: <font color='#E8640C'>19002224</font>");
+                "Gọi <b>ĐƯỜNG DÂY NÓNG</b>: <font color='#E8640C'>19002224</font>");
         setHtmlText(menuEmail, 0,
                 "Email:  <font color='#E8640C'>hotro@galaxystudio.vn</font>");
     }
@@ -267,12 +267,12 @@ public class ProfileFragment extends Fragment {
         // MÃƒÆ’Ã‚Â£ thÃƒÆ’Ã‚Â nh viÃƒÆ’Ã‚Âªn
         if (btnMemberCard != null)
             btnMemberCard.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "MÃƒÆ’Ã‚Â£ thÃƒÆ’Ã‚Â nh viÃƒÆ’Ã‚Âªn Ãƒâ€žÃ¢â‚¬Ëœang Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Mã thành viên đang được cập nhật", Toast.LENGTH_SHORT).show());
 
         // Feature cards (tÃƒÂ¡Ã‚ÂºÃ‚Â¡m thÃƒÂ¡Ã‚Â»Ã‚Âi)
         if (btnDoiQua != null)
             btnDoiQua.setOnClickListener(v -> {
-                Toast.makeText(getContext(), "Ãƒâ€žÃ‚Âang tÃƒÂ¡Ã‚ÂºÃ‚Â¡o Voucher test...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Đang tạo Voucher test...", Toast.LENGTH_SHORT).show();
                 authService.getCurrentAuthUser(new ResultCallback<User>() {
                     @Override
                     public void onSuccess(User user) {
@@ -289,7 +289,7 @@ public class ProfileFragment extends Fragment {
                         voucher.expiredAt = System.currentTimeMillis() + (7L * 24L * 60L * 60L * 1000L); // 7 days
                         voucher.updatedAt = System.currentTimeMillis();
                         ref.set(voucher).addOnSuccessListener(aVoid -> {
-                            Toast.makeText(getContext(), "TÃƒÂ¡Ã‚ÂºÃ‚Â¡o Voucher thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng! Vui lÃƒÆ’Ã‚Â²ng vÃƒÆ’Ã‚Â o My Vouchers kiÃƒÂ¡Ã‚Â»Ã†â€™m tra.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Tạo Voucher thành công! Vui lòng vào My Vouchers kiểm tra.", Toast.LENGTH_LONG).show();
                         });
                     }
                     @Override
@@ -307,7 +307,7 @@ public class ProfileFragment extends Fragment {
             });
         if (btnTinhNangMoi != null)
             btnTinhNangMoi.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "TÃƒÆ’Ã‚Â­nh nÃƒâ€žÃ†â€™ng mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi sÃƒÂ¡Ã‚ÂºÃ‚Â¯p ra mÃƒÂ¡Ã‚ÂºÃ‚Â¯t!", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Tính năng mới sắp ra mắt!", Toast.LENGTH_SHORT).show());
 
         // Menu items
         if (menuHotline != null)
@@ -324,32 +324,32 @@ public class ProfileFragment extends Fragment {
             });
         if (menuCompanyInfo != null)
             menuCompanyInfo.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "ThÃƒÆ’Ã‚Â´ng tin cÃƒÆ’Ã‚Â´ng ty", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Thông tin công ty", Toast.LENGTH_SHORT).show());
         if (menuTerms != null)
             menuTerms.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Ãƒâ€žÃ‚ÂiÃƒÂ¡Ã‚Â»Ã‚Âu khoÃƒÂ¡Ã‚ÂºÃ‚Â£n sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Điều khoản sử dụng", Toast.LENGTH_SHORT).show());
         if (menuPaymentPolicy != null)
             menuPaymentPolicy.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "ChÃƒÆ’Ã‚Â­nh sÃƒÆ’Ã‚Â¡ch thanh toÃƒÆ’Ã‚Â¡n", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Chính sách thanh toán", Toast.LENGTH_SHORT).show());
         if (menuPrivacyPolicy != null)
             menuPrivacyPolicy.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "ChÃƒÆ’Ã‚Â­nh sÃƒÆ’Ã‚Â¡ch bÃƒÂ¡Ã‚ÂºÃ‚Â£o mÃƒÂ¡Ã‚ÂºÃ‚Â­t", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Chính sách bảo mật", Toast.LENGTH_SHORT).show());
         if (menuFaq != null)
             menuFaq.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "CÃƒÆ’Ã‚Â¢u hÃƒÂ¡Ã‚Â»Ã‚Âi thÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng gÃƒÂ¡Ã‚ÂºÃ‚Â·p", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(getContext(), "Câu hỏi thường gặp", Toast.LENGTH_SHORT).show());
 
         // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Ãƒâ€žÃ‚ÂÃƒâ€žÃ¢â‚¬Å¡NG XUÃƒÂ¡Ã‚ÂºÃ‚Â¤T ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â fix crash: navigate vÃƒÂ¡Ã‚Â»Ã‚Â LoginActivity sau khi logout ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         logOutBtn.setOnClickListener(v -> {
             boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
             if (isLoggedIn) {
                 new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                        .setTitle("Ã„ÂÃ„Æ’ng xuÃ¡ÂºÂ¥t")
-                        .setMessage("BÃ¡ÂºÂ¡n cÃƒÂ³ chÃ¡ÂºÂ¯c muÃ¡Â»â€˜n Ã„â€˜Ã„Æ’ng xuÃ¡ÂºÂ¥t khÃƒÂ´ng?")
-                        .setPositiveButton("Ã„ÂÃ„Æ’ng xuÃ¡ÂºÂ¥t", (dialog, which) -> {
+                        .setTitle("Đăng xuất")
+                        .setMessage("Bạn có chắc muốn đăng xuất không?")
+                        .setPositiveButton("Đăng xuất", (dialog, which) -> {
                             authService.logOut();
                             AppNavigator.goToCustomerHome(requireActivity());
                         })
-                        .setNegativeButton("HuÃ¡Â»Â·", null)
+                        .setNegativeButton("Huỷ", null)
                         .show();
             } else {
                 AppNavigator.goToLogin(requireActivity());
@@ -369,10 +369,10 @@ public class ProfileFragment extends Fragment {
         boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
 
         if (isLoggedIn) {
-            tvLogoutBtnLabel.setText("Ã„ÂÃ„Æ’ng xuÃ¡ÂºÂ¥t");
+            tvLogoutBtnLabel.setText("Đăng xuất");
             tvLogoutBtnLabel.setTextColor(android.graphics.Color.parseColor("#E8640C")); // cam
         } else {
-            tvLogoutBtnLabel.setText("Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p");
+            tvLogoutBtnLabel.setText("Đăng nhập");
             tvLogoutBtnLabel.setTextColor(android.graphics.Color.parseColor("#1E4F8F")); // xanh
         }
     }
@@ -405,7 +405,7 @@ public class ProfileFragment extends Fragment {
         }
         
         if (tvMemberId != null) {
-            tvMemberId.setText("ID: " + (user.uid != null ? user.uid : "Ã¢â‚¬â€"));
+            tvMemberId.setText("ID: " + (user.uid != null ? user.uid : "—"));
         }
         
         int cardColor = 0xFF1A3A8C;

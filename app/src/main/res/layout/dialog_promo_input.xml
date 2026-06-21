@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Khuyáº¿n mÃ£i &amp; Voucher"
+        android:text="Khuyến mãi &amp; Voucher"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Voucher cá»§a báº¡n:"
+        android:text="Voucher của bạn:"
         android:textColor="#8888AA"
         android:textSize="13sp"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hoáº·c nháº­p mÃ£ khuyáº¿n mÃ£i khÃ¡c:"
+        android:text="Hoặc nhập mã khuyến mãi khác:"
         android:textColor="#8888AA"
         android:textSize="13sp"
         android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:hint="Nháº­p mÃ£ (GALAXY50, WELCOME10, FREESHOP)"
+            android:hint="Nhập mã (GALAXY50, WELCOME10, FREESHOP)"
             android:textColorHint="#666688"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
@@ -67,7 +67,7 @@
             android:id="@+id/btnApplyPromo"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="Ãp dá»¥ng"
+            android:text="Áp dụng"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:backgroundTint="#F57C00"/>
@@ -85,7 +85,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MÃ£ gá»£i Ã½ cho báº¡n:"
+        android:text="Mã gợi ý cho bạn:"
         android:textColor="#8888AA"
         android:textSize="13sp"
         android:textStyle="bold"
@@ -95,7 +95,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="â€¢ GALAXY50: Giáº£m ngay 50.000 Ä‘ cho hÃ³a Ä‘Æ¡n Ä‘áº·t vÃ©\nâ€¢ WELCOME10: Giáº£m 10% tá»•ng hÃ³a Ä‘Æ¡n\nâ€¢ FREESHOP: Giáº£m ngay 20.000 Ä‘"
+        android:text="• GALAXY50: Giảm ngay 50.000 đ cho hóa đơn đặt vé\n• WELCOME10: Giảm 10% tổng hóa đơn\n• FREESHOP: Giảm ngay 20.000 đ"
         android:textColor="#666688"
         android:textSize="12sp"
         android:lineSpacingExtra="4dp"/>

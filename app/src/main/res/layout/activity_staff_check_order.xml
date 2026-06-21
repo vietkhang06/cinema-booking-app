@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Äá»“ Äƒn/Snack Ä‘Ã£ Ä‘áº·t"
+            android:text="Đồ ăn/Snack đã đặt"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -63,7 +63,7 @@
                 android:id="@+id/no_order_found"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="KhÃ´ng cÃ³ Ä‘Æ¡n Ä‘áº·t Ä‘á»“ Äƒn."
+                android:text="Không có đơn đặt đồ ăn."
                 android:textColor="#7A757F"
                 android:textSize="16sp"
                 android:gravity="center"
@@ -105,7 +105,7 @@
                             android:id="@+id/snack_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sá»‘ lÆ°á»£ng: 12"
+                            android:text="Số lượng: 12"
                             android:textColor="#1E1A23"
                             android:textSize="16sp"
                             android:layout_marginBottom="8dp" />
@@ -114,7 +114,7 @@
                             android:id="@+id/snack_total_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tá»•ng giÃ¡: 123.000 vnd"
+                            android:text="Tổng giá: 123.000 vnd"
                             android:textColor="#A13345"
                             android:textSize="20sp"
                             android:textStyle="bold" />

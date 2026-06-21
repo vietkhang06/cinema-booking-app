@@ -82,7 +82,7 @@
                 android:id="@+id/tv_booking_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MÃ£ vÃ©: BK123456"
+                android:text="Mã vé: BK123456"
                 android:textSize="12sp"
                 android:textColor="#7A757F"
                 android:layout_marginBottom="6dp" />
@@ -119,7 +119,7 @@
                 android:id="@+id/tv_seats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gháº¿: A1, A2"
+                android:text="Ghế: A1, A2"
                 android:textSize="13sp"
                 android:textColor="#1E1A23"
                 android:textStyle="bold" />

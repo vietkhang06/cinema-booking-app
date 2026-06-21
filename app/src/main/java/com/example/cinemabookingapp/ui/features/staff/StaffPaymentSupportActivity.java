@@ -100,14 +100,14 @@ public class StaffPaymentSupportActivity extends AuthActivity {
                         pendingPaymentsRv.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    showToast("KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ tÃƒÂ¡Ã‚ÂºÃ‚Â£i danh sÃƒÆ’Ã‚Â¡ch thanh toÃƒÆ’Ã‚Â¡n");
+                    showToast("Không thể tải danh sách thanh toán");
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<BookingDTO>>> call, Throwable t) {
                 showLoading(false);
-                showToast("LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i: " + t.getMessage());
+                showToast("Lỗi: " + t.getMessage());
             }
         });
     }
@@ -131,16 +131,16 @@ public class StaffPaymentSupportActivity extends AuthActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             BookingDTO dto = items.get(position);
             holder.tvMovieTitle.setText(dto.movieTitleSnapshot);
-            holder.tvBookingId.setText("MÃƒÆ’Ã‚Â£ vÃƒÆ’Ã‚Â©: " + dto.bookingId);
+            holder.tvBookingId.setText("Mã vé: " + dto.bookingId);
             holder.tvCinemaRoom.setText(dto.cinemaNameSnapshot + " - " + dto.roomNameSnapshot);
 
             String formattedTime = dto.showtimeStartAtSnapshot > 0 
                     ? dateFormat.format(new Date(dto.showtimeStartAtSnapshot)) 
                     : "Không xác định";
-            holder.tvShowtime.setText("SuÃƒÂ¡Ã‚ÂºÃ‚Â¥t chiÃƒÂ¡Ã‚ÂºÃ‚Â¿u: " + formattedTime);
+            holder.tvShowtime.setText("Suất chiếu: " + formattedTime);
 
             String seats = dto.seatCodes != null ? String.join(", ", dto.seatCodes) : "";
-            holder.tvSeats.setText("GhÃƒÂ¡Ã‚ÂºÃ‚Â¿: " + seats);
+            holder.tvSeats.setText("Ghế: " + seats);
 
             holder.tvTotalPrice.setText(String.format("%,.0f vnd", dto.total));
 

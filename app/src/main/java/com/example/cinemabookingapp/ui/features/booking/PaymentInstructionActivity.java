@@ -75,7 +75,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         paymentMethod = getIntent().getStringExtra(EXTRA_PAYMENT_METHOD);
 
         if (bookingId == null || paymentCode == null) {
-            Toast.makeText(this, "KhÃ´ng cÃ³ thÃ´ng tin Ä‘áº·t vÃ© há»£p lá»‡", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không có thông tin đặt vé hợp lệ", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -108,22 +108,22 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         btnTestSuccess = findViewById(R.id.btnTestSuccess);
         btnTestFailed = findViewById(R.id.btnTestFailed);
 
-        tvAmount.setText(String.format(Locale.getDefault(), "%,.0f Ä‘", amount));
+        tvAmount.setText(String.format(Locale.getDefault(), "%,.0f đ", amount));
         tvPaymentCode.setText(paymentCode);
 
         TextView tvBankName = findViewById(R.id.tvBankName);
         TextView tvAccountName = findViewById(R.id.tvAccountName);
 
         if ("momo".equals(paymentMethod)) {
-            btnOpenApp.setText("Má»Ÿ á»©ng dá»¥ng MoMo");
+            btnOpenApp.setText("Mở ứng dụng MoMo");
             if (layoutTestButtons != null) {
                 layoutTestButtons.setVisibility(View.VISIBLE);
             }
-            if (tvBankName != null) tvBankName.setText("VÃ­ Ä‘iá»‡n tá»­ MOMO");
-            if (tvAccountName != null) tvAccountName.setText("ÄoÃ n Viá»‡t Khang");
+            if (tvBankName != null) tvBankName.setText("Ví điện tử MOMO");
+            if (tvAccountName != null) tvAccountName.setText("Đoàn Việt Khang");
             if (tvAccountNumber != null) tvAccountNumber.setText("0762654245");
         } else {
-            btnOpenApp.setText("Má»Ÿ á»©ng dá»¥ng NgÃ¢n hÃ ng");
+            btnOpenApp.setText("Mở ứng dụng Ngân hàng");
             if (layoutTestButtons != null) {
                 layoutTestButtons.setVisibility(View.GONE);
             }
@@ -139,18 +139,18 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         ImageButton btnCopyCode = findViewById(R.id.btnCopyCode);
 
         if (btnCopyAccount != null) {
-            btnCopyAccount.setOnClickListener(v -> copyToClipboard("Sá»‘ tÃ i khoáº£n", tvAccountNumber.getText().toString()));
+            btnCopyAccount.setOnClickListener(v -> copyToClipboard("Số tài khoản", tvAccountNumber.getText().toString()));
         }
 
         if (btnCopyAmount != null) {
             btnCopyAmount.setOnClickListener(v -> {
                 String rawAmount = String.format(Locale.getDefault(), "%.0f", amount);
-                copyToClipboard("Sá»‘ tiá»n", rawAmount);
+                copyToClipboard("Số tiền", rawAmount);
             });
         }
 
         if (btnCopyCode != null) {
-            btnCopyCode.setOnClickListener(v -> copyToClipboard("Ná»™i dung chuyá»ƒn khoáº£n", paymentCode));
+            btnCopyCode.setOnClickListener(v -> copyToClipboard("Nội dung chuyển khoản", paymentCode));
         }
 
         if (btnOpenApp != null) {
@@ -182,7 +182,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                                                 com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
                                                 boolean isFirstResource) {
                         pbQrLoading.setVisibility(View.GONE);
-                        Toast.makeText(PaymentInstructionActivity.this, "KhÃ´ng thá»ƒ táº£i mÃ£ QR", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentInstructionActivity.this, "Không thể tải mã QR", Toast.LENGTH_SHORT).show();
                         return false;
                     }
 
@@ -203,7 +203,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         ClipData clip = ClipData.newPlainText(label, text);
         if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "ÄÃ£ sao chÃ©p " + label + " vÃ o bá»™ nhá»› táº¡m", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đã sao chép " + label + " vào bộ nhớ tạm", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -224,7 +224,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dl.vietqr.co/pay"));
                 startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(this, "Vui lÃ²ng má»Ÿ á»©ng dá»¥ng ngÃ¢n hÃ ng cá»§a báº¡n Ä‘á»ƒ chuyá»ƒn khoáº£n.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Vui lòng mở ứng dụng ngân hàng của bạn để chuyển khoản.", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -309,8 +309,8 @@ public class PaymentInstructionActivity extends AppCompatActivity {
             stopAllListeners();
             BookingTimerManager.getInstance().stopTimer(this);
 
-            createNotification("Thanh toÃ¡n thÃ nh cÃ´ng", "Giao dá»‹ch thanh toÃ¡n vÃ© xem phim cá»§a báº¡n Ä‘Ã£ thÃ nh cÃ´ng. ChÃºc báº¡n xem phim vui váº»!", "BOOKING_SUCCESS");
-            Toast.makeText(this, "Thanh toÃ¡n thÃ nh cÃ´ng! Äang xuáº¥t vÃ©...", Toast.LENGTH_LONG).show();
+            createNotification("Thanh toán thành công", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!", "BOOKING_SUCCESS");
+            Toast.makeText(this, "Thanh toán thành công! Đang xuất vé...", Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, TicketDetailActivity.class);
             intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, bookingId);
@@ -323,8 +323,8 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 paymentHandled = true;
                 stopAllListeners();
                 BookingTimerManager.getInstance().stopTimer(this);
-                createNotification("Thanh toÃ¡n tháº¥t báº¡i", "Giao dá»‹ch thanh toÃ¡n cá»§a báº¡n Ä‘Ã£ tháº¥t báº¡i hoáº·c bá»‹ há»§y.", "BOOKING_FAILED");
-                tvStatusText.setText("Tráº¡ng thÃ¡i: Giao dá»‹ch tháº¥t báº¡i hoáº·c Ä‘Ã£ bá»‹ huá»·");
+                createNotification("Thanh toán thất bại", "Giao dịch thanh toán của bạn đã thất bại hoặc bị hủy.", "BOOKING_FAILED");
+                tvStatusText.setText("Trạng thái: Giao dịch thất bại hoặc đã bị huỷ");
                 View banner = findViewById(R.id.layoutStatusBanner);
                 if (banner != null) {
                     banner.setBackgroundColor(0xFFD32F2F);
@@ -334,7 +334,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
             paymentHandled = true;
             stopAllListeners();
             BookingTimerManager.getInstance().stopTimer(this);
-            tvStatusText.setText("Tráº¡ng thÃ¡i: Chá» Admin xÃ¡c nháº­n...");
+            tvStatusText.setText("Trạng thái: Chờ Admin xác nhận...");
             View banner = findViewById(R.id.layoutStatusBanner);
             if (banner != null) {
                 banner.setBackgroundColor(0xFF1976D2);
@@ -362,14 +362,14 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                     // KHÃ”NG Toast á»Ÿ Ä‘Ã¢y â€” listener sáº½ tá»± xá»­ lÃ½ khi Firestore update
                 } else {
                     if (btnTestSuccess != null) btnTestSuccess.setEnabled(true);
-                    Toast.makeText(PaymentInstructionActivity.this, "Lá»—i cáº­p nháº­t test success: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PaymentInstructionActivity.this, "Lỗi cập nhật test success: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
                 if (btnTestSuccess != null) btnTestSuccess.setEnabled(true);
-                Toast.makeText(PaymentInstructionActivity.this, "Lá»—i káº¿t ná»‘i máº¡ng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PaymentInstructionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -390,20 +390,20 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     android.util.Log.d("BOOKING_FLOW", "cancelBooking API succeeded");
                     if (isAuto) {
-                        Toast.makeText(PaymentInstructionActivity.this, "Giao dá»‹ch Ä‘Ã£ bá»‹ huá»· do háº¿t háº¡n giá»¯ gháº¿!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentInstructionActivity.this, "Giao dịch đã bị huỷ do hết hạn giữ ghế!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(PaymentInstructionActivity.this, "Giáº£ láº­p: Thanh toÃ¡n tháº¥t báº¡i!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentInstructionActivity.this, "Giả lập: Thanh toán thất bại!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (btnTestFailed != null) btnTestFailed.setEnabled(true);
-                    Toast.makeText(PaymentInstructionActivity.this, "Lá»—i huá»· giao dá»‹ch: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PaymentInstructionActivity.this, "Lỗi huỷ giao dịch: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
                 if (btnTestFailed != null) btnTestFailed.setEnabled(true);
-                Toast.makeText(PaymentInstructionActivity.this, "Lá»—i káº¿t ná»‘i máº¡ng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PaymentInstructionActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -486,15 +486,15 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 long minutes = millisUntilFinished / 60000;
                 long seconds = (millisUntilFinished % 60000) / 1000;
                 if (tvStatusText != null) {
-                    tvStatusText.setText(String.format(Locale.getDefault(), "Tráº¡ng thÃ¡i: Chá» thanh toÃ¡n (%02d:%02d)", minutes, seconds));
+                    tvStatusText.setText(String.format(Locale.getDefault(), "Trạng thái: Chờ thanh toán (%02d:%02d)", minutes, seconds));
                 }
                 if (millisUntilFinished <= 60000 && !hasShownWarning) {
                     hasShownWarning = true;
                     if (!isFinishing() && !isDestroyed()) {
                         new androidx.appcompat.app.AlertDialog.Builder(PaymentInstructionActivity.this)
-                                .setTitle("ThÃ´ng bÃ¡o")
-                                .setMessage("ChÃº Ã½ thá»i gian thanh toÃ¡n cÃ²n 1 phÃºt, xin vui lÃ²ng thanh toÃ¡n")
-                                .setPositiveButton("ÄÃ³ng", (dialog, which) -> dialog.dismiss())
+                                .setTitle("Thông báo")
+                                .setMessage("Chú ý thời gian thanh toán còn 1 phút, xin vui lòng thanh toán")
+                                .setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss())
                                 .setCancelable(false)
                                 .show();
                     }
@@ -508,13 +508,13 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 stopAllListeners();
                 BookingTimerManager.getInstance().stopTimer(PaymentInstructionActivity.this);
                 if (tvStatusText != null) {
-                    tvStatusText.setText("Tráº¡ng thÃ¡i: Háº¿t háº¡n giá»¯ gháº¿!");
+                    tvStatusText.setText("Trạng thái: Hết hạn giữ ghế!");
                 }
                 View banner = findViewById(R.id.layoutStatusBanner);
                 if (banner != null) {
                     banner.setBackgroundColor(0xFFD32F2F);
                 }
-                Toast.makeText(PaymentInstructionActivity.this, "Thá»i gian giá»¯ gháº¿ Ä‘Ã£ háº¿t!", Toast.LENGTH_LONG).show();
+                Toast.makeText(PaymentInstructionActivity.this, "Thời gian giữ ghế đã hết!", Toast.LENGTH_LONG).show();
                 performBookingCancellation(true);
             }
         };

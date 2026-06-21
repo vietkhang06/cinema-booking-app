@@ -67,7 +67,7 @@
                 android:id="@+id/tv_movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TÃªn phim"
+                android:text="Tên phim"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#1E1A23"
@@ -87,7 +87,7 @@
                 android:id="@+id/tv_format_lang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2D | Phá»¥ Ä‘á»"
+                android:text="2D | Phụ đề"
                 android:textSize="12sp"
                 android:textColor="#7A757F"
                 android:layout_marginTop="2dp" />
@@ -114,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="Gháº¿: 45/90"
+                    android:text="Ghế: 45/90"
                     android:textSize="12sp"
                     android:textColor="#7A757F" />
             </LinearLayout>

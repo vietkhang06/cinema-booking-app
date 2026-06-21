@@ -90,7 +90,7 @@ public class CinemaFragment extends Fragment {
         });
     }
 
-    // ZELIOUS TASK: Chá»©c nÄƒng lá»c (Filter). Chá»‰ hiá»ƒn thá»‹ nhá»¯ng ráº¡p cÃ³ Ä‘á»‹a chá»‰, quáº­n, hoáº·c thÃ nh phá»‘ khá»›p vá»›i khu vá»±c mÃ  ngÆ°á»i dÃ¹ng Ä‘ang chá»n (vÃ­ dá»¥: "HÃ  Ná»™i", "TP.HCM").
+    // ZELIOUS TASK: Chá»©c nÄƒng lá»c (Filter). Chá»‰ hiá»ƒn thá»‹ nhá»¯ng ráº¡p cÃ³ Ä‘á»‹a chá»‰, quáº­n, hoáº·c thÃ nh phá»‘ khá»›p vá»›i khu vá»±c mÃ  ngÆ°á»i dÃ¹ng Ä‘ang chá»n (vÃ­ dá»¥: "Hà Nội", "TP.HCM").
     private void renderCinemas() {
         List<Cinema> filtered = new ArrayList<>();
         for (Cinema cinema : allCinemas) {

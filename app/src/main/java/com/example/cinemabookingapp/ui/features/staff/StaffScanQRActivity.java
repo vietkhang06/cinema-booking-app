@@ -91,17 +91,17 @@ public class StaffScanQRActivity extends AuthActivity {
                     String rawValue = barcode.getRawValue();
                     if (rawValue != null && !rawValue.trim().isEmpty()) {
                         tvScanResult.setText(rawValue);
-                        tvTicketStatus.setText("Tráº¡ng thÃ¡i vÃ©: Há»£p lá»‡ (Camera)");
+                        tvTicketStatus.setText("Trạng thái vé: Hợp lệ (Camera)");
                         
                         Intent intent = new Intent(this, StaffInvoiceActivity.class);
                         intent.putExtra("invoiceId", rawValue);
                         startActivity(intent);
                     } else {
-                        showToast("MÃ£ QR rá»—ng");
+                        showToast("Mã QR rỗng");
                     }
                 })
                 .addOnFailureListener(e -> {
-                    showToast("QuÃ©t tháº¥t báº¡i: " + e.getMessage());
+                    showToast("Quét thất bại: " + e.getMessage());
                 });
     }
 
@@ -110,7 +110,7 @@ public class StaffScanQRActivity extends AuthActivity {
             InputStream inputStream = getContentResolver().openInputStream(uri);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             if (bitmap == null) {
-                showToast("KhÃ´ng thá»ƒ táº£i áº£nh");
+                showToast("Không thể tải ảnh");
                 return;
             }
 
@@ -125,18 +125,18 @@ public class StaffScanQRActivity extends AuthActivity {
             String qrText = result.getText();
             if (qrText != null && !qrText.trim().isEmpty()) {
                 tvScanResult.setText(qrText);
-                tvTicketStatus.setText("Tráº¡ng thÃ¡i vÃ©: Há»£p lá»‡ (ThÆ° viá»‡n)");
+                tvTicketStatus.setText("Trạng thái vé: Hợp lệ (Thư viện)");
                 
                 Intent intent = new Intent(this, StaffInvoiceActivity.class);
                 intent.putExtra("invoiceId", qrText);
                 startActivity(intent);
             } else {
-                showToast("MÃ£ QR rá»—ng");
+                showToast("Mã QR rỗng");
             }
         } catch (Exception e) {
-            tvScanResult.setText("Lá»—i Ä‘á»c mÃ£ QR");
-            tvTicketStatus.setText("Tráº¡ng thÃ¡i vÃ©: KhÃ´ng há»£p lá»‡ hoáº·c khÃ´ng cÃ³ QR");
-            showToast("KhÃ´ng tÃ¬m tháº¥y mÃ£ QR trong áº£nh");
+            tvScanResult.setText("Lỗi đọc mã QR");
+            tvTicketStatus.setText("Trạng thái vé: Không hợp lệ hoặc không có QR");
+            showToast("Không tìm thấy mã QR trong ảnh");
         }
     }
 }

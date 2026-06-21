@@ -93,7 +93,7 @@ public class LocationBottomSheetFragment extends BottomSheetDialogFragment {
         });
 
         // Load cities tá»« Firebase (láº¥y tá»« danh sÃ¡ch cinema)
-        tvStatus.setText("Äang táº£i...");
+        tvStatus.setText("Đang tải...");
         CinemaRepository repo = new CinemaRepositoryImpl();
         repo.getAllCinemas(new ResultCallback<List<Cinema>>() {
             @Override
@@ -110,12 +110,12 @@ public class LocationBottomSheetFragment extends BottomSheetDialogFragment {
                 allLocations.clear();
                 allLocations.addAll(citySet);
                 adapter.setData(allLocations);
-                tvStatus.setText(citySet.size() - 1 + " tá»‰nh thÃ nh");
+                tvStatus.setText(citySet.size() - 1 + " tỉnh thành");
             }
 
             @Override
             public void onError(String message) {
-                tvStatus.setText("Lá»—i táº£i dá»¯ liá»‡u");
+                tvStatus.setText("Lỗi tải dữ liệu");
                 // fallback cá»©ng
                 allLocations.clear();
                 allLocations.add("Toan quoc");

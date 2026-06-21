@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Lá»‹ch Chiáº¿u HÃ´m Nay"
+            android:text="Lịch Chiếu Hôm Nay"
             android:textColor="#1E1A23"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="64dp"
-        android:text="KhÃ´ng cÃ³ suáº¥t chiáº¿u nÃ o hÃ´m nay"
+        android:text="Không có suất chiếu nào hôm nay"
         android:textSize="16sp"
         android:textColor="#7A757F"
         android:visibility="gone" />

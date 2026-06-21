@@ -36,7 +36,7 @@ import java.util.List;
  *   - áº¢nh sáº£n pháº©m (hÃ¬nh trÃ²n)
  *   - TÃªn & giÃ¡
  *   - NÃºt "MUA NGAY"       â†’ dialog chá»n sá»‘ lÆ°á»£ng â†’ thÃªm vÃ o cart â†’ má»Ÿ CineCartActivity
- *   - NÃºt "THÃŠM VÃ€O GIá»Ž"  â†’ dialog chá»n sá»‘ lÆ°á»£ng â†’ thÃªm vÃ o CineCartManager
+ *   - NÃºt "THÊM VÀO GIỎ"  â†’ dialog chá»n sá»‘ lÆ°á»£ng â†’ thÃªm vÃ o CineCartManager
  *
  * Cart state Ä‘Æ°á»£c lÆ°u trong {@link CineCartManager} singleton.
  */
@@ -94,7 +94,7 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         void bind(Snack snack) {
             tvProductName.setText(snack.name);
             DecimalFormat fmt = new DecimalFormat("#,###");
-            tvProductPrice.setText(fmt.format(snack.price) + "Ä‘");
+            tvProductPrice.setText(fmt.format(snack.price) + "đ");
 
             // Load áº£nh sáº£n pháº©m tá»« Firestore thÃ´ng qua Glide
             Glide.with(itemView.getContext())
@@ -137,23 +137,23 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
 
         DecimalFormat fmt = new DecimalFormat("#,###");
         tvName.setText(snack.name);
-        tvPrice.setText(fmt.format(snack.price) + "Ä‘");
+        tvPrice.setText(fmt.format(snack.price) + "đ");
 
         final int[] qty = {1};
         tvQty.setText(String.valueOf(qty[0]));
-        tvSubtotal.setText(fmt.format(snack.price) + "Ä‘");
+        tvSubtotal.setText(fmt.format(snack.price) + "đ");
 
         btnMinus.setOnClickListener(v -> {
             if (qty[0] > 1) {
                 qty[0]--;
                 tvQty.setText(String.valueOf(qty[0]));
-                tvSubtotal.setText(fmt.format(snack.price * qty[0]) + "Ä‘");
+                tvSubtotal.setText(fmt.format(snack.price * qty[0]) + "đ");
             }
         });
         btnPlus.setOnClickListener(v -> {
             qty[0]++;
             tvQty.setText(String.valueOf(qty[0]));
-            tvSubtotal.setText(fmt.format(snack.price * qty[0]) + "Ä‘");
+            tvSubtotal.setText(fmt.format(snack.price * qty[0]) + "đ");
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -194,7 +194,7 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
 
         DecimalFormat fmt = new DecimalFormat("#,###");
         tvName.setText(snack.name);
-        tvPrice.setText(fmt.format(snack.price) + "Ä‘");
+        tvPrice.setText(fmt.format(snack.price) + "đ");
 
         final int[] qty = {1};
         tvQty.setText(String.valueOf(qty[0]));
@@ -213,7 +213,7 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
             if (cartListener != null)
                 cartListener.onCartUpdated(CineCartManager.getInstance().getTotalCount());
             Toast.makeText(ctx,
-                    "ÄÃ£ thÃªm " + qty[0] + " Ã— " + snack.name + " vÃ o giá» âœ“",
+                    "Đã thêm " + qty[0] + " × " + snack.name + " vào giỏ ✓",
                     Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
