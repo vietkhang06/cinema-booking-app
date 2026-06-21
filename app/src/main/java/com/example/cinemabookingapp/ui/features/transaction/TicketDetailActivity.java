@@ -77,21 +77,22 @@ public class TicketDetailActivity extends AppCompatActivity {
         }
 
         realtimeObservable = DataNavigator.getInstance().popData(getIntent().getIntExtra("observerResourceId", 0));
-
-        listener = new TransactionHistoryActivity.Observable.OnBookingRealtimeListener() {
-            @Override
-            public void onBookingUpdate(List<Booking> bookings) {
-                Booking bookingDetail = bookings.stream().filter(b -> b.bookingId.equals(bookingId)).findFirst().orElse(null);
-                Log.i("TicketDetailActivity", "Received booking update, booking detail: " + bookingDetail);
-                if(bookingDetail != null){
-                    bindViewData(bookingDetail);
-                } else {
-                    loadBookingDetails(bookingId);
+        if(realtimeObservable != null){
+            listener = new TransactionHistoryActivity.Observable.OnBookingRealtimeListener() {
+                @Override
+                public void onBookingUpdate(List<Booking> bookings) {
+                    Booking bookingDetail = bookings.stream().filter(b -> b.bookingId.equals(bookingId)).findFirst().orElse(null);
+                    Log.i("TicketDetailActivity", "Received booking update, booking detail: " + bookingDetail);
+                    if(bookingDetail != null){
+                        bindViewData(bookingDetail);
+                    } else {
+                        loadBookingDetails(bookingId);
+                    }
                 }
-            }
-        };
+            };
+            realtimeObservable.addListener(listener);
+        }
 
-        realtimeObservable.addListener(listener);
         bookingService = ServiceProvider.getInstance().getBookingService();
 
         initViews();
@@ -411,6 +412,7 @@ public class TicketDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realtimeObservable.removeListener(listener);
+        if(realtimeObservable != null)
+            realtimeObservable.removeListener(listener);
     }
 }

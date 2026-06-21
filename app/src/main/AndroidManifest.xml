@@ -27,7 +27,7 @@
             android:name=".ui.features.chat.CustomerSupportActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.customer.notification.NotificationActivity"
+            android:name=".ui.features.notification.NotificationActivity"
             android:exported="false" /> <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -98,6 +98,8 @@
         <activity
             android:name=".ui.features.transaction.TransactionHistoryActivity"
             android:exported="false" />
+        <activity android:name=".ui.features.notification.NotificationActivity"
+            android:exported="false"/>
         <activity
             android:name=".ui.features.transaction.TicketDetailActivity"
             android:exported="false" />        <activity

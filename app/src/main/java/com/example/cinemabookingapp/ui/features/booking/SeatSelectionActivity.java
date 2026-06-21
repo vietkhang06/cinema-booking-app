@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.Date;
 import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
+
+import java.util.HashSet;
 import java.util.List;
 import com.example.cinemabookingapp.ui.features.booking.SeatAdapter;
 import java.util.Locale;
@@ -60,7 +62,6 @@ public class SeatSelectionActivity extends BaseActivity {
     private android.widget.LinearLayout llSelectedSeatChips;
     private android.widget.HorizontalScrollView scrollSelectedSeats;
     private android.view.View dividerBottom;
-    private final List<SeatDTO> seatList = new ArrayList<>();
 
     private TextView tvMovieTitle, tvTotalPrice, tvSeatCount, tvShowtimeDate;
     private MaterialButton btnContinue;
@@ -71,6 +72,10 @@ public class SeatSelectionActivity extends BaseActivity {
     private long showtimeStart;
 
     private com.google.firebase.firestore.ListenerRegistration seatListenerRegistration;
+
+
+    private final List<SeatDTO> seatList = new ArrayList<>();
+    HashSet<String> selectedSeatIds = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,15 @@ public class SeatSelectionActivity extends BaseActivity {
 
         initViews();
         checkPendingBooking();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        for (SeatDTO s : getSelectedSeats()) {
+            s.isSelected = false;
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void initViews() {
@@ -175,6 +189,18 @@ public class SeatSelectionActivity extends BaseActivity {
             List<String> selectedSeatIds = new ArrayList<>();
             for (SeatDTO s : selected) {
                 if (s.seatId != null) selectedSeatIds.add(s.seatId);
+            }
+
+            // client side check seat status
+            for (String s : selectedSeatIds) {
+                if(newSeats.stream().anyMatch(seat ->
+                        seat.seatId.equals(s) &&
+                        ("booked".equalsIgnoreCase(seat.status) || "locked".equalsIgnoreCase(seat.status) || "held".equalsIgnoreCase(seat.status)))) {
+                    Toast.makeText(this, "Ghế đã có người khác chọn. Vui lòng chọn ghế khác!", Toast.LENGTH_LONG).show();
+                    btnContinue.setEnabled(true);
+                    if (layoutLoading != null) layoutLoading.setVisibility(android.view.View.GONE);
+                    return;
+                }
             }
 
             com.example.cinemabookingapp.data.dto.SeatLockRequestDTO lockRequest =
@@ -297,7 +323,7 @@ public class SeatSelectionActivity extends BaseActivity {
             }
         });
     }
-
+    List<SeatDTO> newSeats = new ArrayList<>();
     private void startRealtimeSeatSync() {
         if (showtimeId == null) return;
 
@@ -324,7 +350,7 @@ public class SeatSelectionActivity extends BaseActivity {
                         }
 
                         // 2. Parse new seats from Firestore snapshot
-                        List<SeatDTO> newSeats = new ArrayList<>();
+                        newSeats.clear();
                         int maxCol = 1;
                         boolean seatStolen = false;
                         String stolenSeatCode = "";
