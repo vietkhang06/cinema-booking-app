@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -197,7 +196,6 @@ public class AdminSendNotificationActivity extends AppCompatActivity {
                 .show();
     }
 
-    // ZELIOUS TASK: Tạo vòng lặp hoặc Batch đẩy Document Notification có type=SYSTEM (hoặc VOUCHER) vào collection `notifications` của TẤT CẢ user active được chọn.
     private void sendNotificationToFirestore(String title, String message, double discountValue) {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang gửi thông báo...");
@@ -232,15 +230,15 @@ public class AdminSendNotificationActivity extends AppCompatActivity {
 
             if (discountValue > 0) {
                 DocumentReference voucherRef = db.collection("vouchers").document();
-                 com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
-                 voucher.voucherId = voucherRef.getId();
-                 voucher.userId = uid;
-                 voucher.code = "GIFT_" + voucherRef.getId().substring(0, Math.min(voucherRef.getId().length(), 6)).toUpperCase();
-                 voucher.discountPercent = (int) discountValue;
-                 voucher.status = "ACTIVE";
-                 voucher.expiredAt = timestamp + 30L * 24 * 60 * 60 * 1000;
-                 voucher.createdAt = timestamp;
-                 voucher.updatedAt = timestamp;
+                com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
+                voucher.voucherId = voucherRef.getId();
+                voucher.userId = uid;
+                voucher.code = "GIFT_" + voucherRef.getId().substring(0, Math.min(voucherRef.getId().length(), 6)).toUpperCase();
+                voucher.discountPercent = (int) discountValue;
+                voucher.status = "ACTIVE";
+                voucher.expiredAt = timestamp + 30L * 24 * 60 * 60 * 1000;
+                voucher.createdAt = timestamp;
+                voucher.updatedAt = timestamp;
                 batches.get(batchIndex).set(voucherRef, voucher);
                 count++;
             }
@@ -278,7 +276,6 @@ public class AdminSendNotificationActivity extends AppCompatActivity {
                 });
     }
 
-    // Inner Adapter for Recipient List
     public class SelectedRecipientAdapter extends RecyclerView.Adapter<SelectedRecipientAdapter.ViewHolder> {
         private final List<User> items;
 

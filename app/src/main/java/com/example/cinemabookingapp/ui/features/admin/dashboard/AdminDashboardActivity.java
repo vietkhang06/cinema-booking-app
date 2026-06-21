@@ -36,6 +36,9 @@ import com.example.cinemabookingapp.ui.features.admin.showtime.AdminShowtimeList
 import com.example.cinemabookingapp.ui.features.admin.user.AdminUserManagementActivity;
 import com.example.cinemabookingapp.ui.features.admin.widget.AdminHorizontalBarChartView;
 import com.example.cinemabookingapp.ui.features.admin.widget.AdminLineChartView;
+import com.example.cinemabookingapp.ui.features.admin.cineshop.AdminCineShopListActivity;
+import com.example.cinemabookingapp.ui.features.admin.notification.AdminSendNotificationActivity;
+
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -276,7 +279,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private List<AdminFeatureItem> createMovieFeatures() {
         List<AdminFeatureItem> items = new ArrayList<>();
         items.add(new AdminFeatureItem("Phim", "Quản lý danh sách phim", R.drawable.clapperboard_solid_full, AdminMovieListActivity.class));
-        items.add(new AdminFeatureItem("CineShop", "Quản lý sản phẩm, combos", R.drawable.cart_shopping_solid_full, null));
+        items.add(new AdminFeatureItem("CineShop", "Quản lý sản phẩm, combos", R.drawable.cart_shopping_solid_full, AdminCineShopListActivity.class));
         items.add(new AdminFeatureItem("Duyệt thanh toán", "Xử lý chuyển khoản & MoMo", R.drawable.clipboard_solid_full, AdminPaymentListActivity.class));
         return items;
     }
@@ -287,6 +290,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         items.add(new AdminFeatureItem("Khuyến mãi", "Quản lý promotion", R.drawable.tag_solid_full, AdminPromotionListActivity.class));
         items.add(new AdminFeatureItem("Báo cáo", "Thống kê doanh thu", R.drawable.chart_line_solid_full, AdminReportActivity.class));
         items.add(new AdminFeatureItem("Nhật ký", "Audit log hệ thống", R.drawable.clipboard_solid_full, AdminAuditLogActivity.class));
+        items.add(new AdminFeatureItem("Thông báo", "Gửi thông báo", R.drawable.ic_notification, AdminSendNotificationActivity.class));
         return items;
     }
 
