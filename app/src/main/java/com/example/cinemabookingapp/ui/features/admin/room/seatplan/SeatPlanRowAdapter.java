@@ -40,6 +40,15 @@ public class SeatPlanRowAdapter extends RecyclerView.Adapter<SeatPlanRowAdapter.
         SeatPlanRow row = rows.get(position);
         holder.tvRowName.setText(row.rowName);
 
+        int cellCount = row.cells.size();
+        float density = holder.itemView.getContext().getResources().getDisplayMetrics().density;
+        int cellWidthPx = Math.round(46 * density);
+        int totalWidthPx = cellWidthPx * cellCount;
+
+        android.view.ViewGroup.LayoutParams params = holder.rvCells.getLayoutParams();
+        params.width = totalWidthPx;
+        holder.rvCells.setLayoutParams(params);
+
         SeatPlanCellAdapter cellAdapter = new SeatPlanCellAdapter(
                 row.cells,
                 seatPosition -> listener.onSeatCellClicked(position, seatPosition)

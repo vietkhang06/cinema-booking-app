@@ -251,6 +251,9 @@ public class AdminMovieFormActivity extends BaseActivity {
                 @Override
                 public void onSuccess(Movie data) {
                     showToast("Đã cập nhật phim");
+                    com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                            "UPDATE_MOVIE", "MOVIE", data.movieId, "Đã cập nhật phim: " + data.title
+                    );
                     finish();
                 }
 
@@ -265,6 +268,9 @@ public class AdminMovieFormActivity extends BaseActivity {
                 @Override
                 public void onSuccess(Movie data) {
                     showToast("Đã thêm phim");
+                    com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                            "CREATE_MOVIE", "MOVIE", data.movieId, "Đã thêm phim mới: " + data.title
+                    );
                     finish();
                 }
 

@@ -368,6 +368,10 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
             showtimeRepository.deleteShowtimeSchedule(showtime.showtimeId, new ResultCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {
+                    Movie movie = movieMap.get(showtime.movieId);
+                    com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
+                            "DELETE_SHOWTIME", "SHOWTIME", showtime.showtimeId, "Đã xóa lịch trình suất chiếu của phim: " + (movie != null ? movie.title : "ID: " + showtime.movieId)
+                    );
                     showToast("Đã xóa lịch trình suất chiếu thành công");
                     loadShowtimes();
                 }

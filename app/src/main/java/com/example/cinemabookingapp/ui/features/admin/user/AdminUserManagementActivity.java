@@ -537,25 +537,12 @@ public class AdminUserManagementActivity extends BaseActivity {
                 return;
             }
 
-            showLoading(true);
-            voucherApi.grantVoucher(user.uid, discountVal, 30).enqueue(new Callback<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>>() {
-                @Override
-                public void onResponse(Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, Response<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> response) {
-                    showLoading(false);
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        dialog.dismiss();
-                        showToast("Đã tặng Voucher thành công!");
-                    } else {
-                        showToast("Lỗi khi tặng Voucher: " + getErrorMessage(response));
-                    }
-                }
+            String message = etMessage.getText().toString().trim();
+            if (message.isEmpty()) {
+                message = "Bạn được tặng 1 voucher giảm giá " + discountStr + "% từ Admin. Chúc bạn xem phim vui vẻ!";
+            }
 
-                @Override
-                public void onFailure(Call<ApiResponse<com.example.cinemabookingapp.domain.model.Voucher>> call, Throwable t) {
-                    showLoading(false);
-                    showToast("Lỗi kết nối: " + t.getMessage());
-                }
-            });
+            sendVoucherToFirebase(user, dialog, discountVal, message);
         });
 
         dialog.show();
@@ -580,5 +567,66 @@ public class AdminUserManagementActivity extends BaseActivity {
             }
         }
         return "Lỗi hệ thống (Code: " + response.code() + ")";
+    }
+
+    // ZELIOUS TASK: Logic gửi Voucher (Gom 3 thao tác vào 1 WriteBatch để đảm bảo tính nguyên vẹn).
+    // 1. Tạo Voucher. 2. Tạo Notification báo cho khách. 3. Tạo AuditLog lưu lịch sử Admin.
+    private void sendVoucherToFirebase(com.example.cinemabookingapp.domain.model.User user, android.app.Dialog dialog, int discount, String message) {
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+        com.google.firebase.firestore.WriteBatch batch = db.batch();
+        long currentTime = System.currentTimeMillis();
+
+        // 1. Create Voucher
+        com.google.firebase.firestore.DocumentReference voucherRef = db.collection("vouchers").document();
+        com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
+        voucher.voucherId = voucherRef.getId();
+        voucher.userId = user.uid;
+        // THE VOUCHER RULE
+        voucher.code = "GIFT_" + voucherRef.getId().substring(0, Math.min(voucherRef.getId().length(), 6)).toUpperCase();
+        voucher.discountPercent = discount;
+        voucher.status = "ACTIVE";
+        voucher.expiredAt = currentTime + 30L * 24 * 60 * 60 * 1000;
+        voucher.createdAt = currentTime;
+        batch.set(voucherRef, voucher);
+
+        // 2. Create Notification
+        com.google.firebase.firestore.DocumentReference notifRef = db.collection("notifications").document();
+        com.example.cinemabookingapp.domain.model.Notification notif = new com.example.cinemabookingapp.domain.model.Notification();
+        notif.notificationId = notifRef.getId();
+        notif.userId = user.uid;
+        notif.title = "Nhận Voucher từ Admin";
+        notif.message = message;
+        notif.type = "VOUCHER_RECEIVED";
+        notif.isRead = false;
+        notif.createdAt = currentTime;
+        notif.updatedAt = currentTime;
+        batch.set(notifRef, notif);
+
+        // 3. Create AuditLog
+        com.google.firebase.firestore.DocumentReference auditRef = db.collection("audit_logs").document();
+        com.example.cinemabookingapp.domain.model.AuditLog auditLog = new com.example.cinemabookingapp.domain.model.AuditLog();
+        auditLog.logId = auditRef.getId();
+        auditLog.adminId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null 
+                ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : "ADMIN";
+        auditLog.action = "GIVE_VOUCHER";
+        auditLog.createdAt = currentTime;
+        auditLog.actorId = auditLog.adminId;
+        auditLog.actorRole = "ADMIN";
+        auditLog.targetId = user.uid;
+        auditLog.targetType = "USER";
+        auditLog.note = "Tặng voucher " + discount + "% cho " + (user.name != null ? user.name : "Khách hàng");
+        batch.set(auditRef, auditLog);
+
+        showLoading(true);
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    showLoading(false);
+                    dialog.dismiss();
+                    showToast("Đã tặng Voucher thành công!");
+                })
+                .addOnFailureListener(e -> {
+                    showLoading(false);
+                    showToast("Lỗi khi tặng Voucher: " + e.getMessage());
+                });
     }
 }

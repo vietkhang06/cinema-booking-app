@@ -2,439 +2,65 @@ package com.example.cinemabookingapp.ui.features.movie;
 
 import androidx.annotation.NonNull;
 import android.widget.Button;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.content.res.ColorStateList;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.media.Image;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.util.TypedValue;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.view.Gravity;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.view.View;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.ArrayAdapter;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.ImageView;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.graphics.Color;
 
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.EditText;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.widget.RatingBar;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.repository.ReviewRepository;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.ReviewRepositoryImpl;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.adapter.ReviewAdapter;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Review;
 
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.R;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.core.base.BaseActivity;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Movie;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMovieByIdUseCase;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.CinemaRepositoryImpl;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.data.repository.ShowtimeRepositoryImpl;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Cinema;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.domain.model.Showtime;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.CinemaSection;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.DateOption;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.movie.model.MovieDetailScheduleCatalog.ShowtimeGroup;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.example.cinemabookingapp.ui.features.booking.SeatSelectionActivity;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButton;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.google.android.material.card.MaterialCardView;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import java.text.SimpleDateFormat;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import java.util.HashMap;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import java.util.List;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import java.util.Locale;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import java.util.Map;
-import androidx.annotation.NonNull;
-import android.widget.Button;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.AddReviewUseCase;
-import androidx.annotation.NonNull;
-import com.example.cinemabookingapp.domain.usecase.review.GetReviewsByMovieUseCase;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 public class MovieDetailActivity extends BaseActivity {
@@ -479,11 +105,11 @@ public class MovieDetailActivity extends BaseActivity {
     private MaterialButtonToggleGroup toggleSections;
     private MaterialButton btnTabSchedule;
     private MaterialButton btnTabInfo;
-    private MaterialButton btnTabReview;
+    private MaterialButton btnTabNews;
 
     private LinearLayout layoutScheduleSection;
     private LinearLayout layoutInfoSection;
-    private LinearLayout layoutReviewSection;
+    private LinearLayout layoutNewsSection;
 
     private MaterialAutoCompleteTextView actvCity;
     private MaterialAutoCompleteTextView actvCinema;
@@ -513,7 +139,6 @@ public class MovieDetailActivity extends BaseActivity {
     private String selectedDateLabel = "";
     private String selectedDateText = "";
     private String selectedShowtime = "";
-    /** LÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“i tÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£ng suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đặt vé ngay" */
     private MovieDetailScheduleCatalog.ShowtimeItem selectedShowtimeItem = null;
 
     private AddReviewUseCase addReviewUseCase;
@@ -557,7 +182,6 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void initViews() {
-        // scrollMovieDetail (ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ xÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³a ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng)
         imgHeroBackdrop = findViewById(R.id.imgHeroBackdrop);
         imgPosterThumb = findViewById(R.id.imgPosterThumb);
 
@@ -576,10 +200,12 @@ public class MovieDetailActivity extends BaseActivity {
         toggleSections = findViewById(R.id.toggleSections);
         btnTabSchedule = findViewById(R.id.btnTabSchedule);
         btnTabInfo = findViewById(R.id.btnTabInfo);
+        btnTabNews = findViewById(R.id.btnTabNews);
         
 
         layoutScheduleSection = findViewById(R.id.layoutScheduleSection);
         layoutInfoSection = findViewById(R.id.layoutInfoSection);
+        layoutNewsSection = findViewById(R.id.layoutNewsSection);
         
 
         actvCity = findViewById(R.id.actvCity);
@@ -703,7 +329,6 @@ public class MovieDetailActivity extends BaseActivity {
 
             @Override
             public void onError(@NonNull String errorMessage) {
-                // giÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯ fallback tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« intent
             }
         });
 
@@ -745,7 +370,6 @@ public class MovieDetailActivity extends BaseActivity {
 
             @Override
             public void onError(@NonNull String message) {
-                // Ngay cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ khi cinema load lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi, vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â«n tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c load showtime vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºi cinemaMap hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i
                 Log.w("MovieDetail", "Error loading cinemas (will proceed anyway): " + message);
                 loadShowtimesForMovie();
             }
@@ -758,8 +382,6 @@ public class MovieDetailActivity extends BaseActivity {
             public void onSuccess(@NonNull List<Showtime> showtimes) {
                 Log.d("MovieDetail", "Showtimes loaded: " + showtimes.size() + " for movieId=" + selectedMovieId);
 
-                // NÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u cinemaMap rÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âng nhÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ showtimes, tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡o placeholder Cinema tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â« cinemaId
-                // ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£m bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£o UI khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ trÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ng hoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n toÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ cinema API thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i
                 if (cinemaMap.isEmpty() && !showtimes.isEmpty()) {
                     for (Showtime s : showtimes) {
                         if (s.cinemaId != null && !cinemaMap.containsKey(s.cinemaId)) {
@@ -819,7 +441,6 @@ public class MovieDetailActivity extends BaseActivity {
         });
     }
 
-    // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i danh sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ch bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh luÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n (gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi trong loadMovieFromFirestore)
     private void loadReviews() {
         lastReviewVisible = null;
         isReviewLoading = false;
@@ -907,8 +528,7 @@ public class MovieDetailActivity extends BaseActivity {
     }
     
     private void submitRating(float rating) {
-        String content = ""; // ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nh giÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng kÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨m chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯ (hoÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·c cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ kÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨m nÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u muÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“n gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢p chung)
-        
+        String content = "";
         if (userReview != null) {
             // Update exist
             int oldRating = userReview.rating != null ? userReview.rating : 0;
@@ -930,13 +550,13 @@ public class MovieDetailActivity extends BaseActivity {
             });
         } else {
             // Add new
-            postComment(content, Math.round(rating));
+            postComment(content, Math.round(rating), false);
         }
     }
 
-    private void postComment(String content, int rating) {
+    private void postComment(String content, int rating, boolean isTextComment) {
         if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showLoginRequiredDialog("Đăng nhập để có thể để lại đánh giá");
+            showLoginRequiredDialog("Bạn cần đăng nhập để đánh giá");
             return;
         }
 
@@ -957,8 +577,21 @@ public class MovieDetailActivity extends BaseActivity {
                     showToast("Đã đăng bình luận!");
                     etCommentInput.setText("");
                 }
-                isReviewsLoaded = false;
-                loadReviews(); // TÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i danh sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ch
+                
+                if (isTextComment) {
+                    // Optimistic UI Update
+                    if (data.createdAt == null) {
+                        data.createdAt = System.currentTimeMillis();
+                    }
+                    
+                    reviewAdapter.addReviewToTop(data);
+                    if (rvReviews != null) {
+                        rvReviews.scrollToPosition(0);
+                    }
+                } else {
+                    isReviewsLoaded = false;
+                    loadReviews();
+                }
             }
             @Override
             public void onError(String message) {
@@ -1061,7 +694,6 @@ public class MovieDetailActivity extends BaseActivity {
 
     private void onCitySelected(String city) {
         selectedCity = city;
-        selectedShowtimeItem = null; // reset khi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢i thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â nh phÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“
         actvCity.setText(city, false);
 
         selectedCinema = getFirstCinemaName(city);
@@ -1162,7 +794,6 @@ public class MovieDetailActivity extends BaseActivity {
         }
 
         selectedDateIndex = index;
-        selectedShowtimeItem = null; // reset khi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢i ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y
         DateOption option = dateOptions.get(index);
         selectedDateLabel = option.label;
         selectedDateText = option.dateText;
@@ -1346,23 +977,18 @@ public class MovieDetailActivity extends BaseActivity {
         styleTimeButton(button, selected);
 
         button.setOnClickListener(v -> {
-            // 1. KiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢m tra xem suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t chiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£c chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân hay khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng
             boolean isCurrentlySelected = (cinemaName != null && cinemaName.equals(selectedCinema))
                     && (roomType != null && roomType.equals(selectedRoomType))
                     && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
 
             if (isCurrentlySelected) {
-                // 2. NÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y rÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œi -> BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥m lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â½ CHÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã¢â‚¬â„¢N
                 selectedShowtime = "";
                 selectedShowtimeItem = null;
             } else {
-            // ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â° lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±a chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân, KHÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNG check ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â viÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡c ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â±c hiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n khi nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥n "Đặt vé ngay"
             selectedCinema      = cinemaName;
             selectedRoomType    = roomType;
             selectedShowtime    = item.timeText;
-            selectedShowtimeItem = item;   // lÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng sau
             }
-            renderCinemaGroups(); // lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºi UI nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi gian ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ highlight suÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân
         });
 
         return button;
@@ -1414,11 +1040,11 @@ public class MovieDetailActivity extends BaseActivity {
     private void updateTabUi(int checkedId) {
         boolean scheduleSelected = checkedId == R.id.btnTabSchedule;
         boolean infoSelected = checkedId == R.id.btnTabInfo;
-        boolean newsSelected = false;
+        boolean newsSelected = checkedId == R.id.btnTabNews;
 
         layoutScheduleSection.setVisibility(scheduleSelected ? View.VISIBLE : View.GONE);
         layoutInfoSection.setVisibility(infoSelected ? View.VISIBLE : View.GONE);
-        
+        layoutNewsSection.setVisibility(newsSelected ? View.VISIBLE : View.GONE);
         
         if (newsSelected) {
             if (!isReviewsLoaded) {
@@ -1436,7 +1062,7 @@ public class MovieDetailActivity extends BaseActivity {
 
         applyTabStyle(btnTabSchedule, scheduleSelected);
         applyTabStyle(btnTabInfo, infoSelected);
-        
+        applyTabStyle(btnTabNews, newsSelected);
     }
 
     private void applyTabStyle(MaterialButton button, boolean selected) {
@@ -1492,7 +1118,7 @@ public class MovieDetailActivity extends BaseActivity {
                 showToast("Vui lòng nhập bình luận");
                 return;
             }
-            postComment(content, 0); // Rating is unused now
+            postComment(content, 0, true); // Rating is unused now
         });
     }
 
@@ -1533,17 +1159,14 @@ public class MovieDetailActivity extends BaseActivity {
             return;
         }
 
-        // 2. KiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢m tra ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§ thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng tin chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a
         if (selectedShowtimeItem == null
                 || TextUtils.isEmpty(selectedCity)
                 || TextUtils.isEmpty(selectedCinema)
                 || TextUtils.isEmpty(selectedDateText)
                 || TextUtils.isEmpty(selectedShowtime)) {
-            showToast("Hãy chọn đầy đủ rạp, ngày và suất chiếu");
             return;
         }
 
-        // 3. ChuyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n sang mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ghÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿
         Intent intent = new Intent(this, SeatSelectionActivity.class);
         intent.putExtra(SeatSelectionActivity.EXTRA_SHOWTIME_ID, selectedShowtimeItem.showtimeId);
         intent.putExtra(SeatSelectionActivity.EXTRA_MOVIE_TITLE, tvMovieTitle.getText().toString());
@@ -1629,9 +1252,6 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     /**
-     * HiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ dialog yÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªu cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p khi ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  muÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·t vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©.
-     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Đăng nhập" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€¦Ã‚Â¸ LoginActivity (sau khi login xong sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ quay vÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬nh nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y).
-     * NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt "Để sau" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ng dialog, ngÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ thÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c xem phim.
      */
     private void showLoginRequiredDialog(String message) {
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
@@ -1652,7 +1272,6 @@ public class MovieDetailActivity extends BaseActivity {
         icon.setLayoutParams(iconParams);
         layout.addView(icon);
 
-        // TiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªu ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â
         android.widget.TextView tvTitle = new android.widget.TextView(this);
         tvTitle.setText(message);
         tvTitle.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 20f);
@@ -1667,7 +1286,6 @@ public class MovieDetailActivity extends BaseActivity {
         tvTitle.setLayoutParams(titleParams);
         layout.addView(tvTitle);
 
-        // MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£
         android.widget.TextView tvDesc = new android.widget.TextView(this);
         tvDesc.setText("Bạn cần đăng nhập để tiếp tục đặt vé. Sau khi đăng nhập, bạn sẽ được quay lại trang này.");
         tvDesc.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f);
@@ -1681,7 +1299,6 @@ public class MovieDetailActivity extends BaseActivity {
         tvDesc.setLayoutParams(descParams);
         layout.addView(tvDesc);
 
-        // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p
         com.google.android.material.button.MaterialButton btnLogin =
                 new com.google.android.material.button.MaterialButton(this);
         btnLogin.setText("Đăng nhập");
@@ -1703,7 +1320,6 @@ public class MovieDetailActivity extends BaseActivity {
         });
         layout.addView(btnLogin);
 
-        // NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºt ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ sau
         com.google.android.material.button.MaterialButton btnLater =
                 new com.google.android.material.button.MaterialButton(this,
                         null, android.R.attr.borderlessButtonStyle);

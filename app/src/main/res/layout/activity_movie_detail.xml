@@ -59,7 +59,7 @@
                         android:src="@drawable/chevron_left_solid_full"
                         android:padding="6dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Quay láº¡i"
+                        android:contentDescription="Quay lại"
                         app:tint="#FFFFFF" />
 
                     <View
@@ -74,7 +74,7 @@
                         android:src="@drawable/share_solid_full"
                         android:padding="6dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Chia sáº»"
+                        android:contentDescription="Chia sẻ"
                         app:tint="#FFFFFF" />
                 </LinearLayout>
 
@@ -91,7 +91,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="â–¶"
+                        android:text="▶"
                         android:textColor="#111111"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -177,7 +177,7 @@
                                         android:layout_height="match_parent"
                                         android:gravity="center"
                                         android:paddingHorizontal="10dp"
-                                        android:text="â˜… 8.5"
+                                        android:text="★ 8.5"
                                         android:textColor="#B56B00"
                                         android:textSize="13sp"
                                         android:textStyle="bold" />
@@ -218,7 +218,7 @@
                                     android:id="@+id/tvReleaseDate"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="ðŸ“… 20/04/2026"
+                                    android:text="📅 20/04/2026"
                                     android:textColor="#444444"
                                     android:textSize="13sp" />
                             </LinearLayout>
@@ -321,7 +321,7 @@
                             android:layout_marginTop="18dp"
                             android:orientation="vertical" />
 
-                        <!-- Empty State khi khÃ´ng cÃ³ suáº¥t chiáº¿u -->
+                        <!-- Empty State khi không có suất chiếu -->
                         <LinearLayout
                             android:id="@+id/layoutEmptySchedule"
                             android:layout_width="match_parent"
@@ -417,7 +417,7 @@
                                     android:id="@+id/tvAverageRatingReview"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="â˜… 0.0"
+                                    android:text="★ 0.0"
                                     android:textColor="#B56B00"
                                     android:textSize="14sp"
                                     android:textStyle="bold"/>

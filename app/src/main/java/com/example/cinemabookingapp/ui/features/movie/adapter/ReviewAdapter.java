@@ -120,6 +120,13 @@ public class ReviewAdapter extends androidx.recyclerview.widget.RecyclerView.Ada
         }
     }
 
+    public void addReviewToTop(Review review) {
+        if (review != null) {
+            this.reviewList.add(0, review);
+            notifyItemInserted(0);
+        }
+    }
+
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

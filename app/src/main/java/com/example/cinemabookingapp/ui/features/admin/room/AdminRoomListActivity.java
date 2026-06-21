@@ -57,6 +57,12 @@ public class AdminRoomListActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRooms();
+    }
+
     private void initViews() {
         actvCinemaChooser = findViewById(R.id.actvCinemaChooser);
         btnAddRoom = findViewById(R.id.btnAddRoom);
