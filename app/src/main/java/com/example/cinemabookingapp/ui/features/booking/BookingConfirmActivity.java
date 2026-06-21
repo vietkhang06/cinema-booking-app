@@ -109,6 +109,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
     private double discountStars = 0;
     private String appliedPromoCode = "";
     private boolean isStarsApplied = false;
+    private double appliedVoucherDiscountAmount = 0;
+    private double appliedVoucherDiscountPercent = 0;
+    private double appliedPromoMaxDiscount = 0;
+    private String appliedVoucherId = "";
 
     private TextView tvOriginalPrice, tvTotal, tvAppliedPromo, tvStarsLabel;
     private com.google.android.material.switchmaterial.SwitchMaterial switchStars;
@@ -362,8 +366,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
         );
     }
 
-    private String appliedVoucherId = "";
-
     private void checkAndApplyVouchers() {
         if (currentUser == null) return;
         
@@ -380,6 +382,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         
                         for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
                             Double discount = doc.getDouble("discountValue");
+                            if (discount == null) {
+                                Long dp = doc.getLong("discountPercent");
+                                discount = (dp != null) ? dp.doubleValue() : 0.0;
+                            }
                             if (discount != null && discount > maxDiscount) {
                                 maxDiscount = discount;
                                 bestVoucher = doc;
@@ -388,20 +394,24 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         
                         if (bestVoucher != null) {
                             appliedVoucherId = bestVoucher.getId();
+                            String vCode = bestVoucher.getString("code");
+                            appliedPromoCode = vCode != null ? vCode : "";
                             String type = bestVoucher.getString("voucherType");
                             
-                            // PhÃƒÂ¢n biÃ¡Â»â€¡t Voucher giÃ¡ÂºÂ£m thÃ¡ÂºÂ³ng (200k) vÃƒÂ  giÃ¡ÂºÂ£m % (10%)
+                            // Phân biệt Voucher giảm thẳng (200k) và giảm % (10%)
                             if (maxDiscount > 100) {
-                                discountVoucher = maxDiscount;
+                                appliedVoucherDiscountAmount = maxDiscount;
+                                appliedVoucherDiscountPercent = 0;
                             } else {
-                                discountVoucher = (total + totalSnacksPrice) * (maxDiscount / 100.0);
+                                appliedVoucherDiscountAmount = 0;
+                                appliedVoucherDiscountPercent = maxDiscount;
                             }
                             
+                            updateTotalPrice();
                             if (tvAppliedPromo != null) {
                                 tvAppliedPromo.setText(String.format(Locale.getDefault(), "Voucher ví: -%,.0f đ", discountVoucher));
                                 tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
                             }
-                            updateTotalPrice();
                             Toast.makeText(this, "Hệ thống tự động áp dụng Voucher từ ví của bạn!", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -453,7 +463,18 @@ public class BookingConfirmActivity extends AppCompatActivity {
     }
 
     private void updateTotalPrice() {
-        double finalTotal = (total + totalSnacksPrice) - discountVoucher - discountRank - discountStars;
+        double subtotal = total + totalSnacksPrice;
+        if (appliedVoucherDiscountPercent > 0) {
+            discountVoucher = subtotal * (appliedVoucherDiscountPercent / 100.0);
+            if (appliedPromoMaxDiscount > 0) {
+                discountVoucher = Math.min(discountVoucher, appliedPromoMaxDiscount);
+            }
+        } else if (appliedVoucherDiscountAmount > 0) {
+            discountVoucher = appliedVoucherDiscountAmount;
+        } else {
+            discountVoucher = 0;
+        }
+        double finalTotal = subtotal - discountVoucher - discountRank - discountStars;
         if (finalTotal < 0) finalTotal = 0;
 
         if (discountVoucher > 0 || discountRank > 0 || discountStars > 0) {
@@ -482,82 +503,136 @@ public class BookingConfirmActivity extends AppCompatActivity {
         android.widget.EditText edtPromoCode = view.findViewById(R.id.edtPromoCode);
         android.widget.Button btnApplyPromo = view.findViewById(R.id.btnApplyPromo);
         TextView tvPromoStatus = view.findViewById(R.id.tvPromoStatus);
-        android.widget.Spinner spinnerVouchers = view.findViewById(R.id.spinnerVouchers);
+        androidx.recyclerview.widget.RecyclerView rvVouchersList = view.findViewById(R.id.rvVouchersList);
+        android.view.View btnExpandVouchers = view.findViewById(R.id.btnExpandVouchers);
+        TextView tvExpandLabel = view.findViewById(R.id.tvExpandLabel);
+        android.view.View btnVoucherConditions = view.findViewById(R.id.btnVoucherConditions);
 
         if (!appliedPromoCode.isEmpty() && edtPromoCode != null) {
             edtPromoCode.setText(appliedPromoCode);
         }
 
-        final java.util.List<DocumentSnapshot> myVouchers = new ArrayList<>();
+        if (btnVoucherConditions != null) {
+            btnVoucherConditions.setOnClickListener(v -> {
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("Điều kiện Voucher")
+                        .setMessage("- Mỗi đơn hàng chỉ áp dụng tối đa 1 voucher.\n- Không thể áp dụng đồng thời voucher ví và mã khuyến mãi nhập tay.\n- Voucher không có giá trị quy đổi thành tiền mặt.")
+                        .setPositiveButton("Đã hiểu", null)
+                        .show();
+            });
+        }
 
-        if (spinnerVouchers != null && currentUser != null) {
+        final java.util.List<DocumentSnapshot> allVouchers = new ArrayList<>();
+        final java.util.List<DocumentSnapshot> displayedVouchers = new ArrayList<>();
+        final boolean[] isExpanded = {false};
+
+        if (rvVouchersList != null && currentUser != null) {
+            rvVouchersList.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
             FirebaseFirestore.getInstance().collection("vouchers")
                     .whereEqualTo("userId", currentUser.uid)
                     .whereEqualTo("isUsed", false)
                     .get()
                     .addOnSuccessListener(snapshot -> {
-                        myVouchers.clear();
-                        List<String> voucherNames = new ArrayList<>();
-                        voucherNames.add("--- Chọn Voucher cá nhân ---");
-
+                        allVouchers.clear();
+                        displayedVouchers.clear();
                         if (snapshot != null && !snapshot.isEmpty()) {
-                            myVouchers.addAll(snapshot.getDocuments());
-                            for (DocumentSnapshot doc : myVouchers) {
-                                String type = doc.getString("voucherType");
-                                Double discount = doc.getDouble("discountValue");
-                                if (discount == null) discount = 0.0;
-                                
-                                String name = "Voucher hệ thống";
-                                if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
-                                
-                                voucherNames.add(String.format(Locale.getDefault(), "%s (-%,.0f đ)", name, discount));
-                            }
+                            allVouchers.addAll(snapshot.getDocuments());
                         }
 
-                        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
-                                this, android.R.layout.simple_spinner_dropdown_item, voucherNames);
-                        spinnerVouchers.setAdapter(adapter);
+                        if (allVouchers.size() > 3) {
+                            if (btnExpandVouchers != null) {
+                                btnExpandVouchers.setVisibility(android.view.View.VISIBLE);
+                            }
+                            displayedVouchers.addAll(allVouchers.subList(0, 3));
+                        } else {
+                            if (btnExpandVouchers != null) {
+                                btnExpandVouchers.setVisibility(android.view.View.GONE);
+                            }
+                            displayedVouchers.addAll(allVouchers);
+                        }
+
+                        DialogVoucherAdapter adapter = new DialogVoucherAdapter(displayedVouchers, appliedVoucherId, (voucher, isCurrentlySelected) -> {
+                            if (isCurrentlySelected) {
+                                appliedVoucherId = "";
+                                appliedPromoCode = "";
+                                appliedVoucherDiscountAmount = 0;
+                                appliedVoucherDiscountPercent = 0;
+                                if (tvAppliedPromo != null) {
+                                    tvAppliedPromo.setText("");
+                                    tvAppliedPromo.setVisibility(android.view.View.GONE);
+                                }
+                                updateTotalPrice();
+                                dialog.dismiss();
+                                Toast.makeText(this, "Đã bỏ áp dụng Voucher!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                appliedVoucherId = voucher.getId();
+                                String vCode = voucher.getString("code");
+                                appliedPromoCode = vCode != null ? vCode : "";
+                                Double discount = voucher.getDouble("discountValue");
+                                if (discount == null) {
+                                    Long dp = voucher.getLong("discountPercent");
+                                    discount = (dp != null) ? dp.doubleValue() : 0.0;
+                                }
+
+                                if (discount > 100) {
+                                    appliedVoucherDiscountAmount = discount;
+                                    appliedVoucherDiscountPercent = 0;
+                                } else {
+                                    appliedVoucherDiscountAmount = 0;
+                                    appliedVoucherDiscountPercent = discount;
+                                }
+
+                                updateTotalPrice();
+                                if (tvAppliedPromo != null) {
+                                    String name = voucher.getString("title");
+                                    if (name == null) name = voucher.getString("name");
+                                    if (name == null) {
+                                        String type = voucher.getString("voucherType");
+                                        if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
+                                        else name = "Voucher hệ thống";
+                                    }
+                                    tvAppliedPromo.setText(String.format(Locale.getDefault(), "Đã áp dụng: %s (-%,.0f đ)", name, discountVoucher));
+                                    tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
+                                    tvAppliedPromo.setTextColor(0xFF4CAF50);
+                                }
+                                dialog.dismiss();
+                                Toast.makeText(this, "Áp dụng Voucher cá nhân thành công!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        rvVouchersList.setAdapter(adapter);
+
+                        if (btnExpandVouchers != null) {
+                            btnExpandVouchers.setOnClickListener(v -> {
+                                isExpanded[0] = !isExpanded[0];
+                                displayedVouchers.clear();
+                                if (isExpanded[0]) {
+                                    displayedVouchers.addAll(allVouchers);
+                                    if (tvExpandLabel != null) {
+                                        tvExpandLabel.setText("Thu gọn ▲");
+                                    }
+                                } else {
+                                    displayedVouchers.addAll(allVouchers.subList(0, 3));
+                                    if (tvExpandLabel != null) {
+                                        tvExpandLabel.setText(String.format(Locale.getDefault(), "Xem thêm voucher (%d) ▼", allVouchers.size() - 3));
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            });
+
+                            if (allVouchers.size() > 3 && tvExpandLabel != null) {
+                                tvExpandLabel.setText(String.format(Locale.getDefault(), "Xem thêm voucher (%d) ▼", allVouchers.size() - 3));
+                            }
+                        }
                     });
         }
 
         if (btnApplyPromo != null) {
             btnApplyPromo.setOnClickListener(v -> {
-                if (spinnerVouchers != null && spinnerVouchers.getSelectedItemPosition() > 0) {
-                    // NgÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng Ã„â€˜ÃƒÂ£ chÃ¡Â»Ân Voucher cÃƒÂ¡ nhÃƒÂ¢n trong Dropdown
-                    int selectedIndex = spinnerVouchers.getSelectedItemPosition() - 1;
-                    DocumentSnapshot selectedVoucher = myVouchers.get(selectedIndex);
-                    
-                    appliedVoucherId = selectedVoucher.getId();
-                    String type = selectedVoucher.getString("voucherType");
-                    Double discount = selectedVoucher.getDouble("discountValue");
-                    if (discount == null) discount = 0.0;
-
-                    if (discount > 100) {
-                        discountVoucher = discount;
-                    } else {
-                        discountVoucher = (total + totalSnacksPrice) * (discount / 100.0);
-                    }
-
-                    appliedPromoCode = ""; 
-                    if (tvAppliedPromo != null) {
-                        String name = "Voucher hệ thống";
-                        if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
-                        tvAppliedPromo.setText(String.format(Locale.getDefault(), "Đã áp dụng: %s (-%,.0f đ)", name, discountVoucher));
-                        tvAppliedPromo.setVisibility(android.view.View.VISIBLE);
-                        tvAppliedPromo.setTextColor(0xFF4CAF50);
-                    }
-                    
-                    updateTotalPrice();
-                    dialog.dismiss();
-                    Toast.makeText(this, "Áp dụng Voucher cá nhân thành công!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 if (edtPromoCode == null) return;
 
                 String code = edtPromoCode.getText().toString().trim().toUpperCase(Locale.getDefault());
                 if (code.isEmpty()) {
-                    Toast.makeText(this, "Vui lòng chọn Voucher hoặc nhập mã khuyến mãi!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Vui lòng nhập mã khuyến mãi!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -655,8 +730,19 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            discountVoucher = voucherValue;
+                            if ("percentage".equalsIgnoreCase(discountType)) {
+                                appliedVoucherDiscountPercent = discountValue != null ? discountValue : 0;
+                                appliedVoucherDiscountAmount = 0;
+                                appliedPromoMaxDiscount = maxDiscountAmount != null ? maxDiscountAmount : 0;
+                            } else {
+                                appliedVoucherDiscountPercent = 0;
+                                appliedVoucherDiscountAmount = discountValue != null ? discountValue : 0;
+                                appliedPromoMaxDiscount = 0;
+                            }
                             appliedPromoCode = code;
+                            appliedVoucherId = ""; // Clear personal voucher
+
+                            updateTotalPrice();
 
                             if (tvAppliedPromo != null) {
                                 String promoLabel = (title != null && !title.trim().isEmpty())
@@ -665,12 +751,10 @@ public class BookingConfirmActivity extends AppCompatActivity {
 
                                 tvAppliedPromo.setText(
                                         String.format(Locale.getDefault(),
-                                                "Đã áp dụng: %s (-%,.0f đ)", promoLabel, voucherValue)
+                                                "Đã áp dụng: %s (-%,.0f đ)", promoLabel, discountVoucher)
                                 );
                                 tvAppliedPromo.setTextColor(0xFF4CAF50);
                             }
-
-                            updateTotalPrice();
                             dialog.dismiss();
                             Toast.makeText(this, "Áp dụng mã khuyến mãi thành công!", Toast.LENGTH_SHORT).show();
                         })
@@ -732,7 +816,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 paymentMethod
         );
         request.promoCode = appliedPromoCode;
-        request.discountVoucher = discountVoucher;
+        request.discountVoucher = discountVoucher + discountRank + discountStars;
         request.useStars = isStarsApplied;
 
         BookingApiService bookingApi = RetrofitClient.getInstance().create(BookingApiService.class);
@@ -881,7 +965,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         android.widget.Button btnCancelMomo = view.findViewById(R.id.btnCancelMomo);
         android.widget.Button btnConfirmMomo = view.findViewById(R.id.btnConfirmMomo);
 
-        double finalTotal = total - discountVoucher - discountRank - discountStars;
+        double finalTotal = (total + totalSnacksPrice) - discountVoucher - discountRank - discountStars;
         if (finalTotal < 0) finalTotal = 0;
 
         if (tvMomoAmount != null) {
@@ -1069,5 +1153,142 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 releaseLockedSeats();
             }
         }
+    }
+
+    private class DialogVoucherAdapter extends androidx.recyclerview.widget.RecyclerView.Adapter<DialogVoucherAdapter.ViewHolder> {
+        private final List<DocumentSnapshot> items;
+        private final String currentSelectedId;
+        private final OnVoucherClickListener listener;
+
+        public DialogVoucherAdapter(List<DocumentSnapshot> items, String currentSelectedId, OnVoucherClickListener listener) {
+            this.items = items;
+            this.currentSelectedId = currentSelectedId;
+            this.listener = listener;
+        }
+
+        @androidx.annotation.NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@androidx.annotation.NonNull android.view.ViewGroup parent, int viewType) {
+            android.view.View view = getLayoutInflater().inflate(R.layout.item_dialog_voucher, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@androidx.annotation.NonNull ViewHolder holder, int position) {
+            DocumentSnapshot doc = items.get(position);
+            
+            // 1. Get title/name
+            String name = doc.getString("title");
+            if (name == null) name = doc.getString("name");
+            if (name == null) {
+                String type = doc.getString("voucherType");
+                if ("WELCOME_VOUCHER".equals(type)) name = "Quà Tân Binh";
+                else name = "Voucher hệ thống";
+            }
+
+            // 2. Get discount
+            Double discount = doc.getDouble("discountValue");
+            if (discount == null) {
+                Long dp = doc.getLong("discountPercent");
+                discount = (dp != null) ? dp.doubleValue() : 0.0;
+            }
+
+            String valueTag = "";
+            String titleText = "";
+            if (discount > 100) {
+                valueTag = String.format(Locale.getDefault(), "%,.0fK", discount / 1000.0);
+                if (valueTag.endsWith(",0K") || valueTag.endsWith(".0K")) {
+                    valueTag = valueTag.replace(",0K", "K").replace(".0K", "K");
+                }
+                titleText = String.format(Locale.getDefault(), "Giảm %,.0f đ", discount);
+            } else {
+                valueTag = String.format(Locale.getDefault(), "%,.0f%%", discount);
+                if (valueTag.endsWith(",0%") || valueTag.endsWith(".0%")) {
+                    valueTag = valueTag.replace(",0%", "%").replace(".0%", "%");
+                }
+                titleText = String.format(Locale.getDefault(), "Giảm %,.0f%%", discount);
+            }
+            holder.tvVoucherValueText.setText(valueTag);
+            holder.tvVoucherTitle.setText(titleText);
+
+            // 3. Conditions (minAmount)
+            Double minAmount = doc.getDouble("minAmount");
+            String condStr = "Áp dụng cho đơn vé";
+            if (minAmount != null && minAmount > 0) {
+                condStr += String.format(Locale.getDefault(), " từ %,.0f đ", minAmount);
+            } else {
+                condStr += " mọi giá trị";
+            }
+            holder.tvVoucherConditions.setText(condStr);
+
+            // 4. Expiry Date
+            long expiredTime = 0;
+            if (doc.contains("expiredAt")) {
+                Long exp = doc.getLong("expiredAt");
+                if (exp != null) expiredTime = exp;
+            }
+            String expiryStr = "HSD: ";
+            if (expiredTime > 0) {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                expiryStr += sdf.format(new java.util.Date(expiredTime));
+            } else {
+                expiryStr += "Không giới hạn";
+            }
+            holder.tvVoucherExpiry.setText(expiryStr);
+
+            // 5. Radio selection state
+            boolean isSelected = doc.getId().equals(currentSelectedId);
+            holder.imgVoucherRadio.setImageResource(isSelected ? R.drawable.ic_radio_selected : R.drawable.ic_radio_unselected);
+
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onVoucherClick(doc, isSelected);
+                }
+            });
+
+            final String finalName = name;
+            final String finalCond = condStr;
+            final String finalExpiry = expiryStr;
+            holder.tvVoucherDetailLink.setOnClickListener(v -> {
+                new android.app.AlertDialog.Builder(BookingConfirmActivity.this)
+                        .setTitle("Chi tiết Voucher")
+                        .setMessage(String.format(Locale.getDefault(), 
+                                "Mã voucher: %s\nNội dung: %s\nĐiều kiện: %s\n%s", 
+                                doc.getString("code") != null ? doc.getString("code") : doc.getId(),
+                                finalName, 
+                                finalCond, 
+                                finalExpiry))
+                        .setPositiveButton("Đóng", null)
+                        .show();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        class ViewHolder extends androidx.recyclerview.widget.RecyclerView.ViewHolder {
+            android.widget.TextView tvVoucherValueText;
+            android.widget.TextView tvVoucherTitle;
+            android.widget.TextView tvVoucherConditions;
+            android.widget.TextView tvVoucherExpiry;
+            android.widget.TextView tvVoucherDetailLink;
+            android.widget.ImageView imgVoucherRadio;
+
+            public ViewHolder(@androidx.annotation.NonNull android.view.View itemView) {
+                super(itemView);
+                tvVoucherValueText = itemView.findViewById(R.id.tvVoucherValueText);
+                tvVoucherTitle = itemView.findViewById(R.id.tvVoucherTitle);
+                tvVoucherConditions = itemView.findViewById(R.id.tvVoucherConditions);
+                tvVoucherExpiry = itemView.findViewById(R.id.tvVoucherExpiry);
+                tvVoucherDetailLink = itemView.findViewById(R.id.tvVoucherDetailLink);
+                imgVoucherRadio = itemView.findViewById(R.id.imgVoucherRadio);
+            }
+        }
+    }
+
+    private interface OnVoucherClickListener {
+        void onVoucherClick(DocumentSnapshot voucher, boolean isCurrentlySelected);
     }
 }

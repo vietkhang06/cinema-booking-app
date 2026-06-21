@@ -134,27 +134,41 @@ public class BookingController {
             }
         }
 
-        double subTotal = showtime.getBasePrice() * seats.size() + orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
-        double discount = 0;
+        double subTotal = 0;
+        for (SeatDTO seat : seats) {
+            double price = "VIP".equalsIgnoreCase(seat.getSeatType()) ? 75000 : 60000;
+            subTotal += price;
+        }
+        subTotal += orders.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
 
-        if (data.getAppliedVoucherCode() != null && !data.getAppliedVoucherCode().isEmpty()) {
+        double discount = 0;
+        String voucherCode = data.getAppliedVoucherCode();
+        if (voucherCode == null || voucherCode.isEmpty()) {
+            voucherCode = data.getPromoCode();
+        }
+
+        if (voucherCode != null && !voucherCode.isEmpty()) {
             try {
-                VoucherDTO voucher = voucherService.validateVoucher(data.getAppliedVoucherCode(), userId);
+                VoucherDTO voucher = voucherService.validateVoucher(voucherCode, userId);
                 discount = subTotal * voucher.getDiscountPercent() / 100.0;
             } catch (Exception e) {
                 log.warn("Failed to validate voucher during booking creation: {}", e.getMessage());
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã voucher không hợp lệ hoặc đã hết hạn.");
+                if (data.getDiscountVoucher() > 0) {
+                    discount = data.getDiscountVoucher();
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã voucher không hợp lệ hoặc đã hết hạn.");
+                }
             }
+        } else if (data.getDiscountVoucher() > 0) {
+            discount = data.getDiscountVoucher();
+        }
+
+        if (data.getDiscountVoucher() > discount) {
+            discount = data.getDiscountVoucher();
         }
         
         double finalTotal = subTotal - discount;
         if (finalTotal < 0) finalTotal = 0;
-        
-        // Prevent client-side manipulation by strictly using our calculated finalTotal
-        if (Math.abs(finalTotal - bookingRequest.getTotalPrice()) > 1.0) {
-            log.warn("Price mismatch: client sent {}, server calculated {}", bookingRequest.getTotalPrice(), finalTotal);
-            // We proceed with the server's calculated price for safety
-        }
 
         String suffix = uniqueID.contains("_") ? uniqueID.substring(uniqueID.indexOf("_") + 1) : uniqueID;
         if (suffix.length() > 8) {
@@ -179,7 +193,7 @@ public class BookingController {
                 .subtotal(subTotal)
                 .discount(discount)
                 .total(finalTotal)
-                .appliedVoucherCode(data.getAppliedVoucherCode())
+                .appliedVoucherCode(voucherCode)
                 // cap nhat payment
                 .paymentMethod(bookingRequest.getPaymentMethod().name())
                 .paymentStatus("PENDING")

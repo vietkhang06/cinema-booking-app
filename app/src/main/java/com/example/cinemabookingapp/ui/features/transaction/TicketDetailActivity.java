@@ -47,7 +47,9 @@ public class TicketDetailActivity extends AppCompatActivity {
 
     private ImageView imgPoster, imgQr;
     private TextView tvTitle, tvCinema, tvDate, tvTime, tvRoom, tvSeats, tvBookingCode, tvTotal, tvQrHint;
-    private MaterialCardView ticketContainer;
+    private TextView tvStatusText, tvAppliedVoucher, tvSubtotal, tvDiscount;
+    private View layoutAppliedVoucher, layoutPaymentDiscount;
+    private View ticketContainer;
     private MaterialButton btnDownload;
     private BookingService bookingService;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -120,6 +122,13 @@ public class TicketDetailActivity extends AppCompatActivity {
         tvQrHint = findViewById(R.id.tv_qr_hint);
         ticketContainer = findViewById(R.id.ticket_container);
         btnDownload = findViewById(R.id.btn_download);
+
+        tvStatusText = findViewById(R.id.tv_status_text);
+        tvAppliedVoucher = findViewById(R.id.tv_applied_voucher);
+        layoutAppliedVoucher = findViewById(R.id.layout_applied_voucher);
+        tvSubtotal = findViewById(R.id.tv_subtotal);
+        tvDiscount = findViewById(R.id.tv_discount);
+        layoutPaymentDiscount = findViewById(R.id.layout_payment_discount);
 
         layoutHeaderInfo = findViewById(R.id.layout_header_info);
         dividerLine      = findViewById(R.id.divider_line);
@@ -197,6 +206,14 @@ public class TicketDetailActivity extends AppCompatActivity {
 
         tvBookingCode.setText("Order ID: #" + orderId);
         tvTotal.setText(String.format("%,.0fđ", totalPrice != null ? totalPrice : 0.0).replace(',', '.'));
+        tvSubtotal.setText(String.format("%,.0fđ", totalPrice != null ? totalPrice : 0.0).replace(',', '.'));
+        if (layoutPaymentDiscount != null) layoutPaymentDiscount.setVisibility(View.GONE);
+        if (layoutAppliedVoucher != null) layoutAppliedVoucher.setVisibility(View.GONE);
+        if (tvStatusText != null) {
+            tvStatusText.setText("Đã thanh toán");
+            tvStatusText.setTextColor(0xFF2E7D32);
+            tvStatusText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check_circle_green, 0, 0, 0);
+        }
 
         // Generate QR Code containing CineShop details
         String qrContent = String.format("%s|%s|CINE_SHOP|%d",
@@ -241,8 +258,64 @@ public class TicketDetailActivity extends AppCompatActivity {
             tvSeats.setText("Chưa xác định");
         }
 
-        tvBookingCode.setText("Booking ID: #" + booking.bookingId);
+        tvBookingCode.setText(booking.paymentCode != null && !booking.paymentCode.isEmpty() ? booking.paymentCode : booking.bookingId);
         tvTotal.setText(String.format("%,.0fđ", booking.total).replace(',', '.'));
+        double subtotalVal = booking.subtotal > 0 ? booking.subtotal : (booking.total + booking.discount);
+        tvSubtotal.setText(String.format("%,.0fđ", subtotalVal).replace(',', '.'));
+        
+        if (booking.discount > 0) {
+            if (layoutPaymentDiscount != null) layoutPaymentDiscount.setVisibility(View.VISIBLE);
+            if (tvDiscount != null) tvDiscount.setText(String.format("-%,.0fđ", booking.discount).replace(',', '.'));
+        } else {
+            if (layoutPaymentDiscount != null) layoutPaymentDiscount.setVisibility(View.GONE);
+        }
+
+        String voucherCode = booking.appliedVoucherCode;
+        if (voucherCode == null || voucherCode.isEmpty()) {
+            voucherCode = booking.promoCode;
+        }
+
+        if (booking.discount > 0) {
+            if (layoutAppliedVoucher != null) layoutAppliedVoucher.setVisibility(View.VISIBLE);
+            
+            String displayText;
+            if (voucherCode == null || voucherCode.isEmpty() || voucherCode.contains("-")) {
+                displayText = "Voucher ví (-" + String.format("%,.0fđ", booking.discount).replace(',', '.') + ")";
+            } else {
+                displayText = "Voucher ví: " + voucherCode + " (-" + String.format("%,.0fđ", booking.discount).replace(',', '.') + ")";
+            }
+            
+            if (tvAppliedVoucher != null) {
+                tvAppliedVoucher.setText(displayText);
+            }
+        } else {
+            if (layoutAppliedVoucher != null) layoutAppliedVoucher.setVisibility(View.GONE);
+        }
+
+        if (tvStatusText != null) {
+            String bookingStatus = booking.bookingStatus != null ? booking.bookingStatus.toUpperCase() : "PENDING";
+            String paymentStatus = booking.paymentStatus != null ? booking.paymentStatus.toUpperCase() : "PENDING";
+            long now = System.currentTimeMillis();
+
+            if ("FAILED".equals(bookingStatus) || "CANCELLED".equals(bookingStatus) ||
+                "FAILED".equals(paymentStatus) || "CANCELLED".equals(paymentStatus)) {
+                tvStatusText.setText("Đã hủy");
+                tvStatusText.setTextColor(0xFFC62828); // Red
+                tvStatusText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_cross_circle, 0, 0, 0);
+            } else if (booking.checkInAt > 0) {
+                tvStatusText.setText("Đã sử dụng");
+                tvStatusText.setTextColor(0xFF757575); // Grey
+                tvStatusText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            } else if (booking.showtimeStartAtSnapshot > 0 && booking.showtimeStartAtSnapshot < now) {
+                tvStatusText.setText("Đã hết hạn");
+                tvStatusText.setTextColor(0xFF757575); // Grey
+                tvStatusText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            } else {
+                tvStatusText.setText("Đã thanh toán");
+                tvStatusText.setTextColor(0xFF2E7D32); // Green
+                tvStatusText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check_circle_green, 0, 0, 0);
+            }
+        }
 
         boolean allowQR = shouldAllowQR(booking);
         if (allowQR) {
