@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.features.cineshop.adapter.CineCartAdapter;
 
 import java.text.DecimalFormat;
 import java.util.List;

@@ -78,7 +78,7 @@ import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.dto.CineShopItemDTO;
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
-import com.example.cinemabookingapp.utils.CineShopSeeder;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.firestore.FirebaseFirestore;
