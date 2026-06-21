@@ -32,19 +32,31 @@
                 android:layout_marginBottom="24dp">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardAdminAvatar"
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     app:cardCornerRadius="26dp"
                     app:cardBackgroundColor="#1E1A23"
                     app:strokeWidth="0dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="AD"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold"
-                        android:textSize="18sp" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:id="@+id/imgAdminAvatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/tvAdminAvatarInitials"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="AD"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
+                    </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
@@ -61,34 +73,17 @@
                         android:text="Xin chào, Quản trị viên"
                         android:textColor="#1E1A23"
                         android:textStyle="bold"
-                        android:textSize="20sp" />
+                        android:textSize="22sp" />
 
                     <TextView
+                        android:id="@+id/tvAdminName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hệ thống quản trị Cinema Booking"
+                        android:text=""
                         android:textColor="#7A757F"
-                        android:textSize="13sp"
+                        android:textSize="15sp"
                         android:layout_marginTop="2dp" />
                 </LinearLayout>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardBackgroundColor="#FFF0F2"
-                    app:strokeColor="#FFD2D7"
-                    app:strokeWidth="1dp">
-                    <ImageButton
-                        android:id="@+id/btnAdminLogout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        app:tint="#C62828"
-                        android:padding="8dp"
-                        android:src="@drawable/lock_solid_full"
-                        android:contentDescription="Logout" />
-                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <!-- Stats Highlights Grid -->

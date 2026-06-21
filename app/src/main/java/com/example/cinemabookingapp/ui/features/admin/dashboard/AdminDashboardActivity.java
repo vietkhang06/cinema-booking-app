@@ -61,6 +61,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private TextView tvUsersCount;
     private TextView tvRevenueCount;
 
+    private TextView tvAdminGreeting, tvAdminName;
+    private android.widget.ImageView imgAdminAvatar;
+    private TextView tvAdminAvatarInitials;
+
     private MovieRepositoryImpl movieRepository;
     private UserRepositoryImpl userRepository;
     private BookingRepositoryImpl bookingRepository;
@@ -74,8 +78,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        ImageButton btnLogout = findViewById(R.id.btnAdminLogout);
         tvMoviesCount = findViewById(R.id.tvMoviesCount);
+        tvAdminGreeting = findViewById(R.id.tvAdminGreeting);
+        tvAdminName = findViewById(R.id.tvAdminName);
+        imgAdminAvatar = findViewById(R.id.imgAdminAvatar);
+        tvAdminAvatarInitials = findViewById(R.id.tvAdminAvatarInitials);
         tvShowtimesCount = findViewById(R.id.tvShowtimesCount);
         tvUsersCount = findViewById(R.id.tvUsersCount);
         tvRevenueCount = findViewById(R.id.tvRevenueCount);
@@ -107,19 +114,74 @@ public class AdminDashboardActivity extends AppCompatActivity {
         loadRealStats();
         runShowtimeMigration();
 
-        btnLogout.setOnClickListener(v -> {
-            new androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle("Đăng xuất")
-                    .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
-                    .setPositiveButton("Đăng xuất", (dialog, which) -> {
-                        ServiceProvider.getInstance(getApplicationContext()).getAuthenticationService().logOut();
-                        AppNavigator.goToLogin(this);
-                    })
-                    .setNegativeButton("Hủy", null)
-                    .show();
-        });
-
         setupBottomNavigation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAdminProfile();
+    }
+
+    private void loadAdminProfile() {
+        com.example.cinemabookingapp.data.remote.api.ProfileApiService profileApi = 
+                com.example.cinemabookingapp.data.remote.api.RetrofitClient.getInstance().create(com.example.cinemabookingapp.data.remote.api.ProfileApiService.class);
+        profileApi.getMyProfile().enqueue(new retrofit2.Callback<com.example.cinemabookingapp.data.dto.ApiResponse<User>>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<User>> call, retrofit2.Response<com.example.cinemabookingapp.data.dto.ApiResponse<User>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    User user = response.body().getData();
+                    bindAdminProfile(user);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.example.cinemabookingapp.data.dto.ApiResponse<User>> call, Throwable t) {
+                Log.e(TAG, "Error loading admin profile: " + t.getMessage());
+            }
+        });
+    }
+
+    private void bindAdminProfile(User user) {
+        if (user == null) return;
+        
+        String roleStr = "Quản trị viên";
+        if ("staff".equalsIgnoreCase(user.role)) {
+            roleStr = "Nhân viên";
+        }
+        String name = user.name != null && !user.name.isEmpty() ? user.name : "";
+        tvAdminGreeting.setText("Xin chào, " + roleStr);
+        tvAdminName.setText(name);
+
+        if (user.avatarUrl != null && !user.avatarUrl.isEmpty()) {
+            imgAdminAvatar.setVisibility(android.view.View.VISIBLE);
+            tvAdminAvatarInitials.setVisibility(android.view.View.GONE);
+            com.bumptech.glide.Glide.with(this)
+                    .load(user.avatarUrl)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                    .circleCrop()
+                    .placeholder(R.drawable.user_solid_full)
+                    .into(imgAdminAvatar);
+        } else {
+            imgAdminAvatar.setVisibility(android.view.View.GONE);
+            tvAdminAvatarInitials.setVisibility(android.view.View.VISIBLE);
+            
+            String initials = "AD";
+            if (user.name != null && !user.name.trim().isEmpty()) {
+                String[] parts = user.name.trim().split("\\s+");
+                if (parts.length > 0) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < Math.min(parts.length, 3); i++) {
+                        if (!parts[i].isEmpty()) {
+                            sb.append(parts[i].toUpperCase().charAt(0));
+                        }
+                    }
+                    initials = sb.toString();
+                }
+            }
+            tvAdminAvatarInitials.setText(initials);
+        }
     }
 
     private void loadRealStats() {
@@ -295,7 +357,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         items.add(new AdminFeatureItem("Báo cáo", "Thống kê doanh thu", R.drawable.chart_line_solid_full, AdminReportActivity.class));
         items.add(new AdminFeatureItem("Nhật ký", "Audit log hệ thống", R.drawable.clipboard_solid_full, AdminAuditLogActivity.class));
         items.add(new AdminFeatureItem("Thông báo", "Gửi thông báo", R.drawable.ic_notification, AdminSendNotificationActivity.class));
-        items.add(new AdminFeatureItem("Chăm sóc khách hàng", "Hỗ trợ chat khách hàng", R.drawable.ic_headset_support, AdminCustomerChatActivity.class));
+        items.add(new AdminFeatureItem("CSKH", "Hỗ trợ chat khách hàng", R.drawable.ic_headset_support, AdminCustomerChatActivity.class));
         return items;
     }
 
