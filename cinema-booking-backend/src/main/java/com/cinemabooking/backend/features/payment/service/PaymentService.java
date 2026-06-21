@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import com.cinemabooking.backend.features.voucher.VoucherService;
-import com.cinemabooking.backend.features.booking.BookingService;
+import com.cinemabooking.backend.features.voucher.service.VoucherService;
+import com.cinemabooking.backend.features.booking.service.BookingService;
 
 @Service
 public class PaymentService {

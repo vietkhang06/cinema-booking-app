@@ -1,7 +1,5 @@
 package com.example.cinemabookingapp.ui.features.cineshop.adapter;
 
-import com.example.cinemabookingapp.ui.features.cineshop.CineCartManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemabookingapp.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.ui.features.cineshop.CineCartManager;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * Adapter cho mÃ n hÃ¬nh Giá» hÃ ng (CineCartActivity).
- * Há»— trá»£: tÄƒng/giáº£m sá»‘ lÆ°á»£ng, xoÃ¡ item, callback Ä‘á»ƒ cáº­p nháº­t tá»•ng tiá»n.
+ * Adapter cho màn hình Giỏ hàng (CineCartActivity).
+ * Hỗ trợ: tăng/giảm số lượng, xoá item, callback để cập nhật tổng tiền.
  */
 public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH> {
 
@@ -99,6 +98,7 @@ public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH
                     if (listener != null) listener.onCartChanged();
                 } else {
                     CineCartManager.getInstance().removeItem(ci.snack.snackId);
+                    items.remove(pos);
                     notifyItemRemoved(pos);
                     if (listener != null) listener.onCartChanged();
                 }
@@ -118,6 +118,7 @@ public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH
                 int pos = getAdapterPosition();
                 if (pos == RecyclerView.NO_POSITION) return;
                 CineCartManager.getInstance().removeItem(items.get(pos).snack.snackId);
+                items.remove(pos);
                 notifyItemRemoved(pos);
                 if (listener != null) listener.onCartChanged();
             });
