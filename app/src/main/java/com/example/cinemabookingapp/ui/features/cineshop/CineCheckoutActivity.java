@@ -401,7 +401,7 @@ import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
 import java.util.Map;
 
 /**
- * CineCheckoutActivity ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â MÃƒÆ’Ã‚Â n hÃƒÆ’Ã‚Â¬nh Thanh toÃƒÆ’Ã‚Â¡n.
+ * CineCheckoutActivity ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â MÃƒÆ’Ã‚Â n hÃƒÆ’Ã‚Â¬nh Thanh toán.
  *
  * GÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“m:
  *   - TÃƒÆ’Ã‚Â³m tÃƒÂ¡Ã‚ÂºÃ‚Â¯t Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â¡n hÃƒÆ’Ã‚Â ng (lÃƒÂ¡Ã‚ÂºÃ‚Â¥y tÃƒÂ¡Ã‚Â»Ã‚Â« CineCartManager)
