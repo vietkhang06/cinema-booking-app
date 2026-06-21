@@ -197,7 +197,7 @@ public class AdminProfileActivity extends AuthActivity {
                 .setPositiveButton("Đăng xuất", (dialog, which) -> {
                     ServiceProvider.getInstance().getAuthenticationService().logOut();
                     showToast("Đã đăng xuất");
-                    AppNavigator.goToLogin(this);
+                    AppNavigator.goToCustomerHome(this);
                 })
                 .setNegativeButton("Hủy", null)
                 .show();

@@ -179,6 +179,10 @@ public class HomeActivity extends BaseActivity {
     private com.google.android.material.chip.ChipGroup chipGroupGenre;
     private String selectedGenre = "Tất cả";
 
+    // ── Featured Movie Popup ──
+    // Static: lives for the entire app process, resets only on full restart
+    private static boolean sPopupShownThisSession = false;
+    private MovieRepository movieRepository;
 
 
     @Override
@@ -282,6 +286,9 @@ public class HomeActivity extends BaseActivity {
         loadMoviesFromFirestore();
         initBannerUseCase();
         loadBannersFromFirestore();
+
+        // Show featured popup once per session (not for Admin)
+        maybeShowFeaturedPopup();
     }
 
     private void initViews() {
@@ -363,7 +370,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initMovieUseCase() {
         MovieRemoteDataSource remoteDataSource = new MovieRemoteDataSource();
-        MovieRepository movieRepository = new MovieRepositoryImpl(remoteDataSource);
+        movieRepository = new MovieRepositoryImpl(remoteDataSource);
         getMoviesUseCase = new GetMoviesUseCase(movieRepository);
     }
 
@@ -802,5 +809,139 @@ public class HomeActivity extends BaseActivity {
 
             chipGroupGenre.addView(chip);
         }
+    }
+
+    // ─────────────────────────────────────────────
+    // Featured Movie Popup
+    // ─────────────────────────────────────────────
+
+    private void maybeShowFeaturedPopup() {
+        // Only show once per app session
+        if (sPopupShownThisSession) return;
+
+        // Skip for Admin accounts
+        com.google.firebase.auth.FirebaseUser firebaseUser =
+                FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            com.example.cinemabookingapp.domain.model.User cached =
+                    ServiceProvider.getInstance().getProfileService().getCachedProfile();
+            if (cached != null && com.example.cinemabookingapp.core.constants.UserRoles.ADMIN.equals(cached.role)) {
+                return;
+            }
+            // Also check SharedPreferences role in case cache is not yet loaded
+            com.example.cinemabookingapp.core.session.SessionManager sm =
+                    new com.example.cinemabookingapp.core.session.SessionManager(this);
+            if (com.example.cinemabookingapp.core.constants.UserRoles.ADMIN.equals(sm.getRole())) {
+                return;
+            }
+        }
+
+        // Delay slightly so Home screen is fully rendered before popup appears
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            if (isFinishing() || isDestroyed()) return;
+            movieRepository.getFeaturedPopupMovie(new ResultCallback<Movie>() {
+                @Override
+                public void onSuccess(Movie movie) {
+                    if (movie != null && !isFinishing() && !isDestroyed()) {
+                        showFeaturedMoviePopup(movie);
+                    }
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    // Silently ignore – popup is non-critical
+                }
+            });
+        }, 600);
+    }
+
+    private void showFeaturedMoviePopup(Movie movie) {
+        sPopupShownThisSession = true;
+
+        android.app.Dialog dialog = new android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_featured_movie_popup);
+        dialog.setCanceledOnTouchOutside(true);
+
+        // Apply fade-in animation to the card
+        com.google.android.material.card.MaterialCardView cardPopup =
+                dialog.findViewById(R.id.cardPopup);
+        android.view.animation.Animation anim =
+                android.view.animation.AnimationUtils.loadAnimation(this, R.anim.fade_in_popup);
+        if (cardPopup != null) {
+            cardPopup.startAnimation(anim);
+        }
+
+        // Load poster
+        android.widget.ImageView imgPoster = dialog.findViewById(R.id.imgFeaturedPoster);
+        if (imgPoster != null && movie.posterUrl != null) {
+            com.bumptech.glide.Glide.with(this)
+                    .load(movie.posterUrl)
+                    .centerCrop()
+                    .placeholder(R.drawable.login_icon)
+                    .into(imgPoster);
+        }
+
+        // Set title
+        android.widget.TextView tvTitle = dialog.findViewById(R.id.tvFeaturedTitle);
+        if (tvTitle != null && movie.title != null) {
+            tvTitle.setText(movie.title);
+        }
+
+        // Poster click → open MovieDetailActivity
+        if (imgPoster != null) {
+            imgPoster.setClickable(true);
+            imgPoster.setOnClickListener(v -> {
+                dialog.dismiss();
+                Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
+                        movie.title != null ? movie.title : "");
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
+                        movie.posterUrl != null ? movie.posterUrl : "");
+                startActivity(intent);
+            });
+        }
+
+        // Card click also opens detail (same as poster)
+        if (cardPopup != null) {
+            cardPopup.setOnClickListener(v -> {
+                dialog.dismiss();
+                Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
+                        movie.title != null ? movie.title : "");
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
+                        movie.posterUrl != null ? movie.posterUrl : "");
+                startActivity(intent);
+            });
+        }
+
+        // Close (X) button
+        com.google.android.material.card.MaterialCardView btnClose =
+                dialog.findViewById(R.id.btnClosePopup);
+        if (btnClose != null) {
+            btnClose.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        // Click outside (dim overlay) also dismisses
+        android.widget.FrameLayout rootOverlay = dialog.findViewById(R.id.rootOverlay);
+        if (rootOverlay != null) {
+            rootOverlay.setOnClickListener(v -> dialog.dismiss());
+            // Prevent card clicks from propagating to overlay
+            if (cardPopup != null) {
+                cardPopup.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
+                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
+                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
+                            movie.title != null ? movie.title : "");
+                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
+                            movie.posterUrl != null ? movie.posterUrl : "");
+                    startActivity(intent);
+                });
+            }
+        }
+
+        dialog.show();
     }
 }

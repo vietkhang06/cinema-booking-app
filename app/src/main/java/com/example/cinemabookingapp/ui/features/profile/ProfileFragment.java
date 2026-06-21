@@ -42,15 +42,18 @@ public class ProfileFragment extends Fragment {
     ImageView profileAvatar, badgeImage;
     MaterialCardView editProfileBtn, viewTransactionBtn, viewNotificationBtn;
     MaterialCardView logOutBtn;
-    TextView tvLogoutBtnLabel;
+    TextView tvLogoutBtnLabel, notificationBadge;
     LinearLayout btnMemberCard;
-    ImageView btnSettings;
+    ImageView btnSettings, btnProfileCart;
     AchievementProgressBar achievementBar;
 
     // Menu items
     LinearLayout menuHotline, menuEmail, menuCompanyInfo,
             menuTerms, menuPaymentPolicy, menuPrivacyPolicy, menuFaq, menuSupportCenter;
-    LinearLayout btnDoiQua, btnMyRewards, btnTinhNangMoi;
+    LinearLayout btnMyTickets, btnMyRewards;
+
+    private com.google.firebase.firestore.ListenerRegistration notificationListener;
+    private User currentUserProfile;
 
     // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Services ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
     AuthenticationService authService;
@@ -66,7 +69,7 @@ public class ProfileFragment extends Fragment {
             R.drawable.hexagon_solid_full
     );
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Lifecycle ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    // ── Lifecycle ──
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -76,6 +79,30 @@ public class ProfileFragment extends Fragment {
         profileService = ServiceProvider.getInstance().getProfileService();
 
         initViews(view);
+        
+        if (achievementBar != null) {
+            java.util.List<com.example.cinemabookingapp.ui.component.AchievementProgressBar.Milestone> list = new java.util.ArrayList<>();
+            list.add(new com.example.cinemabookingapp.ui.component.AchievementProgressBar.Milestone(
+                    0f,
+                    "0đ",
+                    milestoneIcons.get(0),
+                    0xFF4A148C
+            ));
+            list.add(new com.example.cinemabookingapp.ui.component.AchievementProgressBar.Milestone(
+                    (float) spendingMilestones.get(1) / maxSpendingMilestone,
+                    "2.000.000đ",
+                    milestoneIcons.get(1),
+                    0xFF800000
+            ));
+            list.add(new com.example.cinemabookingapp.ui.component.AchievementProgressBar.Milestone(
+                    (float) spendingMilestones.get(2) / maxSpendingMilestone,
+                    "4.000.000đ",
+                    milestoneIcons.get(2),
+                    0xFFEAB308
+            ));
+            achievementBar.setMilestones(list);
+        }
+
         bindActions();
         setMenuText(view);
     }
@@ -86,15 +113,87 @@ public class ProfileFragment extends Fragment {
         updateAuthButton();
         loadUserProfile();
         loadUserSpendingMilestone();
+        listenToNotifications();
     }
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Load data ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (notificationListener != null) {
+            notificationListener.remove();
+            notificationListener = null;
+        }
+    }
+
+    private void listenToNotifications() {
+        if (notificationListener != null) {
+            notificationListener.remove();
+            notificationListener = null;
+        }
+
+        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            if (notificationBadge != null) {
+                notificationBadge.setVisibility(View.GONE);
+            }
+            return;
+        }
+
+        com.example.cinemabookingapp.domain.repository.NotificationRepository notificationRepo =
+                new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl();
+
+        notificationListener = notificationRepo.listenToUserNotifications(uid, new ResultCallback<List<com.example.cinemabookingapp.domain.model.Notification>>() {
+            @Override
+            public void onSuccess(List<com.example.cinemabookingapp.domain.model.Notification> notifications) {
+                if (!isAdded() || notificationBadge == null) return;
+                long unreadCount = 0;
+                if (notifications != null) {
+                    for (com.example.cinemabookingapp.domain.model.Notification notif : notifications) {
+                        if (!notif.isRead) {
+                            unreadCount++;
+                        }
+                    }
+                }
+                if (unreadCount > 0) {
+                    notificationBadge.setText(String.valueOf(unreadCount));
+                    notificationBadge.setVisibility(View.VISIBLE);
+                } else {
+                    notificationBadge.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(String message) {}
+        });
+    }
+
+    // ── Load data ──
 
     private void loadUserProfile() {
         profileService.getUserProfile(new ResultCallback<User>() {
             @Override
             public void onSuccess(User profileData) {
-                if (profileData == null || !isAdded()) return;
+                if (!isAdded()) return;
+
+                if (profileData == null) {
+                    userNameTV.setText("Guest");
+                    if (tvMemberLevel != null) {
+                        tvMemberLevel.setText("Basic");
+                    }
+                    if (tvStarCount != null) {
+                        tvStarCount.setText("0 Stars");
+                    }
+                    Glide.with(ProfileFragment.this)
+                            .load(R.drawable.user_solid_full)
+                            .circleCrop()
+                            .placeholder(R.drawable.user_solid_full)
+                            .into(profileAvatar);
+                    totalSpending = 0;
+                    updateSpendingUI();
+                    return;
+                }
+
+                currentUserProfile = profileData;
 
                 String displayName = (profileData.name == null || profileData.name.isBlank())
                         ? profileData.email : profileData.name;
@@ -104,11 +203,29 @@ public class ProfileFragment extends Fragment {
                     tvMemberLevel.setText(profileData.memberLevel != null ? profileData.memberLevel : "Basic");
                 }
 
-                Glide.with(ProfileFragment.this)
-                        .load(profileData.avatarUrl != null ? profileData.avatarUrl : R.drawable.user_solid_full)
-                        .circleCrop()
-                        .placeholder(R.drawable.user_solid_full)
-                        .into(profileAvatar);
+                if (profileData.avatarUrl != null && profileData.avatarUrl.startsWith("data:image")) {
+                    try {
+                        String base64Content = profileData.avatarUrl.substring(profileData.avatarUrl.indexOf(",") + 1);
+                        byte[] imageBytes = android.util.Base64.decode(base64Content, android.util.Base64.DEFAULT);
+                        Glide.with(ProfileFragment.this)
+                                .load(imageBytes)
+                                .circleCrop()
+                                .placeholder(R.drawable.user_solid_full)
+                                .into(profileAvatar);
+                    } catch (Exception e) {
+                        Glide.with(ProfileFragment.this)
+                                .load(R.drawable.user_solid_full)
+                                .circleCrop()
+                                .placeholder(R.drawable.user_solid_full)
+                                .into(profileAvatar);
+                    }
+                } else {
+                    Glide.with(ProfileFragment.this)
+                            .load(profileData.avatarUrl != null ? profileData.avatarUrl : R.drawable.user_solid_full)
+                            .circleCrop()
+                            .placeholder(R.drawable.user_solid_full)
+                            .into(profileAvatar);
+                }
 
                 loadUserSpendingMilestone();
             }
@@ -141,29 +258,11 @@ public class ProfileFragment extends Fragment {
     private void updateSpendingUI() {
         if (!isAdded()) return;
 
-        List<Integer> milestoneColors = Arrays.asList(
-                0xFF4A148C, // Square: TÃƒÆ’Ã‚Â­m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â­m
-                0xFF800000, // Pentagon: Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚Â»Ã‚Â Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â´
-                0xFFEAB308  // Hexagon: VÃƒÆ’Ã‚Â ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â­m
-        );
-
-        AtomicInteger index = new AtomicInteger(0);
-        List<AchievementProgressBar.Milestone> milestones = spendingMilestones.stream()
-                .map(value -> {
-                    int i = index.getAndIncrement();
-                    return new AchievementProgressBar.Milestone(
-                            (float) value / maxSpendingMilestone,
-                            String.format("%,d", value).replace(',', '.'),
-                            milestoneIcons.get(i),
-                            milestoneColors.get(i));
-                })
-                .collect(Collectors.toList());
-        achievementBar.setMilestones(milestones);
-
         float progress = (float) totalSpending / maxSpendingMilestone;
-        int badgeId = R.drawable.square_solid_full;
-        int badgeColor = 0xFF4A148C;
+        if (progress > 1.0f) progress = 1.0f;
 
+        int badgeId;
+        int badgeColor;
         if (progress >= (float) spendingMilestones.get(2) / maxSpendingMilestone) {
             badgeId = milestoneIcons.get(2);
             badgeColor = 0xFFEAB308;
@@ -182,7 +281,7 @@ public class ProfileFragment extends Fragment {
         totalSpendingTV.setText(String.format("%,dđ", totalSpending).replace(',', '.'));
     }
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Init views ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    // ── Init views ──
 
     private void initViews(@NonNull View view) {
         achievementBar      = view.findViewById(R.id.achievement_bar);
@@ -196,14 +295,15 @@ public class ProfileFragment extends Fragment {
         editProfileBtn      = view.findViewById(R.id.profile_edit_btn);
         viewTransactionBtn  = view.findViewById(R.id.profile_transaction_btn);
         viewNotificationBtn = view.findViewById(R.id.profile_notification_btn);
+        notificationBadge   = view.findViewById(R.id.profile_notification_badge);
         logOutBtn           = view.findViewById(R.id.profile_logout_btn);
         tvLogoutBtnLabel    = logOutBtn.findViewById(R.id.tvLogoutBtnLabel);
         btnMemberCard       = view.findViewById(R.id.btnMemberCard);
         btnSettings         = view.findViewById(R.id.btnProfileSettings);
+        btnProfileCart      = view.findViewById(R.id.btnProfileCart);
 
-        btnDoiQua           = view.findViewById(R.id.btnDoiQua);
+        btnMyTickets        = view.findViewById(R.id.btnMyTickets);
         btnMyRewards        = view.findViewById(R.id.btnMyRewards);
-        btnTinhNangMoi      = view.findViewById(R.id.btnTinhNangMoi);
 
         menuHotline         = view.findViewById(R.id.menuHotline);
         menuEmail           = view.findViewById(R.id.menuEmail);
@@ -216,7 +316,7 @@ public class ProfileFragment extends Fragment {
         menuSupportCenter   = view.findViewById(R.id.menuSupportCenter);
     }
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Set rich-text menu labels ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    // ── Set rich-text menu labels ──
 
     private void setMenuText(@NonNull View view) {
         setHtmlText(menuHotline, 0,
@@ -225,9 +325,9 @@ public class ProfileFragment extends Fragment {
                 "Email:  <font color='#E8640C'>hotro@galaxystudio.vn</font>");
     }
 
-    /** TÃƒÆ’Ã‚Â¬m TextView Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u tiÃƒÆ’Ã‚Âªn trong LinearLayout vÃƒÆ’Ã‚Â  set HTML text */
+    /** Tìm TextView đầu tiên trong LinearLayout và set HTML text */
     private void setHtmlText(LinearLayout row, int childIndex, String html) {
-        // TextView lÃƒÆ’Ã‚Â  con Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u tiÃƒÆ’Ã‚Âªn (index 0) cÃƒÂ¡Ã‚Â»Ã‚Â§a row
+        // TextView là con đầu tiên (index 0) của row
         for (int i = 0; i < row.getChildCount(); i++) {
             View child = row.getChildAt(i);
             if (child instanceof TextView) {
@@ -237,20 +337,32 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Bind actions ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+    // ── Bind actions ──
 
     private void bindActions() {
-        // ThÃƒÆ’Ã‚Â´ng tin
+        // Edit profile
         editProfileBtn.setOnClickListener(v ->
                 startActivity(new Intent(getContext(), EditProfileActivity.class)));
 
-        // CÃƒÆ’Ã‚Â i Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t
+        // Settings
         if (btnSettings != null) {
             btnSettings.setOnClickListener(v ->
                     startActivity(new Intent(getContext(), SettingsActivity.class)));
         }
 
-        // Giao dÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch
+        // Cart
+        if (btnProfileCart != null) {
+            btnProfileCart.setOnClickListener(v -> {
+                boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
+                if (isLoggedIn) {
+                    startActivity(new Intent(getContext(), com.example.cinemabookingapp.ui.features.cineshop.CineCartActivity.class));
+                } else {
+                    AppNavigator.goToLogin(requireActivity());
+                }
+            });
+        }
+
+        // Transactions
         viewTransactionBtn.setOnClickListener(v -> {
                 boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
                 if (isLoggedIn) {
@@ -260,54 +372,42 @@ public class ProfileFragment extends Fragment {
                 }
             });
 
-        // ThÃƒÆ’Ã‚Â´ng bÃƒÆ’Ã‚Â¡o (tÃƒÂ¡Ã‚ÂºÃ‚Â¡m thÃƒÂ¡Ã‚Â»Ã‚Âi toast)
+        // Notifications
         viewNotificationBtn.setOnClickListener(v ->
                 AppNavigator.goToNotification(requireActivity()));
 
-        // MÃƒÆ’Ã‚Â£ thÃƒÆ’Ã‚Â nh viÃƒÆ’Ã‚Âªn
-        if (btnMemberCard != null)
-            btnMemberCard.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Mã thành viên đang được cập nhật", Toast.LENGTH_SHORT).show());
-
-        // Feature cards (tÃƒÂ¡Ã‚ÂºÃ‚Â¡m thÃƒÂ¡Ã‚Â»Ã‚Âi)
-        if (btnDoiQua != null)
-            btnDoiQua.setOnClickListener(v -> {
-                Toast.makeText(getContext(), "Đang tạo Voucher test...", Toast.LENGTH_SHORT).show();
-                authService.getCurrentAuthUser(new ResultCallback<User>() {
-                    @Override
-                    public void onSuccess(User user) {
-                        if (user == null) return;
-                        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-                        com.google.firebase.firestore.DocumentReference ref = db.collection("vouchers").document();
-                        com.example.cinemabookingapp.domain.model.Voucher voucher = new com.example.cinemabookingapp.domain.model.Voucher();
-                        voucher.voucherId = ref.getId();
-                        voucher.userId = user.uid;
-                        voucher.code = "TEST-" + java.util.UUID.randomUUID().toString().substring(0, 5).toUpperCase();
-                        voucher.discountPercent = 50;
-                        voucher.status = "ACTIVE";
-                        voucher.createdAt = System.currentTimeMillis();
-                        voucher.expiredAt = System.currentTimeMillis() + (7L * 24L * 60L * 60L * 1000L); // 7 days
-                        voucher.updatedAt = System.currentTimeMillis();
-                        ref.set(voucher).addOnSuccessListener(aVoid -> {
-                            Toast.makeText(getContext(), "Tạo Voucher thành công! Vui lòng vào My Vouchers kiểm tra.", Toast.LENGTH_LONG).show();
-                        });
-                    }
-                    @Override
-                    public void onError(String message) {}
-                });
+        // Membership card
+        if (btnMemberCard != null) {
+            btnMemberCard.setOnClickListener(v -> {
+                if (currentUserProfile != null) {
+                    showMemberCardDialog(currentUserProfile);
+                } else {
+                    Toast.makeText(getContext(), "Không thể tải thông tin thành viên", Toast.LENGTH_SHORT).show();
+                }
             });
-        if (btnMyRewards != null)
-            btnMyRewards.setOnClickListener(v -> {
+        }
+
+        // Feature cards
+        if (btnMyTickets != null) {
+            btnMyTickets.setOnClickListener(v -> {
                 boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
                 if (isLoggedIn) {
-                    startActivity(new android.content.Intent(getContext(), com.example.cinemabookingapp.ui.features.profile.MyPromotionListActivity.class));
+                    AppNavigator.goToTransactionHistory(requireActivity());
                 } else {
                     AppNavigator.goToLogin(requireActivity());
                 }
             });
-        if (btnTinhNangMoi != null)
-            btnTinhNangMoi.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Tính năng mới sắp ra mắt!", Toast.LENGTH_SHORT).show());
+        }
+        if (btnMyRewards != null) {
+            btnMyRewards.setOnClickListener(v -> {
+                boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
+                if (isLoggedIn) {
+                    startActivity(new Intent(getContext(), com.example.cinemabookingapp.ui.features.profile.MyPromotionListActivity.class));
+                } else {
+                    AppNavigator.goToLogin(requireActivity());
+                }
+            });
+        }
 
         // Menu items
         if (menuHotline != null)
@@ -338,7 +438,7 @@ public class ProfileFragment extends Fragment {
             menuFaq.setOnClickListener(v ->
                     Toast.makeText(getContext(), "Câu hỏi thường gặp", Toast.LENGTH_SHORT).show());
 
-        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Ãƒâ€žÃ‚ÂÃƒâ€žÃ¢â‚¬Å¡NG XUÃƒÂ¡Ã‚ÂºÃ‚Â¤T ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â fix crash: navigate vÃƒÂ¡Ã‚Â»Ã‚Â LoginActivity sau khi logout ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+        // Logout
         logOutBtn.setOnClickListener(v -> {
             boolean isLoggedIn = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
             if (isLoggedIn) {
@@ -361,7 +461,8 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
     }
-    // Ã¢â€â‚¬Ã¢â€â‚¬ CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t nÃƒÂºt Login/Logout theo trÃ¡ÂºÂ¡ng thÃƒÂ¡i Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+
+    // ── Cập nhật nút Login/Logout theo trạng thái đăng nhập ──
 
     private void updateAuthButton() {
         if (!isAdded() || tvLogoutBtnLabel == null) return;

@@ -16,7 +16,7 @@ public class AuthActivity extends BaseActivity{
         authStateListener = authState -> {
             FirebaseUser user = authState.getCurrentUser();
             ServiceProvider.getInstance().getAuthenticationService().getCurrentAuthUser();
-            if (user == null) {
+            if (user == null && !isFinishing()) {
                 ServiceProvider.getInstance().getAuthenticationService().removeCurrentAuthUser();
                 // User signed out, redirect to Login
                 AppNavigator.goToLogin(this);

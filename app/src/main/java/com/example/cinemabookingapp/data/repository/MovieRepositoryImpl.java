@@ -53,4 +53,14 @@ public class MovieRepositoryImpl implements MovieRepository {
     public void softDeleteMovie(String movieId, ResultCallback<Void> callback) {
         remoteDataSource.softDeleteMovie(movieId, callback);
     }
+
+    @Override
+    public void setFeaturedPopup(String movieId, boolean featured, ResultCallback<Void> callback) {
+        remoteDataSource.setFeaturedPopup(movieId, featured, callback);
+    }
+
+    @Override
+    public void getFeaturedPopupMovie(ResultCallback<Movie> callback) {
+        remoteDataSource.getFeaturedPopupMovie(callback);
+    }
 }

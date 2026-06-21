@@ -26,6 +26,7 @@ public final class MovieMapper {
         model.createdAt = dto.createdAt;
         model.updatedAt = dto.updatedAt;
         model.deleted = dto.deleted;
+        model.featuredPopup = dto.featuredPopup;
         return model;
     }
 
@@ -48,6 +49,7 @@ public final class MovieMapper {
         dto.createdAt = model.createdAt;
         dto.updatedAt = model.updatedAt;
         dto.deleted = model.deleted;
+        dto.featuredPopup = model.featuredPopup;
         return dto;
     }
 }
