@@ -144,8 +144,10 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Email không hợp lệ");
+        boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(email).matches() && 
+                (email.endsWith("@gmail.com") || email.endsWith("@gm.uit.edu.vn") || email.endsWith("@uit.edu.vn"));
+        if (!isValidEmail) {
+            tilEmail.setError("Email không hợp lệ (chỉ chấp nhận Gmail / email UIT)");
             return;
         }
 
@@ -166,6 +168,11 @@ public class RegisterActivity extends BaseActivity {
 
         if (TextUtils.isEmpty(phone)) {
             tilPhone.setError("Nhập số điện thoại");
+            return;
+        }
+
+        if (!phone.matches("^0\\d{9}$")) {
+            tilPhone.setError("Số điện thoại không hợp lệ (gồm 10 số và bắt đầu bằng 0)");
             return;
         }
 

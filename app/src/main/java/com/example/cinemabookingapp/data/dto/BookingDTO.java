@@ -21,6 +21,8 @@ public class BookingDTO {
     public double discount;
     public double total;
     public String paymentMethod;
+    public String promoCode;
+    public Double discountVoucher;
     public String paymentStatus;
     public String bookingStatus;
     public String paymentCode;

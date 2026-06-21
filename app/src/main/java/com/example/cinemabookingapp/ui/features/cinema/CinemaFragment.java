@@ -65,6 +65,7 @@ public class CinemaFragment extends Fragment {
         loadCinemas();
     }
 
+    // ZELIOUS TASK: Gá»i CinemaRepositoryImpl Ä‘á»ƒ láº¥y toÃ n bá»™ dá»¯ liá»‡u cÃ¡c ráº¡p Ä‘ang cÃ³ trÃªn há»‡ thá»‘ng tá»« Firestore.
     private void loadCinemas() {
         tvEmpty.setVisibility(View.GONE);
         cinemaRepository.getAllCinemas(new ResultCallback<List<Cinema>>() {
@@ -89,6 +90,7 @@ public class CinemaFragment extends Fragment {
         });
     }
 
+    // ZELIOUS TASK: Chá»©c nÄƒng lá»c (Filter). Chá»‰ hiá»ƒn thá»‹ nhá»¯ng ráº¡p cÃ³ Ä‘á»‹a chá»‰, quáº­n, hoáº·c thÃ nh phá»‘ khá»›p vá»›i khu vá»±c mÃ  ngÆ°á»i dÃ¹ng Ä‘ang chá»n (vÃ­ dá»¥: "HÃ  Ná»™i", "TP.HCM").
     private void renderCinemas() {
         List<Cinema> filtered = new ArrayList<>();
         for (Cinema cinema : allCinemas) {
@@ -114,6 +116,7 @@ public class CinemaFragment extends Fragment {
                 || normalize(cinema.address).contains(normalizedLocation);
     }
 
+    // ZELIOUS TASK: Má»Ÿ má»™t BottomSheet popup (LocationBottomSheetFragment) Ä‘á»ƒ ngÆ°á»i dÃ¹ng thay Ä‘á»•i khu vá»±c tÃ¬m ráº¡p.
     private void showLocationDialog() {
         LocationBottomSheetFragment sheet =
                 LocationBottomSheetFragment.newInstance(selectedLocation);

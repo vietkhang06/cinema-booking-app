@@ -1,69 +1,122 @@
 package com.example.cinemabookingapp.ui.features.home;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.movie.MovieDetailActivity;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cineshop.CineShopFragment;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cinema.CinemaFragment;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.content.res.ColorStateList;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.graphics.Color;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.os.Bundle;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.util.Log;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.view.View;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.view.ViewGroup;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.ImageView;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.LinearLayout;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.widget.TextView;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.core.widget.ImageViewCompat;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.R;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.core.base.BaseActivity;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.remote.api.RetrofitClient;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.remote.datasource.MovieRemoteDataSource;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.data.repository.MovieRepositoryImpl;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.di.ServiceProvider;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.common.ResultCallback;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.model.Booking;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.model.Movie;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.repository.MovieRepository;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.usecase.movie.GetMoviesUseCase;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.service.BookingService;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.home.adapter.HomeBannerAdapter;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.home.adapter.HomeMovieAdapter;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.home.model.HomeBannerItem;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.home.model.HomeMovieItem;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.android.material.button.MaterialButton;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.android.material.card.MaterialCardView;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.lang.reflect.Field;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.lang.reflect.Method;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.ArrayList;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.List;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.Locale;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.usecase.banner.GetBannersUseCase;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.domain.model.Banner;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import android.content.Intent;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import androidx.fragment.app.Fragment;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cinema_contents.CinemaContentFragment;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.profile.ProfileFragment;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cinema.LocationFilterAdapter;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.cinema.LocationBottomSheetFragment;
 
 
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.android.material.chip.Chip;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.android.material.chip.ChipGroup;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import java.util.LinkedHashSet;
 
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.google.firebase.auth.FirebaseUser;
+import com.example.cinemabookingapp.core.navigation.AppNavigator;
 import com.example.cinemabookingapp.ui.features.chat.CustomerSupportActivity;
 
 
@@ -100,6 +153,10 @@ public class HomeActivity extends BaseActivity {
     private ImageView navCartIcon;
     private ImageView navMovieIcon;
     private ImageView navProfileIcon;
+    
+    private TextView navProfileBadge;
+    private com.google.firebase.firestore.ListenerRegistration notificationListener;
+    private com.google.firebase.firestore.ListenerRegistration moviesListener;
 
     private final int activeColor = Color.parseColor("#1E1A23");
     private final int inactiveTint = Color.parseColor("#4A4650");
@@ -120,9 +177,61 @@ public class HomeActivity extends BaseActivity {
     private View scrollContent;
     private View fragmentContainer;
     private com.google.android.material.chip.ChipGroup chipGroupGenre;
-    private String selectedGenre = "Tất cả";
+    private String selectedGenre = "Táº¥t cáº£";
 
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        listenToNotifications();
+        loadMoviesFromFirestore();
+    }
+
+    private void listenToNotifications() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        
+        com.example.cinemabookingapp.domain.repository.NotificationRepository repo = new com.example.cinemabookingapp.data.repository.NotificationRepositoryImpl();
+        notificationListener = repo.listenToUserNotifications(user.getUid(), new ResultCallback<List<com.example.cinemabookingapp.domain.model.Notification>>() {
+            @Override
+            public void onSuccess(List<com.example.cinemabookingapp.domain.model.Notification> result) {
+                int unreadCount = 0;
+                if (result != null) {
+                    for (com.example.cinemabookingapp.domain.model.Notification notif : result) {
+                        if (!notif.isRead) {
+                            unreadCount++;
+                        }
+                    }
+                }
+                
+                if (navProfileBadge != null) {
+                    if (unreadCount > 0) {
+                        navProfileBadge.setText(unreadCount > 99 ? "99+" : String.valueOf(unreadCount));
+                        navProfileBadge.setVisibility(View.VISIBLE);
+                    } else {
+                        navProfileBadge.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // Do nothing
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (notificationListener != null) {
+            notificationListener.remove();
+        }
+        if (moviesListener != null) {
+            moviesListener.remove();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,8 +340,24 @@ public class HomeActivity extends BaseActivity {
         chipGroupGenre = findViewById(R.id.chipGroupGenre);
         fabSupportChat = findViewById(R.id.fabSupportChat);
         fabSupportChat.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CustomerSupportActivity.class);
-            startActivity(intent);
+            com.example.cinemabookingapp.domain.model.User cachedProfile = ServiceProvider.getInstance().getProfileService().getCachedProfile();
+            String currentUid = null;
+            if (cachedProfile != null) {
+                currentUid = cachedProfile.uid;
+            } else {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (firebaseUser != null) {
+                    currentUid = firebaseUser.getUid();
+                }
+            }
+
+            if (currentUid == null) {
+                showToast("Báº¡n cáº§n Ä‘Äƒng nháº­p tÃ i khoáº£n Ä‘á»ƒ tiáº¿p tá»¥c.");
+                AppNavigator.goToLoginForBooking(HomeActivity.this);
+            } else {
+                Intent intent = new Intent(HomeActivity.this, CustomerSupportActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
@@ -247,41 +372,33 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void loadMoviesFromFirestore() {
-        if (getMoviesUseCase == null) {
-            showToast("Chưa khởi tạo movie use case");
-            return;
+        if (moviesListener != null) {
+            moviesListener.remove();
         }
-
-        getMoviesUseCase.execute(new ResultCallback<List<Movie>>() {
-            @Override
-            public void onSuccess(List<Movie> movies) {
-                allMovies.clear();
-
-                if (movies != null && !movies.isEmpty()) {
-                    for (Movie movie : movies) {
-                        HomeMovieItem item = mapMovieToHomeMovieItem(movie);
-                        if (item != null) {
-                            allMovies.add(item);
-                        }
+        
+        moviesListener = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("movies")
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null) {
+                        Log.e("HomeActivity", "Failed to listen for movies", e);
+                        return;
                     }
-                } else {
-                    Log.d("HomeActivity", "No movies received from API");
-                }
-                buildGenreChipsFromData();
-                showMovies(currentMovieFilter);
-                
-                if (allMovies.isEmpty()) {
-                    showToast("Hiện không có phim nào để hiển thị");
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                Log.e("HomeActivity", "Failed to load movies: " + errorMessage);
-                showToast("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
-                showMovies(currentMovieFilter);
-            }
-        });
+                    if (snapshot != null) {
+                        allMovies.clear();
+                        for (com.google.firebase.firestore.QueryDocumentSnapshot doc : snapshot) {
+                            Movie movie = doc.toObject(Movie.class);
+                            if (!movie.deleted) {
+                                HomeMovieItem item = mapMovieToHomeMovieItem(movie);
+                                if (item != null) {
+                                    allMovies.add(item);
+                                }
+                            }
+                        }
+                        
+                        buildGenreChipsFromData();
+                        showMovies(currentMovieFilter);
+                    }
+                });
     }
 
     private HomeMovieItem mapMovieToHomeMovieItem(Movie movie) {
@@ -294,10 +411,19 @@ public class HomeActivity extends BaseActivity {
                 readString(movie, "imageUrl", "posterUrl"),
                 ""
         );
-        String rating = firstNonEmpty(
-                readString(movie, "rating", "ratingAvg"),
+        String ratingVal = firstNonEmpty(
+                readString(movie, "ratingAvg", "rating"),
                 ""
         );
+        String rating = "";
+        if (!ratingVal.isEmpty()) {
+            try {
+                double r = Double.parseDouble(ratingVal);
+                rating = String.format(java.util.Locale.getDefault(), "â˜… %.1f", r);
+            } catch (Exception e) {
+                rating = "â˜… " + ratingVal;
+            }
+        }
         String ageRating = firstNonEmpty(
                 readString(movie, "ageRating", "age"),
                 ""
@@ -328,7 +454,7 @@ public class HomeActivity extends BaseActivity {
 
                 if (banners != null) {
                     for (Banner banner : banners) {
-                        bannerItems.add(new HomeBannerItem(banner.imageUrl));
+                        bannerItems.add(new HomeBannerItem(banner.bannerId, banner.imageUrl));
                     }
                 }
 
@@ -341,7 +467,7 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void onError(String errorMessage) {
-                showToast("Lỗi load banner");
+                showToast("Lá»—i load banner");
             }
         });
     }
@@ -379,7 +505,7 @@ public class HomeActivity extends BaseActivity {
             if (item == null) continue;
 
             boolean matchStatus = filter.equals(item.getStatus());
-            boolean matchGenre = "Tất cả".equals(selectedGenre)
+            boolean matchGenre = "Táº¥t cáº£".equals(selectedGenre)
                     || item.getGenres().contains(selectedGenre);
 
             if (matchStatus && matchGenre) {
@@ -431,29 +557,29 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void applyBottomNavState(int index) {
-        applyBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Trang chủ");
-        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Rạp Phim");
+        applyBottomState(navHomeCard, navHomeLabel, navHomeIcon, index == 0, "Trang chá»§");
+        applyBottomState(navShowtimeCard, navShowtimeLabel, navShowtimeIcon, index == 1, "Ráº¡p Phim");
         applyBottomState(navCartCard, navCartLabel, navCartIcon, index == 2, "Cine Shop");
-        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Điện Ảnh");
-        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "Tài Khoản");
+        applyBottomState(navMovieCard, navMovieLabel, navMovieIcon, index == 3, "Äiá»‡n áº¢nh");
+        applyBottomState(navProfileCard, navProfileLabel, navProfileIcon, index == 4, "TÃ i Khoáº£n");
         bottomNavContainer.requestLayout();
     }
 
     private void applyBottomState(MaterialCardView card, TextView label, ImageView icon, boolean selected, String text) {
         LinearLayout.LayoutParams params;
         if (selected) {
-            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(48));
+            params = new LinearLayout.LayoutParams(0, dp(48), 1.2f);
             params.setMarginStart(dp(4));
             params.setMarginEnd(dp(4));
-            card.setCardBackgroundColor(activeColor);
+            card.setCardBackgroundColor(Color.parseColor("#121212")); // TÃ´ Ä‘en nhÆ° áº£nh
             card.setStrokeWidth(0);
             label.setText(text);
             label.setVisibility(View.VISIBLE);
-            ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(activeTint));
-            label.setTextColor(activeTint);
+            ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(Color.WHITE));
+            label.setTextColor(Color.WHITE);
             card.animate().scaleX(1.03f).scaleY(1.03f).setDuration(150).start();
         } else {
-            params = new LinearLayout.LayoutParams(0, dp(48), 0.8f);
+            params = new LinearLayout.LayoutParams(dp(48), dp(48));
             params.setMarginStart(dp(4));
             params.setMarginEnd(dp(4));
             card.setCardBackgroundColor(Color.WHITE);
@@ -543,7 +669,7 @@ public class HomeActivity extends BaseActivity {
 
     private void openMovieDetail(HomeMovieItem item) {
         if (item == null) {
-            showToast("Không thể mở chi tiết phim");
+            showToast("KhÃ´ng thá»ƒ má»Ÿ chi tiáº¿t phim");
             return;
         }
 
@@ -620,7 +746,7 @@ public class HomeActivity extends BaseActivity {
     }
     private void buildGenreChipsFromData() {
         LinkedHashSet<String> genreSet = new LinkedHashSet<>();
-        genreSet.add("Tất cả");
+        genreSet.add("Táº¥t cáº£");
         for (HomeMovieItem item : allMovies) {
             for (String g : item.getGenres()) {
                 if (g != null && !g.trim().isEmpty()) {
@@ -630,13 +756,13 @@ public class HomeActivity extends BaseActivity {
         }
 
         chipGroupGenre.removeAllViews();
-        selectedGenre = "Tất cả";
+        selectedGenre = "Táº¥t cáº£";
 
         for (String genre : genreSet) {
             Chip chip = new Chip(this);
             chip.setText(genre);
             chip.setCheckable(true);
-            chip.setChecked(genre.equals("Tất cả"));
+            chip.setChecked(genre.equals("Táº¥t cáº£"));
 
             chip.setTextSize(10f);
             chip.setChipMinHeight(dp(36));
@@ -654,7 +780,7 @@ public class HomeActivity extends BaseActivity {
             chip.setChipStrokeWidth(dp(1));
             chip.setRippleColor(ColorStateList.valueOf(Color.parseColor("#33000000")));
 
-            if (genre.equals("Tất cả")) {
+            if (genre.equals("Táº¥t cáº£")) {
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#1E1A23")));
                 chip.setTextColor(ColorStateList.valueOf(Color.WHITE));
             }

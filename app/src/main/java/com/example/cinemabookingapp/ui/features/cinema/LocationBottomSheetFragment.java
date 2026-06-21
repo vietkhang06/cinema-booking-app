@@ -92,8 +92,8 @@ public class LocationBottomSheetFragment extends BottomSheetDialogFragment {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // Load cities từ Firebase (lấy từ danh sách cinema)
-        tvStatus.setText("Đang tải...");
+        // Load cities tá»« Firebase (láº¥y tá»« danh sÃ¡ch cinema)
+        tvStatus.setText("Äang táº£i...");
         CinemaRepository repo = new CinemaRepositoryImpl();
         repo.getAllCinemas(new ResultCallback<List<Cinema>>() {
             @Override
@@ -110,13 +110,13 @@ public class LocationBottomSheetFragment extends BottomSheetDialogFragment {
                 allLocations.clear();
                 allLocations.addAll(citySet);
                 adapter.setData(allLocations);
-                tvStatus.setText(citySet.size() - 1 + " tỉnh thành");
+                tvStatus.setText(citySet.size() - 1 + " tá»‰nh thÃ nh");
             }
 
             @Override
             public void onError(String message) {
-                tvStatus.setText("Lỗi tải dữ liệu");
-                // fallback cứng
+                tvStatus.setText("Lá»—i táº£i dá»¯ liá»‡u");
+                // fallback cá»©ng
                 allLocations.clear();
                 allLocations.add("Toan quoc");
                 allLocations.add("TP Ho Chi Minh");

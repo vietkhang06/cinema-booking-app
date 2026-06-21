@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
-    tools:context=".ui.customer.cinema.CinemaFragment">
+    tools:context=".ui.features.cinema.CinemaFragment">
 
     <LinearLayout
         android:id="@+id/headerContainer"
@@ -21,7 +21,7 @@
             android:id="@+id/tvHeaderTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rạp phim"
+            android:text="Ráº¡p phim"
             android:textColor="#111827"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Danh sách các rạp đang hoạt động"
+            android:text="Danh sÃ¡ch cÃ¡c ráº¡p Ä‘ang hoáº¡t Ä‘á»™ng"
             android:textColor="#6B7280"
             android:textSize="13sp" />
 
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:text="Toàn quốc"
+                    android:text="ToÃ n quá»‘c"
                     android:textColor="#111827"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -104,7 +104,7 @@
         android:id="@+id/tvEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chưa có rạp phim"
+        android:text="ChÆ°a cÃ³ ráº¡p phim"
         android:textColor="#9CA3AF"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/rvCinemas"
