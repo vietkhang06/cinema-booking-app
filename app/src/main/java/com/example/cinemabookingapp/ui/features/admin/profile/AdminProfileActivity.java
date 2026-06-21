@@ -35,6 +35,7 @@ public class AdminProfileActivity extends AuthActivity {
 
     private View backBtn;
     private ImageView ivAvatar;
+    private TextView tvAvatarInitials;
     private TextView tvName, tvRoleBadge, tvUid, tvEmail, tvPhone, tvGender, tvBirthdate, tvStatus;
     private MaterialButton btnCustomerSupport, btnChangePassword, btnLogout;
 
@@ -51,12 +52,18 @@ public class AdminProfileActivity extends AuthActivity {
 
         initViews();
         bindActions();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadProfileData();
     }
 
     private void initViews() {
         backBtn = findViewById(R.id.back_btn);
         ivAvatar = findViewById(R.id.iv_avatar);
+        tvAvatarInitials = findViewById(R.id.tv_avatar_initials);
         tvName = findViewById(R.id.tv_name);
         tvRoleBadge = findViewById(R.id.tv_role_badge);
         tvUid = findViewById(R.id.tv_uid);
@@ -74,12 +81,34 @@ public class AdminProfileActivity extends AuthActivity {
         if (backBtn != null) {
             backBtn.setVisibility(View.GONE); // Admin profile has bottom nav, no back button needed
         }
-        btnCustomerSupport.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AdminCustomerChatActivity.class);
-            startActivity(intent);
-        });
+        if (btnCustomerSupport != null) {
+            btnCustomerSupport.setOnClickListener(v -> {
+                Intent intent = new Intent(this, AdminCustomerChatActivity.class);
+                startActivity(intent);
+            });
+        }
         btnLogout.setOnClickListener(v -> performLogout());
         btnChangePassword.setOnClickListener(v -> showChangePasswordDialog());
+
+        View btnCopyUid = findViewById(R.id.btn_copy_uid);
+        if (btnCopyUid != null) {
+            btnCopyUid.setOnClickListener(v -> {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("UserID", tvUid.getText().toString());
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(this, "Đã sao chép mã quản trị", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        View btnEditProfile = findViewById(R.id.btn_edit_profile);
+        if (btnEditProfile != null) {
+            btnEditProfile.setOnClickListener(v -> {
+                Intent intent = new Intent(this, com.example.cinemabookingapp.ui.features.profile.EditProfileActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     private void loadProfileData() {
@@ -107,14 +136,38 @@ public class AdminProfileActivity extends AuthActivity {
 
     private void displayProfile(User user) {
         tvUid.setText(user.uid);
-        tvName.setText(user.name != null && !user.name.isEmpty() ? user.name : "Chưa cập nhật");
+        String name = user.name != null && !user.name.isEmpty() ? user.name : "Chưa cập nhật";
+        tvName.setText(name);
         tvEmail.setText(user.email);
         tvPhone.setText(user.phone != null && !user.phone.isEmpty() ? user.phone : "Chưa cập nhật");
         tvGender.setText(user.gender != null && !user.gender.isEmpty() ? user.gender : "Chưa cập nhật");
         tvBirthdate.setText(user.birthDate != null && !user.birthDate.isEmpty() ? user.birthDate : "Chưa cập nhật");
-        tvStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Hoạt động");
+        tvStatus.setText(user.status != null && !user.status.isEmpty() ? user.status : "Active");
 
         tvRoleBadge.setText("Quản trị viên");
+
+        // Calculate initials for Avatar
+        String initials = "";
+        if (name != null && !name.equals("Chưa cập nhật") && !name.isEmpty()) {
+            String[] parts = name.trim().split("\\s+");
+            if (parts.length > 0) {
+                StringBuilder sb = new StringBuilder();
+                int count = 0;
+                for (String part : parts) {
+                    if (!part.isEmpty() && count < 3) {
+                        sb.append(part.charAt(0));
+                        count++;
+                    }
+                }
+                initials = sb.toString().toUpperCase();
+            }
+        }
+        if (initials.isEmpty()) {
+            initials = "AD";
+        }
+        if (tvAvatarInitials != null) {
+            tvAvatarInitials.setText(initials);
+        }
 
         View adminBottomNav = findViewById(R.id.adminBottomNav);
         if (adminBottomNav != null) {
@@ -123,10 +176,17 @@ public class AdminProfileActivity extends AuthActivity {
         }
 
         if (user.avatarUrl != null && !user.avatarUrl.isEmpty()) {
-            Glide.with(this)
-                    .load(user.avatarUrl)
-                    .placeholder(R.drawable.user_solid_full)
-                    .into(ivAvatar);
+            if (ivAvatar != null) {
+                ivAvatar.setVisibility(View.VISIBLE);
+                Glide.with(this)
+                        .load(user.avatarUrl)
+                        .placeholder(R.drawable.user_solid_full)
+                        .into(ivAvatar);
+            }
+        } else {
+            if (ivAvatar != null) {
+                ivAvatar.setVisibility(View.GONE);
+            }
         }
     }
 

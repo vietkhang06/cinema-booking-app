@@ -133,15 +133,46 @@ public class AdminCinemaListActivity extends BaseActivity {
         repo.getAllCinemas(new ResultCallback<List<Cinema>>() {
             @Override
             public void onSuccess(List<Cinema> data) {
-
                 if (isFinishing() || isDestroyed()) return;
 
                 list.clear();
                 if (data != null) list.addAll(data);
 
-                adapter.submitList(new ArrayList<>(list));
+                // Fetch all rooms from database to count how many belong to each cinema
+                new com.example.cinemabookingapp.data.repository.RoomRepositoryImpl().getAllRooms(new ResultCallback<List<com.example.cinemabookingapp.domain.model.Room>>() {
+                    @Override
+                    public void onSuccess(List<com.example.cinemabookingapp.domain.model.Room> rooms) {
+                        if (isFinishing() || isDestroyed()) return;
 
-                tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                        java.util.Map<String, Integer> roomCounts = new java.util.HashMap<>();
+                        if (rooms != null) {
+                            for (com.example.cinemabookingapp.domain.model.Room room : rooms) {
+                                if (room.cinemaId != null && !room.deleted) {
+                                    roomCounts.put(room.cinemaId, roomCounts.getOrDefault(room.cinemaId, 0) + 1);
+                                }
+                            }
+                        }
+
+                        // Map counts to the cinemas' room list size
+                        for (Cinema c : list) {
+                            int count = roomCounts.getOrDefault(c.cinemaId, 0);
+                            c.roomIds = new ArrayList<>();
+                            for (int i = 0; i < count; i++) {
+                                c.roomIds.add("dummy");
+                            }
+                        }
+
+                        adapter.submitList(new ArrayList<>(list));
+                        tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (isFinishing() || isDestroyed()) return;
+                        adapter.submitList(new ArrayList<>(list));
+                        tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+                });
             }
 
             @Override
