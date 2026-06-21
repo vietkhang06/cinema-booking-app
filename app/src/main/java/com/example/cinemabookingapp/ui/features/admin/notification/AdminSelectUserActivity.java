@@ -3,7 +3,6 @@ package com.example.cinemabookingapp.ui.features.admin.notification;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -140,7 +139,6 @@ public class AdminSelectUserActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         });
 
-        // ZELIOUS TASK: Màn hình search và pick nhiều User, truyền List UID ngược về màn hình gửi để Admin có thể "Gửi thông báo nhắm mục tiêu".
         btnConfirmSelection.setOnClickListener(v -> {
             ArrayList<String> uidList = new ArrayList<>(selectedUids);
             
@@ -270,7 +268,6 @@ public class AdminSelectUserActivity extends AppCompatActivity {
         return "ID: " + user.uid;
     }
 
-    // RecyclerView Adapter
     public class CustomerSelectAdapter extends RecyclerView.Adapter<CustomerSelectAdapter.ViewHolder> {
         private final List<User> items;
 
