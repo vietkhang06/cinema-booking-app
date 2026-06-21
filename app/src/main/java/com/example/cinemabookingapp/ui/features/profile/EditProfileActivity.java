@@ -42,7 +42,7 @@ import java.util.TimeZone;
 
 public class EditProfileActivity extends AuthActivity {
 
-    private TextInputEditText emailTV, birthdateTV, phoneInputTV, usernameInputTV;
+    private TextInputEditText emailTV, birthdateTV, phoneInputTV, usernameInputTV, avatarUrlTV;
     private MaterialButton saveChangesBtn, changePasswordBtn;
     private ImageView backBtn, profileAvatar;
     private MaterialCardView selectPhotoBtn, cameraIconBtn;
@@ -72,6 +72,7 @@ public class EditProfileActivity extends AuthActivity {
         birthdateTV = findViewById(R.id.edit_profile_birthdate);
         phoneInputTV = findViewById(R.id.edit_profile_phone);
         usernameInputTV = findViewById(R.id.edit_profile_username);
+        avatarUrlTV = findViewById(R.id.edit_profile_avatar_url);
 
         saveChangesBtn = findViewById(R.id.edit_profile_save_change);
         changePasswordBtn = findViewById(R.id.btnChangePassword);
@@ -100,6 +101,35 @@ public class EditProfileActivity extends AuthActivity {
         cameraIconBtn.setOnClickListener(v -> pickProfileAvatar());
 
         birthdateTV.setOnClickListener(v -> showDatePicker());
+
+        avatarUrlTV.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                loadAvatarPreviewFromUrl(avatarUrlTV.getText().toString().trim());
+            }
+        });
+
+        avatarUrlTV.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                String url = s.toString().trim();
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    loadAvatarPreviewFromUrl(url);
+                }
+            }
+        });
+    }
+
+    private void loadAvatarPreviewFromUrl(String url) {
+        if (TextUtils.isEmpty(url)) return;
+        Glide.with(this)
+                .load(url)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .circleCrop()
+                .placeholder(R.drawable.user_solid_full)
+                .into(profileAvatar);
     }
 
     private void showDatePicker() {
@@ -141,6 +171,7 @@ public class EditProfileActivity extends AuthActivity {
         phoneInputTV.setText(user.phone);
         birthdateTV.setText(user.birthDate);
         emailTV.setText(user.email);
+        avatarUrlTV.setText(user.avatarUrl);
 
         if ("Nam".equalsIgnoreCase(user.gender)) {
             rbMale.setChecked(true);
@@ -177,6 +208,7 @@ public class EditProfileActivity extends AuthActivity {
         String phone = phoneInputTV.getText().toString().trim();
         String birthDate = birthdateTV.getText().toString().trim();
         String gender = rbMale.isChecked() ? "Nam" : "Nữ";
+        String avatarUrl = avatarUrlTV.getText().toString().trim();
 
         if (TextUtils.isEmpty(name)) {
             showToast("Vui lòng nhập họ tên");
@@ -239,7 +271,7 @@ public class EditProfileActivity extends AuthActivity {
                     return;
                 }
             } else {
-                updatedUser.avatarUrl = cachedUser.avatarUrl;
+                updatedUser.avatarUrl = avatarUrl;
             }
 
             runOnUiThread(() -> {
