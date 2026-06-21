@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ThÃ´ng BÃ¡o Váº­n HÃ nh"
+            android:text="Thông Báo Vận Hành"
             android:textColor="#1E1A23"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KhÃ´ng cÃ³ thÃ´ng bÃ¡o má»›i"
+                android:text="Không có thông báo mới"
                 android:textColor="#7A757F"
                 android:textSize="14sp"
                 android:layout_marginTop="16dp" />
@@ -72,7 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Há»“ SÆ¡ NhÃ¢n ViÃªn"
+                android:text="Hồ Sơ Nhân Viên"
                 android:textColor="#1E1A23"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -108,7 +108,7 @@
                     android:id="@+id/tv_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Há» vÃ  tÃªn"
+                    android:text="Họ và tên"
                     android:textColor="#1E1A23"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
-                        android:text="NhÃ¢n viÃªn"
+                        android:text="Nhân viên"
                         android:textColor="#A13345"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -165,7 +165,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="MÃ£ nhÃ¢n viÃªn"
+                            android:text="Mã nhân viên"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
@@ -225,7 +225,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Sá»‘ Ä‘iá»‡n thoáº¡i"
+                            android:text="Số điện thoại"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
@@ -255,7 +255,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Giá»›i tÃ­nh"
+                            android:text="Giới tính"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
@@ -285,7 +285,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="NgÃ y sinh"
+                            android:text="Ngày sinh"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
@@ -315,14 +315,14 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Tráº¡ng thÃ¡i"
+                            android:text="Trạng thái"
                             android:textColor="#7A757F"
                             android:textSize="14sp" />
                         <TextView
                             android:id="@+id/tv_status"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hoáº¡t Ä‘á»™ng"
+                            android:text="Hoạt động"
                             android:textColor="#4CAF50"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -336,7 +336,7 @@
                 android:id="@+id/btn_change_password"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="Äá»•i máº­t kháº©u"
+                android:text="Đổi mật khẩu"
                 android:textColor="#A13345"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -350,7 +350,7 @@
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="ÄÄƒng xuáº¥t"
+                android:text="Đăng xuất"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -404,7 +404,7 @@
                             android:id="@+id/tvWelcome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xin chÃ o, Staff ðŸ‘‹"
+                            android:text="Xin chào, Staff 👋"
                             android:textColor="@color/white"
                             android:textSize="15sp" />
 
@@ -412,7 +412,7 @@
                             android:id="@+id/tvBrand"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="BÃ¡n váº­n hÃ nh Staff"
+                            android:text="Bán vận hành Staff"
                             android:textColor="@color/white"
                             android:textSize="22sp"
                             android:textStyle="bold"
@@ -423,7 +423,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Quáº£n lÃ½ vÃ  váº­n hÃ nh ráº¡p chiáº¿u má»—i ngÃ y"
+                            android:text="Quản lý và vận hành rạp chiếu mỗi ngày"
                             android:textColor="#E0E0E0"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -458,7 +458,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- SECTION: THá»NG KÃŠ HÃ”M NAY -->
+                <!-- SECTION: THỐNG KÊ HÔM NAY -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -470,7 +470,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Thá»‘ng kÃª hÃ´m nay"
+                        android:text="Thống kê hôm nay"
                         android:textColor="#1E1A23"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -479,7 +479,7 @@
                         android:id="@+id/tv_action_view_logs"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xem chi tiáº¿t â†’"
+                        android:text="Xem chi tiết →"
                         android:textColor="#A13345"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -492,7 +492,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="8dp">
 
-                    <!-- Stat 1: Suáº¥t chiáº¿u -->
+                    <!-- Stat 1: Suất chiếu -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -538,14 +538,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Suáº¥t chiáº¿u hÃ´m nay"
+                                android:text="Suất chiếu hôm nay"
                                 android:textColor="#7A757F"
                                 android:textSize="11sp"
                                 android:layout_marginTop="2dp" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Stat 2: Sáº¯p báº¯t Ä‘áº§u -->
+                    <!-- Stat 2: Sắp bắt đầu -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -591,7 +591,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sáº¯p báº¯t Ä‘áº§u"
+                                android:text="Sắp bắt đầu"
                                 android:textColor="#7A757F"
                                 android:textSize="11sp"
                                 android:layout_marginTop="2dp" />
@@ -605,7 +605,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="20dp">
 
-                    <!-- Stat 3: Gháº¿ giá»¯ -->
+                    <!-- Stat 3: Ghế giữ -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -651,14 +651,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Gháº¿ Ä‘ang giá»¯"
+                                android:text="Ghế đang giữ"
                                 android:textColor="#7A757F"
                                 android:textSize="11sp"
                                 android:layout_marginTop="2dp" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Stat 4: Sá»± cá»‘ -->
+                    <!-- Stat 4: Sự cố -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -704,7 +704,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sá»± cá»‘ cáº§n xá»­ lÃ½"
+                                android:text="Sự cố cần xử lý"
                                 android:textColor="#7A757F"
                                 android:textSize="11sp"
                                 android:layout_marginTop="2dp" />
@@ -712,7 +712,7 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
-                <!-- SECTION: SUáº¤T CHIáº¾U Sáº®P Báº®T Äáº¦U -->
+                <!-- SECTION: SUẤT CHIẾU SẮP BẮT ĐẦU -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -724,7 +724,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Suáº¥t chiáº¿u sáº¯p báº¯t Ä‘áº§u"
+                        android:text="Suất chiếu sắp bắt đầu"
                         android:textColor="#1E1A23"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -733,7 +733,7 @@
                         android:id="@+id/tv_action_view_showtimes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xem táº¥t cáº£ â†’"
+                        android:text="Xem tất cả →"
                         android:textColor="#A13345"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -747,7 +747,7 @@
                     android:scrollbars="none"
                     android:layout_marginBottom="20dp" />
 
-                <!-- SECTION: CHá»¨C NÄ‚NG NGHIá»†P Vá»¤ -->
+                <!-- SECTION: CHỨC NĂNG NGHIỆP VỤ -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -759,7 +759,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Chá»©c nÄƒng nghiá»‡p vá»¥"
+                        android:text="Chức năng nghiệp vụ"
                         android:textColor="#1E1A23"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -772,7 +772,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="24dp">
 
-                    <!-- Action 1: Tra cá»©u vÃ© -->
+                    <!-- Action 1: Tra cứu vé -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btn_op_search"
                         android:layout_width="0dp"
@@ -811,7 +811,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tra cá»©u vÃ©"
+                                android:text="Tra cứu vé"
                                 android:textColor="#1E1A23"
                                 android:textSize="11sp"
                                 android:textStyle="bold"
@@ -820,7 +820,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Action 2: Há»— trá»£ khÃ¡ch hÃ ng -->
+                    <!-- Action 2: Hỗ trợ khách hàng -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btn_op_support"
                         android:layout_width="0dp"
@@ -862,14 +862,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
                                 android:gravity="center"
-                                android:text="Há»— trá»£ KH"
+                                android:text="Hỗ trợ KH"
                                 android:textColor="#1E1A23"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Action 3: Há»— trá»£ gháº¿ -->
+                    <!-- Action 3: Hỗ trợ ghế -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btn_op_seats"
                         android:layout_width="0dp"
@@ -908,7 +908,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Há»— trá»£ gháº¿"
+                                android:text="Hỗ trợ ghế"
                                 android:textColor="#1E1A23"
                                 android:textSize="11sp"
                                 android:textStyle="bold"
@@ -917,7 +917,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Action 4: Lá»‹ch chiáº¿u -->
+                    <!-- Action 4: Lịch chiếu -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btn_op_calendar"
                         android:layout_width="0dp"
@@ -956,7 +956,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Lá»‹ch chiáº¿u"
+                                android:text="Lịch chiếu"
                                 android:textColor="#1E1A23"
                                 android:textSize="11sp"
                                 android:textStyle="bold"
@@ -966,7 +966,7 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
-                <!-- SECTION: Lá»ŠCH Sá»¬ QUÃ‰T VÃ‰ REAL-TIME -->
+                <!-- SECTION: LỊCH SỬ QUÉT VÉ REAL-TIME -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -986,7 +986,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lá»‹ch sá»­ quÃ©t vÃ©"
+                            android:text="Lịch sử quét vé"
                             android:textColor="#1E1A23"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -1003,7 +1003,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="KhÃ´ng cÃ³ hoáº¡t Ä‘á»™ng quÃ©t vÃ© nÃ o"
+                            android:text="Không có hoạt động quét vé nào"
                             android:textColor="#7A757F"
                             android:textSize="12sp"
                             android:layout_marginVertical="12dp"
@@ -1011,7 +1011,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- SECTION: Lá»ŠCH Sá»¬ Há»– TRá»¢ REAL-TIME -->
+                <!-- SECTION: LỊCH SỬ HỖ TRỢ REAL-TIME -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1031,7 +1031,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lá»‹ch sá»­ há»— trá»£ khÃ¡ch hÃ ng"
+                            android:text="Lịch sử hỗ trợ khách hàng"
                             android:textColor="#1E1A23"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -1048,7 +1048,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="KhÃ´ng cÃ³ yÃªu cáº§u há»— trá»£ nÃ o"
+                            android:text="Không có yêu cầu hỗ trợ nào"
                             android:textColor="#7A757F"
                             android:textSize="12sp"
                             android:layout_marginVertical="12dp"

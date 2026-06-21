@@ -9,7 +9,7 @@
     android:background="#F2F2F7"
     tools:context=".ui.customer.profile.ProfileFragment">
 
-    <!-- â”€â”€ HEADER: TÃ i khoáº£n + Settings â”€â”€ -->
+    <!-- ── HEADER: Tài khoản + Settings ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TÃ i khoáº£n"
+            android:text="Tài khoản"
             android:textColor="#111111"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -38,7 +38,7 @@
             app:tint="#333333" />
     </LinearLayout>
 
-    <!-- â”€â”€ SCROLL CONTENT â”€â”€ -->
+    <!-- ── SCROLL CONTENT ── -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -52,7 +52,7 @@
             android:orientation="vertical"
             android:paddingBottom="100dp">
 
-            <!-- â”€â”€ USER INFO CARD â”€â”€ -->
+            <!-- ── USER INFO CARD ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- QR / MÃ£ thÃ nh viÃªn -->
+                <!-- QR / Mã thành viên -->
                 <LinearLayout
                     android:id="@+id/btnMemberCard"
                     android:layout_width="wrap_content"
@@ -177,13 +177,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="MÃ£ thÃ nh viÃªn"
+                        android:text="Mã thành viên"
                         android:textColor="#E8640C"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- â”€â”€ TAB ROW: ThÃ´ng tin | Giao dá»‹ch | ThÃ´ng bÃ¡o â”€â”€ -->
+            <!-- ── TAB ROW: Thông tin | Giao dịch | Thông báo ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ThÃ´ng tin"
+                            android:text="Thông tin"
                             android:textColor="#333333"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -252,7 +252,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Giao dá»‹ch"
+                            android:text="Giao dịch"
                             android:textColor="#333333"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -288,7 +288,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ThÃ´ng bÃ¡o"
+                            android:text="Thông báo"
                             android:textColor="#333333"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -297,7 +297,7 @@
 
             <View android:layout_width="match_parent" android:layout_height="8dp" android:background="#F2F2F7" />
 
-            <!-- â”€â”€ SPENDING SECTION â”€â”€ -->
+            <!-- ── SPENDING SECTION ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -318,7 +318,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Tá»•ng chi tiÃªu nÄƒm 2026"
+                        android:text="Tổng chi tiêu năm 2026"
                         android:textColor="#111111"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -335,7 +335,7 @@
                         android:id="@+id/profile_total_spending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0Ä‘"
+                        android:text="0đ"
                         android:textColor="#E8640C"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -352,7 +352,7 @@
 
             <View android:layout_width="match_parent" android:layout_height="8dp" android:background="#F2F2F7" />
 
-            <!-- â”€â”€ FEATURES: Äá»•i QuÃ  | My Rewards | TÃ­nh NÄƒng Má»›i â”€â”€ -->
+            <!-- ── FEATURES: Đổi Quà | My Rewards | Tính Năng Mới ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -361,7 +361,7 @@
                 android:paddingVertical="16dp"
                 android:background="#FFFFFF">
 
-                <!-- Äá»•i QuÃ  -->
+                <!-- Đổi Quà -->
                 <LinearLayout
                     android:id="@+id/btnDoiQua"
                     android:layout_width="0dp"
@@ -390,7 +390,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Äá»•i QuÃ "
+                        android:text="Đổi Quà"
                         android:textColor="#1A3A8C"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -431,7 +431,7 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- TÃ­nh NÄƒng Má»›i -->
+                <!-- Tính Năng Mới -->
                 <LinearLayout
                     android:id="@+id/btnTinhNangMoi"
                     android:layout_width="0dp"
@@ -460,7 +460,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="TÃ­nh NÄƒng Má»›i"
+                        android:text="Tính Năng Mới"
                         android:textColor="#1A3A8C"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -469,14 +469,14 @@
 
             <View android:layout_width="match_parent" android:layout_height="8dp" android:background="#F2F2F7" />
 
-            <!-- â”€â”€ MENU LIST â”€â”€ -->
+            <!-- ── MENU LIST ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#FFFFFF">
 
-                <!-- ÄÆ°á»ng dÃ¢y nÃ³ng -->
+                <!-- Đường dây nóng -->
                 <LinearLayout
                     android:id="@+id/menuHotline"
                     android:layout_width="match_parent"
@@ -531,7 +531,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- Trung tÃ¢m há»— trá»£ -->
+                <!-- Trung tâm hỗ trợ -->
                 <LinearLayout
                     android:id="@+id/menuSupportCenter"
                     android:layout_width="match_parent"
@@ -545,7 +545,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Trung tÃ¢m há»— trá»£"
+                        android:text="Trung tâm hỗ trợ"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -558,7 +558,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- ThÃ´ng Tin CÃ´ng Ty -->
+                <!-- Thông Tin Công Ty -->
                 <LinearLayout
                     android:id="@+id/menuCompanyInfo"
                     android:layout_width="match_parent"
@@ -572,7 +572,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="ThÃ´ng Tin CÃ´ng Ty"
+                        android:text="Thông Tin Công Ty"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -585,7 +585,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- Äiá»u Khoáº£n Sá»­ Dá»¥ng -->
+                <!-- Điều Khoản Sử Dụng -->
                 <LinearLayout
                     android:id="@+id/menuTerms"
                     android:layout_width="match_parent"
@@ -599,7 +599,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Äiá»u Khoáº£n Sá»­ Dá»¥ng"
+                        android:text="Điều Khoản Sử Dụng"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -612,7 +612,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- ChÃ­nh SÃ¡ch Thanh ToÃ¡n -->
+                <!-- Chính Sách Thanh Toán -->
                 <LinearLayout
                     android:id="@+id/menuPaymentPolicy"
                     android:layout_width="match_parent"
@@ -626,7 +626,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="ChÃ­nh SÃ¡ch Thanh ToÃ¡n"
+                        android:text="Chính Sách Thanh Toán"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -639,7 +639,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- ChÃ­nh SÃ¡ch Báº£o Máº­t -->
+                <!-- Chính Sách Bảo Mật -->
                 <LinearLayout
                     android:id="@+id/menuPrivacyPolicy"
                     android:layout_width="match_parent"
@@ -653,7 +653,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="ChÃ­nh SÃ¡ch Báº£o Máº­t"
+                        android:text="Chính Sách Bảo Mật"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -666,7 +666,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F2F2F7" android:layout_marginHorizontal="16dp" />
 
-                <!-- CÃ¢u Há»i ThÆ°á»ng Gáº·p -->
+                <!-- Câu Hỏi Thường Gặp -->
                 <LinearLayout
                     android:id="@+id/menuFaq"
                     android:layout_width="match_parent"
@@ -680,7 +680,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="CÃ¢u Há»i ThÆ°á»ng Gáº·p"
+                        android:text="Câu Hỏi Thường Gặp"
                         android:textColor="#111111"
                         android:textSize="14sp" />
 
@@ -694,7 +694,7 @@
 
             <View android:layout_width="match_parent" android:layout_height="8dp" android:background="#F2F2F7" />
 
-            <!-- â”€â”€ LOGOUT BUTTON â”€â”€ -->
+            <!-- ── LOGOUT BUTTON ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
