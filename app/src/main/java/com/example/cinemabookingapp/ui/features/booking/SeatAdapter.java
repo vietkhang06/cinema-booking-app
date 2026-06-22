@@ -147,11 +147,11 @@ public class SeatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 itemView.setEnabled(false);
                 itemView.setAlpha(0.6f);
             } else if (isHeldByOther || isHeldByMe) {
-                // HELD BY OTHER: locked gray color
-                tvSeat.setBackgroundResource(R.drawable.couch_solid_full);
-                tvSeat.setTextColor(0xFF888888);
+                // HELD: orange color
+                tvSeat.setBackgroundResource(R.drawable.couch_solid_held);
+                tvSeat.setTextColor(0xFFFFFFFF);
                 itemView.setEnabled(false);
-                itemView.setAlpha(0.4f);
+                itemView.setAlpha(1.0f);
             } else if (seat.isSelected ) {
                 // HELD BY ME / SELECTED: selected color
                 tvSeat.setBackgroundResource(R.drawable.couch_solid_selection);
