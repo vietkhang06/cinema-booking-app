@@ -357,7 +357,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         items.add(new AdminFeatureItem("Báo cáo", "Thống kê doanh thu", R.drawable.chart_line_solid_full, AdminReportActivity.class));
         items.add(new AdminFeatureItem("Nhật ký", "Audit log hệ thống", R.drawable.clipboard_solid_full, AdminAuditLogActivity.class));
         items.add(new AdminFeatureItem("Thông báo", "Gửi thông báo", R.drawable.ic_notification, AdminSendNotificationActivity.class));
-        items.add(new AdminFeatureItem("CSKH", "Hỗ trợ chat khách hàng", R.drawable.ic_headset_support, AdminCustomerChatActivity.class));
+        // items.add(new AdminFeatureItem("CSKH", "Hỗ trợ chat khách hàng", R.drawable.ic_headset_support, AdminCustomerChatActivity.class));
         return items;
     }
 
