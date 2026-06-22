@@ -97,6 +97,12 @@ public class SeatSelectionActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        long now = System.currentTimeMillis();
+        if (showtimeStart > 0 && now > (showtimeStart + 30 * 60 * 1000L)) {
+            Toast.makeText(this, "Suất chiếu này đã bắt đầu quá 30 phút và không thể đặt vé nữa.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         for (SeatDTO s : getSelectedSeats()) {
             s.isSelected = false;
         }
@@ -119,7 +125,7 @@ public class SeatSelectionActivity extends BaseActivity {
 
         if (movieTitle != null) tvMovieTitle.setText(movieTitle);
 
-        // HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ngÃƒÆ’Ã‚Â y + giÃƒÂ¡Ã‚Â»Ã‚Â chiÃƒÂ¡Ã‚ÂºÃ‚Â¿u
+        // HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ngÃƒÆ’Ã‚Â y + giÃƒÂ¡Ã‚Â»Ã‚Â  chiÃƒÂ¡Ã‚ÂºÃ‚Â¿u
         if (showtimeStart > 0) {
             SimpleDateFormat dateFmt = new SimpleDateFormat("dd 'Th'M", new Locale("vi"));
             SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -133,14 +139,14 @@ public class SeatSelectionActivity extends BaseActivity {
         rvSeatMap.setLayoutManager(new GridLayoutManager(this, 9));
 
         adapter = new SeatAdapter(seatList, (seat, position) -> {
-            long now = System.currentTimeMillis();
+            long nowTime = System.currentTimeMillis();
             String currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
                     ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
                     : "";
 
             boolean isBooked = "booked".equalsIgnoreCase(seat.status);
             boolean isHeldByOther = "held".equalsIgnoreCase(seat.status)
-                    && (seat.heldUntil > now)
+                    && (seat.heldUntil > nowTime)
                     && !currentUserId.equals(seat.heldBy);
             boolean isLocked = "LOCKED".equalsIgnoreCase(seat.status)
                     || "LOCKED".equalsIgnoreCase(seat.seatType);
@@ -172,6 +178,13 @@ public class SeatSelectionActivity extends BaseActivity {
         rvSeatMap.setAdapter(adapter);
 
         btnContinue.setOnClickListener(v -> {
+            long clickNow = System.currentTimeMillis();
+            if (showtimeStart > 0 && clickNow > (showtimeStart + 30 * 60 * 1000L)) {
+                Toast.makeText(this, "Suất chiếu này đã bắt đầu quá 30 phút và không thể đặt vé nữa.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
             List<SeatDTO> selected = getSelectedSeats();
             if (selected.isEmpty()) {
                 Toast.makeText(this, "Vui lòng chọn ít nhất 1 ghế!", Toast.LENGTH_SHORT).show();
@@ -180,6 +193,10 @@ public class SeatSelectionActivity extends BaseActivity {
 
             if (hasEmptySeatInBetween(selected)) {
                 Toast.makeText(this, "Không được đặt vé nếu còn ghế trống ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            btnContinue.setEnabled(false);�ng ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
                 return;
             }
 

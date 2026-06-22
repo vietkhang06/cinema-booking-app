@@ -123,6 +123,7 @@ public class RegisterActivity extends BaseActivity {
                 authService.handleFacebookAccessToken(result.getAccessToken(), new AuthCallback() {
                     @Override
                     public void onSuccess(User data) {
+                        com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                         AppNavigator.goToCustomerHome(RegisterActivity.this);
                     }
 
@@ -223,6 +224,7 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onSuccess(User data) {
                 showToast("Đăng ký thành công");
+                com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                 AppNavigator.goToCustomerHome(RegisterActivity.this);
             }
 
@@ -292,6 +294,7 @@ public class RegisterActivity extends BaseActivity {
                 authService.signInWithGoogle(account.getIdToken(), new AuthCallback() {
                     @Override
                     public void onSuccess(User user) {
+                        com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                         AppNavigator.goToCustomerHome(RegisterActivity.this);
                     }
 

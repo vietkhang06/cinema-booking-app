@@ -846,9 +846,18 @@ public class HomeActivity extends BaseActivity {
     // Featured Movie Popup
     // ─────────────────────────────────────────────
 
+    public static void resetPopupShownState() {
+        sPopupShownThisSession = false;
+    }
+
+
     private void maybeShowFeaturedPopup() {
+        Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: start");
         // Only show once per app session
-        if (sPopupShownThisSession) return;
+        if (sPopupShownThisSession) {
+            Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: already shown this session");
+            return;
+        }
 
         // Skip for Admin accounts
         com.google.firebase.auth.FirebaseUser firebaseUser =
@@ -857,36 +866,86 @@ public class HomeActivity extends BaseActivity {
             com.example.cinemabookingapp.domain.model.User cached =
                     ServiceProvider.getInstance().getProfileService().getCachedProfile();
             if (cached != null && com.example.cinemabookingapp.core.constants.UserRoles.ADMIN.equals(cached.role)) {
+                Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: skip admin (cached)");
                 return;
             }
             // Also check SharedPreferences role in case cache is not yet loaded
             com.example.cinemabookingapp.core.session.SessionManager sm =
                     new com.example.cinemabookingapp.core.session.SessionManager(this);
             if (com.example.cinemabookingapp.core.constants.UserRoles.ADMIN.equals(sm.getRole())) {
+                Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: skip admin (sm)");
                 return;
             }
         }
 
         // Delay slightly so Home screen is fully rendered before popup appears
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-            if (isFinishing() || isDestroyed()) return;
+            if (isFinishing() || isDestroyed()) {
+                Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: activity is finishing or destroyed");
+                return;
+            }
+            Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: fetching featured popup movie from Firestore");
             movieRepository.getFeaturedPopupMovie(new ResultCallback<Movie>() {
                 @Override
                 public void onSuccess(Movie movie) {
-                    if (movie != null && !isFinishing() && !isDestroyed()) {
-                        showFeaturedMoviePopup(movie);
+                    if (movie != null) {
+                        Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: onSuccess featured movie found: " + movie.title);
+                        if (!isFinishing() && !isDestroyed()) {
+                            showFeaturedMoviePopup(movie);
+                        }
+                    } else {
+                        Log.d("POPUP_DEBUG", "maybeShowFeaturedPopup: onSuccess but movie is null, falling back");
+                        fallbackToFirstFirestoreMovie();
                     }
                 }
 
                 @Override
                 public void onError(String errorMessage) {
-                    // Silently ignore – popup is non-critical
+                    Log.e("POPUP_DEBUG", "maybeShowFeaturedPopup: onError " + errorMessage + ", falling back");
+                    fallbackToFirstFirestoreMovie();
                 }
             });
         }, 600);
     }
 
+    private void fallbackToFirstFirestoreMovie() {
+        Log.d("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: start querying movies collection");
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("movies")
+                .limit(20)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (isFinishing() || isDestroyed()) {
+                        Log.d("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: activity is finishing or destroyed");
+                        return;
+                    }
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        Log.d("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: found " + querySnapshot.size() + " movies");
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            Movie movie = doc.toObject(Movie.class);
+                            if (movie != null && !movie.deleted) {
+                                if (movie.movieId == null || movie.movieId.trim().isEmpty()) {
+                                    movie.movieId = doc.getId();
+                                }
+                                String poster = firstNonEmpty(readString(movie, "posterUrl", "imageUrl"), "");
+                                Log.d("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: checking movie " + movie.title + ", poster=" + poster);
+                                if (poster != null && !poster.trim().isEmpty()) {
+                                    showFeaturedMoviePopup(movie);
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        Log.d("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: querySnapshot is empty or null");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("POPUP_DEBUG", "fallbackToFirstFirestoreMovie: Firestore query failed", e);
+                });
+    }
+
     private void showFeaturedMoviePopup(Movie movie) {
+        Log.d("POPUP_DEBUG", "showFeaturedMoviePopup: displaying popup for movie: " + movie.title);
         sPopupShownThisSession = true;
 
         android.app.Dialog dialog = new android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
@@ -902,33 +961,29 @@ public class HomeActivity extends BaseActivity {
             cardPopup.startAnimation(anim);
         }
 
+        final String moviePoster = firstNonEmpty(readString(movie, "posterUrl", "imageUrl"), "");
+
         // Load poster
         android.widget.ImageView imgPoster = dialog.findViewById(R.id.imgFeaturedPoster);
-        if (imgPoster != null && movie.posterUrl != null) {
+        if (imgPoster != null && !moviePoster.isEmpty()) {
             com.bumptech.glide.Glide.with(this)
-                    .load(movie.posterUrl)
+                    .load(moviePoster)
                     .centerCrop()
                     .placeholder(R.drawable.login_icon)
                     .into(imgPoster);
-        }
-
-        // Set title
-        android.widget.TextView tvTitle = dialog.findViewById(R.id.tvFeaturedTitle);
-        if (tvTitle != null && movie.title != null) {
-            tvTitle.setText(movie.title);
         }
 
         // Poster click → open MovieDetailActivity
         if (imgPoster != null) {
             imgPoster.setClickable(true);
             imgPoster.setOnClickListener(v -> {
+                Log.d("POPUP_DEBUG", "showFeaturedMoviePopup: poster clicked, navigating to MovieDetailActivity");
                 dialog.dismiss();
                 Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
                         movie.title != null ? movie.title : "");
-                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
-                        movie.posterUrl != null ? movie.posterUrl : "");
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL, moviePoster);
                 startActivity(intent);
             });
         }
@@ -936,13 +991,13 @@ public class HomeActivity extends BaseActivity {
         // Card click also opens detail (same as poster)
         if (cardPopup != null) {
             cardPopup.setOnClickListener(v -> {
+                Log.d("POPUP_DEBUG", "showFeaturedMoviePopup: card clicked, navigating to MovieDetailActivity");
                 dialog.dismiss();
                 Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
                         movie.title != null ? movie.title : "");
-                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
-                        movie.posterUrl != null ? movie.posterUrl : "");
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL, moviePoster);
                 startActivity(intent);
             });
         }
@@ -951,26 +1006,19 @@ public class HomeActivity extends BaseActivity {
         com.google.android.material.card.MaterialCardView btnClose =
                 dialog.findViewById(R.id.btnClosePopup);
         if (btnClose != null) {
-            btnClose.setOnClickListener(v -> dialog.dismiss());
+            btnClose.setOnClickListener(v -> {
+                Log.d("POPUP_DEBUG", "showFeaturedMoviePopup: close button clicked");
+                dialog.dismiss();
+            });
         }
 
         // Click outside (dim overlay) also dismisses
         android.widget.FrameLayout rootOverlay = dialog.findViewById(R.id.rootOverlay);
         if (rootOverlay != null) {
-            rootOverlay.setOnClickListener(v -> dialog.dismiss());
-            // Prevent card clicks from propagating to overlay
-            if (cardPopup != null) {
-                cardPopup.setOnClickListener(v -> {
-                    dialog.dismiss();
-                    Intent intent = new Intent(HomeActivity.this, MovieDetailActivity.class);
-                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movieId);
-                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_TITLE,
-                            movie.title != null ? movie.title : "");
-                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_POSTER_URL,
-                            movie.posterUrl != null ? movie.posterUrl : "");
-                    startActivity(intent);
-                });
-            }
+            rootOverlay.setOnClickListener(v -> {
+                Log.d("POPUP_DEBUG", "showFeaturedMoviePopup: overlay background clicked");
+                dialog.dismiss();
+            });
         }
 
         dialog.show();

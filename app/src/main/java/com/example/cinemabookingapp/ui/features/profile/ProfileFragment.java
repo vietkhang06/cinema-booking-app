@@ -447,6 +447,7 @@ public class ProfileFragment extends Fragment {
                         .setMessage("Bạn có chắc muốn đăng xuất không?")
                         .setPositiveButton("Đăng xuất", (dialog, which) -> {
                             authService.logOut();
+                            com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                             AppNavigator.goToCustomerHome(requireActivity());
                         })
                         .setNegativeButton("Huỷ", null)

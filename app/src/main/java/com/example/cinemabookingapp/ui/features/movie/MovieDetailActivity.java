@@ -966,30 +966,44 @@ public class MovieDetailActivity extends BaseActivity {
         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         button.setCornerRadius(dp(10));
         button.setStrokeWidth(dp(1));
-        button.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#D8D8D8")));
-        button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
-        button.setTextColor(Color.parseColor("#111111"));
 
-        boolean selected = (cinemaName != null && cinemaName.equals(selectedCinema))
-                && (roomType != null && roomType.equals(selectedRoomType))
-                && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
+        long now = System.currentTimeMillis();
+        boolean isLocked = now > (item.startAt + 30 * 60 * 1000L);
 
-        styleTimeButton(button, selected);
+        if (isLocked) {
+            button.setEnabled(false);
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F5F5F5")));
+            button.setTextColor(Color.parseColor("#A0A0A0"));
+            button.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#E6E6E6")));
+        } else {
+            button.setEnabled(true);
+            button.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#D8D8D8")));
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+            button.setTextColor(Color.parseColor("#111111"));
 
-        button.setOnClickListener(v -> {
-            boolean isCurrentlySelected = (cinemaName != null && cinemaName.equals(selectedCinema))
+            boolean selected = (cinemaName != null && cinemaName.equals(selectedCinema))
                     && (roomType != null && roomType.equals(selectedRoomType))
                     && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
 
-            if (isCurrentlySelected) {
-                selectedShowtime = "";
-                selectedShowtimeItem = null;
-            } else {
-            selectedCinema      = cinemaName;
-            selectedRoomType    = roomType;
-            selectedShowtime    = item.timeText;
-            }
-        });
+            styleTimeButton(button, selected);
+
+            button.setOnClickListener(v -> {
+                boolean isCurrentlySelected = (cinemaName != null && cinemaName.equals(selectedCinema))
+                        && (roomType != null && roomType.equals(selectedRoomType))
+                        && (item != null && item.timeText != null && item.timeText.equals(selectedShowtime));
+
+                if (isCurrentlySelected) {
+                    selectedShowtime = "";
+                    selectedShowtimeItem = null;
+                } else {
+                    selectedCinema      = cinemaName;
+                    selectedRoomType    = roomType;
+                    selectedShowtime    = item.timeText;
+                    selectedShowtimeItem = item;
+                }
+                renderCinemaGroups();
+            });
+        }
 
         return button;
     }
@@ -1164,6 +1178,13 @@ public class MovieDetailActivity extends BaseActivity {
                 || TextUtils.isEmpty(selectedCinema)
                 || TextUtils.isEmpty(selectedDateText)
                 || TextUtils.isEmpty(selectedShowtime)) {
+            showToast("Vui lòng chọn suất chiếu hợp lệ trước khi đặt vé");
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if (now > (selectedShowtimeItem.startAt + 30 * 60 * 1000L)) {
+            showToast("Suất chiếu này đã bắt đầu quá 30 phút và không thể đặt vé nữa.");
             return;
         }
 
@@ -1212,9 +1233,18 @@ public class MovieDetailActivity extends BaseActivity {
         if (sections == null) {
             return "";
         }
+        long now = System.currentTimeMillis();
         for (CinemaSection section : sections) {
-            if (section != null && cinemaName.equals(section.name) && section.groups != null && !section.groups.isEmpty()) {
-                return section.groups.get(0).title;
+            if (section != null && cinemaName.equals(section.name) && section.groups != null) {
+                for (ShowtimeGroup group : section.groups) {
+                    if (group.showtimes != null) {
+                        for (MovieDetailScheduleCatalog.ShowtimeItem item : group.showtimes) {
+                            if (now <= item.startAt + 30 * 60 * 1000L) {
+                                return group.title;
+                            }
+                        }
+                    }
+                }
             }
         }
         return "";
@@ -1228,11 +1258,16 @@ public class MovieDetailActivity extends BaseActivity {
         if (sections == null) {
             return null;
         }
+        long now = System.currentTimeMillis();
         for (CinemaSection section : sections) {
             if (section != null && cinemaName.equals(section.name) && section.groups != null) {
                 for (ShowtimeGroup group : section.groups) {
-                    if (group != null && roomType.equals(group.title) && group.showtimes != null && !group.showtimes.isEmpty()) {
-                        return group.showtimes.get(0);
+                    if (group != null && roomType.equals(group.title) && group.showtimes != null) {
+                        for (MovieDetailScheduleCatalog.ShowtimeItem item : group.showtimes) {
+                            if (now <= item.startAt + 30 * 60 * 1000L) {
+                                return item;
+                            }
+                        }
                     }
                 }
             }

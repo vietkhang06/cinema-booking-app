@@ -152,6 +152,8 @@ public class LoginActivity extends BaseActivity {
                             sessionManager.clearRememberedEmail();
                         }
 
+                        com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
+
                         if ("admin".equals(user.role) || "staff".equals(user.role)) {
                             AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
                         } else if (fromBooking) {
@@ -191,6 +193,7 @@ public class LoginActivity extends BaseActivity {
                                 new AuthCallback() {
                                     @Override
                                     public void onSuccess(User user) {
+                                        com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                                         if ("admin".equals(user.role) || "staff".equals(user.role)) {
                                             AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
                                         } else if (fromBooking) {
@@ -250,6 +253,7 @@ public class LoginActivity extends BaseActivity {
                 authService.signInWithGoogle(account.getIdToken(), new AuthCallback() {
                     @Override
                     public void onSuccess(User user) {
+                        com.example.cinemabookingapp.ui.features.home.HomeActivity.resetPopupShownState();
                         if ("admin".equals(user.role) || "staff".equals(user.role)) {
                             AppNavigator.goToHomeByRole(LoginActivity.this, user.role);
                         } else if (fromBooking) {
