@@ -54,6 +54,10 @@ public class BookingService {
             logger.error("[PAYMENT_FAILED] Booking not found for ID: {}", bookingId);
             throw new RuntimeException("Booking not found");
         }
+        if ("CANCELLED".equalsIgnoreCase(booking.getBookingStatus())) {
+            logger.error("[PAYMENT_FAILED] Cannot confirm booking {} because it is already CANCELLED", bookingId);
+            throw new RuntimeException("Booking already cancelled");
+        }
         
         List<String> seatIds = booking.getSeatIds();
         if (seatIds == null || seatIds.isEmpty()) {

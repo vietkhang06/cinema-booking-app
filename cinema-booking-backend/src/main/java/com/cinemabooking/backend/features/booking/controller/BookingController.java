@@ -248,6 +248,13 @@ public class BookingController {
 
         BookingDTO bookingDTO = bookingService.createBooking(booking);
 
+        // Extend seat holds to match the booking expiry time (5 minutes)
+        try {
+            seatRepository.extendSeatHolds(data.getSeatIds(), bookingDTO.getCreatedAt() + 300000);
+        } catch (Exception e) {
+            log.error("[SEAT_HOLD_EXTEND_FAILED] Failed to extend seat holds for booking " + uniqueID, e);
+        }
+
         // Tạo document payment với status = PENDING
         paymentService.createPendingPayment(
                 bookingDTO.getBookingId(),
@@ -331,6 +338,9 @@ public class BookingController {
 //        if (!userId.equals(booking.getUserId())) {
 //            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xác nhận vé này.");
 //        }
+        if ("CANCELLED".equalsIgnoreCase(booking.getBookingStatus())) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Giao dịch đặt vé này đã hết hạn và bị hủy.");
+        }
         bookingService.updatePaymentStatus(bookingId, "SUCCESS", "CONFIRMED");
         bookingService.confirmBookingSeats(bookingId);
 

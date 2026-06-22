@@ -140,7 +140,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_confirm);
 
-        // NhÃ¡ÂºÂ­n data
         showtimeId = getIntent().getStringExtra(EXTRA_SHOWTIME_ID);
         movieTitle = getIntent().getStringExtra(EXTRA_MOVIE_TITLE);
         movieId = getIntent().getStringExtra(EXTRA_MOVIE_ID);
@@ -354,7 +353,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                             currentUser = user;
                             applyTierDiscount();
                             updateStarsUI();
-                            checkAndApplyVouchers(); // TÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng lÃ¡ÂºÂ¥y voucher
+                            checkAndApplyVouchers();
                         }
                     }
 
@@ -376,7 +375,6 @@ public class BookingConfirmActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot != null && !snapshot.isEmpty()) {
-                        // TÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng chÃ¡Â»Ân voucher cÃƒÂ³ giÃƒÂ¡ trÃ¡Â»â€¹ cao nhÃ¡ÂºÂ¥t
                         double maxDiscount = 0;
                         com.google.firebase.firestore.DocumentSnapshot bestVoucher = null;
                         
@@ -866,39 +864,28 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     isBookingConfirmed = true;
                     BookingTimerManager.getInstance().stopTimer(BookingConfirmActivity.this);
                     
-                    // Ã„ÂÃƒÂ¡nh dÃ¡ÂºÂ¥u Voucher Ã„â€˜ÃƒÂ£ sÃ¡Â»Â­ dÃ¡Â»Â¥ng (Ã„â€˜Ã¡Â»Æ’ khÃƒÂ´ng xÃƒÂ i lÃ¡ÂºÂ¡i Ã„â€˜Ã†Â°Ã¡Â»Â£c nÃ¡Â»Â¯a)
                     if (appliedVoucherId != null && !appliedVoucherId.isEmpty()) {
                         FirebaseFirestore.getInstance().collection("vouchers")
                                 .document(appliedVoucherId)
                                 .update("isUsed", true, "usedAt", System.currentTimeMillis());
                     }
-//                    if ("momo".equals(paymentMethod) || "bank".equals(paymentMethod)) {
-//                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
-//                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
-//                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
-//                        startActivity(intent);
-//                        finish();
-//                    } else if ("bank".equals(paymentMethod)) {
-//                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
-//                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
-//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
-//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
-//                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
-//                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
-//                        intent.putExtra("createdAt", booking.createdAt);
-//                        startActivity(intent);
-//                        finish();
-//                    } else {
-//                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
-//                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
-//                        finish();
-//                    }
+//
                     if ("momo".equals(paymentMethod)) {
-                        confirmPayment(booking);
-                    } else {
-                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS", booking.bookingId);
-                        Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
+                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
+                        startActivity(intent);
+                        finish();
+                    } else if ("bank".equals(paymentMethod)) {
+                        Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_ID, (String) null);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_CODE, booking.paymentCode);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
+                        intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
+                        intent.putExtra("createdAt", booking.createdAt);
+                        startActivity(intent);
                         finish();
                     }
                 } else {
@@ -948,6 +935,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, booking.paymentMethod);
                         intent.putExtra("createdAt", booking.createdAt);
+                        intent.putExtra("serverTime", booking.serverTime);
                         startActivity(intent);
                         finish();
                     } else {

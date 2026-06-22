@@ -32,6 +32,7 @@ public class BookingDTO {
     public long createdAt;
     public long updatedAt;
     public boolean deleted;
+    public long serverTime;
 
     public String appliedVoucherCode;
     public List<SnackOrderSnapshotDTO> snackOrder;
