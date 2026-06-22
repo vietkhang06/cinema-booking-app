@@ -195,6 +195,17 @@
                 android:textColorHint="#94A3B8" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/swFeaturedPopup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Hiển thị Popup Poster trang chủ"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:thumbTint="#B33C57"
+            app:trackTint="#F1D2D8" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

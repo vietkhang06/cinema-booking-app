@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Elegant Toolbar with Back Card & Title -->
+    <!-- Elegant Toolbar with Back Button & Title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,30 +15,18 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="20dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <ImageButton
             android:id="@+id/btnAdminBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:strokeColor="#ECE8F0"
-            app:strokeWidth="1.5dp"
-            app:cardElevation="1dp">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:src="@drawable/chevron_left_solid_full"
-                app:tint="#1E1A23" />
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="#1E1A23" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:text="Quản lý suất chiếu"
             android:textColor="#1E1A23"
             android:textSize="20sp"
@@ -59,37 +47,53 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chọn rạp chiếu để lọc"
-                android:textColor="#7A757F"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_location_pin"
+                app:tint="#EF4444" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#7B39F0"
-                app:hintEnabled="false">
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/actvCinemaChooser"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chọn rạp chiếu để lọc"
+                    android:textColor="#7A757F"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tất cả các rạp..."
-                    android:inputType="none"
-                    android:textColor="#1E1A23"
-                    android:textSize="15sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="#7B39F0"
+                    app:hintEnabled="false">
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/actvCinemaChooser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tất cả các rạp..."
+                        android:inputType="none"
+                        android:textColor="#1E1A23"
+                        android:textSize="15sp"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -118,8 +122,13 @@
                 android:text="Đang hoạt động (...)"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
+                android:padding="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:backgroundTint="#1E1A23"
                 app:cornerRadius="20dp"
                 app:strokeWidth="0dp" />
@@ -132,8 +141,13 @@
                 android:text="Lên lịch (...)"
                 android:textAllCaps="false"
                 android:textColor="#1E1A23"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
+                android:padding="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:backgroundTint="#FFFFFF"
                 app:cornerRadius="20dp"
                 app:strokeWidth="0dp" />
@@ -146,8 +160,13 @@
                 android:text="Hết hạn (...)"
                 android:textAllCaps="false"
                 android:textColor="#1E1A23"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
+                android:padding="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:backgroundTint="#FFFFFF"
                 app:cornerRadius="20dp"
                 app:strokeWidth="0dp" />
@@ -165,7 +184,7 @@
         <View
             android:layout_width="4dp"
             android:layout_height="16dp"
-            android:background="#1E1A23" />
+            android:background="#EF4444" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -186,8 +205,8 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lên lịch"
-            android:textColor="#7B39F0"
+            android:text="LÊN LỊCH"
+            android:textColor="#EF4444"
             android:textStyle="bold"
             android:layout_marginEnd="8dp" />
 
@@ -196,8 +215,8 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ Thêm"
-            android:textColor="#7B39F0"
+            android:text="+ THÊM"
+            android:textColor="#EF4444"
             android:textStyle="bold" />
     </LinearLayout>
 

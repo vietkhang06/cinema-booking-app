@@ -37,6 +37,7 @@ public class AdminMovieFormActivity extends BaseActivity {
     private TextInputEditText edtTitle, edtDescription, edtGenres, edtLanguage, edtDuration,
             edtReleaseDate, edtPosterUrl, edtTrailerUrl;
     private MaterialAutoCompleteTextView actvAgeRating, actvStatus;
+    private com.google.android.material.switchmaterial.SwitchMaterial swFeaturedPopup;
     private MaterialButton btnSave;
 
     private MovieRepository movieRepository;
@@ -100,6 +101,7 @@ public class AdminMovieFormActivity extends BaseActivity {
 
         actvAgeRating = findViewById(R.id.actvAgeRating);
         actvStatus = findViewById(R.id.actvStatus);
+        swFeaturedPopup = findViewById(R.id.swFeaturedPopup);
 
         btnSave = findViewById(R.id.btnSave);
     }
@@ -155,6 +157,7 @@ public class AdminMovieFormActivity extends BaseActivity {
         edtTrailerUrl.setText(movie.trailerUrl);
         actvAgeRating.setText(safe(movie.ageRating), false);
         actvStatus.setText(statusLabel(movie.status), false);
+        swFeaturedPopup.setChecked(movie.featuredPopup);
     }
 
     private void saveMovie() {
@@ -242,6 +245,10 @@ public class AdminMovieFormActivity extends BaseActivity {
             movie.deleted = currentMovie.deleted;
         }
 
+        boolean wasFeatured = currentMovie != null && currentMovie.featuredPopup;
+        boolean isFeatured = swFeaturedPopup.isChecked();
+        movie.featuredPopup = isFeatured;
+
         movie.updatedAt = System.currentTimeMillis();
 
         btnSave.setEnabled(false);
@@ -254,7 +261,21 @@ public class AdminMovieFormActivity extends BaseActivity {
                     com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
                             "UPDATE_MOVIE", "MOVIE", data.movieId, "Đã cập nhật phim: " + data.title
                     );
-                    finish();
+                    if (isFeatured != wasFeatured) {
+                        movieRepository.setFeaturedPopup(data.movieId, isFeatured, new ResultCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                finish();
+                            }
+                        });
+                    } else {
+                        finish();
+                    }
                 }
 
                 @Override
@@ -271,7 +292,21 @@ public class AdminMovieFormActivity extends BaseActivity {
                     com.example.cinemabookingapp.ui.features.admin.log.AdminAuditLogger.log(
                             "CREATE_MOVIE", "MOVIE", data.movieId, "Đã thêm phim mới: " + data.title
                     );
-                    finish();
+                    if (isFeatured != wasFeatured) {
+                        movieRepository.setFeaturedPopup(data.movieId, isFeatured, new ResultCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                finish();
+                            }
+                        });
+                    } else {
+                        finish();
+                    }
                 }
 
                 @Override

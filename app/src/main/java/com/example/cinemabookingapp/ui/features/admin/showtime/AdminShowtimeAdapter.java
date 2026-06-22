@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.graphics.Color;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,9 +88,19 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
             holder.cardRoot.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
         }
 
-        // Resolve movie name
+        // Resolve movie name and poster
         Movie movie = movieMap.get(showtime.movieId);
         holder.tvMovieTitle.setText(movie != null ? movie.title : "Phim không xác định");
+
+        if (movie != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(movie.posterUrl)
+                    .placeholder(R.drawable.clapperboard_solid_full)
+                    .error(R.drawable.clapperboard_solid_full)
+                    .into(holder.imgMoviePoster);
+        } else {
+            holder.imgMoviePoster.setImageResource(R.drawable.clapperboard_solid_full);
+        }
 
         // Resolve cinema and room name
         Cinema cinema = cinemaMap.get(showtime.cinemaId);
@@ -141,6 +153,7 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
         TextView tvShowtimeId;
         TextView tvShowtimeStatus;
         com.google.android.material.card.MaterialCardView cardRoot;
+        ImageView imgMoviePoster;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -154,6 +167,7 @@ public class AdminShowtimeAdapter extends RecyclerView.Adapter<AdminShowtimeAdap
             tvShowtimeId = itemView.findViewById(R.id.tvShowtimeId);
             tvShowtimeStatus = itemView.findViewById(R.id.tvShowtimeStatus);
             cardRoot = (com.google.android.material.card.MaterialCardView) itemView;
+            imgMoviePoster = itemView.findViewById(R.id.imgMoviePoster);
         }
     }
 }
