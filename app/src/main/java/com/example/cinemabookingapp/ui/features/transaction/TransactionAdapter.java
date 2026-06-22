@@ -69,9 +69,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemViewType(int position) {
         Booking booking = bookings.get(position);
         if (booking.showtimeId != null) {
-            return VIEW_TYPE_CINE_SHOP;
+            return VIEW_TYPE_MOVIE_TICKET;
         }
-        return VIEW_TYPE_MOVIE_TICKET;
+        return VIEW_TYPE_CINE_SHOP;
     }
 
     @Override
