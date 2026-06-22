@@ -871,12 +871,26 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     }
 //
                     if ("momo".equals(paymentMethod)) {
-                        Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
-                        intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
-                        intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
-                        startActivity(intent);
-                        finish();
+                        bookingApi.confirmPayment(booking.bookingId).enqueue(new retrofit2.Callback<ApiResponse<Void>>() {
+                            @Override
+                            public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> confirmResponse) {
+                                if (confirmResponse.isSuccessful()) {
+                                    Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
+                                    intent.putExtra(TicketDetailActivity.EXTRA_BOOKING_ID, booking.bookingId);
+                                    intent.putExtra("EXTRA_FROM_BOOKING_SUCCESS", true);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(BookingConfirmActivity.this, "Lỗi xác nhận thanh toán MoMo: " + confirmResponse.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(retrofit2.Call<ApiResponse<Void>> call, Throwable t) {
+                                Toast.makeText(BookingConfirmActivity.this, "Lỗi mạng khi xác nhận thanh toán: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else if ("bank".equals(paymentMethod)) {
                         Intent intent = new Intent(BookingConfirmActivity.this, PaymentInstructionActivity.class);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_BOOKING_ID, booking.bookingId);
@@ -885,6 +899,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, booking.total);
                         intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, paymentMethod);
                         intent.putExtra("createdAt", booking.createdAt);
+                        intent.putExtra("serverTime", booking.serverTime);
                         startActivity(intent);
                         finish();
                     }
@@ -1173,8 +1188,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
-            BookingTimerManager.getInstance().stopTimer(this);
             if (!isBookingConfirmed) {
+                BookingTimerManager.getInstance().stopTimer(this);
                 releaseLockedSeats();
             }
         }
