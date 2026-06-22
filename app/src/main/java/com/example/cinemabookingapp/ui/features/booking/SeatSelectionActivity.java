@@ -125,7 +125,6 @@ public class SeatSelectionActivity extends BaseActivity {
 
         if (movieTitle != null) tvMovieTitle.setText(movieTitle);
 
-        // HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ngÃƒÆ’Ã‚Â y + giÃƒÂ¡Ã‚Â»Ã‚Â  chiÃƒÂ¡Ã‚ÂºÃ‚Â¿u
         if (showtimeStart > 0) {
             SimpleDateFormat dateFmt = new SimpleDateFormat("dd 'Th'M", new Locale("vi"));
             SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -146,7 +145,6 @@ public class SeatSelectionActivity extends BaseActivity {
 
             boolean isBooked = "booked".equalsIgnoreCase(seat.status);
             boolean isHeldByOther = "held".equalsIgnoreCase(seat.status)
-                    && (seat.heldUntil > nowTime)
                     && !currentUserId.equals(seat.heldBy);
             boolean isLocked = "LOCKED".equalsIgnoreCase(seat.status)
                     || "LOCKED".equalsIgnoreCase(seat.seatType);
@@ -193,10 +191,6 @@ public class SeatSelectionActivity extends BaseActivity {
 
             if (hasEmptySeatInBetween(selected)) {
                 Toast.makeText(this, "Không được đặt vé nếu còn ghế trống ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            btnContinue.setEnabled(false);�ng ở giữa trong cùng một hàng!", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -299,6 +293,7 @@ public class SeatSelectionActivity extends BaseActivity {
                     intent.putExtra(PaymentInstructionActivity.EXTRA_AMOUNT, pendingBooking.total);
                     intent.putExtra(PaymentInstructionActivity.EXTRA_PAYMENT_METHOD, pendingBooking.paymentMethod);
                     intent.putExtra("createdAt", pendingBooking.createdAt);
+                    intent.putExtra("serverTime", pendingBooking.serverTime);
                     startActivity(intent);
                     finish();
                 } else {
@@ -382,11 +377,9 @@ public class SeatSelectionActivity extends BaseActivity {
                             if (seat != null) {
                                 seat.seatId = doc.getId();
 
-                                boolean isAvailable = "available".equalsIgnoreCase(seat.status)
-                                        || ("held".equalsIgnoreCase(seat.status) && seat.heldUntil < now);
+                                boolean isAvailable = "available".equalsIgnoreCase(seat.status);
 
                                 boolean isHeldByMe = "held".equalsIgnoreCase(seat.status)
-                                        && (seat.heldUntil >= now)
                                         && currentUserId.equals(seat.heldBy);
 
                                 // Check if this seat was selected by me previously
@@ -596,8 +589,7 @@ public class SeatSelectionActivity extends BaseActivity {
                             if (!isSel) {
                                 boolean isAvailable = "available".equalsIgnoreCase(seat.status)
                                         || seat.status == null
-                                        || seat.status.isEmpty()
-                                        || ("held".equalsIgnoreCase(seat.status) && (seat.heldUntil < now));
+                                        || seat.status.isEmpty();
                                 if (isAvailable) {
                                     return true;
                                 }

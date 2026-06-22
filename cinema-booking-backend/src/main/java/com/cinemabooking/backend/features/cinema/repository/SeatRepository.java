@@ -54,7 +54,20 @@ public class SeatRepository {
             batch.update(firestore.collection(COLLECTION).document(seatId),
                     "status", "booked",
                     "bookedBy", userId,
-                    "bookedAt", now
+                    "bookedAt", now,
+                    "heldBy", null,
+                    "heldUntil", 0L
+            );
+        }
+        batch.commit().get();
+    }
+
+    public void extendSeatHolds(List<String> seatIds, long newHeldUntil) throws ExecutionException, InterruptedException {
+        WriteBatch batch = firestore.batch();
+        for (String seatId : seatIds) {
+            logger.info("[SEAT_HOLD_EXTEND] Extending hold for seat {} until {}", seatId, newHeldUntil);
+            batch.update(firestore.collection(COLLECTION).document(seatId),
+                    "heldUntil", newHeldUntil
             );
         }
         batch.commit().get();
@@ -76,7 +89,7 @@ public class SeatRepository {
     public void lockSeats(String userId, List<String> seatIds) throws ExecutionException, InterruptedException {
         firestore.runTransaction(transaction -> {
             long now = System.currentTimeMillis();
-            long holdUntil = now + (7 * 60 * 1000); // 7 minutes
+            long holdUntil = now + (5 * 60 * 1000); // 5 minutes
 
             List<DocumentReference> refs = new ArrayList<>();
             for (String seatId : seatIds) {

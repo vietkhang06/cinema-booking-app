@@ -61,6 +61,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
     private volatile boolean paymentHandled = false;
     private BookingTimerManager.TimerListener timerListener;
     private boolean hasShownWarning = false;
+    private long driftOffset = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +90,12 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         startBookingListener(); // Listener thá»© 2: láº¯ng nghe bookings doc Ä‘á»ƒ báº¯t paymentStatus
 
         long createdAt = getIntent().getLongExtra("createdAt", 0);
+        long serverTime = getIntent().getLongExtra("serverTime", 0);
+        if (serverTime > 0) {
+            driftOffset = System.currentTimeMillis() - serverTime;
+        }
         if (createdAt > 0) {
-            startCountdownTimer(createdAt + 300000);
+            startCountdownTimer(createdAt + 300000 + driftOffset);
         }
     }
 
@@ -277,7 +282,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                     if (snapshot != null && snapshot.exists()) {
                         Long createdAtVal = snapshot.getLong("createdAt");
                         if (createdAtVal != null && createdAtVal > 0) {
-                            startCountdownTimer(createdAtVal + 300000);
+                            startCountdownTimer(createdAtVal + 300000 + driftOffset);
                         }
 
                         // Kiá»ƒm tra cáº£ paymentStatus láº«n bookingStatus

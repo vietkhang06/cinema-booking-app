@@ -50,6 +50,13 @@ public class BookingDTO {
     private long paymentAt;
     private List<SnackOrderSnapshot> snackOrder;
 
+    @com.google.cloud.firestore.annotation.Exclude
+    private long serverTime;
+
+    public long getServerTime() {
+        return System.currentTimeMillis();
+    }
+
     // dung cho cac phep JOIN ko hien thi trong firestore
     @Exclude private UserDTO user;
     @Exclude private ShowtimeDTO showtime;
