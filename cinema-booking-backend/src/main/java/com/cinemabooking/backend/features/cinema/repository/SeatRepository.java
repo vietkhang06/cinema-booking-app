@@ -181,30 +181,26 @@ public class SeatRepository {
         }).get();
     }
 
-    public List<QueryDocumentSnapshot> findHeldSeats() throws ExecutionException, InterruptedException {
+    public List<QueryDocumentSnapshot> findExpiredHeldSeats(long now) throws ExecutionException, InterruptedException {
         return firestore.collection(COLLECTION)
                 .whereEqualTo("status", "held")
+                .whereLessThan("heldUntil", now)
                 .get().get().getDocuments();
     }
 
     public int releaseExpiredSeats(long now) throws ExecutionException, InterruptedException {
-        List<QueryDocumentSnapshot> heldSeats = findHeldSeats();
+        List<QueryDocumentSnapshot> expiredSeats = findExpiredHeldSeats(now);
         WriteBatch seatBatch = firestore.batch();
         int count = 0;
 
-        for (DocumentSnapshot doc : heldSeats) {
-            Long heldUntilVal = doc.getLong("heldUntil");
-            long heldUntil = heldUntilVal != null ? heldUntilVal : 0L;
-
-            if (heldUntil > 0 && heldUntil < now) {
-                logger.info("[SEAT_RELEASE] Seat hold expired for seatId={}. Releasing seat...", doc.getId());
-                seatBatch.update(doc.getReference(),
-                        "status", "available",
-                        "heldBy", null,
-                        "heldUntil", 0L
-                );
-                count++;
-            }
+        for (DocumentSnapshot doc : expiredSeats) {
+            logger.info("[SEAT_RELEASE] Seat hold expired for seatId={}. Releasing seat...", doc.getId());
+            seatBatch.update(doc.getReference(),
+                    "status", "available",
+                    "heldBy", null,
+                    "heldUntil", 0L
+            );
+            count++;
         }
 
         if (count > 0) {

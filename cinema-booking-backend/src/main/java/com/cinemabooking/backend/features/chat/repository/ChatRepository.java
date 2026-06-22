@@ -28,11 +28,6 @@ public class ChatRepository {
         return null;
     }
 
-    public List<Conversation> getConversationsByParticipant(String userId) throws ExecutionException, InterruptedException {
-        return firestore.collection(Conversation.COLLECTION_NAME)
-                .whereArrayContains("participantIds", userId)
-                .get().get().toObjects(Conversation.class);
-    }
 
     public void saveConversation(Conversation conversation) throws ExecutionException, InterruptedException {
         firestore.collection(Conversation.COLLECTION_NAME)
@@ -41,18 +36,7 @@ public class ChatRepository {
                 .get();
     }
 
-    public void updateConversation(String convoId, Map<String, Object> updates) throws ExecutionException, InterruptedException {
-        firestore.collection(Conversation.COLLECTION_NAME)
-                .document(convoId)
-                .update(updates)
-                .get();
-    }
 
-    public List<Conversation> getWaitingConversations() throws ExecutionException, InterruptedException {
-        return firestore.collection(Conversation.COLLECTION_NAME)
-                .whereIn("status", List.of("WAITING_STAFF", "REOPENED"))
-                .get().get().toObjects(Conversation.class);
-    }
 
     public void saveMessage(ChatMessage message) throws ExecutionException, InterruptedException {
         DocumentReference docRef = firestore.collection(ChatMessage.COLLECTION_NAME).document();
@@ -97,12 +81,6 @@ public class ChatRepository {
         return firestore.collection(Conversation.COLLECTION_NAME).document();
     }
 
-    public int countActiveConversationsByStaff(String staffId) throws ExecutionException, InterruptedException {
-        return firestore.collection(Conversation.COLLECTION_NAME)
-                .whereEqualTo("assignedStaffId", staffId)
-                .whereIn("status", List.of("ASSIGNED_TO_STAFF", "IN_PROGRESS"))
-                .get().get().size();
-    }
 
     public void clearConversationMessages(String convoId) throws ExecutionException, InterruptedException {
         List<QueryDocumentSnapshot> msgDocs = getMessageDocumentsByConvoId(convoId);

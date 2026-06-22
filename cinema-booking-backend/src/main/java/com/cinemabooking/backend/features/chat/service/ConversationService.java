@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,57 +24,6 @@ public class ConversationService {
 
     @Autowired
     private UserRepository userRepository;
-
-    public List<Conversation> getConversationsWithUserDetail(String userId) throws ExecutionException, InterruptedException {
-        List<Conversation> conversations = chatRepository.getConversationsByParticipant(userId);
-
-        conversations.sort(( c1, c2) -> {
-            Long t1 = c1.getLastMessageAt() != null ? c1.getLastMessageAt() : 0L;
-            Long t2 = c2.getLastMessageAt() != null ? c2.getLastMessageAt() : 0L;
-            return t2.compareTo(t1);
-        });
-
-        return conversations;
-    }
-
-    public Conversation createNewConversation(List<String> users, long now) throws ExecutionException, InterruptedException {
-        DocumentReference documentReference = chatRepository.createConversationReference();
-
-        Map<String, Integer> unreadCounts = new HashMap<>();
-        for (String user : users) {
-            unreadCounts.put(user, 0);
-        }
-
-        Map<String, Long> lastSeenAt = new HashMap<>();
-        for (String user : users) {
-            lastSeenAt.put(user, now);
-        }
-
-        List<Conversation.UserSnapShot> userSnapshots = new ArrayList<>();
-        for (String uid : users) {
-            DocumentSnapshot userDoc = userRepository.findById(uid);
-            if (userDoc.exists()) {
-                UserDTO user = userDoc.toObject(UserDTO.class);
-                if (user != null) {
-                    userSnapshots.add(Conversation.UserSnapShot.mapper(user));
-                }
-            }
-        }
-
-        Conversation conversation = Conversation.builder()
-                .convoId(documentReference.getId())
-                .participantIds(users)
-                .unreadCounts(unreadCounts)
-                .lastSeenAt(lastSeenAt)
-                .participants(userSnapshots)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
-
-        chatRepository.saveConversation(conversation);
-
-        return conversation;
-    }
 
     public void updateConversationAfterMessage(
             String convoId, ChatMessage message, String receiverId, long timestamp
@@ -104,14 +52,24 @@ public class ConversationService {
     }
 
     public Conversation getConversationByUserIds(String user1, String user2) throws ExecutionException, InterruptedException {
-        List<Conversation> senderConvo = chatRepository.getConversationsByParticipant(user1);
+        // Chỉ hỗ trợ truy vấn duy nhất với SUPPORT_BOT
+        if (!"SUPPORT_BOT".equals(user2)) {
+            return null;
+        }
 
-        Conversation conversation = senderConvo.stream()
-                .filter(c -> c.getParticipantIds().contains(user2))
-                .findFirst()
-                .orElse(null);
+        // Tìm cuộc hội thoại của user1 có chứa SUPPORT_BOT trong participantIds
+        List<com.google.cloud.firestore.QueryDocumentSnapshot> docs = chatRepository.getFirestore()
+                .collection(Conversation.COLLECTION_NAME)
+                .whereArrayContains("participantIds", user1)
+                .get().get().getDocuments();
 
-        return conversation;
+        for (var doc : docs) {
+            Conversation c = doc.toObject(Conversation.class);
+            if (c.getParticipantIds().contains("SUPPORT_BOT")) {
+                return c;
+            }
+        }
+        return null;
     }
 
     public void deleteAllConversations() throws ExecutionException, InterruptedException {

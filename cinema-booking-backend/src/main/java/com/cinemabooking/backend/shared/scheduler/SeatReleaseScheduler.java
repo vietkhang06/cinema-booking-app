@@ -46,8 +46,14 @@ public class SeatReleaseScheduler {
                 logger.info("[SEAT_RELEASE] Released {} expired held seats", releasedSeatsCount);
             }
 
-            // Task 2: Scan and cancel pending bookings that have timed out
-            List<QueryDocumentSnapshot> pendingBookings = bookingRepository.findPendingBookings();
+            // Task 2: Scan and cancel pending bookings that have timed out (online payments only, older than 5 mins)
+            long timeoutBoundary = now - 300000;
+            List<QueryDocumentSnapshot> pendingBookings = bookingRepository.getFirestore()
+                    .collection("bookings")
+                    .whereEqualTo("bookingStatus", "PENDING")
+                    .whereIn("paymentMethod", java.util.List.of("credit_card", "momo", "bank", "bank_transfer"))
+                    .whereLessThan("createdAt", timeoutBoundary)
+                    .get().get().getDocuments();
             
             for (DocumentSnapshot bookingDoc : pendingBookings) {
                 Long createdAtVal = bookingDoc.getLong("createdAt");
