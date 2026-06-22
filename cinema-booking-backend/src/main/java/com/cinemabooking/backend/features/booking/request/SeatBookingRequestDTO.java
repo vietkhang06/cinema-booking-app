@@ -20,6 +20,8 @@ public class SeatBookingRequestDTO {
     private PaymentMethod paymentMethod;
     private String appliedVoucherCode;
     private double totalPrice;
+    private String promoCode;
+    private double discountVoucher;
 
     public record SnackOrder(String snackId, int quantity) { }
 }

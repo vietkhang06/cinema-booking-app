@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light sweep strip: transparent → white/light-red → transparent (left to right) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="0"
+        android:endColor="#00FFFFFF"
+        android:centerColor="#CCFFFFFF"
+        android:startColor="#00FFFFFF"
+        android:type="linear" />
+</shape>

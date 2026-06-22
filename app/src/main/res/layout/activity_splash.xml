@@ -69,64 +69,6 @@
             android:textColor="#C9C0C9"
             android:textSize="12sp" />
 
-        <LinearLayout
-            android:id="@+id/dotContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <View
-                android:id="@+id/dot1"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot2"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot3"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot4"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot5"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot6"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-
-            <View
-                android:id="@+id/dot7"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/bg_splash_dot" />
-        </LinearLayout>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

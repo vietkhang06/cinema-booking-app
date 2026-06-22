@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="85dp"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_voucher_item"
+    android:layout_marginBottom="10dp"
+    android:gravity="center_vertical"
+    android:elevation="1dp">
+
+    <!-- Left ticket value tag -->
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bg_voucher_left"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/tag_solid_full"
+            android:tint="#A13345"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvVoucherValueText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20K"
+            android:textColor="#A13345"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- Divider dashed line representation -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#F5D6D6"/>
+
+    <!-- Middle content -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvVoucherTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giảm 20.000đ"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvVoucherConditions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Áp dụng cho mọi giao dịch đặt vé"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"/>
+
+        <TextView
+            android:id="@+id/tvVoucherExpiry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HSD: 30/06/2026"
+            android:textColor="#888888"
+            android:textSize="11sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tvVoucherDetailLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chi tiết >"
+            android:textColor="#A13345"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+    <!-- Right Selection Indicator -->
+    <ImageView
+        android:id="@+id/imgVoucherRadio"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_radio_unselected"/>
+
+</LinearLayout>

@@ -1,102 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#1E1B2E"
-    android:padding="24dp">
+    android:background="#FAFAFC"
+    android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Khuyến mãi &amp; Voucher"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
+    <!-- Top Drag Handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#CCCCCC"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voucher của bạn:"
-        android:textColor="#8888AA"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <Spinner
-        android:id="@+id/spinnerVouchers"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:backgroundTint="#FFFFFF"
-        android:background="@android:drawable/btn_dropdown"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hoặc nhập mã khuyến mãi khác:"
-        android:textColor="#8888AA"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
+    <!-- Outer Promo Card Container -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:background="@drawable/bg_voucher_card"
+        android:padding="16dp">
 
-        <EditText
-            android:id="@+id/edtPromoCode"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:hint="Nhập mã (GALAXY50, WELCOME10, FREESHOP)"
-            android:textColorHint="#666688"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:background="@android:drawable/editbox_background_normal"
-            android:backgroundTint="#2A2A4A"
-            android:paddingHorizontal="12dp"
-            android:maxLines="1"
-            android:inputType="textCapCharacters"
-            android:layout_marginEnd="12dp"/>
+        <!-- Card Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
-        <Button
-            android:id="@+id/btnApplyPromo"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="Áp dụng"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#F57C00"/>
+            <!-- Red Circle Icon with Ticket Shape -->
+            <FrameLayout
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_badge_red_circle"
+                android:backgroundTint="#A13345"
+                android:layout_marginEnd="8dp">
+                
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/tag_solid_full"
+                    android:tint="#FFFFFF"/>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ƯU ĐÃI &amp; VOUCHER"
+                android:textColor="#A13345"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"/>
+        </LinearLayout>
+
+        <!-- Promo Code Input Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_promo_input_field"
+                android:layout_marginEnd="8dp"
+                android:paddingHorizontal="12dp">
+
+                <ImageView
+                    android:id="@+id/imgInputTicketIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/tag_solid_full"
+                    android:tint="#888888"/>
+
+                <EditText
+                    android:id="@+id/edtPromoCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/imgInputTicketIcon"
+                    android:layout_marginStart="8dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Nhập mã khuyến mãi"
+                    android:textColorHint="#999999"
+                    android:textColor="#000000"
+                    android:textSize="13sp"
+                    android:maxLines="1"
+                    android:inputType="textCapCharacters"/>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnApplyPromo"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="Áp dụng"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:backgroundTint="#A13345"
+                app:cornerRadius="8dp"/>
+        </LinearLayout>
+
+        <!-- Status Message -->
+        <TextView
+            android:id="@+id/tvPromoStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FF5252"
+            android:textSize="12sp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"/>
+
+        <!-- Divider line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ECE8F0"
+            android:layout_marginVertical="12dp"/>
+
+        <!-- Voucher List Section Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Voucher của bạn"
+                android:textColor="#333333"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/btnVoucherConditions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xem điều kiện"
+                    android:textColor="#888888"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="4dp"/>
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/circle_info_solid_full"
+                    android:tint="#888888"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Vouchers Recycler -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVouchersList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Expand Button -->
+        <LinearLayout
+            android:id="@+id/btnExpandVouchers"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvExpandLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem thêm voucher v"
+                android:textColor="#888888"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvPromoStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FF5252"
-        android:textSize="12sp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mã gợi ý cho bạn:"
-        android:textColor="#8888AA"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="• GALAXY50: Giảm ngay 50.000 đ cho hóa đơn đặt vé\n• WELCOME10: Giảm 10% tổng hóa đơn\n• FREESHOP: Giảm ngay 20.000 đ"
-        android:textColor="#666688"
-        android:textSize="12sp"
-        android:lineSpacingExtra="4dp"/>
 </LinearLayout>
