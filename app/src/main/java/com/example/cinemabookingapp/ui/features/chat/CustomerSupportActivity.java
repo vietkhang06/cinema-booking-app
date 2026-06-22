@@ -155,7 +155,6 @@ public class CustomerSupportActivity extends AppCompatActivity {
         findViewById(R.id.chipShowtimes).setOnClickListener(v -> sendMessage("suất chiếu hôm nay"));
         findViewById(R.id.chipMyBooking).setOnClickListener(v -> sendMessage("vé của tôi"));
         findViewById(R.id.chipMyVouchers).setOnClickListener(v -> sendMessage("voucher của tôi"));
-        findViewById(R.id.chipContactStaff).setOnClickListener(v -> escalateToAdmin());
     }
 
     private void loadSupportConversation() {

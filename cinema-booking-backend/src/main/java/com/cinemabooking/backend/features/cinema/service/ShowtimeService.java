@@ -42,6 +42,13 @@ public class ShowtimeService {
         return showtimes;
     }
 
+    public List<ShowtimeDTO> getShowtimesBetween(long start, long end) throws ExecutionException, InterruptedException {
+        logger.info("Fetching showtimes between {} and {}", start, end);
+        return showtimeRepository.findShowtimesBetween(start, end).stream()
+                .filter(dto -> !Boolean.TRUE.equals(dto.isDeleted()))
+                .collect(Collectors.toList());
+    }
+
     public ShowtimeDTO getShowtimeById(String id) throws ExecutionException, InterruptedException {
         logger.info("Fetching showtime by ID: {}", id);
         DocumentSnapshot doc = showtimeRepository.findById(id);

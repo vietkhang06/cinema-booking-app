@@ -27,6 +27,14 @@ public class ShowtimeRepository {
                 .get().get().toObjects(ShowtimeDTO.class);
     }
 
+    public List<ShowtimeDTO> findShowtimesBetween(long start, long end) throws ExecutionException, InterruptedException {
+        return firestore.collection(COLLECTION)
+                .whereGreaterThanOrEqualTo("startAt", start)
+                .whereLessThanOrEqualTo("startAt", end)
+                .orderBy("startAt", Query.Direction.ASCENDING)
+                .get().get().toObjects(ShowtimeDTO.class);
+    }
+
     public DocumentSnapshot findById(String id) throws ExecutionException, InterruptedException {
         return firestore.collection(COLLECTION).document(id).get().get();
     }
@@ -70,9 +78,10 @@ public class ShowtimeRepository {
     }
 
     // Showtime Schedules for ShowtimeScheduler
-    public List<QueryDocumentSnapshot> findPendingSchedules() throws ExecutionException, InterruptedException {
+    public List<QueryDocumentSnapshot> findPendingSchedules(long now) throws ExecutionException, InterruptedException {
         return firestore.collection(SCHEDULE_COLLECTION)
                 .whereEqualTo("executed", false)
+                .whereLessThanOrEqualTo("startAt", now)
                 .get().get().getDocuments();
     }
 

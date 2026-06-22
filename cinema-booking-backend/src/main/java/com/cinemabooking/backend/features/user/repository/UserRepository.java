@@ -19,7 +19,6 @@ public class UserRepository {
     private Firestore firestore;
 
     private static final String COLLECTION = "users";
-    private static final String ATTENDANCE_COLLECTION = "attendance";
 
     public DocumentSnapshot findById(String uid) throws ExecutionException, InterruptedException {
         return firestore.collection(COLLECTION).document(uid).get().get();
@@ -49,11 +48,4 @@ public class UserRepository {
         return firestore.collection(COLLECTION).whereEqualTo("role", role).get().get().getDocuments();
     }
 
-    // Attendance for ChatService (Staff Online Allocation)
-    public List<QueryDocumentSnapshot> findAttendanceByDateAndNoCheckOut(String date) throws ExecutionException, InterruptedException {
-        return firestore.collection(ATTENDANCE_COLLECTION)
-                .whereEqualTo("date", date)
-                .whereEqualTo("checkOutTime", 0L)
-                .get().get().getDocuments();
-    }
 }

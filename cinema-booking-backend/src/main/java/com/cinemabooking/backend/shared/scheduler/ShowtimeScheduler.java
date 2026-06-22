@@ -26,7 +26,7 @@ public class ShowtimeScheduler {
         long now = System.currentTimeMillis();
 
         try {
-            List<QueryDocumentSnapshot> schedules = showtimeRepository.findPendingSchedules();
+            List<QueryDocumentSnapshot> schedules = showtimeRepository.findPendingSchedules(now);
             WriteBatch batch = showtimeRepository.getFirestore().batch();
             int count = 0;
 
