@@ -4,7 +4,7 @@ public class ApiConfig {
 
     public static final String BASE_URL =
 //            "http://10.0.159.143:8080/api/v1/";
-            "https://cinema-booking-app-xejz.onrender.com/";
+            "https://cinema-booking-app-xejz.onrender.com/api/v1/";
 
     public static final int CONNECT_TIMEOUT = 15;
     public static final int READ_TIMEOUT = 30;

@@ -14,7 +14,7 @@ val localProperties = Properties().apply {
 
 val baseUrl: String = localProperties.getProperty(
     "BASE_URL",
-    "https://cinema-booking-app-xejz.onrender.com/"
+    "https://cinema-booking-app-xejz.onrender.com/api/v1/"
 )
 
 android {
