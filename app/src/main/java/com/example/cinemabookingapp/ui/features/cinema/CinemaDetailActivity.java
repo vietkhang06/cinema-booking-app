@@ -624,9 +624,9 @@ public class CinemaDetailActivity extends BaseActivity {
                     continue;
                 }
 
-                // If selected date is today, show only future/current showtimes.
+                // If selected date is today, show only future/current showtimes that haven't started past 30 mins.
                 boolean isToday = selectedDateIndex == 0;
-                if ((isToday && st.startAt < now) || !isBookableStatus(st.status)) {
+                if ((isToday && now > st.startAt + 30 * 60 * 1000L) || !isBookableStatus(st.status)) {
                     continue;
                 }
                 if (TextUtils.isEmpty(st.movieId)) continue;
@@ -880,7 +880,10 @@ private View buildScheduleCard(CinemaMovieSchedule schedule, boolean bookable) {
                 for (int index = start; index < end; index++) {
                     Showtime st = schedule.showtimes.get(index);
                     String timeVal = sdf.format(new Date(st.startAt));
-                    MaterialButton timeButton = buildTimeButton(schedule.movie, st, timeVal, bookable);
+                    boolean isSoldOut = st.totalSeats > 0 && st.bookedSeatsCount >= st.totalSeats;
+                    boolean isLocked = System.currentTimeMillis() > (st.startAt + 30 * 60 * 1000L);
+                    boolean isStBookable = bookable && !isSoldOut && !isLocked;
+                    MaterialButton timeButton = buildTimeButton(schedule.movie, st, timeVal, isStBookable);
                     row.addView(timeButton);
                 }
                 timesWrap.addView(row);

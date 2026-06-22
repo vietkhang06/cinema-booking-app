@@ -193,13 +193,39 @@ public class AdminShowtimeListActivity extends AppCompatActivity implements Admi
             @Override
             public void onSuccess(List<Showtime> showtimes) {
                 allShowtimes.clear();
-                allShowtimes.addAll(showtimes);
+                List<Showtime> validShowtimes = new ArrayList<>();
+                for (Showtime s : showtimes) {
+                    boolean isMovieValid = s.movieId != null && movieMap.containsKey(s.movieId);
+                    boolean isCinemaValid = s.cinemaId != null && cinemaMap.containsKey(s.cinemaId);
+                    boolean isRoomValid = s.roomId != null && roomMap.containsKey(s.roomId);
+                    if (!isMovieValid || !isCinemaValid || !isRoomValid) {
+                        if (s.showtimeId != null) {
+                            showtimeRepository.softDeleteShowtime(s.showtimeId, null);
+                        }
+                    } else {
+                        validShowtimes.add(s);
+                    }
+                }
+                allShowtimes.addAll(validShowtimes);
                 
                 showtimeRepository.getAllShowtimeSchedules(new ResultCallback<List<Showtime>>() {
                     @Override
                     public void onSuccess(List<Showtime> schedules) {
                         allSchedules.clear();
-                        allSchedules.addAll(schedules);
+                        List<Showtime> validSchedules = new ArrayList<>();
+                        for (Showtime s : schedules) {
+                            boolean isMovieValid = s.movieId != null && movieMap.containsKey(s.movieId);
+                            boolean isCinemaValid = s.cinemaId != null && cinemaMap.containsKey(s.cinemaId);
+                            boolean isRoomValid = s.roomId != null && roomMap.containsKey(s.roomId);
+                            if (!isMovieValid || !isCinemaValid || !isRoomValid) {
+                                if (s.showtimeId != null) {
+                                    showtimeRepository.deleteShowtimeSchedule(s.showtimeId, null);
+                                }
+                            } else {
+                                validSchedules.add(s);
+                            }
+                        }
+                        allSchedules.addAll(validSchedules);
                         filterShowtimes();
                     }
 

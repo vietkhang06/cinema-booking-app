@@ -138,7 +138,7 @@ public class MovieDetailScheduleCatalog {
                         }
 
                         String timeText = timeFormat.format(new Date(s.startAt));
-                        itemsByGroup.get(groupTitle).add(new ShowtimeItem(s.showtimeId, timeText, s.startAt, s.basePrice));
+                        itemsByGroup.get(groupTitle).add(new ShowtimeItem(s.showtimeId, timeText, s.startAt, s.basePrice, s.totalSeats, s.bookedSeatsCount));
                     }
 
                     List<ShowtimeGroup> groups = new ArrayList<>();
@@ -298,12 +298,16 @@ public class MovieDetailScheduleCatalog {
         public final String timeText;
         public final long startAt;
         public final double basePrice;
+        public final int totalSeats;
+        public final int bookedSeatsCount;
 
-        public ShowtimeItem(String showtimeId, String timeText, long startAt, double basePrice) {
+        public ShowtimeItem(String showtimeId, String timeText, long startAt, double basePrice, int totalSeats, int bookedSeatsCount) {
             this.showtimeId = showtimeId;
             this.timeText = timeText;
             this.startAt = startAt;
             this.basePrice = basePrice;
+            this.totalSeats = totalSeats;
+            this.bookedSeatsCount = bookedSeatsCount;
         }
     }
 }
