@@ -1188,8 +1188,8 @@ public class BookingConfirmActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
-            BookingTimerManager.getInstance().stopTimer(this);
             if (!isBookingConfirmed) {
+                BookingTimerManager.getInstance().stopTimer(this);
                 releaseLockedSeats();
             }
         }
