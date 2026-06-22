@@ -457,9 +457,9 @@ public class HomeActivity extends BaseActivity {
         if (!ratingVal.isEmpty()) {
             try {
                 double r = Double.parseDouble(ratingVal);
-                rating = String.format(java.util.Locale.getDefault(), "â˜… %.1f", r);
+                rating = String.format(java.util.Locale.getDefault(), "★ %.1f", r);
             } catch (Exception e) {
-                rating = "â˜… " + ratingVal;
+                rating = "★ " + ratingVal;
             }
         }
         String ageRating = firstNonEmpty(
