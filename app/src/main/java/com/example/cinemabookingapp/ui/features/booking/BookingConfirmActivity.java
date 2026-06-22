@@ -381,12 +381,24 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         com.google.firebase.firestore.DocumentSnapshot bestVoucher = null;
                         
                         for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
-                            Double discount = doc.getDouble("discountValue");
-                            if (discount == null) {
-                                Long dp = doc.getLong("discountPercent");
-                                discount = (dp != null) ? dp.doubleValue() : 0.0;
+                            double discount = 0;
+                            Object discountObj = doc.get("discountPercent");
+                            if (discountObj instanceof Number) {
+                                discount = ((Number) discountObj).doubleValue();
                             }
-                            if (discount != null && discount > maxDiscount) {
+                            if (discount <= 0) {
+                                Object valObj = doc.get("discountValue");
+                                if (valObj instanceof Number) {
+                                    discount = ((Number) valObj).doubleValue();
+                                }
+                            }
+
+                            if (discount <= 0) {
+                                doc.getReference().delete();
+                                continue;
+                            }
+
+                            if (discount > maxDiscount) {
                                 maxDiscount = discount;
                                 bestVoucher = doc;
                             }
@@ -536,7 +548,25 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         allVouchers.clear();
                         displayedVouchers.clear();
                         if (snapshot != null && !snapshot.isEmpty()) {
-                            allVouchers.addAll(snapshot.getDocuments());
+                            for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                                double discount = 0;
+                                Object discountObj = doc.get("discountPercent");
+                                if (discountObj instanceof Number) {
+                                    discount = ((Number) discountObj).doubleValue();
+                                }
+                                if (discount <= 0) {
+                                    Object valObj = doc.get("discountValue");
+                                    if (valObj instanceof Number) {
+                                        discount = ((Number) valObj).doubleValue();
+                                    }
+                                }
+
+                                if (discount <= 0) {
+                                    doc.getReference().delete();
+                                    continue;
+                                }
+                                allVouchers.add(doc);
+                            }
                         }
 
                         if (allVouchers.size() > 3) {
@@ -568,10 +598,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
                                 appliedVoucherId = voucher.getId();
                                 String vCode = voucher.getString("code");
                                 appliedPromoCode = vCode != null ? vCode : "";
-                                Double discount = voucher.getDouble("discountValue");
-                                if (discount == null) {
-                                    Long dp = voucher.getLong("discountPercent");
-                                    discount = (dp != null) ? dp.doubleValue() : 0.0;
+                                double discount = 0;
+                                Object discountObj = voucher.get("discountPercent");
+                                if (discountObj instanceof Number) {
+                                    discount = ((Number) discountObj).doubleValue();
+                                }
+                                if (discount <= 0) {
+                                    Object valObj = voucher.get("discountValue");
+                                    if (valObj instanceof Number) {
+                                        discount = ((Number) valObj).doubleValue();
+                                    }
                                 }
 
                                 if (discount > 100) {
@@ -861,7 +897,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     if ("momo".equals(paymentMethod)) {
                         confirmPayment(booking);
                     } else {
-                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
+                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS", booking.bookingId);
                         Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -874,7 +910,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     } else if (response.body() != null && response.body().getMessage() != null) {
                         msg = response.body().getMessage();
                     }
-                    createNotification("Đặt vé thất bại", msg, "BOOKING_FAILED");
+                    createNotification("Đặt vé thất bại", msg, "BOOKING_FAILED", null);
                     Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -896,7 +932,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Call<ApiResponse<Void>> call, retrofit2.Response<ApiResponse<Void>> response) {
                 if (response.isSuccessful()) {
-                    createNotification("Thanh toán thành công", "Bạn đã thanh toán thành công. Vui lòng kiểm tra vé của bạn.", "BOOKING_SUCCESS");
+                    createNotification("Thanh toán thành công", "Bạn đã thanh toán thành công. Vui lòng kiểm tra vé của bạn.", "BOOKING_SUCCESS", booking.bookingId);
                     if ("momo".equals(booking.paymentMethod)) {
                         Toast.makeText(BookingConfirmActivity.this, "Thanh toán qua Ví MoMo thành công!", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(BookingConfirmActivity.this, TicketDetailActivity.class);
@@ -915,7 +951,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS");
+                        createNotification("Đặt vé thành công", "Bạn đã đặt vé thành công. Vui lòng thanh toán tại quầy trước khi suất chiếu bắt đầu 15 phút.", "BOOKING_SUCCESS", booking.bookingId);
                         Toast.makeText(BookingConfirmActivity.this, "Đặt vé thành công (Chờ thanh toán tại quầy)!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -924,7 +960,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
                     if (response.body() != null && response.body().getMessage() != null) {
                         msg = response.body().getMessage();
                     }
-                    createNotification("Thanh toán thất bại", msg, "BOOKING_FAILED");
+                    createNotification("Thanh toán thất bại", msg, "BOOKING_FAILED", booking.bookingId);
                     Toast.makeText(BookingConfirmActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -939,7 +975,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
     // ZELIOUS: Logic gÃ¡Â»Â­i thÃƒÂ´ng bÃƒÂ¡o khi cÃƒÂ³ kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ API trÃ¡ÂºÂ£ vÃ¡Â»Â.
     // LÃ¡ÂºÂ¥y userId hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i, tÃ¡ÂºÂ¡o object Notification vÃ¡Â»â€ºi type 'BOOKING_SUCCESS' hoÃ¡ÂºÂ·c 'BOOKING_FAILED'
     // Sau Ã„â€˜ÃƒÂ³ gÃ¡Â»Âi NotificationRepositoryImpl Ã„â€˜Ã¡Â»Æ’ Ã„â€˜Ã¡ÂºÂ©y Document nÃƒÂ y xuÃ¡Â»â€˜ng Firestore.
-    private void createNotification(String title, String message, String type) {
+    private void createNotification(String title, String message, String type, String refId) {
         String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ?
                 com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         if (userId == null) return;
@@ -948,6 +984,7 @@ public class BookingConfirmActivity extends AppCompatActivity {
         notification.title = title;
         notification.message = message;
         notification.type = type;
+        notification.refId = refId;
         notification.isRead = false;
         notification.createdAt = System.currentTimeMillis();
         notification.updatedAt = System.currentTimeMillis();
@@ -1187,10 +1224,16 @@ public class BookingConfirmActivity extends AppCompatActivity {
             }
 
             // 2. Get discount
-            Double discount = doc.getDouble("discountValue");
-            if (discount == null) {
-                Long dp = doc.getLong("discountPercent");
-                discount = (dp != null) ? dp.doubleValue() : 0.0;
+            double discount = 0;
+            Object discountObj = doc.get("discountPercent");
+            if (discountObj instanceof Number) {
+                discount = ((Number) discountObj).doubleValue();
+            }
+            if (discount <= 0) {
+                Object valObj = doc.get("discountValue");
+                if (valObj instanceof Number) {
+                    discount = ((Number) valObj).doubleValue();
+                }
             }
 
             String valueTag = "";

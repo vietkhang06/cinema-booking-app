@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import com.cinemabooking.backend.features.voucher.service.VoucherService;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.cinemabooking.backend.features.booking.service.BookingService;
 
 @Service
@@ -27,6 +30,9 @@ public class PaymentService {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private Firestore firestore;
 
     public Payment createPendingPayment(String bookingId, String userId, String provider, double amount) throws ExecutionException, InterruptedException {
         String paymentId = "pay_" + UUID.randomUUID().toString().substring(0, 8);
@@ -60,8 +66,6 @@ public class PaymentService {
 
     public void handleFailedPayment(String paymentId) {
         log.info("[PAYMENT_FLOW] Handling failed payment: {}", paymentId);
-        // TODO: Hook this up to actual payment webhook later.
-        // Assuming we look up the bookingId and userId from the payment record
         try {
             Payment payment = paymentRepository.findById(paymentId);
             if (payment != null) {
@@ -69,10 +73,23 @@ public class PaymentService {
                 payment.setUpdatedAt(System.currentTimeMillis());
                 paymentRepository.save(payment);
 
-                // Generate compensation voucher
-                voucherService.generateVoucherForPaymentError(payment.getUserId(), payment.getBookingId());
+                String bookingId = payment.getBookingId();
+                if (bookingId != null && bookingId.startsWith("cso_")) {
+                    // Update CineShop order status in Firestore to FAILED
+                    java.util.Map<String, Object> updateData = new java.util.HashMap<>();
+                    updateData.put("status", "FAILED");
+                    updateData.put("updatedAt", System.currentTimeMillis());
+
+                    firestore.collection("cine_shop_orders").document(bookingId)
+                            .set(updateData, SetOptions.merge()).get();
+                } else {
+                    bookingService.updatePaymentStatus(bookingId, "FAILED", "CANCELLED");
+                    bookingService.releaseBookingSeats(bookingId);
+                    // Generate compensation voucher
+                    voucherService.generateVoucherForPaymentError(payment.getUserId(), bookingId);
+                }
             }
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             log.error("Error handling failed payment {}", paymentId, e);
         }
     }
@@ -87,14 +104,55 @@ public class PaymentService {
                 payment.setUpdatedAt(System.currentTimeMillis());
                 paymentRepository.save(payment);
 
-                // Update booking status in Firestore to SUCCESS & CONFIRMED, and confirm seats
-                bookingService.updatePaymentStatus(payment.getBookingId(), "SUCCESS", "CONFIRMED");
-                bookingService.confirmBookingSeats(payment.getBookingId());
+                String bookingId = payment.getBookingId();
+                if (bookingId != null && bookingId.startsWith("cso_")) {
+                    // Update CineShop order status in Firestore to SUCCESS
+                    java.util.Map<String, Object> updateData = new java.util.HashMap<>();
+                    updateData.put("status", "SUCCESS");
+                    updateData.put("updatedAt", System.currentTimeMillis());
+
+                    firestore.collection("cine_shop_orders").document(bookingId)
+                            .set(updateData, SetOptions.merge()).get();
+
+                    // Create CineShop order notification
+                    createCineShopSuccessNotification(bookingId);
+                } else {
+                    // Update booking status in Firestore to SUCCESS & CONFIRMED, and confirm seats
+                    bookingService.updatePaymentStatus(bookingId, "SUCCESS", "CONFIRMED");
+                    bookingService.confirmBookingSeats(bookingId);
+                }
             } else {
                 log.warn("[PAYMENT_FLOW] Payment record not found for ID: {}", paymentId);
             }
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             log.error("Error handling success payment {}", paymentId, e);
+        }
+    }
+
+    private void createCineShopSuccessNotification(String orderId) {
+        try {
+            DocumentSnapshot orderDoc = firestore.collection("cine_shop_orders").document(orderId).get().get();
+            if (orderDoc.exists()) {
+                String targetUserId = orderDoc.getString("userId");
+                if (targetUserId != null) {
+                    String notifId = "notif_" + java.util.UUID.randomUUID().toString();
+                    java.util.Map<String, Object> notif = new java.util.HashMap<>();
+                    notif.put("notificationId", notifId);
+                    notif.put("userId", targetUserId);
+                    notif.put("title", "Mua bắp nước thành công");
+                    notif.put("message", "Đơn hàng bắp nước của bạn đã thanh toán thành công. Vui lòng nhận bắp nước tại quầy!");
+                    notif.put("type", "BOOKING_SUCCESS");
+                    notif.put("refId", orderId);
+                    notif.put("isRead", false);
+                    notif.put("createdAt", System.currentTimeMillis());
+                    notif.put("updatedAt", System.currentTimeMillis());
+
+                    firestore.collection("notifications").document(notifId).set(notif);
+                    log.info("[NOTIFICATION] Created CineShop success notification {} for user {}", notifId, targetUserId);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to create CineShop success notification for order: " + orderId, e);
         }
     }
 }

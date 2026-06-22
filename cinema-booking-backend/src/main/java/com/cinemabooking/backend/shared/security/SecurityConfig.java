@@ -100,6 +100,10 @@ public class SecurityConfig {
                                 "/api/v1/booking",
                                 "/api/v1/booking/**",
 
+                                // CineShop
+                                "/api/v1/cine-shop",
+                                "/api/v1/cine-shop/**",
+
                                 // Payment
                                 "/api/v1/payment",
                                 "/api/v1/payment/**",

@@ -28,6 +28,8 @@ import com.cinemabooking.backend.features.cinema.service.ShowtimeService;
 import com.cinemabooking.backend.features.user.service.UserService;
 import com.cinemabooking.backend.features.payment.service.PaymentService;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.SetOptions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -55,6 +57,7 @@ public class BookingController {
     @Autowired private SeatRepository seatRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private PaymentRepository paymentRepository;
+    @Autowired private Firestore firestore;
 
     @Autowired private BookingService bookingService;
     @Autowired private ShowtimeService showtimeService;
@@ -62,6 +65,44 @@ public class BookingController {
     @Autowired private MovieService movieService;
     @Autowired private PaymentService paymentService;
     @Autowired private VoucherService voucherService;
+
+    @GetMapping("/my")
+    @Operation(summary = "Get current user's booking history")
+    public ResponseEntity<ApiResponse<List<BookingDTO>>> getMyBookings(
+            @AuthenticationPrincipal String userId
+    ) throws ExecutionException, InterruptedException {
+        if (userId == null || userId.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+        }
+
+        List<com.google.cloud.firestore.QueryDocumentSnapshot> docs = bookingRepository.findByUserId(userId);
+        List<BookingDTO> bookings = new ArrayList<>();
+
+        for (com.google.cloud.firestore.QueryDocumentSnapshot doc : docs) {
+            BookingDTO booking = doc.toObject(BookingDTO.class);
+            if (booking != null) {
+                booking.setBookingId(doc.getId());
+                try {
+                    if (booking.getShowtimeId() != null) {
+                        ShowtimeDTO showtime = showtimeService.getShowtimeById(booking.getShowtimeId());
+                        booking.setShowtime(showtime);
+                    }
+                } catch (Exception ignored) {}
+                bookings.add(booking);
+            }
+        }
+
+        // Sort by createdAt descending (newest first)
+        bookings.sort((a, b) -> Long.compare(b.getCreatedAt(), a.getCreatedAt()));
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<BookingDTO>>builder()
+                        .success(true)
+                        .message("User bookings fetched successfully")
+                        .data(bookings)
+                        .build()
+        );
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Get booking detail by id")
@@ -229,6 +270,60 @@ public class BookingController {
             @AuthenticationPrincipal String userId,
             @PathVariable("id") String bookingId
     ) throws ExecutionException, InterruptedException {
+        if (bookingId != null && bookingId.startsWith("cso_")) {
+            // Update CineShop order status in Firestore to SUCCESS
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("status", "SUCCESS");
+            updateData.put("updatedAt", System.currentTimeMillis());
+
+            firestore.collection("cine_shop_orders").document(bookingId)
+                    .set(updateData, SetOptions.merge()).get();
+
+            // Also update payments document status to SUCCESS
+            try {
+                List<com.google.cloud.firestore.QueryDocumentSnapshot> payments = paymentRepository.findByBookingId(bookingId);
+                for (com.google.cloud.firestore.QueryDocumentSnapshot paymentDoc : payments) {
+                    paymentRepository.updateStatus(paymentDoc.getId(), "SUCCESS", System.currentTimeMillis());
+                }
+            } catch (Exception e) {
+                log.error("Failed to update payment status to SUCCESS for CineShop order: " + bookingId, e);
+            }
+
+            // Create notification for CineShop order success!
+            try {
+                String targetUserId = null;
+                DocumentSnapshot orderDoc = firestore.collection("cine_shop_orders").document(bookingId).get().get();
+                if (orderDoc.exists()) {
+                    targetUserId = orderDoc.getString("userId");
+                }
+                if (targetUserId != null) {
+                    String notifId = "notif_" + UUID.randomUUID().toString();
+                    Map<String, Object> notif = new HashMap<>();
+                    notif.put("notificationId", notifId);
+                    notif.put("userId", targetUserId);
+                    notif.put("title", "Mua bắp nước thành công");
+                    notif.put("message", "Đơn hàng bắp nước của bạn đã thanh toán thành công. Vui lòng nhận bắp nước tại quầy!");
+                    notif.put("type", "BOOKING_SUCCESS");
+                    notif.put("refId", bookingId);
+                    notif.put("isRead", false);
+                    notif.put("createdAt", System.currentTimeMillis());
+                    notif.put("updatedAt", System.currentTimeMillis());
+
+                    firestore.collection("notifications").document(notifId).set(notif);
+                    log.info("[NOTIFICATION] Created CineShop success notification {} for user {}", notifId, targetUserId);
+                }
+            } catch (Exception e) {
+                log.error("Failed to create CineShop success notification for CineShop order: " + bookingId, e);
+            }
+
+            return ResponseEntity.ok(
+                    ApiResponse.builder()
+                        .success(true)
+                        .message("CineShop payment confirmed successfully")
+                        .build()
+            );
+        }
+
         BookingDTO booking = bookingService.getBookingById(bookingId);
         if (booking == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy vé đặt.");
@@ -262,6 +357,33 @@ public class BookingController {
             @AuthenticationPrincipal String userId,
             @PathVariable("id") String bookingId
     ) throws ExecutionException, InterruptedException {
+        if (bookingId != null && bookingId.startsWith("cso_")) {
+            // Update CineShop order status in Firestore to FAILED
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("status", "FAILED");
+            updateData.put("updatedAt", System.currentTimeMillis());
+
+            firestore.collection("cine_shop_orders").document(bookingId)
+                    .set(updateData, SetOptions.merge()).get();
+
+            // Also update payments document status to FAILED
+            try {
+                List<com.google.cloud.firestore.QueryDocumentSnapshot> payments = paymentRepository.findByBookingId(bookingId);
+                for (com.google.cloud.firestore.QueryDocumentSnapshot paymentDoc : payments) {
+                    paymentRepository.updateStatus(paymentDoc.getId(), "FAILED", System.currentTimeMillis());
+                }
+            } catch (Exception e) {
+                log.error("Failed to update payment status to FAILED for CineShop order: " + bookingId, e);
+            }
+
+            return ResponseEntity.ok(
+                    ApiResponse.builder()
+                        .success(true)
+                        .message("CineShop payment failed and order cancelled")
+                        .build()
+            );
+        }
+
         BookingDTO booking = bookingService.getBookingById(bookingId);
         if (booking == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy vé đặt.");

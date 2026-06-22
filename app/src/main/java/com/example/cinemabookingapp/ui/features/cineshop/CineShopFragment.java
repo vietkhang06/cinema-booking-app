@@ -118,6 +118,7 @@ public class CineShopFragment extends Fragment {
     private TextView tabSeasonal, tabMovie;
     private RecyclerView rvProducts;
     private ImageView btnCart;
+    private TextView tvCartBadge;
     private android.widget.ProgressBar loadingProgress;
     private TextView tvEmptyState;
     private LinearLayout layoutLoginRequired;
@@ -188,6 +189,8 @@ public class CineShopFragment extends Fragment {
                 loadCineShopItems();
             }
             startBannerAutoScroll();
+            // Update cart count
+            updateCartBadge(CineCartManager.getInstance().getTotalCount());
         } else {
             layoutLoginRequired.setVisibility(View.VISIBLE);
             scrollContent.setVisibility(View.GONE);
@@ -210,19 +213,23 @@ public class CineShopFragment extends Fragment {
         tabMovie     = view.findViewById(R.id.tabMovie);
         rvProducts   = view.findViewById(R.id.rvProducts);
         btnCart      = view.findViewById(R.id.btnCart);
+        tvCartBadge  = view.findViewById(R.id.tvCartBadge);
         loadingProgress = view.findViewById(R.id.loadingProgress);
         tvEmptyState    = view.findViewById(R.id.tvEmptyState);
         layoutLoginRequired = view.findViewById(R.id.layoutLoginRequired);
         btnLoginRequired = view.findViewById(R.id.btnLoginRequired);
         scrollContent   = view.findViewById(R.id.scrollContent);
 
-        btnCart.setOnClickListener(v -> {
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                startActivity(new Intent(requireContext(), CineCartActivity.class));
-            } else {
-                AppNavigator.goToLoginForBooking(requireActivity());
-            }
-        });
+        View layoutCart = view.findViewById(R.id.layoutCart);
+        if (layoutCart != null) {
+            layoutCart.setOnClickListener(v -> {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    startActivity(new Intent(requireContext(), CineCartActivity.class));
+                } else {
+                    AppNavigator.goToLoginForBooking(requireActivity());
+                }
+            });
+        }
 
         if (btnLoginRequired != null) {
             btnLoginRequired.setOnClickListener(v -> 
@@ -384,11 +391,21 @@ public class CineShopFragment extends Fragment {
         productAdapter.setOnCartChangedListener(
                 totalCount -> {
                     cartItemCount = totalCount;
+                    updateCartBadge(totalCount);
                     // TODO: hiÃ¡Â»Æ’n thÃ¡Â»â€¹ badge sÃ¡Â»â€˜ lÃ†Â°Ã¡Â»Â£ng trÃƒÂªn icon giÃ¡Â»Â hÃƒÂ ng nÃ¡ÂºÂ¿u cÃ¡ÂºÂ§n
                 });
     }
 
-    // cart badge count
+    private void updateCartBadge(int count) {
+        if (tvCartBadge != null) {
+            if (count > 0) {
+                tvCartBadge.setText(String.valueOf(count));
+                tvCartBadge.setVisibility(View.VISIBLE);
+            } else {
+                tvCartBadge.setVisibility(View.GONE);
+            }
+        }
+    }
 
     // Ã¢â€â‚¬Ã¢â€â‚¬ Data Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 

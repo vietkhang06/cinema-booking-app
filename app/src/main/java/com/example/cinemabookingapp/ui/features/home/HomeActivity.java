@@ -157,6 +157,8 @@ public class HomeActivity extends BaseActivity {
     private TextView navProfileBadge;
     private com.google.firebase.firestore.ListenerRegistration notificationListener;
     private com.google.firebase.firestore.ListenerRegistration moviesListener;
+    private boolean isFirstNotificationCallback = true;
+    private final java.util.Set<String> processedNotificationIds = new java.util.HashSet<>();
 
     private final int activeColor = Color.parseColor("#1E1A23");
     private final int inactiveTint = Color.parseColor("#4A4650");
@@ -206,7 +208,19 @@ public class HomeActivity extends BaseActivity {
                         if (!notif.isRead) {
                             unreadCount++;
                         }
+                        
+                        if (isFirstNotificationCallback) {
+                            processedNotificationIds.add(notif.notificationId);
+                        } else {
+                            if (!processedNotificationIds.contains(notif.notificationId)) {
+                                processedNotificationIds.add(notif.notificationId);
+                                if (!notif.isRead) {
+                                    showRealTimeNotificationAlert(notif);
+                                }
+                            }
+                        }
                     }
+                    isFirstNotificationCallback = false;
                 }
                 
                 if (navProfileBadge != null) {
@@ -224,6 +238,23 @@ public class HomeActivity extends BaseActivity {
                 // Do nothing
             }
         });
+    }
+
+    private void showRealTimeNotificationAlert(com.example.cinemabookingapp.domain.model.Notification notif) {
+        if (isFinishing() || isDestroyed()) return;
+        
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(notif.title != null ? notif.title : "Thông báo mới")
+            .setMessage(notif.message != null ? notif.message : "")
+            .setPositiveButton("Xem chi tiết", (dialog, which) -> {
+                if ("BOOKING_SUCCESS".equals(notif.type) && notif.refId != null) {
+                    AppNavigator.goToTicketDetail(HomeActivity.this, notif.refId);
+                } else {
+                    AppNavigator.goToNotification(HomeActivity.this);
+                }
+            })
+            .setNegativeButton("Đóng", null)
+            .show();
     }
 
     @Override

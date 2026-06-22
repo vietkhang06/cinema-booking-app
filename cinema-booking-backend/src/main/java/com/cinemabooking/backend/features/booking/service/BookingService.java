@@ -45,6 +45,9 @@ public class BookingService {
     @Autowired
     private VoucherService voucherService;
 
+    @Autowired
+    private Firestore firestore;
+
     public void confirmBookingSeats(String bookingId) throws ExecutionException, InterruptedException {
         BookingDTO booking = getBookingById(bookingId);
         if (booking == null) {
@@ -63,6 +66,29 @@ public class BookingService {
         if (booking.getAppliedVoucherCode() != null && !booking.getAppliedVoucherCode().isEmpty()) {
             voucherService.markVoucherAsUsed(booking.getAppliedVoucherCode());
         }
+
+        try {
+            createBookingSuccessNotification(booking);
+        } catch (Exception e) {
+            logger.error("Failed to create booking success notification for bookingId: " + bookingId, e);
+        }
+    }
+
+    private void createBookingSuccessNotification(BookingDTO booking) {
+        String notifId = "notif_" + java.util.UUID.randomUUID().toString();
+        java.util.Map<String, Object> notif = new java.util.HashMap<>();
+        notif.put("notificationId", notifId);
+        notif.put("userId", booking.getUserId());
+        notif.put("title", "Thanh toán thành công");
+        notif.put("message", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!");
+        notif.put("type", "BOOKING_SUCCESS");
+        notif.put("refId", booking.getBookingId());
+        notif.put("isRead", false);
+        notif.put("createdAt", System.currentTimeMillis());
+        notif.put("updatedAt", System.currentTimeMillis());
+
+        firestore.collection("notifications").document(notifId).set(notif);
+        logger.info("[NOTIFICATION] Created booking success notification {} for user {}", notifId, booking.getUserId());
     }
 
     public void releaseBookingSeats(String bookingId) throws ExecutionException, InterruptedException {

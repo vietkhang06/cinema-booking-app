@@ -69,11 +69,59 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             contentTV.setText(notification.message);
             dateTV.setText(DateTimeConverter.convertToDateTimeString(notification.createdAt));
             
+            // Default tint/style reset
+            titleTV.setTextColor(android.graphics.Color.BLACK);
+            
             if ("Hủy suất chiếu".equals(notification.title) || "SHOWTIME_CANCELLED".equals(notification.type)) {
                  titleTV.setTextColor(android.graphics.Color.RED);
                  imageView.setImageResource(R.drawable.ic_notification);
+            } else if ("BOOKING_SUCCESS".equals(notification.type) || (notification.title != null && (notification.title.contains("Đặt vé") || notification.title.contains("Thanh toán") || notification.title.contains("bắp nước")))) {
+                 boolean isSnackFallback = false;
+                 if (notification.message != null && (notification.message.contains("bắp") || notification.message.contains("nước") || notification.message.contains("combo") || notification.message.contains("CineShop") || notification.title.contains("bắp nước"))) {
+                     isSnackFallback = true;
+                 }
+                 
+                 if (isSnackFallback) {
+                     imageView.setImageResource(R.drawable.cart_shopping_solid_full);
+                 } else {
+                     imageView.setImageResource(R.drawable.ic_ticket_stars);
+                 }
+                 
+                 if (notification.refId != null && !notification.refId.trim().isEmpty()) {
+                     final String refId = notification.refId;
+                     imageView.setTag(refId);
+                     com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                         .collection("bookings")
+                         .document(refId)
+                         .get()
+                         .addOnSuccessListener(doc -> {
+                             if (doc.exists() && refId.equals(imageView.getTag())) {
+                                 String showtimeId = doc.getString("showtimeId");
+                                 if (showtimeId == null) {
+                                     List<java.util.Map<String, Object>> snackOrders = (List<java.util.Map<String, Object>>) doc.get("snackOrder");
+                                     if (snackOrders != null && !snackOrders.isEmpty()) {
+                                         String imgUrl = (String) snackOrders.get(0).get("snackImgURL");
+                                         if (imgUrl != null && !imgUrl.isEmpty()) {
+                                             Glide.with(itemView.getContext())
+                                                 .load(imgUrl)
+                                                 .placeholder(R.drawable.cart_shopping_solid_full)
+                                                 .error(R.drawable.cart_shopping_solid_full)
+                                                 .into(imageView);
+                                         } else {
+                                             imageView.setImageResource(R.drawable.cart_shopping_solid_full);
+                                         }
+                                     } else {
+                                         imageView.setImageResource(R.drawable.cart_shopping_solid_full);
+                                     }
+                                 } else {
+                                     imageView.setImageResource(R.drawable.ic_ticket_stars);
+                                 }
+                             }
+                         });
+                 }
+            } else if ("VOUCHER_RECEIVED".equals(notification.type) || (notification.title != null && (notification.title.contains("Voucher") || notification.title.contains("ưu đãi") || notification.title.contains("Ưu đãi") || notification.title.contains("Khuyến mãi") || notification.title.contains("khuyến mãi")))) {
+                 imageView.setImageResource(R.drawable.ic_voucher_tag_orange);
             } else {
-                 titleTV.setTextColor(android.graphics.Color.BLACK);
                  imageView.setImageResource(R.drawable.login_icon); // Fallback icon
             }
 
