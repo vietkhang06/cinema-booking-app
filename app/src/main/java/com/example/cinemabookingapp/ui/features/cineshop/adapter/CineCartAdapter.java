@@ -118,7 +118,7 @@ public class CineCartAdapter extends RecyclerView.Adapter<CineCartAdapter.CartVH
                 int pos = getAdapterPosition();
                 if (pos == RecyclerView.NO_POSITION) return;
                 CineCartManager.getInstance().removeItem(items.get(pos).snack.snackId);
-                items.remove(pos);
+//                items.remove(pos);
                 notifyItemRemoved(pos);
                 if (listener != null) listener.onCartChanged();
             });
