@@ -283,8 +283,8 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                         // Kiá»ƒm tra cáº£ paymentStatus láº«n bookingStatus
                         String paymentStatus = snapshot.getString("paymentStatus");
                         String bookingStatus = snapshot.getString("bookingStatus");
-                        android.util.Log.d("PAYMENT_FLOW", "Booking doc update â€” paymentStatus=" + paymentStatus + " bookingStatus=" + bookingStatus);
-                        // Æ¯u tiÃªn paymentStatus, fallback sang bookingStatus
+                        android.util.Log.d("PAYMENT_FLOW", "Booking doc update — paymentStatus=" + paymentStatus + " bookingStatus=" + bookingStatus);
+                        // Ưu tiên paymentStatus, fallback sang bookingStatus
                         String effectiveStatus = paymentStatus != null ? paymentStatus : bookingStatus;
                         checkPaymentStatus(effectiveStatus);
                     }
@@ -292,24 +292,38 @@ public class PaymentInstructionActivity extends AppCompatActivity {
     }
 
     /**
-     * ZELIOUS: Kiá»ƒm tra vÃ  xá»­ lÃ½ tráº¡ng thÃ¡i payment. Guard paymentHandled Ä‘áº£m báº£o
-     * chá»‰ xá»­ lÃ½ 1 láº§n dÃ¹ 2 listeners cÃ¹ng fire.
+     * ZELIOUS: Kiểm tra và xử lý trạng thái payment. Guard paymentHandled đảm bảo
+     * chỉ xử lý 1 lần dù 2 listeners cùng fire.
      */
     private void checkPaymentStatus(String status) {
         if (status == null) return;
-        // Guard: Ä‘Ã£ xá»­ lÃ½ rá»“i thÃ¬ bá» qua
+        // Guard: đã xử lý rồi thì bỏ qua
         if (paymentHandled) return;
 
         android.util.Log.d("PAYMENT_FLOW", "checkPaymentStatus: " + status);
 
         if ("SUCCESS".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status)
                 || "CONFIRMED".equalsIgnoreCase(status)) {
-            // ÄÃ¡nh dáº¥u Ä‘Ã£ xá»­ lÃ½ TRÆ¯á»šC â€” trÃ¡nh race condition tá»« 2 listeners
+            // Đánh dấu đã xử lý TRƯỚC — tránh race condition từ 2 listeners
             paymentHandled = true;
             stopAllListeners();
             BookingTimerManager.getInstance().stopTimer(this);
 
-            createNotification("Thanh toán thành công", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!", "BOOKING_SUCCESS");
+            db.collection("bookings").document(bookingId).get().addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    String showtimeId = snapshot.getString("showtimeId");
+                    if (showtimeId == null) {
+                        createNotification("Mua bắp nước thành công", "Đơn hàng bắp nước của bạn đã thanh toán thành công. Vui lòng nhận bắp nước tại quầy!", "BOOKING_SUCCESS", bookingId);
+                    } else {
+                        createNotification("Thanh toán thành công", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!", "BOOKING_SUCCESS", bookingId);
+                    }
+                } else {
+                    createNotification("Thanh toán thành công", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!", "BOOKING_SUCCESS", bookingId);
+                }
+            }).addOnFailureListener(err -> {
+                createNotification("Thanh toán thành công", "Giao dịch thanh toán vé xem phim của bạn đã thành công. Chúc bạn xem phim vui vẻ!", "BOOKING_SUCCESS", bookingId);
+            });
+
             Toast.makeText(this, "Thanh toán thành công! Đang xuất vé...", Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, TicketDetailActivity.class);
@@ -323,7 +337,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 paymentHandled = true;
                 stopAllListeners();
                 BookingTimerManager.getInstance().stopTimer(this);
-                createNotification("Thanh toán thất bại", "Giao dịch thanh toán của bạn đã thất bại hoặc bị hủy.", "BOOKING_FAILED");
+                createNotification("Thanh toán thất bại", "Giao dịch thanh toán của bạn đã thất bại hoặc bị hủy.", "BOOKING_FAILED", bookingId);
                 tvStatusText.setText("Trạng thái: Giao dịch thất bại hoặc đã bị huỷ");
                 View banner = findViewById(R.id.layoutStatusBanner);
                 if (banner != null) {
@@ -390,7 +404,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     android.util.Log.d("BOOKING_FLOW", "cancelBooking API succeeded");
                     if (isAuto) {
-                        Toast.makeText(PaymentInstructionActivity.this, "Giao dịch đã bị huỷ do hết hạn giữ ghế!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentInstructionActivity.this, "Thời gian thanh toán đã hết!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(PaymentInstructionActivity.this, "Giả lập: Thanh toán thất bại!", Toast.LENGTH_SHORT).show();
                     }
@@ -422,7 +436,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
     // ZELIOUS TASK: Logic gá»­i thÃ´ng bÃ¡o khi thanh toÃ¡n thÃ nh cÃ´ng/tháº¥t báº¡i.
     // Láº¥y userId hiá»‡n táº¡i, táº¡o object Notification vá»›i type 'BOOKING_SUCCESS' hoáº·c 'BOOKING_FAILED'
     // Sau Ä‘Ã³ gá»i NotificationRepositoryImpl Ä‘á»ƒ Ä‘áº©y Document nÃ y xuá»‘ng Firestore.
-    private void createNotification(String title, String message, String type) {
+    private void createNotification(String title, String message, String type, String refId) {
         String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ? 
                         com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         if (userId == null) return;
@@ -431,6 +445,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
         notification.title = title;
         notification.message = message;
         notification.type = type;
+        notification.refId = refId;
         notification.isRead = false;
         notification.createdAt = System.currentTimeMillis();
         notification.updatedAt = System.currentTimeMillis();
@@ -508,7 +523,7 @@ public class PaymentInstructionActivity extends AppCompatActivity {
                 stopAllListeners();
                 BookingTimerManager.getInstance().stopTimer(PaymentInstructionActivity.this);
                 if (tvStatusText != null) {
-                    tvStatusText.setText("Trạng thái: Hết hạn giữ ghế!");
+                    tvStatusText.setText("Trạng thái: Thời gian thanh toán đã hết");
                 }
                 View banner = findViewById(R.id.layoutStatusBanner);
                 if (banner != null) {
