@@ -30,22 +30,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * CineShopAdapter â€” adapter cho mÃ n hÃ¬nh Cine Shop.
- * Má»—i item hiá»ƒn thá»‹:
- *   - áº¢nh sáº£n pháº©m (hÃ¬nh trÃ²n)
- *   - TÃªn & giÃ¡
- *   - NÃºt "MUA NGAY"       â†’ dialog chá»n sá»‘ lÆ°á»£ng â†’ thÃªm vÃ o cart â†’ má»Ÿ CineCartActivity
- *   - NÃºt "THÊM VÀO GIỎ"  â†’ dialog chá»n sá»‘ lÆ°á»£ng â†’ thÃªm vÃ o CineCartManager
- *
- * Cart state Ä‘Æ°á»£c lÆ°u trong {@link CineCartManager} singleton.
- */
+
 public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.ProductViewHolder> {
 
-    // â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private List<Snack> productList = new ArrayList<>();
 
-    // â”€â”€ Cart change callback (cáº­p nháº­t badge icon giá») â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public interface OnCartChangedListener {
         void onCartUpdated(int totalCount);
     }
@@ -60,7 +49,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         notifyDataSetChanged();
     }
 
-    // â”€â”€ RecyclerView â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -77,7 +65,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
     @Override
     public int getItemCount() { return productList.size(); }
 
-    // â”€â”€ ViewHolder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProduct;
         TextView tvProductName, tvProductPrice, btnBuyNow, btnAddToCart;
@@ -96,7 +83,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
             DecimalFormat fmt = new DecimalFormat("#,###");
             tvProductPrice.setText(fmt.format(snack.price) + "đ");
 
-            // Load áº£nh sáº£n pháº©m tá»« Firestore thÃ´ng qua Glide
             Glide.with(itemView.getContext())
                     .load(snack.imageUrl)
                     .placeholder(R.drawable.bg_banner_placeholder)
@@ -112,7 +98,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         }
     }
 
-    // â”€â”€ Dialog: MUA NGAY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private void showBuyNowDialog(Context ctx, Snack snack) {
         Dialog dialog = buildBottomDialog(ctx, R.layout.dialog_cine_buy_now);
 
@@ -159,7 +144,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnConfirm.setOnClickListener(v -> {
-            // ThÃªm vÃ o giá» qua CartManager rá»“i má»Ÿ mÃ n hÃ¬nh giá» hÃ ng
             CineCartManager.getInstance().addItem(snack, qty[0]);
             if (cartListener != null)
                 cartListener.onCartUpdated(CineCartManager.getInstance().getTotalCount());
@@ -170,7 +154,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         dialog.show();
     }
 
-    // â”€â”€ Dialog: THÃŠM VÃ€O GIá»Ž HÃ€NG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private void showAddToCartDialog(Context ctx, Snack snack) {
         Dialog dialog = buildBottomDialog(ctx, R.layout.dialog_cine_add_to_cart);
 
@@ -221,7 +204,6 @@ public class CineShopAdapter extends RecyclerView.Adapter<CineShopAdapter.Produc
         dialog.show();
     }
 
-    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private Dialog buildBottomDialog(Context ctx, int layoutRes) {
         Dialog dialog = new Dialog(ctx);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
